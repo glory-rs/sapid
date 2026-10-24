@@ -49,6 +49,7 @@ pub fn graphics_form(theme: Theme) -> impl Widget {
                         .variant(ThemeIconVariant::Solid)
                         .class("graphics-decorative"),
                     theme_icon(Icon::ArrowRight)
+                        .theme(theme.clone())
                         .unstyled()
                         .class("graphics-unstyled"),
                 )),

@@ -39,6 +39,7 @@ mod overlay;
 mod password_input;
 mod radio;
 mod scroll_area;
+mod splitter;
 mod segmented_control;
 mod separator;
 mod spoiler;
@@ -127,6 +128,7 @@ pub use overlay::{
 pub use password_input::{PasswordInput, password_input};
 pub use radio::{MAX_RADIO_GROUP_ITEMS, Radio, RadioGroup, radio, radio_group};
 pub use scroll_area::*;
+pub use splitter::*;
 pub use segmented_control::{Segment, SegmentedControl, segment, segmented_control};
 pub use separator::{Separator, separator};
 pub use spoiler::{MAX_SPOILER_BYTES, Spoiler, spoiler};
