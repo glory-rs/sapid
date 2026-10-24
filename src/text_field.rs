@@ -9,7 +9,7 @@ use crate::state::{Dirty, Value};
 pub struct TextField {
     inner: Option<glory::ui::Input>,
     pub(crate) common: Common,
-    pub(crate) component_class: &'static str,
+    pub(crate) widget_class: &'static str,
     value: Value<String>,
     on_change: Option<Box<dyn FnMut(String)>>,
     on_commit: Option<Box<dyn FnMut(String)>>,
@@ -24,7 +24,7 @@ pub fn text_field() -> TextField {
     TextField {
         inner: Some(glory::ui::input()),
         common: Common::default(),
-        component_class: "sapid-text-field",
+        widget_class: "sapid-text-field",
         value: Value::default(),
         on_change: None,
         on_commit: None,
@@ -175,7 +175,7 @@ impl Widget for TextField {
             self.common,
             self.inner.take().ok_or(glory::ui::Error::Gone)?,
             scope,
-            self.component_class,
+            self.widget_class,
             base
         )
         .value(initial.clone())

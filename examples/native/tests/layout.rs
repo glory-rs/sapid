@@ -2,7 +2,7 @@ use glory::blitz::shell::WindowApp;
 use glory::prelude::*;
 use glory::render::{NodeId, Query, QueryValue};
 use std::{cell::RefCell, rc::Rc};
-#[path = "../../web/layout_form.rs"]
+#[path = "../../web/src/layout_form.rs"]
 mod layout_form;
 fn find(app: &App, class: &str) -> NodeId {
     let tree = app.tree();

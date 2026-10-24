@@ -477,7 +477,7 @@ fn focus_confirmation_is_current_only_and_cancels_on_other_focus_target_retireme
     }
 }
 
-#[path = "../../examples/web/tabs_dynamic_form.rs"]
+#[path = "../../examples/web/src/tabs_dynamic_form.rs"]
 mod fixture;
 
 #[test]

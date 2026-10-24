@@ -4,9 +4,9 @@ use glory::render::{
     Action, Event, NodeId, Props, Query, QueryValue, Rect, Role, TableMetadata,
 };
 use std::{cell::RefCell, rc::Rc};
-#[path = "../../web/data_table_form.rs"]
+#[path = "../../web/src/data_table_form.rs"]
 mod fixture;
-#[path = "../../web/data_table_server_form.rs"]
+#[path = "../../web/src/data_table_server_form.rs"]
 mod server_fixture;
 #[test]
 fn native_server_pages_wait_for_exact_echo_and_keep_current_rows_after_stale_replay() {

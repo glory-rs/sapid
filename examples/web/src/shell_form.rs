@@ -90,7 +90,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
             let mobile = handle.mobile();
             let current_collapsed = handle.collapsed();
             let current_open = handle.open();
-            glory::ui::component(move |scope| {
+            glory::ui::widget(move |scope| {
                 let status = scope.bond(move || {
                     format!(
                         "width={:.0};mobile={};collapsed={};open={};requests={};creations={};ordered={};resize_ordered={};widths={}",

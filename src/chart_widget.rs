@@ -523,7 +523,7 @@ fn build_plot(
         |index| *index,
         move |index, _| {
             let index = index.get_untracked();
-            glory::ui::component(move |scope| {
+            glory::ui::widget(move |scope| {
                 let style = scope.bond(move || {
                     model.with(|m| {
                         let label = &m.scene.labels[index];
@@ -571,7 +571,7 @@ fn build_plot(
         |key| key.clone(),
         move |key, _| {
             let key = key.get_untracked();
-            glory::ui::component(move |scope| {
+            glory::ui::widget(move |scope| {
                 let key = key.clone();
                 glory::ui::graphic()
                     .drawing(scope.bond(move || {
@@ -615,7 +615,7 @@ fn build_plot(
         move |key, _| {
             let key = key.get_untracked();
             let state = state.clone();
-            glory::ui::component(move |scope| {
+            glory::ui::widget(move |scope| {
                 let location_key = key.clone();
                 let label_key = key.clone();
                 let activate = key.clone();
@@ -707,7 +707,7 @@ fn build_legend(scope: &Scope, state: &State, theme: crate::Theme, unstyled: boo
             let key = key.get_untracked();
             let state = state.clone();
             let theme = theme.clone();
-            glory::ui::component(move |scope| {
+            glory::ui::widget(move |scope| {
                 let label_key = key.clone();
                 let toggle = key.clone();
                 let color_key = key.clone();
@@ -790,7 +790,7 @@ fn build_table(
                 let data = model.with(|m| m.data.clone());
                 let key = key.clone();
                 let theme = theme.clone();
-                glory::ui::component(move |scope| {
+                glory::ui::widget(move |scope| {
                     let mut header = crate::table_row("head")
                         .cell(crate::table_header_cell("category").text("Category"));
                     for (j, s) in data.series.iter().enumerate() {

@@ -624,7 +624,7 @@ impl Widget for TreeSelect {
                 let meta = form_metadata.clone();
                 let name = form_name;
                 let enabled = enabled.clone();
-                glory::ui::component(move |scope| {
+                glory::ui::widget(move |scope| {
                     let meta = meta.clone();
                     glory::ui::input()
                         .value(path.map(|path| path.keys().join("/")))

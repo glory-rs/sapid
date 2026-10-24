@@ -174,7 +174,7 @@ impl Widget for StepPanel {
         if let Some(mut factory) = self.factory.take() {
             panel = match self.policy {
                 ContentPolicy::KeepMounted => {
-                    panel.fill(glory::ui::component(move |scope| factory().show_in(scope)))
+                    panel.fill(glory::ui::widget(move |scope| factory().show_in(scope)))
                 }
                 ContentPolicy::Unmount => {
                     panel.fill(glory::ui::when(self.open.clone(), factory))

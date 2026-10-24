@@ -1,6 +1,6 @@
 use glory::{
     Cage,
-    ui::{App, Widget, component},
+    ui::{App, Widget, widget},
 };
 use sapid::{
     button, button_group, data_list, data_list_item, grid, grid_item, highlight, text_list,
@@ -129,7 +129,7 @@ fn content(live: &Rc<Cell<usize>>, drops: Cage<usize>) -> impl Widget {
         live: live.clone(),
         drops,
     };
-    component(move |_| {
+    widget(move |_| {
         let _ = &capture;
         Ok(())
     })

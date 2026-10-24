@@ -231,7 +231,7 @@ fn measured_index_coalesces_one_live_batch_and_retirement_cancels_every_late_rep
     });
     let ctx = toc_context(app.scope(), "queries").unwrap();
     app.mount(toc_document(ctx.clone(), "doc").content(move |ctx| {
-        glory::ui::component(move |scope| {
+        glory::ui::widget(move |scope| {
             for index in 0..256 {
                 toc_heading(ctx.clone(), format!("h{index}"), 1)
                     .content(format!("Heading {index}"))
@@ -298,7 +298,7 @@ fn all_four_heading_permutations_preserve_links_and_current_nested_parents() {
     let ctx = toc_context(app.scope(), "orders").unwrap();
     let orders = app.scope().cage([0u32, 1, 2, 3]);
     app.mount(toc_document(ctx.clone(), "doc").content(move |ctx| {
-        glory::ui::component(move |scope| {
+        glory::ui::widget(move |scope| {
             for (index, level) in [1, 2, 3, 1].into_iter().enumerate() {
                 toc_heading(ctx.clone(), format!("h{index}"), level)
                     .content(format!("Heading {index}"))
@@ -417,7 +417,7 @@ fn reveal_revalidates_actual_staged_heading_ancestry_after_external_moves() {
     assert_eq!(app.stats().queries, 0);
 }
 
-#[path = "../examples/web/table_of_contents_form.rs"]
+#[path = "../examples/web/src/table_of_contents_form.rs"]
 mod browser_fixture;
 #[test]
 fn browser_fixture_ssr_contains_every_heading_editor_and_control() {

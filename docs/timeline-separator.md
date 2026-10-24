@@ -56,7 +56,7 @@ stable embedded input identity through progress changes across all four themes.
 AccessKit represents the passive separator using its `Splitter` role with axis
 metadata and no focus, click or adjustment actions.
 
-The browser fixture and acceptance script are `examples/web/timeline_form.rs`
+The browser fixture and acceptance script are `examples/web/src/timeline_form.rs`
 and `examples/web/timeline-acceptance.js`. They check CSR/hydration, real `ol/li`
 tags, status alternatives, both line axes, AX roles, control value/caret and node
 identity, a narrow viewport and unmount cleanup. Browser AX structure does not

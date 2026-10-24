@@ -1,4 +1,4 @@
-#[path = "../../web/spinner_form.rs"]
+#[path = "../../web/src/spinner_form.rs"]
 mod spinner_form;
 use glory::blitz::shell::WindowApp;
 use glory::blitz::{Config, Raster};

@@ -881,7 +881,7 @@ impl Widget for Tree {
                 let state = state.clone();
                 let theme = theme.clone();
                 let renderer = renderer.clone();
-                glory::ui::component(move |scope| {
+                glory::ui::widget(move |scope| {
                     let key = row.with(|row| row.key.clone());
                     let reference = scope.cage(None);
                     let model = state.model;

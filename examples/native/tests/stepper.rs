@@ -142,7 +142,7 @@ fn stepper_unmount_retires_native_inputs_on_hidden_panels_and_recreates_clean_ow
     let content = move || {
         let a = a.clone();
         let b = b.clone();
-        glory::ui::component(move |scope| {
+        glory::ui::widget(move |scope| {
             a.set(a.get() + 1);
             let b = b.clone();
             scope.on_cleanup(move || b.set(b.get() + 1))?;

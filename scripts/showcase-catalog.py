@@ -3,6 +3,7 @@ import argparse
 import json
 from pathlib import Path
 import re
+import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "examples/web/src/showcase_catalog.rs"
@@ -54,7 +55,7 @@ LEADS = {
         "Compose focus boundaries and render content into an explicit destination.",
         "Configure colors, typography, spacing, language and reading direction.",
         "Provide accessible text that stays visually hidden.",
-        "Explore every component and compare its documented platform capabilities.",
+        "Explore every widget and compare its documented platform capabilities.",
     ],
     "P1": [
         "Connect a form control with its label, help text and validation state.",
@@ -243,7 +244,7 @@ def group(task):
     return {"P9": "Dates", "P10": "Extensions", "P11": "Charts", "P12": "Dates", "P13": "Chat"}[phase]
 
 
-def call(page):
+def target(page):
     if page in SPECIAL:
         module, function, arguments, scoped = SPECIAL[page]
     else:
@@ -254,8 +255,7 @@ def call(page):
         source = path.read_text(encoding="utf-8")
         scoped = bool(re.search(r"pub fn form\(\s*scope:\s*&Scope", source))
         function, arguments = ("form", "scope, theme.clone()") if scoped else (module, "theme")
-    result = f"crate::{module}::{function}({arguments})"
-    return f"component(move |scope| {result}.0.show_in(scope))" if scoped else result
+    return module, function, arguments, scoped
 
 
 def literal(text):
@@ -263,35 +263,83 @@ def literal(text):
     return json.dumps(text, ensure_ascii=False)
 
 
-source = EXAMPLES.read_text(encoding="utf-8")
-core_code = dict(re.findall(r"// showcase-code: (P\d+-\d+)\n(.*?)\n// /showcase-code", source, re.S))
-if set(core_code) != set(CORE): raise SystemExit("clean examples and catalogue source markers differ")
+# Each displayed source is an entire Rust module compiled into the preview.
+# Keep adapter bootstraps and test-only drivers outside these widget modules.
+def fixture_source(module):
+    path = WEB / "src" / f"{module}.rs"
+    text = path.read_text(encoding="utf-8")
+    boundary = re.search(r'\n#\[cfg\((?:target_arch = "wasm32"|test)\)\]\nmod (?:browser|tests) \{', text)
+    if boundary:
+        text = text[:boundary.start()]
+    # Shared plot data is included explicitly, rather than a file-path override.
+    text = text.replace('#[path = "../../fixtures/plot_samples.rs"]\npub mod samples;',
+                        'pub mod samples {\n' + (WEB.parent / "fixtures/plot_samples.rs").read_text(encoding="utf-8") + '\n}')
+    return text.strip()
+
+
+def formatted(text):
+    result = subprocess.run(["rustfmt", "--edition", "2024", "--emit", "stdout"],
+                            input=text, text=True, capture_output=True, check=True)
+    return result.stdout.replace("\r\n", "\n")
+
+
+def timer_browser():
+    browser = (WEB / "src/menu_form.rs").read_text(encoding="utf-8")
+    browser = browser[browser.index('mod browser {'):browser.index('    thread_local!')]
+    browser = browser.replace('    use super::*;\n', '').replace('    use glory::web::WebApp;\n', '')
+    return '\n#[cfg(target_arch = "wasm32")]\n' + browser + '}\n'
+
+
+def bundle(page):
+    module, function, arguments, scoped = target(page)
+    body = fixture_source(module)
+    dependencies = []
+    # The only cross-fixture dependencies are a host timer and JSON demo.
+    if module == "menu_form":
+        body += timer_browser()
+    if re.search(r'(?:crate|super)::menu_form::', body):
+        timer = fixture_source("menu_form")
+        timer = timer[timer.index('#[cfg(not(target_arch = "wasm32"))]'):]
+        timer += timer_browser()
+        dependencies.append('#[allow(dead_code)]\nmod menu_form {\n' + timer + '\n}')
+        body = body.replace('crate::menu_form::', 'super::menu_form::')
+    if 'crate::json_tree_example::' in body:
+        dependencies.append('mod json_tree_example {\n' + fixture_source('json_tree_example') + '\n}')
+        body = body.replace('crate::json_tree_example::', 'super::json_tree_example::')
+    expression = f'fixture::{function}({arguments})'
+    if scoped:
+        expression = f'widget(move |scope| {expression}.0.show_in(scope))'
+    return formatted('use glory::prelude::*;\n\npub fn demo(theme: sapid::Theme) -> impl Widget {\n    '
+                     + expression + '\n}\n\n#[allow(dead_code, unused_imports)]\nmod fixture {\n'
+                     + body + '\n}\n' + '\n'.join(dependencies))
+
+
 pages = {}
 entries = []
+outputs = {}
+modules = {}
 for task in tasks:
     identity = task["id"]
     page = EXTRA_PAGES.get(identity) or next(iter(records[identity]["pages"]), None)
     if not page: raise SystemExit(f"missing explicit demo for {identity}")
     if identity in CORE:
-        imports = "use glory::prelude::*;\n"
-        if identity == "P0-01":
-            imports += "use glory::style::FlexWrap;\n"
-        code = imports + "\n" + core_code[identity].strip()
-        if identity in ("P0-01", "P0-02", "P0-03", "P0-14"):
-            helper = source[source.index("fn column()"):source.index("// showcase-code:")].strip()
-            code = imports + "\n" + helper + "\n\n" + core_code[identity].strip()
+        key = 'core_' + CORE[identity]
+        code = (WEB / f"src/showcase_demos/{key}.rs").read_text(encoding="utf-8")
     else:
-        expression = call(page)
-        pages[page] = expression
-        code = f"use glory::prelude::*;\n\nfn demo(theme: sapid::Theme) -> impl Widget {{\n    {expression}\n}}"
+        key = page.replace('-', '_')
+        pages[page] = key
+        code = bundle(page)
+    if len(code.encode()) > 65_536: raise SystemExit(f"source exceeds CodeHighlight budget: {identity}")
+    outputs[WEB / f"src/showcase_demos/{key}.rs"] = code
+    modules[key] = code
     description = DESCRIPTIONS[identity]
-    entries.append("    Entry { " + ", ".join(f"{key}: {literal(value)}" for key, value in [
-        ("id", identity), ("name", task["name"]), ("group", group(task)),
-        ("description", description), ("example", page), ("code", code),
-        ("web", records[identity]["web"]["state"]),
-        ("native", records[identity]["native"]["state"]),
-        ("native_note", records[identity]["native"]["notes"])
-    ]) + " },")
+    values = [("id", identity), ("name", task["name"]), ("group", group(task)),
+              ("description", description), ("example", page),
+              ("web", records[identity]["web"]["state"]),
+              ("native", records[identity]["native"]["state"]),
+              ("native_note", records[identity]["native"]["notes"])]
+    entries.append("    Entry { " + ", ".join(f"{key}: {literal(value)}" for key, value in values)
+                   + f', code: include_str!("showcase_demos/{key}.rs"), build: crate::showcase_demos::{key}_widget' + " },")
 
 catalog = '''//! Generated by `python scripts/showcase-catalog.py`; edit canonical inventory or demo sources.
 #[derive(Clone, Copy, Debug)]
@@ -302,6 +350,7 @@ pub struct Entry {
     pub description: &'static str,
     pub example: &'static str,
     pub code: &'static str,
+    pub build: fn(sapid::Theme) -> Box<dyn glory::ui::Widget>,
     pub web: &'static str,
     pub native: &'static str,
     pub native_note: &'static str,
@@ -337,14 +386,17 @@ mod tests {
     }
 }
 '''
-families = "// BEGIN GENERATED FAMILIES\n#[rustfmt::skip]\nfn family_demo(page: &str, theme: sapid::Theme) -> Box<dyn Widget> {\n    match page {\n"
-families += "\n".join(f"        {literal(page)} => Box::new({expression})," for page, expression in sorted(pages.items()))
-families += '\n        _ => Box::new(sapid::text().theme(theme).content("This demo is not registered.")),\n    }\n}\n// END GENERATED FAMILIES'
-examples = re.sub(r"// BEGIN GENERATED FAMILIES.*?// END GENERATED FAMILIES", lambda _: families, source, flags=re.S)
-for path, content in [(CATALOG, catalog), (EXAMPLES, examples)]:
+registry = "//! Generated compiled widget examples; source panels include these exact files.\nuse glory::ui::Widget;\n"
+for key in sorted(modules):
+    registry += f"mod {key};\n"
+    registry += f"pub fn {key}_widget(theme: sapid::Theme) -> Box<dyn Widget> {{ Box::new({key}::demo(theme)) }}\n"
+outputs[WEB / "src/showcase_demos/mod.rs"] = formatted(registry)
+outputs[CATALOG] = catalog
+for path, content in outputs.items():
     if args.check:
         if not path.is_file() or path.read_text(encoding="utf-8") != content:
             raise SystemExit(f"stale generated showcase: {path}")
     else:
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8", newline="\n")
-print(f"showcase catalogue: {len(entries)} entries, {len(pages)} Rust families, {len(CORE)} clean demos")
+print(f"showcase catalogue: {len(entries)} entries, {len(pages)} Rust families, {len(CORE)} clean demos; all source modules compiled")

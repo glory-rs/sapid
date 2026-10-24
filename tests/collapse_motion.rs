@@ -63,7 +63,7 @@ fn closing_unmount_waits_for_matching_terminal_and_old_complete_cannot_retire_re
             .open(open)
             .height_transition(240)
             .content(move || {
-                glory::ui::component(move |scope| {
+                glory::ui::widget(move |scope| {
                     scope.on_cleanup(move || {
                         assert!(cleaned.try_get().is_ok());
                         cleaned.revise(|value| *value += 1);
@@ -223,7 +223,7 @@ fn no_completion_driver_ssr_and_memory_close_unmount_immediately_and_controlled_
     );
 }
 
-#[path = "../examples/web/collapse_motion_form.rs"]
+#[path = "../examples/web/src/collapse_motion_form.rs"]
 mod fixture;
 #[test]
 fn four_theme_fixture_is_deterministic_and_whole_owner_retirement_does_not_write_disposed_counters()

@@ -92,7 +92,7 @@ pub fn form(scope: &Scope, theme: Theme, stack_only: bool) -> (impl Widget + use
     let palette = theme.clone();
     let body = glory::ui::when(visible, move || {
         let theme = palette.clone();
-        component(move |scope| {
+        widget(move |scope| {
             if stack_only {
                 stack_trace(stack)
                     .theme(theme.clone())

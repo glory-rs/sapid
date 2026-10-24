@@ -486,7 +486,7 @@ impl Widget for TagsInput {
             move |row, _| {
                 let tags = tags.clone();
                 let theme = theme.clone();
-                glory::ui::component(move |scope| {
+                glory::ui::widget(move |scope| {
                     let row = row.get();
                     let command = tags.clone();
                     let weak = scope.downgrade();
@@ -652,7 +652,7 @@ impl Widget for TagsInput {
             move |values, _| {
                 let enabled = enabled.clone();
                 let form_meta = form_meta.clone();
-                glory::ui::component(move |scope| {
+                glory::ui::widget(move |scope| {
                     let values = values.get();
                     let options = values
                         .into_iter()

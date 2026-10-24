@@ -8,7 +8,7 @@ use std::{
     cell::{Cell, RefCell},
     rc::Rc,
 };
-#[path = "../examples/web/output_form.rs"]
+#[path = "../examples/web/src/output_form.rs"]
 mod fixture;
 #[test]
 fn output_fixture_contains_both_windows_and_explicit_test_controls() {

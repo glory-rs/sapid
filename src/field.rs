@@ -240,7 +240,7 @@ impl Widget for Field {
             "sapid-field",
             composite::column(6.0)
         );
-        root = root.fill(glory::ui::component(move |scope| {
+        root = root.fill(glory::ui::widget(move |scope| {
             if let Some(content) = label.clone() {
                 let mut part = label_part(label_id.clone(), id.clone())
                     .content(content)

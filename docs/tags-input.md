@@ -99,7 +99,7 @@ Current evidence:
 - Glory `blitz/tests/tags.rs`: one passing explicit refusal/plain Input/prefix/query
   test, run against the verified native D-drive target.
 - Sapid library/tests and current WASM fixture compile with strict Clippy.
-  `examples/web/tags_form.rs`, `tags.html` and `tags-acceptance.js` are prepared
+  `examples/web/src/tags_form.rs`, `tags.html` and `tags-acceptance.js` are prepared
   for four-theme CSR/hydration, real clipboard, IME protocol, pointer/touch,
   FormData, Field validation, dirty adoption and Owner acceptance.
 - `D:/BuildCache/sapid/tags-browser-tags-next.json`: Chromium 148.0.7778.96,

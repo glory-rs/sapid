@@ -1,4 +1,4 @@
-#[path = "../../web/image_form.rs"]
+#[path = "../../web/src/image_form.rs"]
 mod image_form;
 use glory::blitz::assets::{Bytes, NetHandler, NetProvider, Request};
 use glory::blitz::{Config, shell::WindowApp};

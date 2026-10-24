@@ -5,7 +5,7 @@ use std::{
     cell::{Cell, RefCell},
     rc::Rc,
 };
-#[path = "../examples/web/tour_form.rs"]
+#[path = "../examples/web/src/tour_form.rs"]
 mod fixture;
 fn panel(app: &App) -> NodeId {
     let tree = app.tree();
@@ -188,7 +188,7 @@ fn target_reservations_bound_nested_construction_and_cleanup_current_registry_on
     let app = App::memory();
     let ctx = tour_context(app.scope(), "targets").unwrap();
     let target_context = ctx.clone();
-    app.mount(glory::ui::component(move |scope| {
+    app.mount(glory::ui::widget(move |scope| {
         for i in 0..MAX_TOUR_STEPS {
             tour_target(&target_context, format!("t{i}"))
                 .fill(glory::ui::text().content("Target"))

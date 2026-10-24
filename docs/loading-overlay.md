@@ -51,7 +51,7 @@ unchanged engine identity and permitted programmatic scrolling. Shared tests,
 the field oracle and strict Clippy pass.
 
 
-`examples/web/loading_overlay_form.rs` and
+`examples/web/src/loading_overlay_form.rs` and
 `examples/web/loading-overlay-acceptance.js` pass all nine actual browser scenarios
 on Chromium 148.0.7778.96 against unified Web12, with no browser errors:
 `D:/BuildCache/sapid/loading-overlay-browser.json`. They include real pointer

@@ -158,7 +158,7 @@ fn native_popup_mode_measures_opens_real_anchor_layer_and_keeps_editor_focus_and
                 .item(sapid::overflow_item("draft").width(140.).content(move || {
                     second.set(second.get() + 1);
                     let cleanup = cleanup.clone();
-                    glory::ui::component(move |scope| {
+                    glory::ui::widget(move |scope| {
                         let cleanup = cleanup.clone();
                         scope.on_cleanup(move || cleanup.set(cleanup.get() + 1))?;
                         input()

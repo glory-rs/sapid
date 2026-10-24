@@ -2,7 +2,7 @@ use glory::render::{NodeId, Props};
 use glory::ui::{App, Widget};
 use sapid::{portal, portal_context, portal_target};
 use std::{cell::Cell, rc::Rc};
-#[path = "../examples/web/portal_form.rs"]
+#[path = "../examples/web/src/portal_form.rs"]
 mod fixture;
 fn target(app: &App, key: &str) -> NodeId {
     let tree = app.tree();
@@ -33,7 +33,7 @@ fn source_order_is_independent_and_content_is_a_boxless_semantic_child_of_the_ta
         let ctx = portal_context(app.scope(), "ordered").unwrap();
         let editor = app.scope().cage(None);
         let context = ctx.clone();
-        app.mount(glory::ui::component(move |scope| {
+        app.mount(glory::ui::widget(move |scope| {
             let source = portal(&context, "destination").content(move || {
                 glory::ui::input()
                     .name("Portaled editor")
@@ -243,7 +243,7 @@ fn current_target_and_source_budgets_reject_before_extra_factories_and_reclaim_e
         let used = ctx.clone();
         let calls = Rc::new(Cell::new(0usize));
         let count = calls.clone();
-        let result = app.mount(glory::ui::component(move |scope| {
+        let result = app.mount(glory::ui::widget(move |scope| {
             let limit = if targets {
                 sapid::MAX_PORTAL_TARGETS
             } else {
@@ -339,8 +339,8 @@ fn failing_target_child_construction_still_parks_a_live_foreign_source_before_ta
     let reference = app.scope().cage(None);
     let during_build = app.clone();
     let targets = context.clone();
-    let result = app.mount(portal_target(&context, "a").fill(glory::ui::component(
-        move |_| {
+    let result = app.mount(
+        portal_target(&context, "a").fill(glory::ui::widget(move |_| {
             let name =
                 glory::render::SemanticId::new("sapid-portal-13_failed-target-target-1_a")
                     .unwrap();
@@ -351,8 +351,8 @@ fn failing_target_child_construction_still_parks_a_live_foreign_source_before_ta
                 .show_in(&owner)?;
             independent.retain(owner)?;
             Err(glory::render::Error::InvalidProps("target child failed").into())
-        },
-    )));
+        })),
+    );
     assert!(result.is_err());
     let editor = reference.get().unwrap();
     assert!(

@@ -1,4 +1,4 @@
-//! Passive display components and a separately named removable Pill action.
+//! Passive display widgets and a separately named removable Pill action.
 use glory::render::{EventKind, NodeId, Semantics, TextKind};
 use glory::style::{
     Align, BorderStyle, BoxShadow, Color, Display, Edges, FlexDirection, Length, Shadow, Style,

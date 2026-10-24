@@ -155,7 +155,7 @@ impl Widget for Legend {
                 let theme = theme.clone();
                 let callback = callback.clone();
                 let enabled = enabled.clone();
-                glory::ui::component(move |scope| {
+                glory::ui::widget(move |scope| {
                     let label_key = key.clone();
                     let color_key = key.clone();
                     let toggle = key.clone();

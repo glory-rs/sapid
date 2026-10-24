@@ -360,7 +360,7 @@ impl Widget for Plot {
                 |i| *i,
                 move |i, _| {
                     let i = i.get_untracked();
-                    glory::ui::component(move |scope| {
+                    glory::ui::widget(move |scope| {
                         glory::ui::graphic()
                             .class("sapid-plot-scale-swatch")
                             .drawing(scope.bond(move || {
@@ -527,7 +527,7 @@ fn build_drawing(
         |key| key.clone(),
         move |key, _| {
             let key = key.get_untracked();
-            glory::ui::component(move |scope| {
+            glory::ui::widget(move |scope| {
                 let key = key.clone();
                 glory::ui::graphic()
                     .class("sapid-plot-layer")
@@ -554,7 +554,7 @@ fn build_drawing(
         |i| *i,
         move |index, _| {
             let i = index.get_untracked();
-            glory::ui::component(move |scope| {
+            glory::ui::widget(move |scope| {
                 glory::ui::text()
                     .class("sapid-plot-label")
                     .content(scope.bond(move || model.with(|m| m.scene.labels[i].text.clone())))
@@ -590,7 +590,7 @@ fn build_drawing(
         |i| *i,
         move |index, _| {
             let i = index.get_untracked();
-            glory::ui::component(move |scope| {
+            glory::ui::widget(move |scope| {
                 glory::ui::view()
                     .class("sapid-plot-range")
                     .role(Role::ProgressBar)
@@ -635,7 +635,7 @@ fn build_drawing(
         move |key, _| {
             let key = key.get_untracked();
             let state = state.clone();
-            glory::ui::component(move |scope| {
+            glory::ui::widget(move |scope| {
                 let style_key = key.clone();
                 let label_key = key.clone();
                 let selected = state.selection;
@@ -720,7 +720,7 @@ fn build_legend(scope: &Scope, state: &State, theme: crate::Theme, unstyled: boo
             let key = key.get_untracked();
             let state = state.clone();
             let theme = theme.clone();
-            glory::ui::component(move |scope| {
+            glory::ui::widget(move |scope| {
                 let label_key = key.clone();
                 let color_key = key.clone();
                 let toggle = key.clone();
@@ -796,7 +796,7 @@ fn build_tables(
                 let tables = glory::core::untracked(|| model.with(|m| m.tables.clone()));
                 let namespace = namespace.clone();
                 let theme = theme.clone();
-                glory::ui::component(move |scope| {
+                glory::ui::widget(move |scope| {
                     for (index, data) in tables.iter().enumerate() {
                         let mut header = crate::table_row("head");
                         for (i, label) in data.columns.iter().enumerate() {

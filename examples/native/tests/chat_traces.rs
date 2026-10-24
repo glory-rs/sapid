@@ -73,7 +73,7 @@ fn trace_tool_and_subagent_have_real_four_theme_geometry_focus_pixels_and_owner_
         let store = Rc::new(RefCell::new(None));
         let out = store.clone();
         let palette = theme.clone();
-        host.mount(component(move |scope| {
+        host.mount(widget(move |scope| {
             let (w, s) = fixture::form(scope, palette.clone(), false);
             *out.borrow_mut() = Some(s);
             w.show_in(scope)
@@ -167,7 +167,7 @@ fn stack_frames_use_literal_code_and_current_explicit_location_actions_with_no_n
         host.renderer().set_viewport(1000, 1700, 1.).unwrap();
         let out = Rc::new(RefCell::new(None));
         let saved = out.clone();
-        host.mount(component(move |scope| {
+        host.mount(widget(move |scope| {
             let (w, s) = fixture::form(scope, theme.clone(), true);
             *saved.borrow_mut() = Some(s);
             w.show_in(scope)

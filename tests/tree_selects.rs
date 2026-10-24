@@ -193,7 +193,7 @@ fn controlled_refusal_keeps_accepted_selection_and_open_while_emitting_proposals
     let app = App::memory();
     let out = Rc::new(RefCell::new(Vec::new()));
     let result = out.clone();
-    app.mount(component(move |scope| {
+    app.mount(widget(move |scope| {
         let value = scope.cage(TreeChoices::default());
         let open = scope.cage(true);
         tree_select("refusal")
@@ -233,7 +233,7 @@ fn data_and_paths_are_admitted_together_and_invalid_external_reparent_recovers()
     let app = App::memory();
     let source = Rc::new(RefCell::new(None));
     let holder = source.clone();
-    app.mount(component(move |scope| {
+    app.mount(widget(move |scope| {
         let nodes = scope.cage(nodes());
         let value = scope.cage(TreeChoices::new([model().path("a").unwrap()]).unwrap());
         holder.replace(Some((nodes, value)));

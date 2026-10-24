@@ -375,7 +375,7 @@ fn heading_validation_precedes_creation() {
 }
 
 #[test]
-fn removal_captures_and_references_retire_with_component_owner() {
+fn removal_captures_and_references_retire_with_widget_owner() {
     struct DropProbe(Rc<Cell<usize>>);
     impl Drop for DropProbe {
         fn drop(&mut self) {

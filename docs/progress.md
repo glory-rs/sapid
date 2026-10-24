@@ -44,7 +44,7 @@ the finite numeric/text contract, prepared rollback and passive placement rules.
 HTML's differential field oracle covers all progress fields and indeterminate
 resets. A native AccessKit test verifies real read-only progress role, numeric
 value/text and indeterminate omission without SetValue/Increment/Decrement/Click
-or Focus actions. The shared host fixture is `examples/web/progress_form.rs`;
+or Focus actions. The shared host fixture is `examples/web/src/progress_form.rs`;
 native acceptance checks geometry, rendered arc/track pixels and changing values
 across four themes. The SSR stream producer uses the explicit environment
 variable `GLORY_PROGRESS_STREAM_FIXTURE`. Chromium 148.0.7778.96 passed all eight

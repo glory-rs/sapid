@@ -10,7 +10,7 @@ are nonempty canonical single-line strings of at most 256 bytes.
 use glory::prelude::*;
 use sapid::{table_of_contents, toc_context, toc_document, toc_heading};
 
-let guide = component(|scope| {
+let guide = widget(|scope| {
     let context = toc_context(scope, "guide")?;
     (
         table_of_contents(context.clone(), "navigation"),
@@ -63,7 +63,7 @@ Evidence currently includes:
 - `tests/table_of_contents.rs`: nine component tests, including all 24 four-node
   reorder permutations, read-only controlled current, actual staged ancestry,
   live admission limits, bounded deferred queries and retirement of late replies.
-- `src/toc_model.rs`: three pure hierarchy/geometry tests.
+- `src/table_of_contents/model.rs`: three pure hierarchy/geometry tests.
 - `examples/native/tests/table_of_contents.rs`: four themes with real engine
   geometry, document scrolling, current updates, focus and engine identity,
   CPU pixels and cleanup. Native uses the application's host executor.

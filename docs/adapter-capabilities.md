@@ -1,6 +1,6 @@
 # Component and adapter evidence
 
-The current per-work-item source is the [explicit capability ledger](component-capabilities.md),
+The current per-work-item source is the [explicit capability ledger](widget-capabilities.md),
 generated with the [interactive gallery](../examples/web/gallery.html) from
 `docs/capability-matrix.json` and the canonical inventory. It distinguishes tested,
 model-only, rejected and pending states for all 149 work items. The family table

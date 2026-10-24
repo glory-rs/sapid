@@ -150,7 +150,7 @@ macro_rules! common_methods {
             self.common.unstyled = true;
             self
         }
-        /// Set user classes, appended to the component's own classes.
+        /// Set user classes, appended to the widget's own classes.
         pub fn class(mut self, value: impl Into<glory::Lotus<String>>) -> Self {
             self.common.class = value.into();
             self

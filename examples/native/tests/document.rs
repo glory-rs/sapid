@@ -1,4 +1,4 @@
-#[path = "../../web/document_form.rs"]
+#[path = "../../web/src/document_form.rs"]
 mod document_form;
 use glory::blitz::shell::WindowApp;
 use glory::render::{NodeId, Query, QueryValue};

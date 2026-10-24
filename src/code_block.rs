@@ -328,7 +328,7 @@ fn build(config: &mut Config, scope: &Scope) -> Result {
                 |value| value.0,
                 move |span, _| {
                     let theme = theme.clone();
-                    glory::ui::component(move |scope| {
+                    glory::ui::widget(move |scope| {
                         let theme = theme.clone();
                         glory::ui::text()
                             .kind(TextKind::Code)

@@ -3,11 +3,11 @@ use glory::prelude::*;
 use glory::render::{Event, NodeId, Props, Query, QueryValue};
 use std::{cell::RefCell, rc::Rc};
 
-#[path = "../../web/actions_form.rs"]
+#[path = "../../web/src/actions_form.rs"]
 mod actions_form;
-#[path = "../../web/display_form.rs"]
+#[path = "../../web/src/display_form.rs"]
 mod display_form;
-#[path = "../../web/document_form.rs"]
+#[path = "../../web/src/document_form.rs"]
 mod document_form;
 
 fn find(app: &App, class: &str) -> NodeId {

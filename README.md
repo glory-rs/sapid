@@ -6,7 +6,7 @@ does not install a browser runtime, stylesheet, font loader, or native engine.
 
 The frozen catalogue covers **268 upstream entries in 149 completed work items**.
 Each item records its finite implementation, tests and adapter boundaries in the
-[roadmap](docs/widgets-roadmap.md) and [capability ledger](docs/component-capabilities.md).
+[roadmap](docs/widgets-roadmap.md) and [capability ledger](docs/widget-capabilities.md).
 Completion does not imply every upstream feature or every platform is supported.
 
 Final commands, host boundaries and run evidence are collected in the
@@ -22,7 +22,7 @@ contracts.
 
 Default builds keep the core widget graph small. Optional features are explicit:
 
-| Feature | Components / scope |
+| Feature | Widgets / scope |
 |---|---|
 | `json` | Bounded JsonInput / JsonViewer and explicit JSON parsing |
 | `code` | CodeBlock / CodeHighlight |
@@ -37,7 +37,7 @@ that are unavailable return typed errors; browser composition tests do not imply
 OS IME or screen-reader acceptance.
 
 The [Sapid showcase](docs/showcase-site.md) provides a Mantine-inspired home page,
-149 component guides, live Rust examples, search, themes, source code and a
+149 widget guides, live Rust examples, search, themes, source code and a
 Button property playground. The page and its controls are built with Glory +
 Sapid; the HTML entry only boots WASM. Build and open it locally:
 
@@ -83,9 +83,9 @@ app.mount_with(|| {
 # Ok::<(), glory::ui::Error>(())
 ```
 
-## Components
+## Widgets
 
-| Component | Configuration |
+| Widget | Configuration |
 |---|---|
 | `button()` | `label`, `fill`, `variant(Primary/Secondary/Danger)`, `loading`, `on_press` |
 | `text_field()` | `value` / `default_value`, `purpose`, `multiline`, `on_value_change`, `on_commit` |
@@ -104,17 +104,17 @@ app.mount_with(|| {
 
 Further APIs and exact acceptance boundaries:
 
-- [Forms and requests](docs/form-components.md), [validation and serialization](docs/forms-state.md).
+- [Forms and requests](docs/form-widgets.md), [validation and serialization](docs/forms-state.md).
 - [TextField and Checkbox state, themes and evidence](docs/basic-controls.md).
 - [Mixed checks, switches, radios and segmented values](docs/choices-implementation.md), [toggle buttons](docs/toggles.md).
-- [Action buttons and connected groups](docs/action-components.md), [tags and surfaces](docs/display-components.md).
-- [Intrinsic document content](docs/document-components.md), [finite number formatting](docs/number-formatter.md).
-- [Layout boxes](docs/layout-components.md), [portable shadow and wrapping](docs/portable-shadow-wrap.md).
+- [Action buttons and connected groups](docs/action-widgets.md), [tags and surfaces](docs/display-widgets.md).
+- [Intrinsic document content](docs/document-widgets.md), [finite number formatting](docs/number-formatter.md).
+- [Layout boxes](docs/layout-widgets.md), [portable shadow and wrapping](docs/portable-shadow-wrap.md).
 - [Grid and ratio](docs/grid-layout.md), [typography](docs/typography.md), [links](docs/anchor.md).
 - [Timeline and separators](docs/timeline-separator.md), [Spoiler](docs/spoiler.md), [navigation](docs/navigation.md).
 - [Stepper](docs/stepper.md), [VisuallyHidden](docs/visually-hidden.md), [mounted collections](docs/collection-implementation.md).
 - [Button sections, sizes and loading](docs/button.md), [menus](docs/menu-implementation.md), [hints](docs/hints-implementation.md).
-- [Native selection](docs/native-select-implementation.md), [alerts, dialogs and skeletons](docs/feedback-components.md), [progress](docs/progress.md).
+- [Native selection](docs/native-select-implementation.md), [alerts, dialogs and skeletons](docs/feedback-widgets.md), [progress](docs/progress.md).
 - [Custom Select](docs/select-implementation.md), [Spinner and motion](docs/spinner.md), [NavigationProgress](docs/navigation-progress.md), [modal queues](docs/modals-manager.md).
 - [Indicators and icons](docs/indicators-icons.md), [Sidebar and AppShell](docs/sidebar-app-shell.md), [scrolling](docs/scroll-area.md), [Splitter](docs/splitter.md).
 - [Affix positioning](docs/affix.md).
@@ -131,7 +131,7 @@ Glory's associated native checkbox label. `name` explicitly overrides that name.
 - `value(...)` and `checked(...)` are controlled even when given literal values.
   User events propose changes through callbacks. They never implicitly write a
   supplied Cage. The external source decides the displayed value.
-- Omit those methods to use component-owned state. `default_value(...)` and
+- Omit those methods to use widget-owned state. `default_value(...)` and
   `default_checked(...)` initialize it once. A default does not override an
   explicitly controlled source, regardless of configuration order.
 - External source changes do not invoke user-change callbacks. Rejected native
@@ -146,13 +146,13 @@ Glory's associated native checkbox label. `name` explicitly overrides that name.
   `.on(...)` observers follow it. Repeated `.on` / `.on_press` observers append
   in registration order. Singular `on_value_change`, `on_commit`, and
   `on_checked_change` setters replace the previous typed callback. Remaining
-  observers are skipped if an earlier callback disposes the component Owner.
+  observers are skipped if an earlier callback disposes the widget Owner.
 - Disabled controls use Glory's native enabled semantics. Button `loading(true)`
   also disables activation; applications provide loading labels/status content.
 - User text follows Glory's canonicalization, revision and composition rules.
   Single-line newlines are rejected. Multiline values normalize CRLF/CR to LF;
   NUL becomes U+FFFD. Rendering does not silently rewrite the supplied source.
-- State, observers, bindings and event captures retire with the component Owner.
+- State, observers, bindings and event captures retire with the widget Owner.
   `node_ref` points to the semantic control and is cleared on retirement.
 
 ### Specialized inputs and composition
@@ -191,7 +191,7 @@ default dependency graph; `scripts/check.ps1 -Native` runs them with the engine.
 
 PasswordInput starts masked. Its named button toggles the existing input's
 purpose without changing text revisions. Visibility is independently controlled
-by `visible(...)`, or component-owned when omitted; external updates are silent.
+by `visible(...)`, or widget-owned when omitted; external updates are silent.
 `visibility_labels(show, hide)` provides nonempty localized action names. The
 input's `enabled`/Field disabled state also disables the visibility button.
 Read-only values may still be revealed. Input callbacks, names, classes, styles,
@@ -224,8 +224,8 @@ label container/text rather than drawing a replacement checkbox.
 or `sapid-checkbox` classes. `style(...)` overrides only explicitly supplied
 declarations, preserving other tokens. Dynamic removal restores token defaults.
 `unstyled()` removes theme declarations while preserving native semantics,
-component classes and explicit user styles. No raw CSS or JavaScript is injected
-by a component.
+widget classes and explicit user styles. No raw CSS or JavaScript is injected
+by a widget.
 
 Web applications can explicitly load `styles/sapid.css` for focus rings, hover,
 required indicators and native checkbox accents. It uses the same four theme
@@ -541,7 +541,7 @@ may refer forward or to absent nodes at the lower Glory layer; Sapid's stable
 panel shells avoid dangling controls. Snapshot IDs are independent of NodeId and
 canonical rekeying, and the existing HTML edit representation is retained.
 
-The completed inventory and per-component evidence are the current verification
+The completed inventory and per-widget evidence are the current verification
 record. `scripts/browser.cjs` registers 120 acceptance suites; registration is
 separate from a successful run, whose JSON records every completed suite,
 report and error. The check script runs the HTML patch differential oracle,
@@ -562,14 +562,14 @@ matrix mounts all three older galleries in four themes with CSR and SSR adoption
 Native probes
 exercise engine pointer/key handling and a valid AccessKit consumer tree.
 
-Local evidence lives under `D:/BuildCache/sapid`. Each component document links
+Local evidence lives under `D:/BuildCache/sapid`. Each widget document links
 its exact immutable snapshot, acceptance JSON, native logs and screenshots;
 `browser-results.json` records the final runner's current output. Earlier Field
 logs and gallery screenshots remain historical evidence. All native build output stays in the verified D-drive Glory
 target. The default normal dependency graph still contains only Glory's
 facade/core/render/style/ui packages.
 
-Motion support and reduced-motion boundaries are recorded per component; no
+Motion support and reduced-motion boundaries are recorded per widget; no
 universal animation behavior is inferred from catalogue completion. Browser
 protocol tests do not establish actual OS IME or screen-reader acceptance. The native tests use the
 Glory document/shell and AccessKit consumer without claiming displayed windows,

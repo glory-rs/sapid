@@ -85,7 +85,7 @@ constraints against real engine boxes. Sapid's four-theme native fixture verifie
 actual 196/298px spans within 400px, equal 128px cards, ratio height 100→200px and
 stable engine identities for the ratio box and sibling input.
 
-The browser fixture is `examples/web/grid_form.rs`, with its corresponding
+The browser fixture is `examples/web/src/grid_form.rs`, with its corresponding
 `grid-acceptance.js`. It verifies all four themes in CSR and hydration, actual
 computed grid/ratio layout, control value/caret and node identity, native AX
 control presence, a narrow viewport and teardown. Browser results must be

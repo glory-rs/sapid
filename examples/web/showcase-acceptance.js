@@ -24,16 +24,16 @@ async (hostPage) => {
     await shot(p, 'home-light');
     reports.push({suite:'showcase-rust-home',status:'passed'});
 
-    await go(p, 'showcase.html?component=P0-01');
+    await go(p, 'showcase.html?widget=P0-01');
     const routes = await p.locator('.site-nav-link').evaluateAll(elements => elements.map(e => ({href:e.getAttribute('href'),label:e.textContent.trim()})));
-    assert(routes.length === 149 && new Set(routes.map(r => new URL(r.href, base).searchParams.get('component'))).size === 149, '149 unique canonical navigation links');
+    assert(routes.length === 149 && new Set(routes.map(r => new URL(r.href, base).searchParams.get('widget'))).size === 149, '149 unique canonical navigation links');
     for (const route of routes) {
-      const id = new URL(route.href, base).searchParams.get('component');
+      const id = new URL(route.href, base).searchParams.get('widget');
       const anchor = p.locator(`.site-nav-link[href="${route.href}"]`);
       await anchor.click();
       await p.waitForFunction(() => window.ready === true);
       await p.locator('h1.site-title').waitFor();
-      assert(new URL(p.url()).searchParams.get('component') === id, `${id}: actual route navigation`);
+      assert(new URL(p.url()).searchParams.get('widget') === id, `${id}: actual route navigation`);
       assert(await p.locator('.site-demo .site-example').count() === 1, `${id}: real embedded Glory widget`);
       assert((await p.locator('.site-code').first().textContent()).trim().length > 30, `${id}: readable source`);
       assert(await p.locator('iframe').count() === 0, `${id}: no fixture iframe`);
@@ -41,12 +41,12 @@ async (hostPage) => {
       console.log(`showcase route ${reports.length - 1}/149 ${id} passed`);
     }
 
-    await go(p, 'showcase.html?component=P0-01');
-    const search = p.getByRole('textbox',{name:'Search components',exact:true});
+    await go(p, 'showcase.html?widget=P0-01');
+    const search = p.getByRole('textbox',{name:'Search widgets',exact:true});
     await search.fill('P0-02');
     await p.waitForFunction(() => document.querySelectorAll('.site-nav-link').length === 1);
     assert((await p.locator('.site-nav-link').getAttribute('href')).includes('P0-02'), 'search filters by canonical ID');
-    await search.fill('no-such-component-xyz');
+    await search.fill('no-such-widget-xyz');
     await p.locator('.site-nav-empty').first().waitFor();
     assert(await p.locator('.site-nav-link').count() === 0, 'empty search state');
     await search.fill('');
@@ -79,7 +79,7 @@ async (hostPage) => {
     const codeBody = snippet.locator('.site-code-body');
     const collapsedHeight = (await codeBody.boundingBox()).height;
     const completeSource = await codeBody.locator('.sapid-code-source').textContent();
-    assert(completeSource.includes('fn button_demo') && completeSource.includes('on_checked_change'), 'collapsed example keeps complete Rust source');
+    assert(completeSource.includes('pub fn demo(') && completeSource.includes('on_checked_change'), 'collapsed example keeps complete Rust source');
     assert(completeSource.includes('use glory::style::FlexWrap;'), 'copyable Button snippet includes the explicit layout import');
     await snippet.getByRole('button',{name:'Expand code',exact:true}).click();
     await snippet.getByRole('button',{name:'Collapse code',exact:true}).waitFor();
@@ -101,14 +101,14 @@ async (hostPage) => {
 
     await p.getByRole('link',{name:'Switch to dark theme',exact:true}).click();
     await p.locator('.sapid-site.site-dark').waitFor();
-    assert(new URL(p.url()).searchParams.get('component') === 'P0-01', 'theme reload retains route');
-    await go(p, 'showcase.html?component=P0-02&theme=green&scheme=dark');
+    assert(new URL(p.url()).searchParams.get('widget') === 'P0-01', 'theme reload retains route');
+    await go(p, 'showcase.html?widget=P0-02&theme=green&scheme=dark');
     await p.getByRole('textbox',{name:'Your name',exact:true}).fill('Sapid reader');
     await p.getByText('Hello, Sapid reader!',{exact:true}).waitFor();
     await shot(p, 'textfield-dark');
     reports.push({suite:'showcase-theme-and-controlled-text',status:'passed'});
 
-    await go(p, 'showcase.html?component=P0-03');
+    await go(p, 'showcase.html?widget=P0-03');
     const check = p.getByRole('checkbox',{name:'I agree to the terms and conditions',exact:true});
     await check.check(); assert(await check.isChecked(), 'real checkbox toggles');
     await p.getByText('Thank you for confirming.',{exact:true}).waitFor();
@@ -134,26 +134,26 @@ async (hostPage) => {
     const mobile = await browser.newContext({viewport:{width:360,height:800},hasTouch:true,isMobile:true});
     try {
       const m = await mobile.newPage(); setup(m);
-      await go(m, 'showcase.html?component=P0-01');
+      await go(m, 'showcase.html?widget=P0-01');
       await m.getByRole('button',{name:'Open navigation',exact:true}).tap();
       await m.getByRole('button',{name:'Close navigation',exact:true}).waitFor();
       assert(await m.locator('.sapid-site.menu-open .site-sidebar').isVisible(), 'mobile Rust menu opens');
       await shot(m, 'mobile-navigation');
-      await m.locator('.site-nav-link[href*="component=P0-02&"]').tap();
+      await m.locator('.site-nav-link[href*="widget=P0-02&"]').tap();
       await m.locator('h1.site-title').waitFor();
       await m.getByRole('button',{name:'Open navigation',exact:true}).waitFor();
-      assert(new URL(m.url()).searchParams.get('component') === 'P0-02', 'mobile chooses real docs route');
+      assert(new URL(m.url()).searchParams.get('widget') === 'P0-02', 'mobile chooses real docs route');
       assert(await m.evaluate(() => innerWidth === 360 && document.documentElement.clientWidth === 360 && document.body.scrollWidth <= 361), 'mobile document contains its content');
       assert(await m.locator('.site-doc-note').evaluateAll(notes => notes.length > 0 && notes.every(note => getComputedStyle(note).display === 'block' && note.getClientRects().length === 1)), 'mobile descriptions have contiguous readable block backgrounds');
       await shot(m, 'mobile-docs');
     } finally { await mobile.close(); }
     reports.push({suite:'showcase-mobile-navigation',status:'passed'});
 
-    await go(p, 'showcase.html?component=does-not-exist');
-    await p.getByRole('heading',{name:'Component not found',exact:true}).waitFor();
+    await go(p, 'showcase.html?widget=does-not-exist');
+    await p.getByRole('heading',{name:'Widget not found',exact:true}).waitFor();
     await p.getByRole('link',{name:'Sapid',exact:true}).click();
     await p.getByRole('main').waitFor();
-    assert(!new URL(p.url()).searchParams.get('component'), 'friendly 404 can return home');
+    assert(!new URL(p.url()).searchParams.get('widget'), 'friendly 404 can return home');
     reports.push({suite:'showcase-friendly-404',status:'passed'});
     return {reports,errors};
   } catch (error) {

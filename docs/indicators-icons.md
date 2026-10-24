@@ -36,7 +36,7 @@ themes, initial budgets, passive semantics, independent controls, controlled
 rejection/recovery, identity and unstyled overrides. `tests/theme_icon.rs` has
 three cases covering all four paths, three variants, four themes, names,
 decoration, updates and invalid source recovery. The shared host fixture is
-`examples/web/graphics_form.rs`; native geometry and engine widget installation
+`examples/web/src/graphics_form.rs`; native geometry and engine widget installation
 are checked by `examples/native/tests/graphics.rs` (four themes passed). Chromium
 148.0.7778.96 passed eight CSR/hydration cases and one classic-stream case; the
 actual report is `D:/BuildCache/sapid/graphics-browser.json`. Hydration screenshots

@@ -5,7 +5,7 @@ use std::{
     cell::{Cell, RefCell},
     rc::Rc,
 };
-#[path = "../examples/web/message_scroller_form.rs"]
+#[path = "../examples/web/src/message_scroller_form.rs"]
 mod fixture;
 
 #[test]

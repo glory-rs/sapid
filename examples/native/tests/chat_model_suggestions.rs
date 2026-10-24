@@ -2,7 +2,7 @@ use glory::blitz::{Raster, shell::WindowApp};
 use glory::render::{Action, Event, Navigation, NodeId, Props, Query, QueryValue};
 use glory::ui::App;
 use std::{cell::RefCell, rc::Rc};
-#[path = "../../web/model_suggestions_form.rs"]
+#[path = "../../web/src/model_suggestions_form.rs"]
 mod fixture;
 fn find(app: &App, predicate: impl Fn(glory::render::DescriptorView<'_>) -> bool) -> NodeId {
     let tree = app.tree();

@@ -151,7 +151,7 @@ fn local_sort_keeps_live_cell_owners_and_releases_them_on_page_retirement() {
             .render_cell("name", move |_, key, value| {
                 created.set(created.get() + 1);
                 let retired = retired.clone();
-                component(move |scope| {
+                widget(move |scope| {
                     let retired = retired.clone();
                     scope.on_cleanup(move || retired.set(retired.get() + 1))?;
                     glory::ui::input()

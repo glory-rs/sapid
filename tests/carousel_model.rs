@@ -1,4 +1,4 @@
-#[path = "../src/carousel_model.rs"]
+#[path = "../src/carousel/model.rs"]
 mod model;
 use glory::render::Direction;
 use model::*;

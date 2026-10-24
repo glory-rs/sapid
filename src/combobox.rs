@@ -949,7 +949,7 @@ impl Widget for Combobox {
                 move |key, _| {
                     let controller = controller.clone();
                     let theme = theme.clone();
-                    glory::ui::component(move |scope| {
+                    glory::ui::widget(move |scope| {
                         let key = key.get();
                         let label = controller
                             .config
@@ -1670,7 +1670,7 @@ mod tests {
         assert!(ComboboxFilter::None.matches("Canada", "anything"));
     }
     #[test]
-    fn callback_captures_drop_outside_graph_borrows_when_component_owner_retires() {
+    fn callback_captures_drop_outside_graph_borrows_when_widget_owner_retires() {
         struct Capture {
             source: Cage<usize>,
             released: Rc<std::cell::Cell<bool>>,

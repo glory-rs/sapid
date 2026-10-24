@@ -195,7 +195,7 @@ impl Widget for RollingNumber {
                     let index = index.get();
                     let paused = paused.clone();
                     let animated = animated.clone();
-                    glory::ui::component(move |scope| {
+                    glory::ui::widget(move |scope| {
                         let character = scope.bond(move || {
                             formatted.with(|value| value.chars().nth(index).unwrap_or(' '))
                         });
@@ -205,7 +205,7 @@ impl Widget for RollingNumber {
                         glory::ui::when(digit, move || {
                             let paused = paused.clone();
                             let animated = animated.clone();
-                            glory::ui::component(move |scope| {
+                            glory::ui::widget(move |scope| {
                                 let paused = paused.clone();
                                 let animated = animated.clone();
                                 let metadata = scope.bond(move || {
@@ -268,7 +268,7 @@ impl Widget for RollingNumber {
                             })
                         })
                         .otherwise(move || {
-                            glory::ui::component(move |scope| {
+                            glory::ui::widget(move |scope| {
                                 glory::ui::text()
                                     .class("sapid-rolling-number-literal")
                                     .content(scope.bond(move || character.get().to_string()))

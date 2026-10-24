@@ -22,7 +22,7 @@ can opt out of rotation; it cannot override a reduced-motion host preference.
 Theme, unstyled, custom class/style and node references follow the other passive
 components. Unstyled retains visible path content and essential geometry.
 
-`examples/web/spinner_form.rs` supplies named, decorative and unstyled examples
+`examples/web/src/spinner_form.rs` supplies named, decorative and unstyled examples
 with controlled animation and visibility. `tests/spinner.rs` has four tests for
 all four themes, all five sizes, initial budgets, SSR output, controlled invalid
 name recovery, retained identity and Owner cleanup. No frame observers or

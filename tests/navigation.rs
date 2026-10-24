@@ -398,7 +398,7 @@ fn nav_children_owner_policy_retires_on_unmount_and_keeps_mounted_state_explicit
                 .label("Docs")
                 .children(move || {
                     let out = out.clone();
-                    glory::ui::component(move |scope| {
+                    glory::ui::widget(move |scope| {
                         let out = out.clone();
                         scope.on_cleanup(move || out.set(out.get() + 1))?;
                         glory::ui::text().content("Child").show_in(scope)

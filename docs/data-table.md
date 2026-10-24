@@ -69,7 +69,7 @@ The default header controls and cells use blue/green light/dark theme tokens.
 
 Evidence:
 
-- `src/data_table_model.rs`: five pure tests for query stability, independent
+- `src/data_table/model.rs`: five pure tests for query stability, independent
   payload/key/shape budgets, authoritative pages and exact request echoes.
 - `tests/data_tables.rs`: six tests covering four-theme bounded SSR, same-tick
   controlled refusal, keyed custom editors, admission before factories,

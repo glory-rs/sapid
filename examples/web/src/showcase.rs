@@ -7,7 +7,7 @@ use crate::showcase_catalog::{ENTRIES, Entry, find};
 
 pub fn route(id: &str, theme: &Theme) -> String {
     format!(
-        "showcase.html?component={id}&theme={}&scheme={}",
+        "showcase.html?widget={id}&theme={}&scheme={}",
         if theme.hue == Hue::Green {
             "green"
         } else {
@@ -53,7 +53,7 @@ fn matching(entry: &Entry, query: &str) -> bool {
 }
 
 fn sidebar(query: Cage<String>, selected: &'static str, theme: Theme) -> impl Widget {
-    component(move |scope| {
+    widget(move |scope| {
         let groups = [
             "Layout",
             "Inputs",
@@ -71,7 +71,7 @@ fn sidebar(query: Cage<String>, selected: &'static str, theme: Theme) -> impl Wi
         ];
         let mut children: Vec<Box<dyn Widget>> = Vec::new();
         children.push(Box::new(
-            text().class("site-sidebar-heading").content("Components"),
+            text().class("site-sidebar-heading").content("Widgets"),
         ));
         for category in groups {
             let shown = scope.bond(move || {
@@ -82,7 +82,7 @@ fn sidebar(query: Cage<String>, selected: &'static str, theme: Theme) -> impl Wi
             let theme = theme.clone();
             children.push(Box::new(when(shown, move || {
                 let theme = theme.clone();
-                component(move |scope| {
+                widget(move |scope| {
                     let items = scope.bond(move || {
                         ENTRIES
                             .iter()
@@ -131,11 +131,11 @@ fn sidebar(query: Cage<String>, selected: &'static str, theme: Theme) -> impl Wi
         children.push(Box::new(when(none, || {
             text()
                 .class("site-nav-empty")
-                .content("No components found. Try another search.")
+                .content("No widgets found. Try another search.")
         })));
         view()
             .role(Role::Navigation)
-            .name("Component navigation")
+            .name("Widget navigation")
             .class("site-sidebar")
             .fill(children)
             .show_in(scope)
@@ -143,7 +143,7 @@ fn sidebar(query: Cage<String>, selected: &'static str, theme: Theme) -> impl Wi
 }
 
 fn search_results(query: Cage<String>, theme: Theme) -> impl Widget {
-    component(move |scope| {
+    widget(move |scope| {
         let theme = theme.clone();
         let items = scope.bond(move || {
             ENTRIES
@@ -174,7 +174,7 @@ fn search_results(query: Cage<String>, theme: Theme) -> impl Widget {
                 when(none, || {
                     text()
                         .class("site-nav-empty")
-                        .content("No matching components")
+                        .content("No matching widgets")
                 }),
             ))
             .show_in(scope)
@@ -198,7 +198,7 @@ fn header(
     } else {
         "Switch to dark theme"
     };
-    component(move |scope| {
+    widget(move |scope| {
         let has_query = scope.bond(move || !query.get().trim().is_empty());
         let is_empty = scope.bond(move || query.get().is_empty());
         let menu_name = scope.bond(move || {
@@ -223,7 +223,7 @@ fn header(
                         .name("Primary navigation")
                         .class("site-topnav")
                         .fill((
-                            link("Components", route("P0-01", &theme), "site-topnav-link"),
+                            link("Widgets", route("P0-01", &theme), "site-topnav-link"),
                             link(
                                 "Get started",
                                 format!("{}#get-started", route("", &theme)),
@@ -241,11 +241,11 @@ fn header(
                             when(is_empty, || {
                                 text()
                                     .class("site-search-placeholder")
-                                    .content("Search components…")
+                                    .content("Search widgets…")
                             }),
                             sapid::text_field()
                                 .theme(theme.clone())
-                                .name("Search components")
+                                .name("Search widgets")
                                 .value(query)
                                 .on_value_change(move |value| {
                                     query.revise(|current| {
@@ -294,7 +294,7 @@ fn subnav(theme: &Theme) -> impl Widget {
                 "site-subnav-link",
             ),
             link(
-                "Components",
+                "Widgets",
                 route("P0-01", theme),
                 "site-subnav-link is-active",
             ),
@@ -305,7 +305,7 @@ fn subnav(theme: &Theme) -> impl Widget {
 }
 
 fn source(entry: &'static Entry, theme: Theme, full: bool) -> impl Widget {
-    component(move |scope| {
+    widget(move |scope| {
         let expanded = scope.cage(full);
         let class = scope.bond(move || {
             if expanded.get() {
@@ -353,16 +353,16 @@ fn source(entry: &'static Entry, theme: Theme, full: bool) -> impl Widget {
 fn support(entry: &'static Entry, theme: &Theme) -> impl Widget {
     view().class("site-support").fill((
         section_title("support", "Host support"),
-        text().class("site-doc-note").content("Choose the host that fits your application. Availability is recorded for each component and its supported variants."),
+        text().class("site-doc-note").content("Choose the host that fits your application. Availability is recorded for each widget and its supported variants."),
         view().class("site-support-row").fill((text().content("Web"), text().content(entry.web))),
         view().class("site-support-row").fill((text().content("Native"), text().content(entry.native))),
         text().class("site-doc-note").content(entry.native_note),
-        link("Browse all components →", route("P0-01", theme), "site-inline-link"),
+        link("Browse all widgets →", route("P0-01", theme), "site-inline-link"),
     ))
 }
 
 fn documentation(entry: &'static Entry, theme: Theme, tab: Cage<u8>) -> impl Widget {
-    component(move |scope| {
+    widget(move |scope| {
         let mut tabs = Vec::new();
         for (index, label) in [(0, "Documentation"), (1, "Source"), (2, "Capabilities")] {
             let class = scope.bond(move || {
@@ -387,7 +387,7 @@ fn documentation(entry: &'static Entry, theme: Theme, tab: Cage<u8>) -> impl Wid
         let code_theme = theme.clone();
         let caps_theme = theme.clone();
         view().role(Role::Main).class("site-doc-main").fill((
-            text().class("site-breadcrumb").content(format!("Components  /  {}", entry.group)),
+            text().class("site-breadcrumb").content(format!("Widgets  /  {}", entry.group)),
             text().kind(TextKind::Heading(1)).class("site-title").content(label(entry)),
             text().class("site-lead").content(entry.description),
             view().class("site-doc-meta").fill((
@@ -402,9 +402,9 @@ fn documentation(entry: &'static Entry, theme: Theme, tab: Cage<u8>) -> impl Wid
                     view().class("site-preview").fill(view().class("site-demo").fill(crate::showcase_examples::demo(entry.id, demo_theme.clone()))),
                     view().semantics(Some(Box::new(Semantics { id: Some(SemanticId::new("example-source").expect("static id")), ..Default::default() }))).fill(source(entry, demo_theme.clone(), false)),
                     section_title("composition", "Compose your interface"),
-                    text().class("site-doc-note").content("Use Cage, Bond and Lotus for reactive values. Compose these builders with other Sapid components and keep application data in your own model."),
+                    text().class("site-doc-note").content("Use Cage, Bond and Lotus for reactive values. Compose these builders with other Sapid widgets and keep application data in your own model."),
                     view().class("site-demo-extra").fill(
-                        sapid::code_highlight().theme(demo_theme.clone()).language(sapid::CodeLanguage::Rust).source("use glory::prelude::*;\nuse sapid::*;\n\n// Components are ordinary Rust builders.\n// Your application chooses Web, SSR or a native host."),
+                        sapid::code_highlight().theme(demo_theme.clone()).language(sapid::CodeLanguage::Rust).source("use glory::prelude::*;\nuse sapid::*;\n\n// Widgets are ordinary Rust builders.\n// Your application chooses Web, SSR or a native host."),
                     ),
                     support(entry, &demo_theme),
                 ))
@@ -420,7 +420,7 @@ fn documentation(entry: &'static Entry, theme: Theme, tab: Cage<u8>) -> impl Wid
 }
 
 pub fn site(theme: Theme, selection: String) -> impl Widget {
-    component(move |scope| {
+    widget(move |scope| {
         let query = scope.cage(String::new());
         let menu = scope.cage(false);
         let tab = scope.cage(0u8);
@@ -462,13 +462,9 @@ pub fn site(theme: Theme, selection: String) -> impl Widget {
                 view().role(Role::Main).class("site-not-found").fill((
                     text()
                         .kind(TextKind::Heading(1))
-                        .content("Component not found"),
-                    text().content("Explore the component catalogue to find what you need."),
-                    link(
-                        "Browse components",
-                        route("P0-01", &theme),
-                        "site-inline-link",
-                    ),
+                        .content("Widget not found"),
+                    text().content("Explore the widget catalogue to find what you need."),
+                    link("Browse widgets", route("P0-01", &theme), "site-inline-link"),
                 )),
             )
         };
@@ -490,7 +486,7 @@ pub fn site(theme: Theme, selection: String) -> impl Widget {
                             .name("Mobile navigation")
                             .class("site-mobile-nav")
                             .fill((
-                                link("Components", route("P0-01", &theme), "site-nav-link"),
+                                link("Widgets", route("P0-01", &theme), "site-nav-link"),
                                 link(
                                     "Get started",
                                     format!("{}#get-started", route("", &theme)),

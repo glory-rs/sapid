@@ -237,7 +237,7 @@ fn content_policy_keeps_state_or_retires_owners_explicitly() {
         let make = move || {
             let a = a.clone();
             let b = b.clone();
-            glory::ui::component(move |scope| {
+            glory::ui::widget(move |scope| {
                 a.set(a.get() + 1);
                 let b = b.clone();
                 scope.on_cleanup(move || b.set(b.get() + 1))?;

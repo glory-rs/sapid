@@ -4,7 +4,7 @@ use glory::render::{
     Action, DocumentPart, NodeId, Props, Query, QueryValue, Rect, TableMetadata,
 };
 use std::{cell::RefCell, rc::Rc};
-#[path = "../../web/table_form.rs"]
+#[path = "../../web/src/table_form.rs"]
 mod fixture;
 fn query(app: &App, q: Query) -> QueryValue {
     let out = Rc::new(RefCell::new(None));

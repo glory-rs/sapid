@@ -207,7 +207,7 @@ fn theme_unstyled_and_explicit_alpha_keep_geometry_and_spinner_foreground_indepe
     );
 }
 #[test]
-fn invalid_initial_budget_and_runtime_names_or_position_retain_the_last_valid_component() {
+fn invalid_initial_budget_and_runtime_names_or_position_retain_the_last_valid_widget() {
     for widget in [
         loading_overlay(true).opacity(f64::NAN),
         loading_overlay(true).opacity(-0.1),

@@ -465,7 +465,7 @@ impl ScrollArea {
                 size: self.common.size,
                 unstyled: self.common.unstyled,
             };
-            content = content.fill(glory::ui::component(move |scope| {
+            content = content.fill(glory::ui::widget(move |scope| {
                 factory(context.clone()).show_in(scope)
             }));
         }

@@ -389,9 +389,7 @@ impl Widget for Lightbox {
             .content(move || {
                 let state = state_content.clone();
                 let theme = theme.clone();
-                glory::ui::component(move |scope| {
-                    build_content(scope, &state, &theme, unstyled)
-                })
+                glory::ui::widget(move |scope| build_content(scope, &state, &theme, unstyled))
             });
         if let Some(trigger) = self.trigger {
             dialog = dialog.trigger_ref(trigger);
@@ -458,7 +456,7 @@ fn build_content(scope: &Scope, state: &State, theme: &crate::Theme, unstyled: b
     let theme_image = theme.clone();
     glory::ui::when(exists, move || {
         let theme = theme_image.clone();
-        glory::ui::component(move |scope| {
+        glory::ui::widget(move |scope| {
             let status = scope.cage("Loading image".to_owned());
             let previous = std::cell::RefCell::new(None);
             scope.structural(move || {

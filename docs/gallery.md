@@ -13,7 +13,7 @@ documented scope; canonical completion alone never establishes host support.
 Edit `docs/capability-matrix.json` to change a task's explicit state, limitation
 or preview page. `python scripts/capability-gallery.py` checks exact canonical ID
 coverage, valid references and declared preview files, then generates the page
-and `docs/component-capabilities.md`. Run its `--check` form after inventory or
+and `docs/widget-capabilities.md`. Run its `--check` form after inventory or
 ledger updates. An absent fixture is a supported documentation state, rather
 than an invented live implementation.
 

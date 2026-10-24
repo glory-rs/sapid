@@ -1,7 +1,7 @@
 use glory::render::{FocusScopeConfig, SemanticId};
 use glory::ui::App;
 use sapid::focus_scope;
-#[path = "../examples/web/focus_scope_form.rs"]
+#[path = "../examples/web/src/focus_scope_form.rs"]
 mod fixture;
 
 #[test]

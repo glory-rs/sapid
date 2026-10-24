@@ -8,10 +8,10 @@ use std::{
     cell::{Cell, RefCell},
     rc::Rc,
 };
-#[path = "../examples/web/tasks_form.rs"]
+#[path = "../examples/web/src/tasks_form.rs"]
 mod fixture;
 #[test]
-fn task_fixture_builds_all_three_components_in_four_themes_and_unstyled_has_no_theme_fill() {
+fn task_fixture_builds_all_three_widgets_in_four_themes_and_unstyled_has_no_theme_fill() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),

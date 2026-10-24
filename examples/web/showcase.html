@@ -8,7 +8,7 @@
   <meta name="sapid-showcase-selection" content="">
   <meta name="sapid-showcase-hue" content="blue">
   <meta name="sapid-showcase-scheme" content="light">
-  <title>Sapid — Rust components for Glory</title>
+  <title>Sapid — Rust widgets for Glory</title>
   <link rel="icon" href="data:,">
   <!--BASE_CSS-->
   <link rel="stylesheet" href="sapid.css">
@@ -17,17 +17,11 @@
 <body>
   <div id="app"></div>
   <script type="module">
-    import init, { mount_showcase } from './sapid_web_example.js';
+    import init, { start_showcase, mount_showcase } from './sapid_web_example.js';
     await init();
-    const meta = name => document.querySelector(`meta[name="sapid-showcase-${name}"]`).content;
-    const query = new URLSearchParams(location.search);
     window.showcase = { mount: mount_showcase };
-    if (query.has('manual')) window.moduleReady = true;
-    else {
-      const hydrate = meta('render') === 'ssr';
-      mount_showcase(hydrate, hydrate ? meta('selection') : query.get('component') ?? '', hydrate ? meta('hue') : query.get('theme') ?? 'blue', hydrate ? meta('scheme') : query.get('scheme') ?? 'light');
-      window.ready = true;
-    }
+    if (start_showcase()) window.ready = true;
+    else window.moduleReady = true;
   </script>
 </body>
 </html>

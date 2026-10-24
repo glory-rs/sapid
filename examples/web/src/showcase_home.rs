@@ -1,6 +1,6 @@
 //! The landing page is made from the same live widgets as the documentation.
 use glory::render::{Role, SemanticId, Semantics};
-use glory::ui::{Widget, component, view};
+use glory::ui::{Widget, view, widget};
 use sapid::{ButtonVariant, Size, Theme};
 
 fn copy(class: &str, content: impl Into<glory::Lotus<String>>) -> impl Widget {
@@ -26,7 +26,7 @@ fn destination(theme: &Theme, id: &str) -> String {
         sapid::ColorScheme::Light => "light",
         sapid::ColorScheme::Dark => "dark",
     };
-    format!("showcase.html?component={id}&theme={hue}&scheme={scheme}")
+    format!("showcase.html?widget={id}&theme={hue}&scheme={scheme}")
 }
 
 fn link(theme: &Theme, id: &str, label: &str, class: &str) -> impl Widget {
@@ -38,7 +38,7 @@ fn link(theme: &Theme, id: &str, label: &str, class: &str) -> impl Widget {
 }
 
 fn mosaic(theme: Theme) -> impl Widget {
-    component(move |scope| {
+    widget(move |scope| {
         let saved = scope.cage(false);
         let save_label = saved.map(|saved| {
             if *saved {
@@ -106,7 +106,7 @@ fn mosaic(theme: Theme) -> impl Widget {
                         )),
                     view()
                         .class("site-mosaic-caption")
-                        .fill(copy("", "Real components. Go ahead, try them.")),
+                        .fill(copy("", "Real widgets. Go ahead, try them.")),
                 )),
                 view().class("site-mosaic-column site-mosaic-right").fill((
                     sapid::card()
@@ -193,7 +193,7 @@ fn category(
 }
 
 fn playground(theme: Theme) -> impl Widget {
-    component(move |scope| {
+    widget(move |scope| {
         let count = scope.cage(0_u32);
         let caption = count.map(|count| format!("Clicked {count} times"));
         let notifications = scope.cage(true);
@@ -203,7 +203,7 @@ fn playground(theme: Theme) -> impl Widget {
             sapid::card().unstyled().class("site-playground-card").fill((
                 copy("site-eyebrow", "FEELS LIKE YOUR APP"),
                 heading(3, "site-playground-title", "Small interactions. Thoughtfully built."),
-                copy("site-playground-description", "Click, type, and make a choice. These are the same components you will use in your application."),
+                copy("site-playground-description", "Click, type, and make a choice. These are the same widgets you will use in your application."),
                 view().class("site-button-demo").fill((
                     sapid::button().theme(theme.clone()).label("Give it a click").on_press(move || count.revise(|count| *count += 1)),
                     sapid::button().theme(theme.clone()).variant(ButtonVariant::Secondary).label("Reset").on_press(move || count.revise(|count| *count = 0)),
@@ -242,12 +242,12 @@ pub fn home(theme: Theme) -> impl Widget {
             view().class("site-hero-copy").fill((
                 copy("site-hero-eyebrow", "SAPID · BUILT WITH GLORY"),
                 heading(1, "site-hero-title", "Build beautiful\nRust applications."),
-                copy("site-hero-lead", format!("A thoughtfully crafted component library for your next idea. {count} component guides, expressive themes, and the freedom of handwritten Rust.")),
+                copy("site-hero-lead", format!("A thoughtfully crafted widget library for your next idea. {count} widget guides, expressive themes, and the freedom of handwritten Rust.")),
                 view().class("site-hero-actions").fill((
                     link(&theme, "P0-01", "Get started  →", "site-button site-button-primary"),
-                    sapid::anchor().unstyled().href("#components").label("Explore components").class("site-button site-button-secondary"),
+                    sapid::anchor().unstyled().href("#widgets").label("Explore widgets").class("site-button site-button-secondary"),
                 )),
-                view().class("site-hero-facts").fill((copy("", format!("{count} component guides")), copy("site-fact-dot", "·"), copy("", "Light & dark themes"), copy("site-fact-dot", "·"), copy("", "Pure Rust"))),
+                view().class("site-hero-facts").fill((copy("", format!("{count} widget guides")), copy("site-fact-dot", "·"), copy("", "Light & dark themes"), copy("site-fact-dot", "·"), copy("", "Pure Rust"))),
             )),
             mosaic(theme.clone()),
         )),
@@ -256,11 +256,11 @@ pub fn home(theme: Theme) -> impl Widget {
             view().fill((copy("site-principle-symbol", "◐"), copy("site-principle-title", "A theme that fits"), copy("site-principle-copy", "Consistent tokens, thoughtful defaults, and room for your style."))),
             view().fill((copy("site-principle-symbol", "↹"), copy("site-principle-title", "Details included"), copy("site-principle-copy", "Real controls, keyboard behavior, and accessible semantics."))),
         )),
-        view().class("site-home-container site-component-section").semantics(Some(Box::new(Semantics { id: Some(SemanticId::new("components").expect("static semantic id")), ..Default::default() }))).fill((
+        view().class("site-home-container site-widget-section").semantics(Some(Box::new(Semantics { id: Some(SemanticId::new("widgets").expect("static semantic id")), ..Default::default() }))).fill((
             view().class("site-section-heading").fill((
                 copy("site-eyebrow", "FROM THE FIRST BUTTON TO THE FINAL DETAIL"),
                 heading(2, "site-home-section-title", "Everything you need to build your next idea."),
-                copy("site-section-description", format!("Explore {count} component guides across {groups} categories. Each page includes a live example, Rust source, and a clear description of supported behavior.")),
+                copy("site-section-description", format!("Explore {count} widget guides across {groups} categories. Each page includes a live example, Rust source, and a clear description of supported behavior.")),
             )),
             view().class("site-category-grid").fill((
                 category(&theme, "Inputs", "P0-02", "Aa", "site-category-blue", "From a simple text field to considered, complete forms."),

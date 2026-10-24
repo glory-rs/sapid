@@ -61,7 +61,7 @@ in native; the separate Dialog/Popover native layer driver is implemented.
 Shell/Patch/End, originally verified with HTML v5/classic v2 on Web20. Current
 producers follow HTML v13/classic v2, without a pre-WASM input driver.
 
-The Web fixture is `examples/web/command_form.rs` and its independent suite is
+The Web fixture is `examples/web/src/command_form.rs` and its independent suite is
 `examples/web/command-acceptance.js`. Its original fourteen groups pass on
 Chromium 148 against the fixed root Web20 snapshot, with no recorded errors:
 `D:/BuildCache/sapid/command-browser-root20.json`. This includes eight theme and

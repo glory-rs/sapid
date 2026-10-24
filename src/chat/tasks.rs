@@ -236,7 +236,7 @@ impl Widget for Task {
             scope.bond(move || accepted.with(|t| t.progress.is_some())),
             move || {
                 let theme = palette.clone();
-                glory::ui::component(move |scope| {
+                glory::ui::widget(move |scope| {
                     let mut progress =
                         crate::progress(scope.bond(move || {
                             accepted.with(|t| f64::from(t.progress.unwrap_or(0)))
@@ -259,7 +259,7 @@ impl Widget for Task {
                 let theme = palette.clone();
                 let callback = callback.clone();
                 let enabled = enabled.clone();
-                glory::ui::component(move |scope| {
+                glory::ui::widget(move |scope| {
                     let enabled = enabled.clone();
                     let callback = callback.clone();
                     let mut button = crate::button()
@@ -400,7 +400,7 @@ impl Widget for Plan {
             scope.bond(move || accepted.with(|p| !p.tasks.is_empty())),
             move || {
                 let theme = palette.clone();
-                glory::ui::component(move |scope| {
+                glory::ui::widget(move |scope| {
                     let mut progress = crate::progress(scope.bond(move || {
                         accepted
                             .with(|p| p.processed() as f64 / p.tasks.len().max(1) as f64 * 100.)
@@ -438,7 +438,7 @@ impl Widget for Plan {
                         let callback = callback.clone();
                         let enabled = enabled.clone();
                         let namespace = namespace.clone();
-                        glory::ui::component(move |scope| {
+                        glory::ui::widget(move |scope| {
                             let lookup = key.clone();
                             let initial = glory::core::untracked(|| {
                                 accepted

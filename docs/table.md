@@ -59,7 +59,7 @@ inside cells retain their native behavior.
 
 Evidence:
 
-- `src/table_model.rs`: three grid/span/budget tests.
+- `src/table/model.rs`: three grid/span/budget tests.
 - `tests/tables.rs`: four component tests for four-theme SSR, associations,
   sentinel admission before factories, live text/editor identity and cleanup.
 - `../glory/crates/render/tests/table.rs`: four independent target/coordinate/

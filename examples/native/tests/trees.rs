@@ -2,7 +2,7 @@ use glory::blitz::{Raster, shell::WindowApp};
 use glory::prelude::*;
 use glory::render::{Action, Event, NodeId, Query, QueryValue, Rect, Role, TreeCommand};
 use std::{cell::RefCell, rc::Rc};
-#[path = "../../web/tree_form.rs"]
+#[path = "../../web/src/tree_form.rs"]
 mod fixture;
 fn all(app: &App) -> Vec<NodeId> {
     let tree = app.tree();

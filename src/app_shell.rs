@@ -616,7 +616,7 @@ impl Sidebar {
                 size: self.common.size,
                 unstyled: self.common.unstyled,
             };
-            nav = nav.fill(glory::ui::component(move |scope| {
+            nav = nav.fill(glory::ui::widget(move |scope| {
                 factory(context.clone()).show_in(scope)
             }));
         }
@@ -921,7 +921,7 @@ impl Widget for AppShell {
             }
             if let Some(mut factory) = self.header.take() {
                 let context = context.clone();
-                header = header.fill(glory::ui::component(move |scope| {
+                header = header.fill(glory::ui::widget(move |scope| {
                     factory(context.clone()).show_in(scope)
                 }));
             }
@@ -960,7 +960,7 @@ impl Widget for AppShell {
             });
         if let Some(mut factory) = self.main.take() {
             let context = context.clone();
-            main = main.fill(glory::ui::component(move |scope| {
+            main = main.fill(glory::ui::widget(move |scope| {
                 factory(context.clone()).show_in(scope)
             }));
         }
@@ -970,7 +970,7 @@ impl Widget for AppShell {
             let mut footer = glory::ui::view()
                 .role(Role::ContentInfo)
                 .class("sapid-shell-footer")
-                .fill(glory::ui::component(move |scope| {
+                .fill(glory::ui::widget(move |scope| {
                     factory(context.clone()).show_in(scope)
                 }));
             if !self.common.unstyled {

@@ -1,10 +1,10 @@
-#[path = "../examples/web/actions_form.rs"]
+#[path = "../examples/web/src/actions_form.rs"]
 mod actions_form;
-#[path = "../examples/web/display_form.rs"]
+#[path = "../examples/web/src/display_form.rs"]
 mod display_form;
-#[path = "../examples/web/document_form.rs"]
+#[path = "../examples/web/src/document_form.rs"]
 mod document_form;
-#[path = "../examples/web/timeline_form.rs"]
+#[path = "../examples/web/src/timeline_form.rs"]
 mod timeline_form;
 
 use sapid::Theme;
@@ -29,7 +29,7 @@ fn shared_display_and_action_fixtures_build_for_every_theme() {
                 && timeline.contains("Current")
                 && timeline.contains("Upcoming")
         );
-        assert!(display.contains("Display components"));
+        assert!(display.contains("Display widgets"));
         assert!(display.contains("aria-label=\"Remove local tag\""));
         assert!(display.contains("Controlled tag"));
         let actions = glory::ssr::render(actions_form::actions_form(theme)).unwrap();

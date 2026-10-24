@@ -496,7 +496,7 @@ impl Widget for Overlay {
             trigger = trigger
                 .name(self.label.clone())
                 .label("")
-                .fill(glory::ui::component(move |scope| factory().show_in(scope)));
+                .fill(glory::ui::widget(move |scope| factory().show_in(scope)));
         }
         if !self.common.unstyled {
             trigger = trigger.style(self.common.theme.control(self.common.size));
@@ -688,7 +688,7 @@ impl Widget for Overlay {
         let mut close_content = self.close_content.take();
         let content_open = source;
         let weak = scope.downgrade();
-        panel = panel.fill(glory::ui::component(move |scope| {
+        panel = panel.fill(glory::ui::widget(move |scope| {
             if let (Some(accepted), Some(handler)) = (sheet, sheet_handler.clone()) {
                 crate::sheet::controls(
                     scope,
@@ -757,7 +757,7 @@ impl Widget for Overlay {
                     cancel_button = cancel_button
                         .name(close_label.clone())
                         .label("")
-                        .fill(glory::ui::component(move |scope| factory().show_in(scope)));
+                        .fill(glory::ui::widget(move |scope| factory().show_in(scope)));
                 }
                 cancel_button.show_in(scope)?;
             }

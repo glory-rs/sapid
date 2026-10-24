@@ -4,7 +4,7 @@ use std::{
     collections::HashMap,
     rc::Rc,
 };
-#[path = "../examples/web/accordion_form.rs"]
+#[path = "../examples/web/src/accordion_form.rs"]
 mod fixture;
 
 fn nodes(app: &App, class: &str) -> Vec<glory::render::NodeId> {

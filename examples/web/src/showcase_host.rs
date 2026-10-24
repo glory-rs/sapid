@@ -9,6 +9,40 @@ mod browser {
     fn js(error: impl std::fmt::Display) -> JsValue {
         error.to_string().into()
     }
+    /// Read host inputs in Rust. JavaScript only initializes the WASM module.
+    #[wasm_bindgen]
+    pub fn start_showcase() -> Result<bool, JsValue> {
+        let window = web_sys::window().ok_or_else(|| js("missing window"))?;
+        let document = window.document().ok_or_else(|| js("missing document"))?;
+        let query = web_sys::UrlSearchParams::new_with_str(&window.location().search()?)?;
+        if query.has("manual") {
+            return Ok(false);
+        }
+        let meta = |key: &str| -> Result<String, JsValue> {
+            document
+                .query_selector(&format!("meta[name=\"sapid-showcase-{key}\"]"))?
+                .and_then(|element| element.get_attribute("content"))
+                .ok_or_else(|| js(format!("missing showcase input: {key}")))
+        };
+        let hydrate = meta("render")? == "ssr";
+        let selection = if hydrate {
+            meta("selection")?
+        } else {
+            query.get("widget").unwrap_or_default()
+        };
+        let hue = if hydrate {
+            meta("hue")?
+        } else {
+            query.get("theme").unwrap_or_else(|| "blue".into())
+        };
+        let scheme = if hydrate {
+            meta("scheme")?
+        } else {
+            query.get("scheme").unwrap_or_else(|| "light".into())
+        };
+        mount_showcase(hydrate, selection, hue, scheme)?;
+        Ok(true)
+    }
     /// Route, theme and hydration are initial application inputs. Navigation,
     /// search, menus, controls and code views are built by Glory/Sapid in Rust.
     #[wasm_bindgen]

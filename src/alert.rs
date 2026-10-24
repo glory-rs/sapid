@@ -214,7 +214,7 @@ impl Widget for Alert {
         let size = self.common.size;
         let unstyled = self.common.unstyled;
         // All child captures belong to the caller's mounting Owner.
-        root.fill(glory::ui::component(move |scope| {
+        root.fill(glory::ui::widget(move |scope| {
             if let Some(title) = title {
                 glory::ui::text()
                     .class("sapid-alert-title")

@@ -224,7 +224,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
         text().kind(TextKind::Heading(2)).class("standalone-heading").semantics(Some(Box::new(Semantics { id: Some(SemanticId::new("parts").unwrap()), ..Default::default() }))).content("Composable label parts"),
         text().class("section-copy").content("Label, Description and Error are also available as standalone builders, using stable semantic IDs."),
         view().class("preview-card").fill(view().class("preview-body").fill(standalone)),
-        col().fill((text().kind(TextKind::Heading(2)).semantics(Some(Box::new(Semantics { id: Some(SemanticId::new("input-components").unwrap()), ..Default::default() }))).content("Textarea, password and input groups"),
+        col().fill((text().kind(TextKind::Heading(2)).semantics(Some(Box::new(Semantics { id: Some(SemanticId::new("input-widgets").unwrap()), ..Default::default() }))).content("Textarea, password and input groups"),
         text().class("section-copy").content("Intrinsic multiline sizing, a named password visibility action, and prefixes with independent keyboard actions."),
         view().class("preview-card").fill(view().class("preview-body").fill(advanced)))),
     ));

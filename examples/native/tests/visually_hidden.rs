@@ -2,7 +2,7 @@ use glory::blitz::shell::WindowApp;
 use glory::prelude::*;
 use glory::render::{NodeId, Query, QueryValue};
 use std::{cell::RefCell, rc::Rc};
-#[path = "../../web/visually_hidden_form.rs"]
+#[path = "../../web/src/visually_hidden_form.rs"]
 mod fixture;
 fn find(app: &App, class: &str) -> NodeId {
     let tree = app.tree();

@@ -2,7 +2,7 @@
 use glory::render::{NodeId, Props, SemanticId};
 use glory::ui::App;
 use sapid::{MessageData, MessageGroup, MessageQuote, MessageStatus, message};
-#[path = "../examples/web/messages_form.rs"]
+#[path = "../examples/web/src/messages_form.rs"]
 mod fixture;
 
 fn nodes(app: &App) -> Vec<NodeId> {

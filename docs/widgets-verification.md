@@ -3,7 +3,7 @@
 日期：2026-10-25。冻结目录的 268 个来源条目已归并为 149 项工作，
 当前 149 项均已实现并记录逐项证据，覆盖 14 个阶段。
 [路线图](widgets-roadmap.md)、[canonical inventory](widget-inventory.json)、
-[逐项能力账本](component-capabilities.md)和 [gallery](../examples/web/gallery.html)保持同步。
+[逐项能力账本](widget-capabilities.md)和 [gallery](../examples/web/gallery.html)保持同步。
 完成范围是各项明确的有限契约；可选模块、宿主拒绝与未验收平台分别记录。
 
 后续新增的 Mantine 风格 Glory + Sapid 展示站、149 个文档路由及独立构建/验收证据，

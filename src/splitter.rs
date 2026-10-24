@@ -586,7 +586,7 @@ impl Widget for Splitter {
                 pane = pane.node_ref(reference);
             }
             if let Some(mut factory) = factory {
-                pane = pane.fill(glory::ui::component(move |scope| factory().show_in(scope)));
+                pane = pane.fill(glory::ui::widget(move |scope| factory().show_in(scope)));
             }
             pane.show_in(&frame)?;
         }

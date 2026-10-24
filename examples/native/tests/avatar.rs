@@ -1,4 +1,4 @@
-#[path = "../../web/avatar_form.rs"]
+#[path = "../../web/src/avatar_form.rs"]
 mod avatar_form;
 use glory::blitz::shell::WindowApp;
 use glory::render::{Event, NodeId, Query, QueryValue, Rect};

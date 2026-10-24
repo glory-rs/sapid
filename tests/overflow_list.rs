@@ -452,7 +452,7 @@ fn rejected_dimensions_and_memberships_retain_the_accepted_widget_without_rewrit
     assert_eq!(nodes(&app, "editor-a"), [editor]);
 }
 
-#[path = "../examples/web/overflow_list_form.rs"]
+#[path = "../examples/web/src/overflow_list_form.rs"]
 mod fixture_page;
 #[test]
 fn deterministic_four_theme_ssr_starts_at_the_same_explicit_prefix_without_physical_queries() {

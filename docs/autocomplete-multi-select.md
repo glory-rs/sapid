@@ -97,7 +97,7 @@ Evidence:
   and `GLORY_CHOICE_STREAM_FIXTURE` produce all four finite modes and a real
   multiple Listbox. Native `blitz/tests/choice.rs`: one expanded preflight/direct
   rejection and prefix/query test covering both new modes.
-- `examples/web/choice_extras_form.rs`, `choice-extras.html` and
+- `examples/web/src/choice_extras_form.rs`, `choice-extras.html` and
   `choice-extras-acceptance.js`: Web14 Chromium 148.0.7778.96, 12 actual browser
   groups, errors `[]`, report
   `D:/BuildCache/sapid/choice-extras-browser-web14.json`. Four themes each CSR and

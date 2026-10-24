@@ -97,7 +97,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 })
                 .on_navigate(move |_| requests.revise(|value| *value += 1))
                 .children(move || {
-                    glory::ui::component(move |scope| {
+                    glory::ui::widget(move |scope| {
                         created.revise(|value| *value += 1);
                         scope.on_cleanup(move || {
                             if retired.is_alive() {

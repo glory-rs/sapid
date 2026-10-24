@@ -149,7 +149,7 @@ impl Widget for Context {
         base.padding = Some(glory::style::Edges::all(8.));
         base.radius = Some(self.common.theme.radius);
         let mut root = configure!(self.common, glory::ui::view(), scope, "sapid-context", base)
-            .fill(glory::ui::component(move |scope| {
+            .fill(glory::ui::widget(move |scope| {
                 glory::ui::text()
                     .class("sapid-context-description")
                     .content(scope.bond(move || usage.with(ContextUsage::description)))
@@ -357,7 +357,7 @@ impl Widget for Sources {
                     let theme = theme.clone();
                     let callback = callback.clone();
                     let namespace = namespace.clone();
-                    glory::ui::component(move |scope| {
+                    glory::ui::widget(move |scope| {
                         let href = key.clone();
                         let title = key.clone();
                         let trust = key.clone();

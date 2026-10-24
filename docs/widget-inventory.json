@@ -225,10 +225,10 @@
         "implementation": [
           "src/text_field.rs",
           "docs/basic-controls.md",
-          "docs/form-components.md"
+          "docs/form-widgets.md"
         ],
         "tests": [
-          "tests/components.rs",
+          "tests/widgets.rs",
           "tests/fields.rs",
           "tests/inputs.rs",
           "tests/forms.rs",
@@ -253,10 +253,10 @@
         "implementation": [
           "src/checkbox.rs",
           "docs/basic-controls.md",
-          "docs/form-components.md"
+          "docs/form-widgets.md"
         ],
         "tests": [
-          "tests/components.rs",
+          "tests/widgets.rs",
           "tests/fields.rs",
           "tests/inputs.rs",
           "tests/forms.rs",
@@ -279,7 +279,7 @@
       "baseline_at_snapshot": true,
       "evidence": {
         "implementation": [
-          "src/collapsible.rs",
+          "src/collapsible/mod.rs",
           "docs/collapsible.md",
           "../glory/crates/render/src/collapse.rs",
           "../glory/crates/web/src/browser/collapse.rs"
@@ -307,9 +307,9 @@
       "baseline_at_snapshot": true,
       "evidence": {
         "implementation": [
-          "src/accordion.rs",
+          "src/accordion/mod.rs",
           "src/collection.rs",
-          "src/composite.rs",
+          "src/composite/mod.rs",
           "docs/accordion.md"
         ],
         "tests": [
@@ -337,8 +337,8 @@
       "baseline_at_snapshot": true,
       "evidence": {
         "implementation": [
-          "src/tabs.rs",
-          "src/tabs_dynamic.rs",
+          "src/tabs/mod.rs",
+          "src/tabs/dynamic.rs",
           "docs/tabs.md"
         ],
         "tests": [
@@ -571,7 +571,7 @@
       "evidence": {
         "implementation": [
           "docs/capability-matrix.json",
-          "docs/component-capabilities.md",
+          "docs/widget-capabilities.md",
           "scripts/capability-gallery.py",
           "examples/web/gallery.js",
           "examples/web/gallery.css",
@@ -624,7 +624,7 @@
           "tests/fields.rs",
           "../glory/crates/render/tests/fields.rs",
           "../glory/crates/html/src/patch_tests.rs",
-          "../glory/crates/blitz/src/command_tests.rs (native_field_label_readonly_and_disabled_group_preserve_editor_identity)",
+          "../glory/crates/blitz/src/command/tests.rs (native_field_label_readonly_and_disabled_group_preserve_editor_identity)",
           "../glory/crates/blitz/src/accessibility_tests.rs (field_states_label_description_error_and_disabled_group_reach_accesskit)",
           "examples/web/field-acceptance.js (four themes, CSR/SSR, AX, draft adoption)",
           "D:/BuildCache/sapid/fields-final-check.log",
@@ -657,7 +657,7 @@
           "tests/fields.rs",
           "../glory/crates/render/tests/fields.rs",
           "../glory/crates/html/src/patch_tests.rs",
-          "../glory/crates/blitz/src/command_tests.rs (native_field_label_readonly_and_disabled_group_preserve_editor_identity)",
+          "../glory/crates/blitz/src/command/tests.rs (native_field_label_readonly_and_disabled_group_preserve_editor_identity)",
           "../glory/crates/blitz/src/accessibility_tests.rs (field_states_label_description_error_and_disabled_group_reach_accesskit)",
           "examples/web/field-acceptance.js (four themes, CSR/SSR, AX, draft adoption)",
           "D:/BuildCache/sapid/fields-final-check.log",
@@ -690,7 +690,7 @@
           "tests/fields.rs",
           "../glory/crates/render/tests/fields.rs",
           "../glory/crates/html/src/patch_tests.rs",
-          "../glory/crates/blitz/src/command_tests.rs (native_field_label_readonly_and_disabled_group_preserve_editor_identity)",
+          "../glory/crates/blitz/src/command/tests.rs (native_field_label_readonly_and_disabled_group_preserve_editor_identity)",
           "../glory/crates/blitz/src/accessibility_tests.rs (field_states_label_description_error_and_disabled_group_reach_accesskit)",
           "examples/web/field-acceptance.js (four themes, CSR/SSR, AX, draft adoption)",
           "D:/BuildCache/sapid/fields-final-check.log",
@@ -810,7 +810,7 @@
           "src/form_state.rs",
           "src/form.rs",
           "docs/forms-state.md",
-          "docs/form-components.md",
+          "docs/form-widgets.md",
           "../glory/crates/core/src/runtime.rs (Cage::try_version)",
           "../glory/crates/ui/src/app.rs (Scope::batch; queued form defaults)"
         ],
@@ -819,7 +819,7 @@
           "tests/forms.rs (9 passed)",
           "examples/web/form-acceptance.js (10 reports; zero errors)",
           "D:/BuildCache/sapid/forms-browser.json",
-          "../glory/crates/blitz/src/command_tests.rs::native_form_requests_queue_enter_and_button_defaults_without_resetting_the_editor",
+          "../glory/crates/blitz/src/command/tests.rs::native_form_requests_queue_enter_and_button_defaults_without_resetting_the_editor",
           "D:/BuildCache/sapid/forms-native-host.log"
         ]
       }
@@ -1049,7 +1049,7 @@
         "implementation": [
           "src/actions.rs",
           "src/button.rs",
-          "docs/action-components.md"
+          "docs/action-widgets.md"
         ],
         "tests": [
           "tests/actions.rs",
@@ -1074,7 +1074,7 @@
       "evidence": {
         "implementation": [
           "src/actions.rs",
-          "docs/action-components.md"
+          "docs/action-widgets.md"
         ],
         "tests": [
           "tests/actions.rs (14 family tests passed)",
@@ -1126,7 +1126,7 @@
       "evidence": {
         "implementation": [
           "src/layout.rs",
-          "docs/layout-components.md",
+          "docs/layout-widgets.md",
           "../glory/crates/style/src/lib.rs (FlexWrap)"
         ],
         "tests": [
@@ -1154,7 +1154,7 @@
       "evidence": {
         "implementation": [
           "src/layout.rs",
-          "docs/layout-components.md",
+          "docs/layout-widgets.md",
           "../glory/crates/style/src/lib.rs (FlexWrap)",
           "src/responsive.rs",
           "docs/responsive.md"
@@ -1291,7 +1291,7 @@
       "evidence": {
         "implementation": [
           "src/document.rs",
-          "docs/document-components.md",
+          "docs/document-widgets.md",
           "../glory/crates/render/src/document.rs",
           "../glory/crates/html/src/mapping.rs",
           "../glory/crates/web/src/stream.js",
@@ -1321,7 +1321,7 @@
       "evidence": {
         "implementation": [
           "src/document.rs",
-          "docs/document-components.md",
+          "docs/document-widgets.md",
           "../glory/crates/render/src/document.rs",
           "../glory/crates/html/src/mapping.rs",
           "../glory/crates/web/src/stream.js",
@@ -1353,7 +1353,7 @@
       "evidence": {
         "implementation": [
           "src/document.rs",
-          "docs/document-components.md",
+          "docs/document-widgets.md",
           "../glory/crates/render/src/document.rs",
           "../glory/crates/html/src/mapping.rs",
           "../glory/crates/web/src/stream.js",
@@ -1385,7 +1385,7 @@
       "evidence": {
         "implementation": [
           "src/display.rs",
-          "docs/display-components.md"
+          "docs/display-widgets.md"
         ],
         "tests": [
           "tests/display.rs (12 family tests passed)",
@@ -1411,7 +1411,7 @@
       "evidence": {
         "implementation": [
           "src/display.rs",
-          "docs/display-components.md",
+          "docs/display-widgets.md",
           "docs/portable-shadow-wrap.md",
           "../glory/crates/style/src/lib.rs (BoxShadow/Shadow; HTML v6/Blitz v7)"
         ],
@@ -1553,7 +1553,7 @@
       "evidence": {
         "implementation": [
           "src/document.rs",
-          "docs/document-components.md",
+          "docs/document-widgets.md",
           "../glory/crates/render/src/document.rs",
           "../glory/crates/html/src/mapping.rs",
           "../glory/crates/web/src/stream.js",
@@ -1584,7 +1584,7 @@
       "evidence": {
         "implementation": [
           "src/display.rs",
-          "docs/display-components.md"
+          "docs/display-widgets.md"
         ],
         "tests": [
           "tests/display.rs (12 family tests passed)",
@@ -1609,7 +1609,7 @@
       "evidence": {
         "implementation": [
           "src/document.rs",
-          "docs/document-components.md",
+          "docs/document-widgets.md",
           "../glory/crates/render/src/document.rs",
           "../glory/crates/html/src/mapping.rs",
           "../glory/crates/web/src/stream.js",
@@ -1712,9 +1712,9 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/menu.rs",
+          "src/menu/mod.rs",
           "docs/menu-implementation.md",
-          "../glory/crates/render/src/menu.rs"
+          "../glory/crates/render/src/menu/mod.rs"
         ],
         "tests": [
           "tests/menu.rs (6 passed)",
@@ -1738,7 +1738,7 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/menu.rs",
+          "src/menu/mod.rs",
           "../glory/crates/web/src/browser/context_menu.rs",
           "docs/context-menu.md"
         ],
@@ -1767,15 +1767,15 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/menubar.rs",
-          "src/menu.rs",
+          "src/menu/bar/mod.rs",
+          "src/menu/mod.rs",
           "docs/menubar.md",
           "../glory/crates/render/src/semantics.rs"
         ],
         "tests": [
-          "src/menubar_tests.rs (4 passed)",
+          "src/menu/bar/tests.rs (4 passed)",
           "../glory/crates/render/tests/menubar.rs (2 passed)",
-          "../glory/crates/html/src/menubar_tests.rs (1 passed)",
+          "../glory/crates/html/src/menu/bar/tests.rs (1 passed)",
           "../glory/crates/blitz/tests/menubar.rs (1 passed)",
           "examples/web/menubar-acceptance.js",
           "D:/BuildCache/sapid/menubar-browser-menubar-final-rating-next.json (10 passed, Chromium 148.0.7778.96)"
@@ -1945,12 +1945,12 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/command.rs",
+          "src/command/mod.rs",
           "docs/command.md",
           "../glory/crates/render/src/keyboard.rs"
         ],
         "tests": [
-          "src/command_tests.rs (11 passed)",
+          "src/command/tests.rs (11 passed)",
           "../glory/crates/render/tests/palette.rs",
           "../glory/crates/blitz/tests/palette.rs",
           "../glory/crates/ssr/src/stream/command_tests.rs",
@@ -1972,7 +1972,7 @@
       "evidence": {
         "implementation": [
           "src/overlay.rs",
-          "docs/feedback-components.md",
+          "docs/feedback-widgets.md",
           "../glory/crates/render/src/semantics.rs"
         ],
         "tests": [
@@ -2081,7 +2081,7 @@
       "evidence": {
         "implementation": [
           "src/alert.rs",
-          "docs/feedback-components.md"
+          "docs/feedback-widgets.md"
         ],
         "tests": [
           "tests/alerts.rs (5 passed)",
@@ -2213,7 +2213,7 @@
       "evidence": {
         "implementation": [
           "src/skeleton.rs",
-          "docs/feedback-components.md"
+          "docs/feedback-widgets.md"
         ],
         "tests": [
           "tests/skeleton.rs (4 passed)",
@@ -2262,7 +2262,7 @@
       "evidence": {
         "implementation": [
           "src/overlay.rs",
-          "docs/feedback-components.md"
+          "docs/feedback-widgets.md"
         ],
         "tests": [
           "tests/floating_dialog.rs (3 passed)",
@@ -2316,7 +2316,7 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/floating_window.rs",
+          "src/floating_window/mod.rs",
           "docs/floating-window.md",
           "../glory/crates/render/src/viewport_layer.rs"
         ],
@@ -2422,7 +2422,7 @@
       "evidence": {
         "implementation": [
           "src/navigation.rs",
-          "src/navigation_menu.rs",
+          "src/navigation_menu/mod.rs",
           "docs/navigation-menu.md",
           "docs/navigation.md"
         ],
@@ -2621,8 +2621,8 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/table_of_contents.rs",
-          "src/toc_model.rs",
+          "src/table_of_contents/mod.rs",
+          "src/table_of_contents/model.rs",
           "docs/table-of-contents.md"
         ],
         "tests": [
@@ -2647,7 +2647,7 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/overflow_list.rs",
+          "src/overflow_list/mod.rs",
           "docs/overflow-list.md",
           "../glory/docs/engine-forks.json",
           "../glory/docs/engine-forks.md"
@@ -2677,8 +2677,8 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/floating_indicator.rs",
-          "src/floating_model.rs",
+          "src/floating_indicator/mod.rs",
+          "src/floating_indicator/model.rs",
           "docs/floating-indicator.md"
         ],
         "tests": [
@@ -2744,7 +2744,7 @@
         "tests": [
           "tests/number_inputs.rs (15 passed)",
           "examples/native/tests/number_input.rs",
-          "../glory/crates/blitz/src/command_tests.rs",
+          "../glory/crates/blitz/src/command/tests.rs",
           "../glory/crates/html/src/patch_tests.rs",
           "examples/web/number-input-acceptance.js",
           "D:/BuildCache/sapid/number-input-browser-root22.json (12 passed, Chromium 148.0.7778.96)"
@@ -2764,7 +2764,7 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/slider.rs",
+          "src/slider/mod.rs",
           "docs/slider.md"
         ],
         "tests": [
@@ -2814,13 +2814,13 @@
       "evidence": {
         "implementation": [
           "src/angle_slider.rs",
-          "src/slider_mapping.rs",
-          "src/slider.rs",
+          "src/slider/mapping.rs",
+          "src/slider/mod.rs",
           "docs/angle-slider.md"
         ],
         "tests": [
           "tests/angle_sliders.rs (8 passed)",
-          "src/slider_mapping.rs (3 passed)",
+          "src/slider/mapping.rs (3 passed)",
           "examples/native/tests/angle_slider.rs (2 passed, four themes)",
           "D:/BuildCache/sapid/angle-geometry-native.log",
           "examples/web/angle-slider-acceptance.js",
@@ -2842,8 +2842,8 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/rating.rs",
-          "src/rating_model.rs",
+          "src/rating/mod.rs",
+          "src/rating/model.rs",
           "src/radio.rs",
           "docs/rating.md"
         ],
@@ -2896,7 +2896,7 @@
         "implementation": [
           "src/color_slider.rs",
           "src/color_model.rs",
-          "src/slider.rs",
+          "src/slider/mod.rs",
           "docs/color-sliders.md"
         ],
         "tests": [
@@ -2929,8 +2929,8 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/color_picker.rs",
-          "src/color_pad.rs",
+          "src/color_picker/mod.rs",
+          "src/color_picker/pad.rs",
           "src/color_input.rs",
           "docs/color-picker.md",
           "../glory/crates/render/src/drag.rs"
@@ -3050,15 +3050,15 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/table.rs",
-          "src/table_model.rs",
+          "src/table/mod.rs",
+          "src/table/model.rs",
           "docs/table.md",
-          "../glory/crates/render/src/table.rs",
+          "../glory/crates/render/src/table/mod.rs",
           "../glory/crates/render/src/document.rs"
         ],
         "tests": [
           "tests/tables.rs (4 passed)",
-          "src/table_model.rs (3 passed)",
+          "src/table/model.rs (3 passed)",
           "examples/native/tests/tables.rs (2 passed)",
           "examples/web/table-acceptance.js",
           "../glory/crates/render/tests/table.rs (4 passed)",
@@ -3081,13 +3081,13 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/data_table.rs",
-          "src/data_table_model.rs",
+          "src/data_table/mod.rs",
+          "src/data_table/model.rs",
           "docs/data-table.md",
           "../glory/crates/ui/src/list/widget.rs"
         ],
         "tests": [
-          "src/data_table_model.rs (5 passed)",
+          "src/data_table/model.rs (5 passed)",
           "tests/data_tables.rs (6 passed)",
           "examples/native/tests/data_tables.rs (2 passed)",
           "../glory/crates/render/tests/table.rs",
@@ -3578,8 +3578,8 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/carousel.rs",
-          "src/carousel_model.rs",
+          "src/carousel/mod.rs",
+          "src/carousel/model.rs",
           "docs/carousel.md"
         ],
         "tests": [
@@ -3662,8 +3662,8 @@
       "evidence": {
         "implementation": [
           "src/json_tree_model.rs",
-          "src/json_viewer.rs",
-          "src/json_viewer_tree.rs",
+          "src/json_viewer/mod.rs",
+          "src/json_viewer/tree_mode.rs",
           "docs/json-viewer.md"
         ],
         "tests": [
@@ -3762,7 +3762,7 @@
           "src/chart_model.rs",
           "src/chart_scene.rs",
           "src/chart_widget.rs",
-          "examples/web/charts_form.rs",
+          "examples/web/src/charts_form.rs",
           "docs/charts.md"
         ],
         "tests": [
@@ -3991,8 +3991,8 @@
         "implementation": [
           "src/schedule_model.rs",
           "src/schedule_recurrence.rs",
-          "src/schedule_layout.rs",
-          "src/schedule.rs",
+          "src/schedule_layout/mod.rs",
+          "src/schedule/mod.rs",
           "docs/schedule-model.md",
           "docs/schedule.md"
         ],
@@ -4018,8 +4018,8 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/schedule_timeline.rs",
-          "src/schedule_layout.rs",
+          "src/schedule/timeline.rs",
+          "src/schedule_layout/mod.rs",
           "docs/schedule-timelines.md"
         ],
         "tests": [
@@ -4046,7 +4046,7 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/schedule_calendar.rs",
+          "src/schedule/calendar.rs",
           "docs/schedule-calendars.md"
         ],
         "tests": [
@@ -4071,7 +4071,7 @@
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "src/schedule.rs",
+          "src/schedule/mod.rs",
           "docs/schedule.md",
           "examples/web/src/schedule_form.rs"
         ],
@@ -4101,10 +4101,10 @@
       "evidence": {
         "implementation": [
           "src/schedule_model.rs",
-          "src/resource_schedule.rs",
-          "src/resource_schedule_timeline.rs",
-          "src/resource_schedule_drag.rs",
-          "src/schedule_resource_month.rs",
+          "src/schedule/resources/mod.rs",
+          "src/schedule/resources/timeline.rs",
+          "src/schedule/resources/drag.rs",
+          "src/schedule_layout/resource_month.rs",
           "docs/resource-schedule.md"
         ],
         "tests": [

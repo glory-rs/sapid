@@ -34,7 +34,7 @@ provided by its named wrapper rather than announced twice.
 Evidence: `tests/avatar.rs` covers real text/name semantics, all themes and sizes,
 explicit overrides, bounded million-item iterator consumption, pre-creation
 validation, source rejection/recovery, identity, group overflow and Owner cleanup.
-`examples/web/avatar_form.rs` is the shared host fixture.
+`examples/web/src/avatar_form.rs` is the shared host fixture.
 
 `image(source)` creates an actual semantic Image. It requires `.alt(text)` or
 explicit `.decorative()`, supports typed fit and dimensions, custom style/class,

@@ -3,7 +3,7 @@ use glory::style::{Length, Style};
 use glory::ui::App;
 use sapid::{Breakpoint, Breakpoints, ResponsiveValues, responsive_root};
 use std::{cell::Cell, rc::Rc};
-#[path = "../examples/web/responsive_form.rs"]
+#[path = "../examples/web/src/responsive_form.rs"]
 mod fixture;
 
 #[test]

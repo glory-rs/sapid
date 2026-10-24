@@ -1,4 +1,4 @@
-#[path = "../../web/grid_form.rs"]
+#[path = "../../web/src/grid_form.rs"]
 mod grid_form;
 use glory::blitz::shell::WindowApp;
 use glory::render::{Event, NodeId, Props, Query, QueryValue, Rect};

@@ -745,7 +745,7 @@ impl Widget for Toaster {
                 let command = command.clone();
                 let namespace = namespace.clone();
                 let theme = theme.clone();
-                glory::ui::component(move |scope| {
+                glory::ui::widget(move |scope| {
                     let entry = item.get();
                     let token = NotificationToken {
                         controller: Rc::downgrade(&command.0),

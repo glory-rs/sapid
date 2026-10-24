@@ -240,7 +240,7 @@ fn keyed_custom_editors_survive_source_reorder_and_closed_rows_release_owners() 
             .render_label(move |node| {
                 built.set(built.get() + 1);
                 let retired = retired.clone();
-                component(move |scope| {
+                widget(move |scope| {
                     let retired = retired.clone();
                     scope.on_cleanup(move || retired.set(retired.get() + 1))?;
                     input()

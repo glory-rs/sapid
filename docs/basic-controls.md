@@ -25,7 +25,7 @@ and controlled refusal restores the accepted value at the host boundary.
 Selection offsets use UTF-16. These protocol tests do not claim physical OS
 IME or screen-reader speech acceptance.
 
-Evidence: `tests/components.rs`, `tests/fields.rs`, `tests/inputs.rs`,
+Evidence: `tests/widgets.rs`, `tests/fields.rs`, `tests/inputs.rs`,
 `tests/forms.rs` and `tests/basic_control_state.rs`; native input/field fixtures;
 browser basic, field, input, choices and form suites. Combined gate snapshot 8
 and `D:/BuildCache/sapid/browser-snapshot8-results.json` cover these contracts

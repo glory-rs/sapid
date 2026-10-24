@@ -85,7 +85,7 @@ fn visibility_keeps_factory_children_refs_and_state_until_owner_retirement() {
         affix("visible")
             .visible(visible)
             .node_ref(wrapper)
-            .fill(glory::ui::component(move |scope| {
+            .fill(glory::ui::widget(move |scope| {
                 count.set(count.get() + 1);
                 glory::ui::input()
                     .value("Draft")
@@ -152,7 +152,7 @@ fn container_context_requires_a_live_same_runtime_ancestor_and_preserves_child_o
     assert!(app.mount(affix("retired").within(context)).is_err());
 }
 #[test]
-fn explicit_styles_and_unstyled_preserve_structural_positioning_and_component_classes() {
+fn explicit_styles_and_unstyled_preserve_structural_positioning_and_widget_classes() {
     let app = App::memory();
     let reference = app.scope().cage(None);
     app.mount(

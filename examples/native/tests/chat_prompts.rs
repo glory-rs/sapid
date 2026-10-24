@@ -4,7 +4,7 @@ use glory::render::{
 };
 use glory::ui::App;
 use std::{cell::RefCell, rc::Rc};
-#[path = "../../web/prompt_form.rs"]
+#[path = "../../web/src/prompt_form.rs"]
 mod fixture;
 fn find(app: &App, predicate: impl Fn(glory::render::DescriptorView<'_>) -> bool) -> NodeId {
     let tree = app.tree();

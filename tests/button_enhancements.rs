@@ -116,7 +116,7 @@ fn section_validation_owns_its_dependency_inside_keyed_construction_and_keeps_ty
         rows,
         |_| 0u8,
         |item, _| {
-            component(move |scope| {
+            widget(move |scope| {
                 button()
                     .label(scope.bond(move || item.get()))
                     .left_section(text().content("★"))
@@ -138,7 +138,7 @@ fn section_validation_owns_its_dependency_inside_keyed_construction_and_keeps_ty
             vec!["Invalid".to_owned()],
             |_| 0u8,
             |item, _| {
-                component(move |scope| {
+                widget(move |scope| {
                     button()
                         .label(scope.bond(move || item.get()))
                         .left_section(view())

@@ -53,12 +53,12 @@ Root labels use the Collection label budget. No business source, visited root
 history or stale node mapping is retained. User callback captures and retired
 root registrations are dropped outside registry borrows.
 
-Sapid `src/menubar_tests.rs` has four passing tests for intrinsic roles and one
+Sapid `src/menu/bar/tests.rs` has four passing tests for intrinsic roles and one
 Tab stop, disabled skipping, Typeahead, exclusive hierarchy switching,
 controlled refusal, borrowed invalid-source validation, bounded million-root
 iteration and Owner capture cleanup. Glory `render/tests/menubar.rs` validates
 the finite intrinsic refinement and rejects late focus to an old root;
-`html/src/menubar_tests.rs` checks prepared patches against the full-shape
+`html/src/menu/bar/tests.rs` checks prepared patches against the full-shape
 oracle, including default resets. The existing `ssr/src/stream/menu_tests.rs`
 producer transports Menubar role/orientation, root marker and expanded state
 through Shell/Patch/End. The original acceptance used HTML v4/classic v2;

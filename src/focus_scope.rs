@@ -1,5 +1,5 @@
 //! A nonmodal focus policy around ordinary content. The host owns actual
-//! traversal and focus restoration; this component creates no overlay.
+//! traversal and focus restoration; this widget creates no overlay.
 use glory::render::{FocusMode, NodeId, SemanticId, Semantics};
 pub use glory::render::{FocusScopeConfig, MAX_FOCUS_SCOPE_NODES, MAX_FOCUS_SCOPES};
 use glory::style::Style;

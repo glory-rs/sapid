@@ -1,112 +1,66 @@
-#[path = "../accordion_form.rs"]
 pub mod accordion_form;
-#[path = "../actions_form.rs"]
 pub mod actions_form;
 pub mod affix_form;
-#[path = "../alerts_form.rs"]
 pub mod alerts_form;
-#[path = "../avatar_form.rs"]
 pub mod avatar_form;
-#[path = "../button_form.rs"]
 pub mod button_form;
-#[path = "../choice_extras_form.rs"]
 pub mod choice_extras_form;
 pub mod choices_form;
-#[path = "../code_form.rs"]
 pub mod code_form;
-#[path = "../collapse_motion_form.rs"]
 pub mod collapse_motion_form;
-#[path = "../collapse_stream_probe.rs"]
 pub mod collapse_stream_probe;
-#[path = "../color_swatch_form.rs"]
 pub mod color_swatch_form;
-#[path = "../combobox_form.rs"]
 pub mod combobox_form;
-#[path = "../command_form.rs"]
 pub mod command_form;
 pub mod composite_form;
-#[path = "../context_menu_form.rs"]
 pub mod context_menu_form;
-#[path = "../copy_button_form.rs"]
 pub mod copy_button_form;
-#[path = "../display_form.rs"]
 pub mod display_form;
 pub mod display_pages;
-#[path = "../document_form.rs"]
 pub mod document_form;
-#[path = "../environment_form.rs"]
 pub mod environment_form;
 pub mod fields_form;
-#[path = "../files_form.rs"]
 pub mod files_form;
-#[path = "../floating_indicator_form.rs"]
 pub mod floating_indicator_form;
-#[path = "../floating_window_form.rs"]
 pub mod floating_window_form;
 pub mod form;
 pub mod forms_form;
-#[path = "../graphics_form.rs"]
 pub mod graphics_form;
-#[path = "../grid_form.rs"]
 pub mod grid_form;
 pub mod hints_form;
-#[path = "../image_form.rs"]
 pub mod image_form;
-#[path = "../json_tree_example.rs"]
 pub mod json_tree_example;
-#[path = "../layout_form.rs"]
 pub mod layout_form;
-#[path = "../loading_overlay_form.rs"]
 pub mod loading_overlay_form;
 pub mod menu_form;
-#[path = "../menubar_form.rs"]
 pub mod menubar_form;
-#[path = "../modals_form.rs"]
 pub mod modals_form;
 pub mod native_select_form;
 pub mod navigation_form;
-#[path = "../navigation_progress_form.rs"]
 pub mod navigation_progress_form;
-#[path = "../notifications_form.rs"]
 pub mod notifications_form;
-#[path = "../overflow_list_form.rs"]
 pub mod overflow_list_form;
 pub mod overlay_form;
-#[path = "../portal_form.rs"]
 pub mod portal_form;
-#[path = "../progress_form.rs"]
 pub mod progress_form;
-#[path = "../responsive_form.rs"]
 pub mod responsive_form;
 pub mod scroll_area_form;
-#[path = "../select_form.rs"]
 pub mod select_form;
-#[path = "../sheet_form.rs"]
 pub mod sheet_form;
 pub mod shell_form;
-#[path = "../spinner_form.rs"]
 pub mod spinner_form;
 pub mod splitter_form;
-#[path = "../spoiler_form.rs"]
 pub mod spoiler_form;
 pub mod stepper_form;
-#[path = "../tabs_dynamic_form.rs"]
 pub mod tabs_dynamic_form;
-#[path = "../tags_form.rs"]
 pub mod tags_form;
-#[path = "../text_motion_form.rs"]
 pub mod text_motion_form;
-#[path = "../timeline_form.rs"]
 pub mod timeline_form;
 pub mod toggles_form;
-#[path = "../toolbar_form.rs"]
 pub mod toolbar_form;
-#[path = "../tour_form.rs"]
 pub mod tour_form;
-#[path = "../translation_form.rs"]
 pub mod translation_form;
 pub mod typography_form;
-#[path = "../visually_hidden_form.rs"]
 pub mod visually_hidden_form;
 
 #[cfg(target_arch = "wasm32")]
@@ -386,54 +340,36 @@ pub mod angle_slider_form;
 pub mod range_slider_form;
 pub mod rating_form;
 
-#[path = "../color_sliders_form.rs"]
 pub mod color_sliders_form;
-#[path = "../json_input_form.rs"]
 pub mod json_input_form;
 
-#[path = "../color_picker_form.rs"]
 pub mod color_picker_form;
 
 pub mod calendar_form;
-#[path = "../layer_document_form.rs"]
 pub mod layer_document_form;
 pub mod mask_input_form;
 pub mod number_input_form;
 pub mod pin_input_form;
-#[path = "../popover_placement_form.rs"]
 pub mod popover_placement_form;
 
-#[path = "../table_of_contents_form.rs"]
 pub mod table_of_contents_form;
 
-#[path = "../table_form.rs"]
 pub mod table_form;
 
-#[path = "../data_table_form.rs"]
 pub mod data_table_form;
 
-#[path = "../data_table_server_form.rs"]
 pub mod data_table_server_form;
 
 pub mod date_picker_form;
 
-#[path = "../charts_form.rs"]
 pub mod charts_form;
-#[path = "../chat_evidence_form.rs"]
 pub mod chat_evidence_form;
-#[path = "../confirmation_form.rs"]
 pub mod confirmation_form;
-#[path = "../lightbox_form.rs"]
 pub mod lightbox_form;
-#[path = "../output_form.rs"]
 pub mod output_form;
-#[path = "../plots_form.rs"]
 pub mod plots_form;
-#[path = "../tasks_form.rs"]
 pub mod tasks_form;
-#[path = "../tree_choices_form.rs"]
 pub mod tree_choices_form;
-#[path = "../tree_form.rs"]
 pub mod tree_form;
 
 pub mod date_input_form;
@@ -455,24 +391,18 @@ pub mod showcase_host;
 pub mod time_picker_form;
 pub mod trace_form;
 
-#[path = "../focus_scope_form.rs"]
 pub mod focus_scope_form;
 pub mod focus_scope_pages;
 
-#[path = "../message_scroller_form.rs"]
 pub mod message_scroller_form;
-#[path = "../messages_form.rs"]
 pub mod messages_form;
-#[path = "../prompt_form.rs"]
 pub mod prompt_form;
-#[path = "../questionnaire_form.rs"]
 pub mod questionnaire_form;
 
-#[path = "../carousel_form.rs"]
 pub mod carousel_form;
 
-#[path = "../rich_editor_form.rs"]
 pub mod rich_editor_form;
 
-#[path = "../model_suggestions_form.rs"]
 pub mod model_suggestions_form;
+
+pub mod showcase_demos;

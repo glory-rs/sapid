@@ -2,9 +2,9 @@ use glory::blitz::shell::WindowApp;
 use glory::render::{Event, NodeId, Props, Query, QueryValue, Rect};
 use glory::ui::App;
 use std::{cell::RefCell, rc::Rc};
-#[path = "../../web/messages_form.rs"]
+#[path = "../../web/src/messages_form.rs"]
 mod fixture;
-#[path = "../../web/message_scroller_form.rs"]
+#[path = "../../web/src/message_scroller_form.rs"]
 #[allow(dead_code)]
 mod scroller_fixture;
 fn find(app: &App, predicate: impl Fn(glory::render::DescriptorView<'_>) -> bool) -> NodeId {

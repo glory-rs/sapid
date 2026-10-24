@@ -1,4 +1,4 @@
-#[path = "../../web/button_form.rs"]
+#[path = "../../web/src/button_form.rs"]
 mod fixture;
 use glory::blitz::shell::WindowApp;
 use glory::render::{Event, NodeId, Props, Query, QueryValue, Rect};

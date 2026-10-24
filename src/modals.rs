@@ -298,7 +298,7 @@ impl Widget for ModalsManager {
                 let key = key.clone();
                 let theme = theme.clone();
                 let command = command.clone();
-                glory::ui::component(move |scope| {
+                glory::ui::widget(move |scope| {
                     let entry = item.get();
                     let title = scope.bond(move || item.with(|entry| entry.title.clone()));
                     let description =
@@ -316,7 +316,7 @@ impl Widget for ModalsManager {
                             *content.borrow_mut() = Some(callback);
                             widget
                         } else {
-                            Box::new(glory::ui::component(|_| Ok(())))
+                            Box::new(glory::ui::widget(|_| Ok(())))
                         };
                         result
                     };

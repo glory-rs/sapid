@@ -67,7 +67,7 @@ fn live_text_updates_keep_editor_and_table_refs_and_release_every_short_owner() 
                     .cell(table_row_header("label").text(name))
                     .cell(table_cell("edit").content(move || {
                         let done = done.clone();
-                        glory::ui::component(move |scope| {
+                        glory::ui::widget(move |scope| {
                             let done = done.clone();
                             scope.on_cleanup(move || done.set(done.get() + 1))?;
                             glory::ui::input()

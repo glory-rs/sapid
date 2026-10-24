@@ -16,7 +16,7 @@ pub struct PasswordInput {
 }
 pub fn password_input() -> PasswordInput {
     let mut input = crate::text_field();
-    input.component_class = "sapid-text-field sapid-password-input";
+    input.widget_class = "sapid-text-field sapid-password-input";
     PasswordInput {
         input,
         visible: Value::default(),

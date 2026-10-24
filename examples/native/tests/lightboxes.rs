@@ -1,4 +1,4 @@
-#[path = "../../web/lightbox_form.rs"]
+#[path = "../../web/src/lightbox_form.rs"]
 mod fixture;
 use glory::{
     blitz::{

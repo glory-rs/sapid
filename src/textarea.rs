@@ -16,7 +16,7 @@ pub struct Textarea {
 }
 pub fn textarea() -> Textarea {
     let mut input = crate::text_field().multiline(true);
-    input.component_class = "sapid-text-field sapid-textarea";
+    input.widget_class = "sapid-text-field sapid-textarea";
     Textarea {
         input,
         rows: 3,

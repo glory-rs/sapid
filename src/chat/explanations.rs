@@ -179,7 +179,7 @@ impl Widget for Reasoning {
             .content_policy(self.policy)
             .content(move || {
                 let theme = theme.clone();
-                glory::ui::component(move |scope| {
+                glory::ui::widget(move |scope| {
                     let mut style = if unstyled {
                         Style::new()
                     } else {
@@ -225,7 +225,7 @@ impl Widget for Reasoning {
                         move |key, _| {
                             let key = key.get_untracked();
                             let style = style.clone();
-                            glory::ui::component(move |scope| {
+                            glory::ui::widget(move |scope| {
                                 let text_key = key.clone();
                                 let body_key = key.clone();
                                 glory::ui::view()

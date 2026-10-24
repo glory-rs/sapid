@@ -2,7 +2,7 @@ use glory::ui::{Purpose, col};
 use sapid::{button, checkbox, text_field};
 
 #[test]
-fn components_keep_native_control_shapes_and_escape_user_text() {
+fn widgets_keep_native_control_shapes_and_escape_user_text() {
     let html = glory::ssr::render(
         col().fill((
             button().label("Save <draft>").enabled(false),

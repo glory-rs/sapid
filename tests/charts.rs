@@ -233,7 +233,7 @@ fn standalone_legend_has_real_buttons_color_swatches_and_controlled_proposals() 
 #[test]
 fn reactive_button_section_minimal_reproduction() {
     let app = App::memory();
-    app.mount(glory::ui::component(|scope| {
+    app.mount(glory::ui::widget(|scope| {
         let label = scope.cage("A".to_owned());
         sapid::button()
             .label(scope.bond(move || label.get()))

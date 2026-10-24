@@ -1,4 +1,4 @@
-#[path = "../../web/timeline_form.rs"]
+#[path = "../../web/src/timeline_form.rs"]
 mod timeline_form;
 use glory::blitz::shell::WindowApp;
 use glory::render::{Event, NodeId, Props, Query, QueryValue, Rect};

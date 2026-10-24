@@ -83,7 +83,7 @@
 .sapid-site .site-principle-symbol{position:absolute;left:0;top:1px;color:var(--site-blue);font-size:25px;font-weight:650;line-height:1.4}
 .sapid-site .site-principle-title{font-size:14px;font-weight:700;margin-bottom:6px}
 .sapid-site .site-principle-copy{font-size:12px;line-height:1.8;color:var(--site-muted);max-width:275px}
-.sapid-site .site-component-section{padding-top:86px;padding-bottom:40px;scroll-margin-top:95px}
+.sapid-site .site-widget-section{padding-top:86px;padding-bottom:40px;scroll-margin-top:95px}
 .sapid-site .site-section-heading{max-width:710px;margin-bottom:35px}
 .sapid-site .site-eyebrow{font-size:10px;font-weight:750;letter-spacing:1.5px;color:var(--site-blue);margin-bottom:13px}
 .sapid-site .site-home-section-title{font-size:35px;font-weight:780;line-height:1.24;letter-spacing:-1.3px;margin-bottom:15px;white-space:pre-line}
@@ -206,7 +206,7 @@
 .sapid-site .site-mosaic-buttons .site-inline-tags{display:flex}
 .sapid-site .site-principles{grid-template-columns:1fr;gap:23px;padding:30px 0}
 .sapid-site .site-principle-copy{max-width:none}
-.sapid-site .site-component-section{padding-top:57px}
+.sapid-site .site-widget-section{padding-top:57px}
 .sapid-site .site-home-section-title{font-size:29px;letter-spacing:-.9px}
 .sapid-site .site-category-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .sapid-site .site-category-card{padding:20px}

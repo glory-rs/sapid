@@ -1,4 +1,4 @@
-#[path = "../../web/progress_form.rs"]
+#[path = "../../web/src/progress_form.rs"]
 mod progress_form;
 use glory::blitz::Raster;
 use glory::blitz::shell::WindowApp;

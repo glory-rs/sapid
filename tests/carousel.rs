@@ -39,7 +39,7 @@ fn million_source_calls_only_window_factories_and_retains_current_editor_owner()
             .render_slide(move |index| {
                 built.set(built.get() + 1);
                 let retired = retired.clone();
-                glory::ui::component(move |scope| {
+                glory::ui::widget(move |scope| {
                     let retired = retired.clone();
                     scope.on_cleanup(move || retired.set(retired.get() + 1))?;
                     glory::ui::input()

@@ -2,7 +2,7 @@ use glory::render::{Direction, Props};
 use glory::ui::App;
 use sapid::{Locale, LocaleMessage, Size, Theme, theme_provider};
 use std::{cell::Cell, rc::Rc};
-#[path = "../examples/web/environment_form.rs"]
+#[path = "../examples/web/src/environment_form.rs"]
 mod fixture;
 
 #[test]

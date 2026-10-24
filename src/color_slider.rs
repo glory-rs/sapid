@@ -338,7 +338,7 @@ impl Widget for ColorSlider {
             slider = slider.name(name)
         } else if !has_field {
             // Slider preserves a Field's label relation, and uses this fallback only
-            // when the component has no Field metadata.
+            // when the widget has no Field metadata.
             slider = slider.name(if hue { "Hue" } else { "Opacity" });
         }
         if let Some(page) = self.page.take() {

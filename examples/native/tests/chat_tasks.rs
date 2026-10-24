@@ -1,4 +1,4 @@
-#[path = "../../web/tasks_form.rs"]
+#[path = "../../web/src/tasks_form.rs"]
 mod fixture;
 use glory::{
     blitz::{Raster, shell::WindowApp},

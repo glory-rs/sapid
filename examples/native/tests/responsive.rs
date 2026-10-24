@@ -2,7 +2,7 @@ use glory::blitz::shell::WindowApp;
 use glory::render::{Event, NodeId, Props, Query, QueryValue, Rect};
 use glory::ui::App;
 use std::{cell::RefCell, rc::Rc};
-#[path = "../../web/responsive_form.rs"]
+#[path = "../../web/src/responsive_form.rs"]
 mod fixture;
 fn find(app: &App, predicate: impl Fn(glory::render::DescriptorView<'_>) -> bool) -> NodeId {
     let tree = app.tree();

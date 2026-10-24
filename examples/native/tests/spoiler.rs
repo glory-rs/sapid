@@ -2,7 +2,7 @@ use glory::blitz::shell::WindowApp;
 use glory::prelude::*;
 use glory::render::{Event, NodeId, Props, Query, QueryValue};
 use std::{cell::RefCell, rc::Rc};
-#[path = "../../web/spoiler_form.rs"]
+#[path = "../../web/src/spoiler_form.rs"]
 mod spoiler_form;
 fn find(app: &App, class: &str) -> NodeId {
     let tree = app.tree();

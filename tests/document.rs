@@ -25,7 +25,7 @@ fn content(app: &App, id: NodeId) -> String {
 }
 
 #[test]
-fn inline_components_have_real_text_kinds_and_reactive_content_preserves_identity() {
+fn inline_widgets_have_real_text_kinds_and_reactive_content_preserves_identity() {
     let app = App::memory();
     let value = app.scope().cage("a < b".to_string());
     app.mount(glory::ui::row().fill((
