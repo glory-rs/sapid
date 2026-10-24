@@ -6,6 +6,67 @@ use glory::render::{
 use std::{cell::RefCell, rc::Rc};
 #[path = "../../web/data_table_form.rs"]
 mod fixture;
+#[path = "../../web/data_table_server_form.rs"]
+mod server_fixture;
+#[test]
+fn native_server_pages_wait_for_exact_echo_and_keep_current_rows_after_stale_replay() {
+    let host = WindowApp::new();
+    host.renderer().set_viewport(860, 800, 1.).unwrap();
+    host.mount(server_fixture::data_table_server_form(
+        sapid::Theme::green_dark(),
+    ))
+    .unwrap();
+    observe(&host);
+    let app = host.app();
+    let rows = |app: &App| {
+        all(app)
+            .into_iter()
+            .filter_map(|id| {
+                let tree = app.tree();
+                let d = tree.node(id).unwrap().descriptor.view();
+                if let Some(TableMetadata::Row { index }) =
+                    d.semantics.as_ref().and_then(|s| s.table.as_ref())
+                    && *index > 0
+                {
+                    Some((*index, id))
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<_>>()
+    };
+    assert_eq!(rows(app).len(), 4);
+    app.dispatch(named(app, "Next table page"), Event::Activate)
+        .unwrap();
+    observe(&host);
+    assert!(rows(app).is_empty());
+    app.dispatch(named(app, "Publish server reply"), Event::Activate)
+        .unwrap();
+    observe(&host);
+    let current = rows(app);
+    assert_eq!(current.len(), 4);
+    assert!(
+        current
+            .iter()
+            .all(|(index, id)| *index >= 5 && bounds(app, *id).height >= 44.)
+    );
+    app.dispatch(named(app, "Replay previous server reply"), Event::Activate)
+        .unwrap();
+    observe(&host);
+    assert_eq!(rows(app), current);
+    let mut raster = Raster::new();
+    raster.draw(host.renderer()).unwrap();
+    assert!(
+        raster
+            .pixels()
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .any(|pixel| pixel[3] > 0)
+    );
+    app.clear().unwrap();
+    assert_eq!(app.stats().nodes, 0);
+}
 fn all(app: &App) -> Vec<NodeId> {
     let tree = app.tree();
     let mut todo = tree.roots().to_vec();

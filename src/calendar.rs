@@ -3,6 +3,7 @@ use crate::appearance::{Common, common_methods};
 use crate::composite::{self, Callback, Observers};
 use crate::dates::*;
 use crate::state::{Control, Dirty, Value};
+use crate::{DatePickerMode, DateSelection};
 use glory::render::{
     Current, Direction, Event, EventKind, FocusMode, GridCommand, NodeId, Role, SemanticId,
     Semantics, TableMetadata,
@@ -26,6 +27,7 @@ struct Snapshot {
     provider: DatesProvider,
     month: YearMonth,
     value: Option<CivilDate>,
+    selection: DateSelection,
     grid: MonthGrid,
     enabled: bool,
     readonly: bool,
@@ -48,6 +50,7 @@ struct Controller {
     excluded: Vec<CivilDate>,
     weekdays: u8,
     allow_deselect: bool,
+    selection_surface: bool,
     focused: Cage<CivilDate>,
     physical: Cage<Option<NodeId>>,
     references: [Cage<Option<NodeId>>; 42],
@@ -209,12 +212,12 @@ impl Controller {
             }
             GridCommand::PreviousPage
             | GridCommand::NextPage
-            | GridCommand::PreviousYear
-            | GridCommand::NextYear => {
+            | GridCommand::PreviousLargePage
+            | GridCommand::NextLargePage => {
                 let delta = match command {
                     GridCommand::PreviousPage => -1,
                     GridCommand::NextPage => 1,
-                    GridCommand::PreviousYear => -12,
+                    GridCommand::PreviousLargePage => -12,
                     _ => 12,
                 };
                 let Ok(month) = current.year_month().checked_add(delta) else {
@@ -271,6 +274,12 @@ impl Controller {
         if s.readonly || !self.allowed(s, date) {
             return Ok(());
         }
+        if self.selection_surface {
+            self.focused.try_revise(|v| *v = date)?;
+            self.changed.emit(self.owner, Some(date));
+            self.ensure()?;
+            return self.dirty.touch();
+        }
         let current = match self.selection_cursor.get() {
             Some((node, value)) if node == from && self.value.source.try_get()? == value => {
                 value
@@ -299,10 +308,11 @@ impl Controller {
     }
 }
 pub struct Calendar {
-    common: Common,
+    pub(crate) common: Common,
     key: String,
     provider: Lotus<DatesProvider>,
     value: Value<Option<CivilDate>>,
+    projection: Option<Lotus<DateSelection>>,
     month: Option<Lotus<YearMonth>>,
     default_month: Option<YearMonth>,
     readonly: Lotus<bool>,
@@ -320,6 +330,7 @@ pub fn calendar(key: impl Into<String>, provider: impl Into<Lotus<DatesProvider>
         key: key.into(),
         provider: provider.into(),
         value: Value::default(),
+        projection: None,
         month: None,
         default_month: None,
         readonly: false.into(),
@@ -343,6 +354,13 @@ pub fn mini_calendar(
 }
 impl Calendar {
     common_methods!();
+    pub(crate) fn selection_projection(
+        mut self,
+        value: impl Into<Lotus<DateSelection>>,
+    ) -> Self {
+        self.projection = Some(value.into());
+        self
+    }
     pub fn value(mut self, value: impl Into<Lotus<Option<CivilDate>>>) -> Self {
         self.value.source = Some(value.into());
         self
@@ -443,20 +461,29 @@ impl Widget for Calendar {
         let enabled = self.common.enabled.clone();
         let readonly = self.readonly.clone();
         let p = provider.clone();
+        let projection = self.projection.take();
+        let selection_surface = projection.is_some();
         let source = scope.bond(move || {
             let provider = p.get();
             let month = month_source.get();
+            let selection = projection
+                .as_ref()
+                .map_or_else(|| DateSelection::Single(value_source.get()), Lotus::get);
             Snapshot {
                 provider,
                 month,
-                value: value_source.get(),
+                value: selection.anchor(),
+                selection,
                 grid: MonthGrid::new(month, provider.first_weekday()),
                 enabled: enabled.get(),
                 readonly: readonly.get(),
             }
         });
         let accepted = composite::validated(scope, &source.into(), |s: &Snapshot| {
-            if !s.provider.date_bounds().month_allowed(s.month)
+            if s.selection
+                .validate(s.selection.mode(), s.provider.date_bounds())
+                .is_err()
+                || !s.provider.date_bounds().month_allowed(s.month)
                 || s.value
                     .is_some_and(|d| !s.provider.date_bounds().contains(d))
             {
@@ -490,6 +517,7 @@ impl Widget for Calendar {
             excluded,
             weekdays: self.weekdays,
             allow_deselect: self.allow_deselect,
+            selection_surface,
             focused,
             physical,
             references,
@@ -669,6 +697,8 @@ impl Widget for Calendar {
                 Some(Box::new(Semantics {
                     id: Some(id.clone()),
                     grid_navigation: Some(direction),
+                    grid_multiple: accepted
+                        .with(|s| s.selection.mode() != DatePickerMode::Single),
                     readonly: accepted.with(|s| s.readonly),
                     table: Some(TableMetadata::Table {
                         rows: Some(7),
@@ -784,7 +814,8 @@ impl Widget for Calendar {
                         .semantics(scope.bond(move || {
                             Some(Box::new(Semantics {
                                 selected: Some(accepted.with(|s| {
-                                    s.value.is_some() && s.value == s.grid.cells()[index]
+                                    s.grid.cells()[index]
+                                        .is_some_and(|d| s.selection.contains(d))
                                 })),
                                 table: Some(TableMetadata::Cell {
                                     row: row as u32,
@@ -942,7 +973,7 @@ impl Widget for DayButton {
             .style(scope.bond(move || {
                 let s = accepted.get();
                 let date = s.grid.cells()[index];
-                let chosen = date.is_some() && s.value == date;
+                let chosen = date.is_some_and(|d| s.selection.contains(d));
                 let enabled = date.is_some_and(|d| style_state.allowed(s, d));
                 let focused = reference.get().is_some_and(|id| physical.get() == Some(id));
                 let mut style = Style::new()

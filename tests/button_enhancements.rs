@@ -109,6 +109,55 @@ fn sections_preserve_label_identity_and_exclude_adornment_text_from_the_button_n
     );
 }
 #[test]
+fn section_validation_owns_its_dependency_inside_keyed_construction_and_keeps_typed_errors() {
+    let app = App::memory();
+    let rows = app.scope().cage(vec!["Save".to_owned()]);
+    app.mount(each(
+        rows,
+        |_| 0u8,
+        |item, _| {
+            component(move |scope| {
+                button()
+                    .label(scope.bond(move || item.get()))
+                    .left_section(text().content("★"))
+                    .show_in(scope)
+            })
+        },
+    ))
+    .unwrap();
+    let stable = label(&app);
+    rows.revise(|r| r[0] = "Changed".into());
+    app.flush().unwrap();
+    assert_eq!(label(&app), stable);
+    assert!(
+        matches!(app.tree().node(stable).unwrap().descriptor.view().props,Props::Text(p)if p.content=="Changed")
+    );
+    let app = App::memory();
+    let error = app
+        .mount(each(
+            vec!["Invalid".to_owned()],
+            |_| 0u8,
+            |item, _| {
+                component(move |scope| {
+                    button()
+                        .label(scope.bond(move || item.get()))
+                        .left_section(view())
+                        .show_in(scope)
+                })
+            },
+        ))
+        .unwrap_err();
+    assert!(
+        matches!(
+            error,
+            glory::ui::Error::Render(glory::render::Error::InvalidProps(
+                "button children must be inline text, images or groups"
+            ))
+        ),
+        "{error:?}"
+    );
+}
+#[test]
 fn section_names_and_shared_button_content_rules_reject_before_leaving_nodes() {
     let app = App::memory();
     assert!(

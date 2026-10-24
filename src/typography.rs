@@ -156,28 +156,17 @@ impl Text {
     }
 }
 fn body(common: &Common, variant: TextVariant) -> Style {
-    let base = common
-        .theme
-        .label(common.size)
-        .font_size
-        .expect("theme font size")
-        + 2.0;
-    let size = match variant {
-        TextVariant::Body | TextVariant::Muted => base,
-        TextVariant::Lead => base + 4.0,
-        TextVariant::Small => base - 2.0,
-        TextVariant::Caption => base - 4.0,
+    let role = match variant {
+        TextVariant::Body | TextVariant::Muted => crate::TypographyRole::Body,
+        TextVariant::Lead => crate::TypographyRole::Lead,
+        TextVariant::Small => crate::TypographyRole::Small,
+        TextVariant::Caption => crate::TypographyRole::Caption,
     };
+    let metrics = common.theme.typography(role, common.size);
     Style {
-        font_size: Some(size),
-        line_height: Some(
-            size * if variant == TextVariant::Caption {
-                1.4
-            } else {
-                1.55
-            },
-        ),
-        font_weight: Some(400.0),
+        font_size: Some(metrics.font_size),
+        line_height: Some(metrics.line_height),
+        font_weight: metrics.weight,
         color: Some(
             if matches!(variant, TextVariant::Muted | TextVariant::Caption) {
                 common.theme.muted
@@ -236,19 +225,15 @@ impl Widget for Title {
         if !(1..=6).contains(&self.level) {
             return Err(glory::render::Error::InvalidProps("title level must be 1..=6").into());
         }
-        let size = [32.0, 28.0, 24.0, 20.0, 18.0, 16.0][usize::from(self.level - 1)]
-            * self
-                .common
-                .theme
-                .label(self.common.size)
-                .font_size
-                .expect("theme font size")
-            / 14.0;
+        let metrics = self.common.theme.typography(
+            crate::TypographyRole::heading(self.level).expect("validated heading"),
+            self.common.size,
+        );
         apply_metrics(&mut self.common, scope, &self.metrics);
         let style = Style {
-            font_size: Some(size),
-            line_height: Some(size * 1.3),
-            font_weight: Some(700.0),
+            font_size: Some(metrics.font_size),
+            line_height: Some(metrics.line_height),
+            font_weight: metrics.weight,
             color: Some(self.common.theme.foreground),
             margin: Some(Edges::all(0.0)),
             ..Style::new().font_family([Family::System])

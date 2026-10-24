@@ -55,9 +55,11 @@ nearest shortcut-scope retirement, blank/Unicode-whitespace name rejection befor
 node allocation and the maximum live/scrollable result set. Render's Palette test covers finite
 origin constraints and suspension; native `blitz/tests/palette.rs` explicitly
 rejects the interest while preserving the accepted Bounds watermark. Existing
-Dialog Layer/editable Choice facets remain explicitly unsupported in native.
+The required editable Choice and Palette facets remain explicitly unsupported
+in native; the separate Dialog/Popover native layer driver is implemented.
 `ssr/src/stream/command_tests.rs` produces real Dialog/Input/Listbox/Option
-Shell/Patch/End using HTML v5/classic v2, without a pre-WASM input driver.
+Shell/Patch/End, originally verified with HTML v5/classic v2 on Web20. Current
+producers follow HTML v13/classic v2, without a pre-WASM input driver.
 
 The Web fixture is `examples/web/command_form.rs` and its independent suite is
 `examples/web/command-acceptance.js`. Its original fourteen groups pass on

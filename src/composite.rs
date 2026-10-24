@@ -140,9 +140,13 @@ pub(crate) fn validated<T: Clone + PartialEq + 'static>(
     source: &Lotus<T>,
     check: impl Fn(&T) -> Result + 'static,
 ) -> Result<Cage<T>> {
-    let initial = source.try_with(|value| {
-        check(value)?;
-        Ok::<T, glory::ui::Error>(value.clone())
+    // This construction sample is not a subscription of an enclosing Each or
+    // When observer. The validator below owns the live source dependency.
+    let initial = glory::core::untracked(|| {
+        source.try_with(|value| {
+            check(value)?;
+            Ok::<T, glory::ui::Error>(value.clone())
+        })
     })??;
     let current = scope.cage(initial);
     // Lotus::Value owns T directly. Clone its source only after validation,

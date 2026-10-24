@@ -28,7 +28,9 @@ async function(page, base='http://127.0.0.1:8794') {
     assert(await body().textContent()===json,`${mode}: JSON source update`);
     assert(await first.evaluate(el=>el===document.querySelector('.code-demo-highlight .sapid-code-source code')),`${mode}: stable position identity lost`);
     await page.getByRole('button',{name:'Show plain code',exact:true}).click();await turn();
-    assert(await body().locator('code').count()===1,`${mode}: Plain kept stale tokens`);
+    const plain=await body().locator('code').allTextContents();
+    assert(JSON.stringify(plain)===JSON.stringify(json.match(/[^\n]*\n|[^\n]+$/g)),`${mode}: Plain kept stale token/line fragments`);
+    assert(await body().locator('code').evaluateAll(items=>items.every(el=>!el.style.color)),`${mode}: Plain kept syntax ink`);
     const input=page.getByRole('textbox',{name:'Code draft',exact:true}); await input.fill('Actual code draft');await input.focus();await input.evaluate(el=>el.setSelectionRange(2,7));const editor=await input.elementHandle();
     await page.evaluate(()=>[...document.querySelectorAll('button')].find(el=>el.textContent==='Show Rust code').click());await turn();
     assert(await editor.evaluate(el=>el===document.activeElement&&el.value==='Actual code draft'&&el.selectionStart===2&&el.selectionEnd===7),`${mode}: update lost editor identity/focus/selection`);

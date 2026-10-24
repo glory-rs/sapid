@@ -77,6 +77,7 @@ struct Config {
     numbers: bool,
     start: u32,
     highlighted: Vec<usize>,
+    copy: Option<crate::CopyButton>,
 }
 impl Config {
     fn new(language: CodeLanguage) -> Self {
@@ -87,6 +88,7 @@ impl Config {
             numbers: false,
             start: 1,
             highlighted: Vec::new(),
+            copy: None,
         }
     }
 }
@@ -143,6 +145,11 @@ macro_rules! methods {
             }
             pub fn language(mut self, value: impl Into<Lotus<CodeLanguage>>) -> Self {
                 self.config.language = value.into();
+                self
+            }
+            /// Add a configured CopyButton. Its source is always the accepted code.
+            pub fn copy_button(mut self, value: crate::CopyButton) -> Self {
+                self.config.copy = Some(value);
                 self
             }
             pub fn line_numbers(mut self, value: bool) -> Self {
@@ -263,6 +270,15 @@ fn build(config: &mut Config, scope: &Scope) -> Result {
     }
     root.show_in(scope)?;
     let area = scope.child_in(reference.try_get()?.ok_or(glory::ui::Error::Gone)?)?;
+    if let Some(mut copy) = config.copy.take() {
+        if unstyled {
+            copy = copy.unstyled();
+        }
+        copy.source(
+            scope.bond(move || accepted.with(|value| value.document.source().to_string())),
+        )
+        .show_in(&area)?;
+    }
     let mut row = glory::ui::view().class("sapid-code-scroll").style(
         Style::new()
             .display(Display::Flex)

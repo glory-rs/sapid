@@ -1,5 +1,13 @@
 # Component and adapter evidence
 
+The current per-work-item source is the [explicit capability ledger](component-capabilities.md),
+generated with the [interactive gallery](../examples/web/gallery.html) from
+`docs/capability-matrix.json` and the canonical inventory. It distinguishes tested,
+model-only, rejected and pending states for all 149 work items. The family table
+and gate history below preserve earlier snapshots; newer native Layer and other
+capabilities supersede their older refusals only where the explicit ledger and
+canonical evidence say so.
+
 This matrix records implemented finite contracts, not full parity with every
 upstream option. Record/SSR validate structure; browser tests validate actual DOM,
 keyboard/pointer input, hydration and Chrome AX snapshots. Native engine tests

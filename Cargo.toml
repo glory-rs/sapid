@@ -9,11 +9,16 @@ publish = false
 
 [features]
 default = []
+charts = ["dep:libm"]
+chat = ["files"]
 code = []
+files = []
+editor = []
 json = ["dep:serde_json"]
 dates = []
 
 [dependencies]
+libm = { version = "=0.2.16", default-features = false, optional = true }
 glory = { path = "../glory/crates/glory", default-features = false }
 serde_json = { version = "=1.0.154", features = ["raw_value"], optional = true }
 

@@ -3,6 +3,8 @@
   root.dataset.hue=params.get('theme')==='green'||location.pathname.includes('green')?'green':'blue';
   root.dataset.mode=params.get('scheme')==='dark'||location.pathname.includes('dark')?'dark':'light';
   window.setupShowcase=page=>{
+    const sidebar=document.querySelector('.sidebar');
+    if(sidebar&&!sidebar.querySelector('[data-page="gallery"]')){const gallery=document.createElement('a');gallery.href='gallery.html';gallery.dataset.page='gallery';gallery.textContent='All components · capability gallery';sidebar.append(gallery);}
     document.querySelectorAll(`[data-page="${page}"]`).forEach(e=>e.classList.add('active'));
     const go=(hue,mode)=>{
       const hydrate=location.pathname.includes('hydrate');

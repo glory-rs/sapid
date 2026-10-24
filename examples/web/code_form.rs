@@ -25,6 +25,7 @@ pub fn code_form(theme: sapid::Theme) -> impl Widget {
                 sapid::code_highlight()
                     .theme(theme.clone())
                     .class("code-demo-highlight")
+                    .copy_button(sapid::copy_button().theme(theme.clone()).class("code-copy").label("Copy highlighted code"))
                     .source(content)
                     .language(language)
                     .line_numbers(true)
@@ -79,10 +80,11 @@ pub fn code_form(theme: sapid::Theme) -> impl Widget {
                             }),
                     )),
                 sapid::text_field().theme(theme.clone()).name("Search JSON structure").value(query).on_value_change(move|value|query.revise(|q|*q=value)),
-                sapid::json_viewer("code-viewer").theme(theme.clone()).name("JSON structure").source(document).expanded(expanded).search(query).on_expanded_change(move|next| {
+                sapid::json_viewer("code-viewer").copy_button(sapid::copy_button().theme(theme.clone()).class("json-copy").label("Copy complete JSON")).theme(theme.clone()).name("JSON structure").source(document).expanded(expanded).search(query).on_expanded_change(move|next| {
                     proposals.revise(|count|*count+=1);
                     if accepted.get(){expanded.revise(|paths|*paths=next)}
                 }),
+                crate::json_tree_example::json_tree_example(theme.clone()),
                 glory::ui::text().class("json-demo-proposals").content(proposals.map(|count|format!("Expansion proposals: {count}"))),
                 glory::ui::view().style(Style { flex_wrap:Some(glory::style::FlexWrap::Wrap),..Style::new().display(Display::Flex).gap(8.) }).fill((
                     sapid::button().theme(theme.clone()).label("Reject or accept JSON expansion").on_press(move||accepted.revise(|value|*value = !*value)),

@@ -445,7 +445,7 @@ impl State {
         }
         Ok(())
     }
-    fn finalize_search(&self) -> Result {
+    fn finalize_search(&self, edited: bool) -> Result {
         if !self.owner.is_alive() || self.composing.try_get()? {
             return Ok(());
         }
@@ -461,7 +461,10 @@ impl State {
         if self.query.try_with(|value| *value != query)? {
             self.query.try_revise(|value| *value = query)?;
         }
-        if self.editable.try_get()?
+        // A selected option may be refused independently from its accepted search
+        // text. Only an actual editor change proposes clearing a mismatched key.
+        if edited
+            && self.editable.try_get()?
             && selected.as_ref().is_some_and(|key| {
                 self.config.options().any(|(option, _)| {
                     option.key.as_str() == key
@@ -496,7 +499,7 @@ impl State {
             self.searched.emit(self.owner, value);
         }
         if self.owner.is_alive() {
-            self.finalize_search()?;
+            self.finalize_search(true)?;
             if !commit && changed {
                 self.opened(true)?;
             }
@@ -545,7 +548,7 @@ impl State {
                 self.searched.emit(self.owner, String::new());
             }
             if self.owner.is_alive() {
-                self.finalize_search()?;
+                self.finalize_search(false)?;
             }
             return Ok(());
         }
@@ -563,7 +566,7 @@ impl State {
             self.searched.emit(self.owner, search);
         }
         if self.owner.is_alive() {
-            self.finalize_search()?;
+            self.finalize_search(false)?;
             self.opened(false)?;
         }
         Ok(())
@@ -875,7 +878,7 @@ impl Widget for Combobox {
                     controller.composing.try_revise(|value| *value = *active)?;
                     if !active {
                         controller.dirty.touch()?;
-                        controller.finalize_search()?;
+                        controller.finalize_search(true)?;
                     }
                     Ok(())
                 })();
@@ -1856,6 +1859,33 @@ mod tests {
         assert_eq!(input(&app).value, "Program");
         assert!(selected(&app, "Alpha"));
         assert!(proposed.borrow().is_empty());
+    }
+    #[test]
+    fn refusing_a_chosen_key_does_not_emit_an_extra_clear_when_local_search_accepts_its_label()
+    {
+        let app = App::memory();
+        let source = app.scope().cage(Some("a".to_owned()));
+        let proposed = Rc::new(std::cell::RefCell::new(Vec::new()));
+        let output = proposed.clone();
+        app.mount(
+            choices()
+                .value(source)
+                .default_open(true)
+                .on_value_change(move |value| output.borrow_mut().push(value)),
+        )
+        .unwrap();
+        app.dispatch(option(&app, "Bravo"), Event::Activate)
+            .unwrap();
+        assert_eq!(*proposed.borrow(), [Some("b".into())]);
+        assert_eq!(source.get(), Some("a".into()));
+        assert!(selected(&app, "Alpha"));
+        assert_eq!(input(&app).value, "Bravo");
+        edit(&app, "User edit", false);
+        assert_eq!(
+            proposed.borrow().last(),
+            Some(&None),
+            "actual editing still proposes clearing a mismatched key"
+        );
     }
     include!("combobox_advanced_tests.rs");
 }

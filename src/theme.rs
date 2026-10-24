@@ -1,5 +1,6 @@
 //! Semantic color tokens inspired by Mantine/Open Color. Themes are mount-time
 //! configuration; all colors remain portable Glory Style values.
+use crate::theme_tokens::{SIZES, ThemeTokens, TypographyMetrics, TypographyRole};
 use glory::style::{BorderStyle, Color, Edges, Family, Length, Style};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
@@ -19,15 +20,6 @@ impl Size {
             Self::Medium => "sapid-size-medium",
             Self::Large => "sapid-size-large",
             Self::ExtraLarge => "sapid-size-extra-large",
-        }
-    }
-    fn metrics(self) -> (f64, f64, f64, f64) {
-        match self {
-            Self::ExtraSmall => (24.0, 11.0, 2.0, 8.0),
-            Self::Small => (30.0, 13.0, 4.0, 10.0),
-            Self::Medium => (36.0, 14.0, 6.0, 12.0),
-            Self::Large => (42.0, 16.0, 8.0, 14.0),
-            Self::ExtraLarge => (50.0, 18.0, 8.0, 20.0),
         }
     }
 }
@@ -92,6 +84,7 @@ pub struct Theme {
     pub disabled: Color,
     pub disabled_text: Color,
     pub radius: f64,
+    pub tokens: ThemeTokens,
 }
 impl Default for Theme {
     fn default() -> Self {
@@ -153,6 +146,7 @@ impl Theme {
             disabled: rgb(0xf1f3f5),
             disabled_text: rgb(0x868e96),
             radius: 4.0,
+            tokens: ThemeTokens::default(),
         };
         if scheme == ColorScheme::Dark {
             theme.canvas = rgb(0x141517);
@@ -187,22 +181,45 @@ impl Theme {
             (Hue::Green, ColorScheme::Dark) => "sapid-theme-green-dark",
         }
     }
+    pub fn with_tokens(mut self, tokens: ThemeTokens) -> Self {
+        self.tokens = tokens;
+        self
+    }
+    pub fn spacing(&self, size: Size) -> f64 {
+        self.tokens.spacing(size)
+    }
+    pub fn typography(&self, role: TypographyRole, size: Size) -> TypographyMetrics {
+        self.tokens.typography(role, size)
+    }
+    pub fn validate(&self) -> Result<(), glory::render::Error> {
+        if !self.radius.is_finite() || self.radius < 0. {
+            return Err(glory::render::Error::InvalidProps("invalid theme radius"));
+        }
+        for size in SIZES {
+            self.control(size)
+                .validate()
+                .map_err(glory::render::Error::InvalidProps)?;
+        }
+        Ok(())
+    }
     pub(crate) fn control(&self, size: Size) -> Style {
-        let (height, font_size, vertical, horizontal) = size.metrics();
+        let control = self.tokens.control(size);
+        let text = self.tokens.typography(TypographyRole::Control, size);
         Style {
-            font_size: Some(font_size),
-            line_height: Some(font_size * 1.55),
+            font_size: Some(text.font_size),
+            line_height: Some(text.line_height),
+            font_weight: text.weight,
             color: Some(self.foreground),
             background: Some(self.input),
             ..Style::new()
-                .min_height(Length::Px(height))
+                .min_height(Length::Px(control.min_height))
                 .padding(Edges {
-                    top: vertical,
-                    bottom: vertical,
-                    left: horizontal,
-                    right: horizontal,
+                    top: control.padding_y,
+                    bottom: control.padding_y,
+                    left: control.padding_x,
+                    right: control.padding_x,
                 })
-                .radius(self.radius)
+                .radius(self.radius * control.radius_scale)
                 .border_width(Edges::all(1.0))
                 .border_style(BorderStyle::Solid)
                 .border_color(self.border)
@@ -213,19 +230,22 @@ impl Theme {
         self.label(size)
     }
     pub(crate) fn label(&self, size: Size) -> Style {
+        let text = self.tokens.typography(TypographyRole::Label, size);
         Style {
             color: Some(self.foreground),
-            font_size: Some(size.metrics().1),
-            line_height: Some(size.metrics().1 * 1.55),
-            font_weight: Some(500.0),
+            font_size: Some(text.font_size),
+            line_height: Some(text.line_height),
+            font_weight: text.weight,
             ..Style::new().font_family([Family::System])
         }
     }
     pub(crate) fn description(&self, size: Size) -> Style {
+        let text = self.tokens.typography(TypographyRole::Description, size);
         Style {
             color: Some(self.muted),
-            font_size: Some(size.metrics().1 - 1.0),
-            line_height: Some((size.metrics().1 - 1.0) * 1.5),
+            font_size: Some(text.font_size),
+            line_height: Some(text.line_height),
+            font_weight: text.weight,
             ..Style::new().font_family([Family::System])
         }
     }

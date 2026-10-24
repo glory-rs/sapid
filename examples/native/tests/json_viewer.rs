@@ -89,3 +89,106 @@ fn native_json_disclosures_four_theme_geometry_pixels_focus_search_and_owner_ret
         assert_eq!(app.stats().queries, 0);
     }
 }
+#[test]
+fn native_reused_json_tree_four_theme_geometry_pixels_focus_reorder_and_search() {
+    use glory::render::{Role, TreeCommand};
+    for theme in [
+        sapid::Theme::blue_light(),
+        sapid::Theme::blue_dark(),
+        sapid::Theme::green_light(),
+        sapid::Theme::green_dark(),
+    ] {
+        let host = WindowApp::new();
+        host.renderer().set_viewport(480, 320, 1.).unwrap();
+        let app = host.app();
+        let source = app
+            .scope()
+            .cage("{\"branch\":{\"leaf\":\"😀 exact\"},\"version\":1}".to_string());
+        let search = app.scope().cage(String::new());
+        host.mount(
+            sapid::json_viewer("native-tree")
+                .theme(theme)
+                .source(source)
+                .search(search)
+                .tree_navigation(true),
+        )
+        .unwrap();
+        let root = nodes(app, "sapid-json-tree")[0];
+        let find = |name: &str| {
+            nodes(app, "sapid-tree-item")
+                .into_iter()
+                .find(|id| {
+                    app.tree()
+                        .node(*id)
+                        .unwrap()
+                        .descriptor
+                        .view()
+                        .name
+                        .as_deref()
+                        == Some(name)
+                })
+                .unwrap()
+        };
+        let branch = find("branch: Object");
+        let engine = host
+            .renderer()
+            .engine_id(branch, glory::html::Part::Main)
+            .unwrap();
+        assert_eq!(
+            app.tree().node(branch).unwrap().descriptor.view().role,
+            Some(Role::TreeItem)
+        );
+        let QueryValue::Bounds(bounds) = query(app, Query::Bounds(branch)) else {
+            panic!()
+        };
+        assert!(bounds.width > 50. && bounds.height > 15.);
+        let mut raster = Raster::new();
+        raster.draw(host.renderer()).unwrap();
+        let before = raster.pixels().to_vec();
+        app.scope().action(Action::Focus(branch)).unwrap();
+        app.flush().unwrap();
+        app.dispatch(
+            root,
+            Event::TreeNavigate {
+                from: branch,
+                command: TreeCommand::Open,
+            },
+        )
+        .unwrap();
+        app.flush().unwrap();
+        let leaf = find("leaf: String");
+        assert_eq!(query(app, Query::Focus(branch)), QueryValue::Focus(true));
+        let QueryValue::Bounds(child) = query(app, Query::Bounds(leaf)) else {
+            panic!()
+        };
+        assert!(child.y > bounds.y);
+        raster.draw(host.renderer()).unwrap();
+        assert_ne!(raster.pixels(), before);
+        source.revise(|v| *v = "{\"version\":1,\"branch\":{\"leaf\":\"😀 exact\"}}".into());
+        app.flush().unwrap();
+        assert_eq!(find("branch: Object"), branch);
+        assert_eq!(find("leaf: String"), leaf);
+        assert_eq!(
+            host.renderer()
+                .engine_id(branch, glory::html::Part::Main)
+                .unwrap(),
+            engine
+        );
+        assert_eq!(query(app, Query::Focus(branch)), QueryValue::Focus(true));
+        app.dispatch(
+            root,
+            Event::TreeNavigate {
+                from: branch,
+                command: TreeCommand::Close,
+            },
+        )
+        .unwrap();
+        app.flush().unwrap();
+        search.revise(|v| *v = "exact".into());
+        app.flush().unwrap();
+        assert!(app.tree().node(find("leaf: String")).is_ok());
+        app.clear().unwrap();
+        assert_eq!(app.runtime_stats().tasks, 0);
+        assert_eq!(app.stats().queries, 0);
+    }
+}

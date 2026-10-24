@@ -471,38 +471,67 @@
       "id": "P0-11",
       "phase": "P0",
       "name": "FocusScope / Layer / Portal",
-      "status": "partial",
+      "status": "done",
       "sources": [
         "M:FocusTrap",
         "M:Portal"
       ],
-      "work": "宿主Layer基础已完成Web跨App与原生真实Dialog/Popover：当前声明1024预算、嵌套/关联scope、焦点返回/隔离和滚动锁已有证据。独立通用FocusScope和Portal目标/Owner API仍待补齐，本项保持partial。",
+      "work": "Layer、Portal 与独立 FocusScope 已闭环：真实 Web/SSR/原生焦点、跨 App/嵌套返回、有限声明与 placement 预算、Owner 生命周期和经典流协议。保持原生其余 Layer facet 的明确能力边界。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/portal.rs",
+          "src/focus_scope.rs",
+          "docs/portal.md",
+          "docs/focus-scope.md",
+          "../glory/crates/render/src/focus_scope.rs",
+          "../glory/crates/ui/src/app.rs",
+          "../glory/crates/web/src/browser/focus_scope.rs",
+          "../glory/crates/blitz/src/focus_scope.rs"
+        ],
+        "tests": [
+          "tests/portals.rs",
+          "tests/focus_scopes.rs",
+          "../glory/crates/ui/tests/disposal_boundaries.rs",
+          "examples/native/tests/portals.rs",
+          "D:/BuildCache/sapid/focus-browser-web35.json (15 passed, zero errors)",
+          "D:/BuildCache/sapid/focus-stream-browser-web35.json (4 passed, zero errors)",
+          "D:/BuildCache/sapid/portal-browser-portal-next.json (15 passed, zero errors)",
+          "D:/BuildCache/sapid/focus-native-tests.log (5 actual native tests)",
+          "D:/BuildCache/sapid/focus-native-ax-tests.log",
+          "D:/BuildCache/sapid/focus-html-tests.log",
+          "D:/BuildCache/sapid/focus-stream-tests.log"
+        ]
       }
     },
     {
       "id": "P0-12",
       "phase": "P0",
       "name": "Theme / Direction / Locale / Motion",
-      "status": "partial",
+      "status": "done",
       "sources": [
         "S:Direction",
         "M:Transition"
       ],
-      "work": "已完成蓝/绿各明暗主题、十阶色板、独立语义色和正文/按钮对比度检查、可选 focus/hover 样式、reduced-motion；主题为挂载配置。方向/本地化、完整 spacing/typography/radius token 系统、宿主时钟和过渡生命周期仍待实现。",
+      "work": "显式 Theme/Direction/Locale factory context，有限不可变 spacing/control/typography/radius tokens 被真实 Button/Input/Check/Text/Title 消费；typed inherited dir/lang 与 Native AX language，Locale 12 条显式消息，Reduce 被真实 Collapsible 过渡消费。宿主时钟和 Owner 取消复用既有能力，不宣称隐式全控件翻译。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
+          "src/theme_tokens.rs",
+          "src/environment.rs",
           "src/theme.rs",
-          "src/appearance.rs",
-          "styles/sapid.css"
+          "src/typography.rs",
+          "docs/environment.md"
         ],
         "tests": [
-          "tests/fields.rs (four_themes_have_distinct_surfaces_and_readable_semantic_text)",
-          "examples/web/field-acceptance.js"
+          "tests/environments.rs",
+          "tests/theme_tokens.rs",
+          "D:/BuildCache/sapid/environment-tests.log",
+          "D:/BuildCache/sapid/environment-html-tests.log",
+          "D:/BuildCache/sapid/environment-native-tests.log",
+          "D:/BuildCache/sapid/environment-native-ax-tests.log",
+          "D:/BuildCache/sapid/environment-browser-web38.json (11 reports, zero errors)",
+          "D:/BuildCache/sapid/environment-stream-browser-web38.json (5 reports, zero errors)"
         ]
       }
     },
@@ -535,25 +564,37 @@
       "id": "P0-14",
       "phase": "P0",
       "name": "Gallery / Adapter capability matrix",
-      "status": "partial",
+      "status": "done",
       "sources": [],
-      "work": "已更新文档展示站：导航/搜索、四套主题、交互预览、API 表、响应式布局；基础/组合/浮层页均保留当前页切换主题，跨页保留配色，24 组 CSR/SSR 主题实例已验收。Field 的 Web/SSR/hydration 与原生语义已有证据。完整逐组件适配器矩阵、其他新组件及真实 OS/AT 验收仍需持续补充。",
+      "work": "Glory + Sapid Rust 展示站：首页、149 工作项文档路由、搜索、明暗主题、实际示例、源码和 Button 参数面板；另保留显式149任务×5能力轴账本及静态审计 Gallery。独立 CSR 站点与20个代表 SSR/adoption 页面分别验收。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
-          "examples/web/fields.html",
-          "examples/web/showcase.css",
-          "examples/web/showcase.js",
-          "examples/web/src/fields_form.rs",
-          "README.md",
-          "examples/web/src/form.rs",
-          "examples/web/src/composite_form.rs",
-          "examples/web/src/overlay_form.rs",
-          "examples/web/src/bin/ssr.rs"
+          "docs/capability-matrix.json",
+          "docs/component-capabilities.md",
+          "scripts/capability-gallery.py",
+          "examples/web/gallery.js",
+          "examples/web/gallery.css",
+          "docs/gallery.md",
+          "examples/web/src/showcase.rs",
+          "examples/web/src/showcase_home.rs",
+          "examples/web/src/showcase_examples.rs",
+          "examples/web/src/showcase_catalog.rs",
+          "examples/web/src/showcase_host.rs",
+          "examples/web/src/bin/showcase_ssr.rs",
+          "examples/web/site.css",
+          "scripts/showcase-catalog.py",
+          "docs/showcase-site.md"
         ],
         "tests": [
-          "examples/web/field-acceptance.js",
-          "D:/BuildCache/sapid/browser-results.json"
+          "examples/web/gallery-acceptance.js",
+          "D:/BuildCache/sapid/gallery-browser-web39.json (12 original reports, zero errors)",
+          "python scripts/capability-gallery.py --check",
+          "examples/web/tests/showcase_site.rs",
+          "examples/web/showcase-acceptance.js",
+          "scripts/check-showcase.ps1",
+          "D:/BuildCache/sapid/showcase-browser.json",
+          "D:/BuildCache/sapid/showcase-gate.log"
         ]
       }
     },
@@ -1102,19 +1143,21 @@
       "id": "P3-02",
       "phase": "P3",
       "name": "Center / Container / Space",
-      "status": "partial",
+      "status": "done",
       "sources": [
         "M:Center",
         "M:Container",
         "M:Space"
       ],
-      "work": "Center/Container/Space已实现双轴居中、居中内框/最大宽度及显式px/percent spacing；四主题SSR/Web/native通过，全局breakpoint token仍待补。",
+      "work": "已完成原有真实布局及 ResponsiveRoot/Context：显式 SSR 初宽、五档有序断点、一个初始 Bounds + coalesced Resize、Owner 取消；断点 Style 被 Center/Container/Space/Grid/SimpleGrid 真正消费，更新几何保持节点身份。列数仍由调用方显式配置，不暗中扫描内容。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
           "src/layout.rs",
           "docs/layout-components.md",
-          "../glory/crates/style/src/lib.rs (FlexWrap)"
+          "../glory/crates/style/src/lib.rs (FlexWrap)",
+          "src/responsive.rs",
+          "docs/responsive.md"
         ],
         "tests": [
           "tests/layout.rs (5 passed)",
@@ -1122,7 +1165,9 @@
           "D:/BuildCache/sapid/layout-native.log",
           "../glory/crates/blitz/tests/flex_wrap.rs",
           "examples/web/layout-acceptance.js",
-          "D:/BuildCache/sapid/layout-display-browser.json"
+          "D:/BuildCache/sapid/layout-display-browser.json",
+          "D:/BuildCache/sapid/responsive-browser-web36.json (10 reports, zero errors)",
+          "D:/BuildCache/sapid/responsive-native-tests.log (actual layout of all five builders)"
         ]
       }
     },
@@ -1130,18 +1175,20 @@
       "id": "P3-03",
       "phase": "P3",
       "name": "Grid / SimpleGrid",
-      "status": "partial",
+      "status": "done",
       "sources": [
         "M:Grid",
         "M:SimpleGrid"
       ],
-      "work": "真实typed Grid/SimpleGrid、有限轨道/跨度/offset/自动排布、独立profile/CSS拒绝与SSR/Web/native已验证；响应式断点provider仍待补。",
+      "work": "已完成原有真实布局及 ResponsiveRoot/Context：显式 SSR 初宽、五档有序断点、一个初始 Bounds + coalesced Resize、Owner 取消；断点 Style 被 Center/Container/Space/Grid/SimpleGrid 真正消费，更新几何保持节点身份。列数仍由调用方显式配置，不暗中扫描内容。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
           "src/grid_layout.rs",
           "docs/grid-layout.md",
-          "../glory/crates/style/src/grid.rs"
+          "../glory/crates/style/src/grid.rs",
+          "src/responsive.rs",
+          "docs/responsive.md"
         ],
         "tests": [
           "tests/grid_layout.rs",
@@ -1149,7 +1196,9 @@
           "../glory/crates/html/tests/grid.rs",
           "../glory/crates/blitz/tests/grid.rs",
           "examples/native/tests/grid.rs",
-          "D:/BuildCache/sapid/grid-browser.json (8 passed; errors=[])"
+          "D:/BuildCache/sapid/grid-browser.json (8 passed; errors=[])",
+          "D:/BuildCache/sapid/responsive-browser-web36.json (10 reports, zero errors)",
+          "D:/BuildCache/sapid/responsive-native-tests.log (actual layout of all five builders)"
         ]
       }
     },
@@ -2233,20 +2282,25 @@
       "sources": [
         "X:Modals manager"
       ],
-      "work": "应用内有限FIFO打开/更新/关闭和确认队列、单active Layer、token去重与Owner清理已实现；复用真实Dialog/AlertDialog，更新保留editor，结果回调在manager Owner无借用重入；Web11真实最终焦点恢复/安全取消通过，native mount时明确拒绝。",
+      "work": "应用内有限FIFO打开/更新/关闭和确认队列、单active Layer、token去重与Owner清理已实现；复用真实Dialog/AlertDialog，更新保留editor，结果回调在manager Owner无借用重入；Web真实最终焦点恢复/安全取消通过。原生四主题真实top layer、Bounds/命中/像素、editor身份/selection、安全Cancel、FIFO最终触发器焦点恢复及Owner退休已验收；仅继承本次关闭managed层的有效focus fallback，Preserve/失效目标不参与，不保留关闭历史。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
           "src/modals.rs",
           "src/overlay.rs",
-          "docs/modals-manager.md"
+          "docs/modals-manager.md",
+          "../glory/crates/blitz/src/layers.rs"
         ],
         "tests": [
           "tests/modals.rs (8 passed)",
           "examples/native/tests/modals.rs",
           "examples/web/modals-acceptance.js",
           "D:/BuildCache/sapid/modals-browser-web11.json",
-          "D:/BuildCache/sapid/modals-native.log"
+          "D:/BuildCache/sapid/modals-native.log (historical explicit refusal before native top layers)",
+          "D:/BuildCache/sapid/modals-native-current-tests-fixed.log",
+          "D:/BuildCache/sapid/modals-native-handoff-tests.log",
+          "D:/BuildCache/sapid/modals-native-handoff-clippy.log",
+          "D:/BuildCache/sapid/modals-native-consumer-clippy.log"
         ]
       }
     },
@@ -2254,30 +2308,54 @@
       "id": "P5-14",
       "phase": "P5",
       "name": "FloatingWindow",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:FloatingWindow"
       ],
-      "work": "窗口移动/缩放、标题栏、焦点层级，依赖有限拖动及 Bounds。",
+      "work": "真实非模态top layer浮窗、受控有限移动/缩放、标题栏/键盘与mouse/touch capture、RaiseLayer焦点层级已完成；7组件+1模型、原生四主题真实Bounds/像素/编辑器/查询预算2、共享Layer10、Web28实际13条CSR/hydration/受控拒绝/碰撞/退休全过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/floating_window.rs",
+          "docs/floating-window.md",
+          "../glory/crates/render/src/viewport_layer.rs"
+        ],
+        "tests": [
+          "tests/floating_windows.rs (7 passed)",
+          "examples/native/tests/floating_windows.rs (2 passed)",
+          "examples/web/floating-window-acceptance.js",
+          "D:/BuildCache/sapid/window-browser-web28.json (13 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/window-native-consumer-final2.log",
+          "D:/BuildCache/sapid/window-shared-native-final.log",
+          "D:/BuildCache/sapid/window-strict-final.log"
+        ]
       }
     },
     {
       "id": "P5-15",
       "phase": "P5",
       "name": "Tour",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Tour"
       ],
-      "work": "步骤锚点、目标失效/滚动、聚焦和取消，不能扫描未挂载业务列表。",
+      "work": "有限64步/仅当前mounted目标注册、真实ScrollIntoView后Bounds锚定、失效按episode通知并可恢复、焦点返回/取消和有界query已完成；8组件、原生四主题真实滚动/定位/像素/输入身份/目标退休恢复2、Web29实际12条CSR/hydration/受控拒绝/dirty/Owner全过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/tour.rs",
+          "docs/tour.md",
+          "../glory/crates/blitz/src/scroll_into_view.rs"
+        ],
+        "tests": [
+          "tests/tours.rs (8 passed)",
+          "examples/native/tests/tours.rs (2 passed)",
+          "examples/web/tour-acceptance.js",
+          "D:/BuildCache/sapid/tour-tests.log",
+          "D:/BuildCache/sapid/tour-native-tests.log",
+          "D:/BuildCache/sapid/tour-browser-web29.json (12 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/tour-native-strict.log"
+        ]
       }
     },
     {
@@ -2565,18 +2643,25 @@
       "sources": [
         "M:OverflowList"
       ],
-      "work": "有界当前128项OverflowList已实现，真实布局测量、可控前缀提案、单Owner/节点移入Popover与移回、焦点交接、重排和dirty采用已补齐。10组件+2纯模型、原生四主题显式inline布局及Web21实际9项验收通过；默认原生Popup继续明确拒绝。",
+      "work": "有界当前128项OverflowList已实现，真实布局测量、可控前缀提案、单Owner/节点移入Popover与移回、焦点交接、重排和dirty采用已补齐。10组件+2纯模型、Web实际验收及原生inline/default Popover两项各四主题真实验收通过，含top layer、布局/命中/像素、editor身份/value/selection/focus和Owner清理。genuine Blitz fork c127fd9699a89ff8ecba0c8d8c9eccb3330627af修复隐藏旧owner的移动布局缓存引用，保留内部布局与编辑状态。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
           "src/overflow_list.rs",
-          "docs/overflow-list.md"
+          "docs/overflow-list.md",
+          "../glory/docs/engine-forks.json",
+          "../glory/docs/engine-forks.md"
         ],
         "tests": [
           "tests/overflow_list.rs (10 passed)",
           "examples/native/tests/overflow_list.rs",
           "examples/web/overflow-list-acceptance.js",
-          "D:/BuildCache/sapid/overflow-list-browser-root21.json (9 passed, Chromium 148.0.7778.96)"
+          "D:/BuildCache/sapid/overflow-list-browser-root21.json (9 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/overflow-list-native-popup-fixed.log",
+          "D:/BuildCache/sapid/overflow-list-native-popup-clippy.log",
+          "D:/BuildCache/sapid/overflow-engine-move-tests.log",
+          "D:/BuildCache/sapid/overflow-engine-full-tests.log",
+          "D:/BuildCache/sapid/overflow-engine-parallel-full-tests.log"
         ]
       }
     },
@@ -2988,22 +3073,33 @@
       "id": "P8-02",
       "phase": "P8",
       "name": "DataTable",
-      "status": "partial",
+      "status": "done",
       "sources": [
         "S:Data Table"
       ],
-      "work": "已实现有限本地/服务端分页模型与键控窗口行、排序/筛选/选择/列显隐/分页组合；5纯模型、4组件、共享Role表格坐标/排序5、窗口行2与HTML差分1通过。真实Web/原生窗口/AX/跨页受控边界正在验收，尚未完成。",
+      "work": "有限本地/权威服务端分页、稳定排序/筛选/选择/列显隐、键控窗口行已完成；5模型+6组件、共享坐标/排序/窗口/HTML差分、原生四主题实际窗口/像素2及AX1、Web27b真实20条CSR/hydration/移动/脏输入/服务端迟到回复/classic stream全过，严格检查通过。相同请求的新鲜度和网络取消由应用负责。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
           "src/data_table.rs",
-          "src/data_table_model.rs"
+          "src/data_table_model.rs",
+          "docs/data-table.md",
+          "../glory/crates/ui/src/list/widget.rs"
         ],
         "tests": [
-          "tests/data_tables.rs (4 passed)",
           "src/data_table_model.rs (5 passed)",
+          "tests/data_tables.rs (6 passed)",
+          "examples/native/tests/data_tables.rs (2 passed)",
+          "../glory/crates/render/tests/table.rs",
           "../glory/crates/ui/tests/table_list.rs (2 passed)",
-          "../glory/crates/html/src/table_tests.rs"
+          "../glory/crates/html/src/table_tests.rs",
+          "../glory/crates/blitz/src/accessibility_table_tests.rs",
+          "../glory/crates/ssr/src/stream/table_virtual_tests.rs",
+          "examples/web/data-table-acceptance.js",
+          "examples/web/data-table-server-acceptance.js",
+          "D:/BuildCache/sapid/data-table-browser-web27b.json (20 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/data-table-strict-final.log",
+          "D:/BuildCache/sapid/data-table-native-strict-final.log"
         ]
       }
     },
@@ -3011,46 +3107,110 @@
       "id": "P8-03",
       "phase": "P8",
       "name": "Tree",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Tree",
         "A:File Tree"
       ],
-      "work": "tree/treeitem、层级/展开/选择、方向键与懒加载；FileTree 作为数据适配器。",
+      "work": "真实Tree/TreeItem、有限层级/同级坐标、受控展开/选择、键盘/RTL/typeahead、显式lazy与FileTree纯数据适配已完成；5模型+10组件、render3/HTML差分1、原生真实键盘AX2与四主题布局/像素/滚动/编辑器2，Web30强化12条CSR/hydration/受控拒绝/dirty/touch/禁用Fieldset全过。仅挂载当前展开的有限2048节点，不宣称任意大源窗口化。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/tree.rs",
+          "src/tree_model.rs",
+          "docs/tree.md",
+          "../glory/crates/render/src/tree.rs"
+        ],
+        "tests": [
+          "src/tree_model.rs (5 passed)",
+          "tests/trees.rs (10 passed)",
+          "../glory/crates/render/tests/tree.rs (3 passed)",
+          "../glory/crates/html/src/tree_tests.rs (1 passed)",
+          "examples/native/tests/trees.rs (2 passed)",
+          "examples/web/tree-acceptance.js",
+          "D:/BuildCache/sapid/tree-native-shared-tests.log (2 passed)",
+          "D:/BuildCache/sapid/tree-native-components-final.log",
+          "D:/BuildCache/sapid/tree-native-strict.log",
+          "D:/BuildCache/sapid/tree-browser-web30.json (12 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P8-04",
       "phase": "P8",
       "name": "TreeSelect",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:TreeSelect"
       ],
       "work": "复用 Tree 和 Combobox，路径值与多选/半选策略。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/tree_choice_model.rs",
+          "src/tree_select.rs",
+          "src/cascader.rs",
+          "src/tree.rs",
+          "../glory/crates/render/src/choice.rs",
+          "../glory/crates/render/src/tree.rs",
+          "docs/tree-choices.md",
+          "完整路径与配对admission；真实Combobox+Tree popup；TreeSelect多选/父半选/叶子策略；Cascader真实Grid分列和单祖先链/懒加载。Native组合控件明确拒绝，独立Tree仍受支持。"
+        ],
+        "tests": [
+          "tests/tree_selects.rs (7 passed)",
+          "tests/cascaders.rs (6 passed)",
+          "D:/BuildCache/sapid/tree-choices-final-components.log (23 tests including 10 Tree regressions)",
+          "D:/BuildCache/sapid/tree-choices-final-model.log (6 tests, including exact 64/65-depth boundary)",
+          "D:/BuildCache/sapid/tree-choice-reference-tests.log (6 Tree + 11 existing choice tests)",
+          "D:/BuildCache/sapid/tree-choice-html.log (2 full-shape/reset differential tests)",
+          "examples/native/tests/tree_choices.rs",
+          "D:/BuildCache/sapid/tree-choices-native.log (2 four-theme rejection/prefix/watermark tests)",
+          "D:/BuildCache/sapid/tree-checked-native-ax.log (1 actual AccessKit state/clear test)",
+          "examples/web/tree-choices-acceptance.js",
+          "D:/BuildCache/sapid/tree-choices-browser-web33.json (21 reports: 10 TreeSelect, 11 Cascader; zero errors)",
+          "D:/BuildCache/sapid/tree-choices-browser-web33.log",
+          "D:/BuildCache/sapid/web33-source/source-hashes.json (immutable production and acceptance sources)",
+          "D:/BuildCache/sapid/tree-choices-final-strict.log"
+        ]
       }
     },
     {
       "id": "P8-05",
       "phase": "P8",
       "name": "Cascader",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Cascader"
       ],
       "work": "分列路径选择、懒加载、返回/展开导航。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/tree_choice_model.rs",
+          "src/tree_select.rs",
+          "src/cascader.rs",
+          "src/tree.rs",
+          "../glory/crates/render/src/choice.rs",
+          "../glory/crates/render/src/tree.rs",
+          "docs/tree-choices.md",
+          "完整路径与配对admission；真实Combobox+Tree popup；TreeSelect多选/父半选/叶子策略；Cascader真实Grid分列和单祖先链/懒加载。Native组合控件明确拒绝，独立Tree仍受支持。"
+        ],
+        "tests": [
+          "tests/tree_selects.rs (7 passed)",
+          "tests/cascaders.rs (6 passed)",
+          "D:/BuildCache/sapid/tree-choices-final-components.log (23 tests including 10 Tree regressions)",
+          "D:/BuildCache/sapid/tree-choices-final-model.log (6 tests, including exact 64/65-depth boundary)",
+          "D:/BuildCache/sapid/tree-choice-reference-tests.log (6 Tree + 11 existing choice tests)",
+          "D:/BuildCache/sapid/tree-choice-html.log (2 full-shape/reset differential tests)",
+          "examples/native/tests/tree_choices.rs",
+          "D:/BuildCache/sapid/tree-choices-native.log (2 four-theme rejection/prefix/watermark tests)",
+          "D:/BuildCache/sapid/tree-checked-native-ax.log (1 actual AccessKit state/clear test)",
+          "examples/web/tree-choices-acceptance.js",
+          "D:/BuildCache/sapid/tree-choices-browser-web33.json (21 reports: 10 TreeSelect, 11 Cascader; zero errors)",
+          "D:/BuildCache/sapid/tree-choices-browser-web33.log",
+          "D:/BuildCache/sapid/web33-source/source-hashes.json (immutable production and acceptance sources)",
+          "D:/BuildCache/sapid/tree-choices-final-strict.log"
+        ]
       }
     },
     {
@@ -3078,56 +3238,97 @@
       "id": "P9-02",
       "phase": "P9",
       "name": "Calendar / MiniCalendar",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "D:Calendar",
         "D:MiniCalendar",
         "S:Calendar"
       ],
-      "work": "日历网格、月/年跳转、禁用日、焦点日期与选中值，日历范围算法独立测试。",
+      "work": "有限42格Calendar/MiniCalendar、独立焦点/选择/today、月年跳转、禁用日/边界/locale/RTL、共享Grid键盘协议已完成；6组件+7日期模型、共享目标/HTML差分/原生键盘AX、原生四主题布局像素2、Web27b实际12条CSR/hydration/同tick导航/dirty/退休全过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/calendar.rs",
+          "src/dates.rs",
+          "docs/calendar.md",
+          "../glory/crates/render/src/grid.rs"
+        ],
+        "tests": [
+          "tests/calendars.rs (6 passed)",
+          "examples/native/tests/calendar.rs (2 passed)",
+          "examples/web/calendar-acceptance.js",
+          "../glory/crates/render/tests/grid.rs",
+          "D:/BuildCache/sapid/calendar-rust.log",
+          "D:/BuildCache/sapid/calendar-clippy.log",
+          "D:/BuildCache/sapid/calendar-native.log",
+          "D:/BuildCache/sapid/calendar-browser-web27b.json (12 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P9-03",
       "phase": "P9",
       "name": "DatePicker / DatePickerInput",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "D:DatePicker",
         "D:DatePickerInput",
         "S:Date Picker"
       ],
-      "work": "单日/多日/范围、弹层、Field 和键盘输入，复用 Calendar。",
+      "work": "单日/固定容量32多日/有序范围、Calendar复用、Field成功值及默认真实Dialog输入弹层已完成；5模型+9组件、原生默认popup实际3（四主题布局/像素/焦点/输入身份/退休）、Web28真实12条CSR/hydration/受控拒绝/同tick/容量/dirty/touch全过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/date_selection.rs",
+          "src/date_picker.rs",
+          "src/date_picker_input.rs",
+          "docs/date-picker.md"
+        ],
+        "tests": [
+          "src/date_selection.rs (5 passed)",
+          "tests/date_pickers.rs (9 passed)",
+          "examples/native/tests/date_picker.rs (3 passed)",
+          "examples/web/date-picker-acceptance.js",
+          "D:/BuildCache/sapid/date-picker-browser-web28.json (12 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/date-picker-rust-final.log",
+          "D:/BuildCache/sapid/date-picker-native-final.log",
+          "D:/BuildCache/sapid/date-picker-web-clippy.log"
+        ]
       }
     },
     {
       "id": "P9-04",
       "phase": "P9",
       "name": "DateInput",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "D:DateInput"
       ],
-      "work": "允许中间文本状态、可自定义解析、非法/越界值诊断。",
+      "work": "真实单行Input、有限严格ISO/注入parser、独立Empty/Incomplete/Valid/Invalid/OutOfBounds草稿与civil值、composition/程序revision/受控拒绝、默认Calendar Dialog及Field已完成；3模型+10组件、原生四主题输入/caret/像素/popup2、Web30强化12条通过，Calendar选择先发布Valid草稿再value回调。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/date_draft.rs",
+          "src/date_input.rs",
+          "docs/date-input.md"
+        ],
+        "tests": [
+          "src/date_draft.rs (3 passed)",
+          "tests/date_inputs.rs (10 passed)",
+          "examples/native/tests/date_input.rs (2 passed)",
+          "examples/web/date-input-acceptance.js",
+          "D:/BuildCache/sapid/date-input-rust.log",
+          "D:/BuildCache/sapid/date-input-native.log",
+          "D:/BuildCache/sapid/date-input-browser-web30.json (12 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/date-input-clippy.log"
+        ]
       }
     },
     {
       "id": "P9-05",
       "phase": "P9",
       "name": "MonthPicker / MonthPickerInput",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "D:MonthPicker",
         "D:MonthPickerInput"
@@ -3135,15 +3336,30 @@
       "work": "按月选择及范围，网格键盘导航。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/period_model.rs",
+          "src/period_picker.rs",
+          "src/period_picker_input.rs",
+          "docs/period-pickers.md",
+          "YearMonth/CivilYear 与 sealed DatePeriod；32 个有限选择，真实月份/十年 Grid、范围、多选、禁用、RTL、受控状态和只读 Input/Dialog。"
+        ],
+        "tests": [
+          "tests/period_pickers.rs",
+          "examples/native/tests/period_picker.rs",
+          "examples/web/period-picker-acceptance.js",
+          "D:/BuildCache/sapid/period-picker-rust.log (8 component tests)",
+          "D:/BuildCache/sapid/period-picker-native.log (2 actual four-theme native tests)",
+          "D:/BuildCache/sapid/period-picker-browser-portal-next.json (12 joint Month/Year browser reports, zero errors; shared evidence counted once)",
+          "D:/BuildCache/sapid/period-picker-browser-portal-next.log",
+          "models: 6 tests, all 119988 months and 9999 years; Grid command/Calendar/native keyboard regression; see docs/period-pickers.md"
+        ]
       }
     },
     {
       "id": "P9-06",
       "phase": "P9",
       "name": "YearPicker / YearPickerInput",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "D:YearPicker",
         "D:YearPickerInput"
@@ -3151,15 +3367,30 @@
       "work": "年份/区间、十年视图和边界。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/period_model.rs",
+          "src/period_picker.rs",
+          "src/period_picker_input.rs",
+          "docs/period-pickers.md",
+          "YearMonth/CivilYear 与 sealed DatePeriod；32 个有限选择，真实月份/十年 Grid、范围、多选、禁用、RTL、受控状态和只读 Input/Dialog。"
+        ],
+        "tests": [
+          "tests/period_pickers.rs",
+          "examples/native/tests/period_picker.rs",
+          "examples/web/period-picker-acceptance.js",
+          "D:/BuildCache/sapid/period-picker-rust.log (8 component tests)",
+          "D:/BuildCache/sapid/period-picker-native.log (2 actual four-theme native tests)",
+          "D:/BuildCache/sapid/period-picker-browser-portal-next.json (12 joint Month/Year browser reports, zero errors; shared evidence counted once)",
+          "D:/BuildCache/sapid/period-picker-browser-portal-next.log",
+          "models: 6 tests, all 119988 months and 9999 years; Grid command/Calendar/native keyboard regression; see docs/period-pickers.md"
+        ]
       }
     },
     {
       "id": "P9-07",
       "phase": "P9",
       "name": "TimeInput / TimeValue",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "D:TimeInput",
         "D:TimeValue"
@@ -3167,15 +3398,30 @@
       "work": "小时/分/秒、12/24h、空值和本地化展示。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/time_model.rs",
+          "src/time_input.rs",
+          "src/time_value.rs",
+          "docs/time-input.md",
+          "显式LocalTime/12/24h/中英与精度，真实Input/IME/草稿/受控，静态TimeValue；不默认时区且拒绝精度损失。"
+        ],
+        "tests": [
+          "tests/time_inputs.rs (9 passed)",
+          "examples/native/tests/time_input.rs (2 actual four-theme/Chinese/unstyled/readonly tests)",
+          "examples/web/time-input-acceptance.js",
+          "D:/BuildCache/sapid/time-model-rust.log (4 tests; all 86400 seconds and UTF-8 prefixes)",
+          "D:/BuildCache/sapid/time-input-browser-web31.json (12 passed, zero errors)",
+          "D:/BuildCache/sapid/dates-browser-web31.log (sequential original browser log)",
+          "D:/BuildCache/sapid/time-input-native.log",
+          "D:/BuildCache/sapid/time-input-clippy.log"
+        ]
       }
     },
     {
       "id": "P9-08",
       "phase": "P9",
       "name": "TimePicker / TimeGrid",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "D:TimePicker",
         "D:TimeGrid"
@@ -3183,560 +3429,1030 @@
       "work": "分段时间输入与可选时间网格、步长/禁用值。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/time_grid_model.rs",
+          "src/time_grid.rs",
+          "src/time_parts.rs",
+          "src/time_picker.rs",
+          "docs/time-picker.md",
+          "显式wall-clock分段SpinButton和真实Grid；有界步长/排除值、12/24h/中英、未完成段、受控/readonly/disabled。"
+        ],
+        "tests": [
+          "tests/time_grids.rs (6 passed)",
+          "tests/time_pickers.rs (8 passed)",
+          "examples/native/tests/time_picker.rs (2 actual tests)",
+          "D:/BuildCache/sapid/time-picker-rust-final.log",
+          "D:/BuildCache/sapid/time-grid-model-rust.log (2 tests)",
+          "D:/BuildCache/sapid/time-parts-rust.log (2 tests)",
+          "D:/BuildCache/sapid/time-picker-native.log",
+          "D:/BuildCache/sapid/time-picker-browser-web33.json (12 joint TimePicker/TimeGrid reports; zero errors)",
+          "D:/BuildCache/sapid/time-browser-web33.log (also independent TimeInput 12 regression)",
+          "D:/BuildCache/sapid/time-browser-web33-first-tab-contract.log (test corrected to explicit Enter Commit; no production change)",
+          "examples/web/time-picker-acceptance.js"
+        ]
       }
     },
     {
       "id": "P9-09",
       "phase": "P9",
       "name": "DateTimePicker / InlineDateTimePicker",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "D:DateTimePicker",
         "D:InlineDateTimePicker"
       ],
-      "work": "日期时间组合和时区/夏令时歧义的显式策略，不默默变成 UTC。",
+      "work": "DateTimePicker 与 InlineDateTimePicker：显式 civil/fixed-offset/application resolver、fold/gap 策略，部分草稿不默认补齐，受控值/清除/拒绝、真实 Calendar/TimePicker 组合和 Done/Escape/Form 边界。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/date_time_model.rs",
+          "src/date_time_picker.rs",
+          "docs/date-time-picker.md"
+        ],
+        "tests": [
+          "tests/date_time_pickers.rs",
+          "examples/native/tests/date_time_picker.rs",
+          "examples/web/date-time-picker-acceptance.js",
+          "D:/BuildCache/sapid/date-time-config-rust.log (12 components plus 8 TimePicker regressions)",
+          "D:/BuildCache/sapid/date-time-model-rust.log (6 passed)",
+          "D:/BuildCache/sapid/date-time-native.log (2 actual tests including four themes)",
+          "D:/BuildCache/sapid/date-time-picker-browser-web35.json (12 passed, zero errors)"
+        ]
       }
     },
     {
       "id": "P10-01",
       "phase": "P10",
       "name": "FileInput / FileButton",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:FileInput",
         "M:FileButton"
       ],
-      "work": "类型化文件引用、选择取消/多选/过滤；宿主返回非 ambient 路径句柄。",
+      "work": "FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。原生 picker/ambient 路径明确不支持；上传网络由应用提供。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "docs/files.md",
+          "../glory/crates/render/src/files.rs",
+          "../glory/crates/web/src/browser/files.rs",
+          "src/files.rs"
+        ],
+        "tests": [
+          "tests/files.rs",
+          "D:/BuildCache/sapid/file-component-six-final.log (6 passed)",
+          "D:/BuildCache/sapid/file-protocol-final-clippy.log",
+          "D:/BuildCache/sapid/file-fixture-shape-pass.log",
+          "D:/BuildCache/sapid/files-browser-web36.json (9 reports, zero errors)",
+          "D:/BuildCache/sapid/files-stream-browser-web36.json (one report, zero errors)"
+        ]
       }
     },
     {
       "id": "P10-02",
       "phase": "P10",
       "name": "Dropzone / Attachment",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "X:Dropzone",
         "S:Attachment"
       ],
-      "work": "文件拖入、容量/类型/数量预算、预览/取消与错误；上传网络由应用提供。",
+      "work": "FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。原生 picker/ambient 路径明确不支持；上传网络由应用提供。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "docs/files.md",
+          "../glory/crates/render/src/files.rs",
+          "../glory/crates/web/src/browser/files.rs",
+          "src/files.rs"
+        ],
+        "tests": [
+          "tests/files.rs",
+          "D:/BuildCache/sapid/file-component-six-final.log (6 passed)",
+          "D:/BuildCache/sapid/file-protocol-final-clippy.log",
+          "D:/BuildCache/sapid/file-fixture-shape-pass.log",
+          "D:/BuildCache/sapid/files-browser-web36.json (9 reports, zero errors)",
+          "D:/BuildCache/sapid/files-stream-browser-web36.json (one report, zero errors)"
+        ]
       }
     },
     {
       "id": "P10-03",
       "phase": "P10",
       "name": "CopyButton",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:CopyButton"
       ],
-      "work": "显式剪贴板 action、权限/拒绝、成功短暂反馈和计时取消。",
+      "work": "显式带revision/request的可信宿主剪贴板action、真实成功/拒绝/不可用/失败、每文档至多一个OS写入、Owner/源替换撤销与注入计时反馈已完成；4组件、共享协议/HTML零输出差分/SSR拒绝、原生明确不可用及四主题像素1、Web28实际9组写读/权限/迟到/dirty/退休全过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/copy_button.rs",
+          "docs/copy-button.md",
+          "../glory/crates/render/src/clipboard.rs",
+          "../glory/crates/web/src/browser/clipboard.rs"
+        ],
+        "tests": [
+          "tests/copy_button.rs (4 passed)",
+          "examples/native/tests/copy_button.rs (1 passed)",
+          "examples/web/copy-button-acceptance.js",
+          "D:/BuildCache/sapid/copy-button-browser-web28.json (9 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/clipboard-protocol-tests.log",
+          "D:/BuildCache/sapid/clipboard-html-tests.log",
+          "D:/BuildCache/sapid/clipboard-ssr-tests.log",
+          "D:/BuildCache/sapid/clipboard-native-tests.log"
+        ]
       }
     },
     {
       "id": "P10-04",
       "phase": "P10",
       "name": "Carousel",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "X:Carousel",
         "S:Carousel"
       ],
-      "work": "页/slide 状态、按钮/键盘/手势、自动播放暂停和窗口化。",
+      "work": "按索引最多7个短Owner、百万count不扫描源的真实轮播；受控页/RTL键盘、独立修订Swipe与轴意图/多指取消、注入宿主时钟autoplay及hover/focus/manual暂停；四主题CSR/adoption/Native实际验收。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/carousel.rs",
+          "src/carousel_model.rs",
+          "docs/carousel.md"
+        ],
+        "tests": [
+          "tests/carousel.rs",
+          "tests/carousel_model.rs",
+          "examples/native/tests/carousel.rs",
+          "examples/web/carousel-acceptance.js",
+          "D:/BuildCache/sapid/carousel-browser-web39.json (9 original reports, zero errors)",
+          "D:/BuildCache/sapid/carousel-native-debug0.log",
+          "D:/BuildCache/sapid/carousel-native-clippy-final.log"
+        ]
       }
     },
     {
       "id": "P10-05",
       "phase": "P10",
       "name": "Lightbox",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "X:Lightbox"
       ],
-      "work": "图片预览、切换/缩放、替代文本和资源预算，复用 modal 层。",
+      "work": "最多128条/256KiB元数据，真实管理Dialog中仅一个Image资源消费者；替代文本/解码失败、受控键值和1..4倍实际滚动缩放、键盘和焦点返回，关闭/Owner释放及宿主资源配置边界；Web/Native四主题实测。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/lightbox.rs",
+          "docs/lightbox.md"
+        ],
+        "tests": [
+          "tests/lightboxes.rs",
+          "examples/native/tests/lightboxes.rs",
+          "examples/web/lightbox-acceptance.js",
+          "D:/BuildCache/sapid/lightbox-component-tests.log (6 passed)",
+          "D:/BuildCache/sapid/lightbox-browser-web39.json (12 original reports, zero errors)",
+          "D:/BuildCache/sapid/plots-lightbox-native-final-tests.log",
+          "D:/BuildCache/sapid/plots-lightbox-native-strict.log"
+        ]
       }
     },
     {
       "id": "P10-06",
       "phase": "P10",
       "name": "CodeBlock / CodeHighlight",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "H:CodeHighlight",
         "S:Code Block"
       ],
-      "work": "可选语言 tokenizer、行号/复制/选区/大文件预算；HTML 和 native 使用同一文本模型。",
+      "work": "可选code无依赖语言tokenizer、真实可选文本/行号/强调/滚动、字节/token/行预算及accepted source真实复制已完成；7 Code+5组合复制测试、原生四主题布局像素1，原Code9与Web30配置复制8实际通过，精确源不含gutter/token装饰。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/code_model.rs",
+          "src/code_block.rs",
+          "docs/code-highlight.md"
+        ],
+        "tests": [
+          "tests/code.rs (7 passed)",
+          "tests/copy_button.rs",
+          "examples/native/tests/code.rs (1 passed)",
+          "examples/web/code-acceptance.js",
+          "examples/web/code-copy-acceptance.js",
+          "D:/BuildCache/sapid/code-browser-web28.json (9 passed)",
+          "D:/BuildCache/sapid/code-copy-browser-web30.json (8 passed)",
+          "D:/BuildCache/sapid/code-json-copy-tests.log",
+          "D:/BuildCache/sapid/json-tree-copy-native-tests.log"
+        ]
       }
     },
     {
       "id": "P10-07",
       "phase": "P10",
       "name": "JsonViewer",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "H:JsonViewer"
       ],
-      "work": "可折叠结构、搜索、复制和深度/节点预算，复用 Tree。",
+      "work": "有界无损JSON模型/重复key拒绝、文档disclosure与显式真实Tree模式、路径身份/搜索/深度节点预算及accepted完整源复制已完成；10 Rust、原生四主题两模式实际布局/像素/焦点/重排、原Json9及Web30 Tree9/组合复制8实际通过。Tree模式支持含root64级并在发布前拒更深数据。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/json_tree_model.rs",
+          "src/json_viewer.rs",
+          "src/json_viewer_tree.rs",
+          "docs/json-viewer.md"
+        ],
+        "tests": [
+          "tests/json_viewer.rs (10 passed)",
+          "examples/native/tests/json_viewer.rs",
+          "examples/web/json-viewer-acceptance.js",
+          "examples/web/json-tree-acceptance.js",
+          "examples/web/code-copy-acceptance.js",
+          "D:/BuildCache/sapid/json-viewer-browser-web28.json (9 passed)",
+          "D:/BuildCache/sapid/json-tree-browser-web30.json (9 passed)",
+          "D:/BuildCache/sapid/code-copy-browser-web30.json (8 passed)",
+          "D:/BuildCache/sapid/json-tree-tests.log",
+          "D:/BuildCache/sapid/json-tree-copy-native-tests.log"
+        ]
       }
     },
     {
       "id": "P10-08",
       "phase": "P10",
       "name": "RichTextEditor",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "X:Rich text editor"
       ],
-      "work": "Glory 需 rich editing/document/selection/IME/undo 协议；单独架构和安全内容模型，不能拿 Textarea 冒充。",
+      "work": "真实有限富文档/UTF16选区/marks/段落与heading、应用受控拒绝、独立32项2MiB历史、Web composition/source仲裁/真实plain clipboard；FORMAT13共享mapper/SSRstream/oracle，Web43原9+classic11+extra3全过；Native编辑与相关AX明确typed拒绝，不用Textarea冒充。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/rich_editor.rs",
+          "docs/rich-editor.md",
+          "../glory/docs/rich-editor-protocol-design.md",
+          "../glory/crates/render/src/rich.rs",
+          "../glory/crates/render/src/rich_document.rs"
+        ],
+        "tests": [
+          "tests/rich_editor.rs",
+          "examples/web/rich-editor-acceptance.js",
+          "examples/web/rich-editor-stream-acceptance.js",
+          "examples/web/rich-editor-extra-acceptance.js",
+          "D:/BuildCache/sapid/rich-editor-browser-web43.json (9 original reports)",
+          "D:/BuildCache/sapid/rich-editor-stream-browser-web43.json (11 original reports)",
+          "D:/BuildCache/sapid/rich-editor-extra-browser-web43.json (3 reports; actual clipboard/grapheme plus dispatched beforeinput protocol)",
+          "D:/BuildCache/sapid/rich-native-final-clippy.log",
+          "D:/BuildCache/sapid/gate42-shared-allfeatures.log (655 shared tests; includes full HTML oracle and rich protocol)",
+          "D:/BuildCache/sapid/gate42-shared-strict.log"
+        ]
       }
     },
     {
       "id": "P11-01",
       "phase": "P11",
       "name": "Chart / ChartTheme / Legend / Tooltip",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "S:Chart"
       ],
-      "work": "设计有限可选绘图协议、尺度/轴/可访问表格、交互与导出；不要求 Sapid 用户安装 JS 图表库。",
+      "work": "可选 charts 无新增依赖；有限 data/domain/frame/Graphic 协议、八色主题、真实 legend/tooltip、逐点操作/受控提案、可访问完整数值表与安全 SVG 几何导出。原生默认 Click/键盘/绘制支持，pointer hover/Tooltip 保持明确拒绝。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/charts.rs",
+          "src/chart_model.rs",
+          "src/chart_scene.rs",
+          "src/chart_widget.rs",
+          "src/chart_aux.rs",
+          "docs/charts.md"
+        ],
+        "tests": [
+          "tests/charts.rs",
+          "examples/native/tests/charts.rs",
+          "examples/web/charts-acceptance.js",
+          "D:/BuildCache/sapid/chart-strict.log",
+          "D:/BuildCache/sapid/chart-web-strict.log",
+          "D:/BuildCache/sapid/charts-browser-web35.json (20 joint reports, zero errors)",
+          "D:/BuildCache/sapid/chart-native.log (one actual four-theme raster/hit/focus test)",
+          "D:/BuildCache/sapid/charts-browser-web36.json (20 HTML11 reports, zero errors)",
+          "D:/BuildCache/sapid/chart-core-final-tests.log (11 pure chart tests)"
+        ]
       }
     },
     {
       "id": "P11-02",
       "phase": "P11",
       "name": "AreaChart / LineChart / BarChart / CompositeChart",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "C:AreaChart",
         "C:LineChart",
         "C:BarChart",
         "C:CompositeChart"
       ],
-      "work": "先基础 Cartesian 图，覆盖空值、堆叠、刻度、刷选和数据预算。",
+      "work": "Line/Area/Bar/Composite 实际几何、真实空值断线、正负 bar 堆叠与非负 area 堆叠、有限刻度/显式裁剪、inclusive brush、稳定完整 key、全数据表、受控拒绝及 CSR/adoption/原生四主题验收。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/chart_model.rs",
+          "src/chart_scene.rs",
+          "src/chart_widget.rs",
+          "examples/web/charts_form.rs",
+          "docs/charts.md"
+        ],
+        "tests": [
+          "tests/charts.rs",
+          "examples/native/tests/charts.rs",
+          "examples/web/charts-acceptance.js",
+          "D:/BuildCache/sapid/chart-scene-tests.log (6 geometry tests before seventh export case)",
+          "D:/BuildCache/sapid/charts-browser-web35.json (20 joint reports, zero errors)",
+          "D:/BuildCache/sapid/chart-native.log",
+          "D:/BuildCache/sapid/charts-browser-web36.json (20 HTML11 reports, zero errors)",
+          "D:/BuildCache/sapid/chart-core-final-tests.log (11 pure chart tests)"
+        ]
       }
     },
     {
       "id": "P11-03",
       "phase": "P11",
       "name": "PieChart / DonutChart / RadialBarChart",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "C:PieChart",
         "C:DonutChart",
         "C:RadialBarChart"
       ],
-      "work": "角度/占比/零值和键盘数据访问。",
+      "work": "真实 Pie/Donut 角度占比和零值处理、RadialBar 同心弧线；有限键盘逐点与完整数值表，四主题 Web CSR/adoption 和 Native 真实绘制/命中验收。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/plot_model.rs",
+          "src/plot_scene.rs",
+          "src/plot_hierarchy.rs",
+          "src/plot_table.rs",
+          "src/plot_widget.rs",
+          "docs/plots.md"
+        ],
+        "tests": [
+          "tests/plots.rs",
+          "examples/native/tests/plots.rs",
+          "examples/web/plots-acceptance.js",
+          "D:/BuildCache/sapid/plot-core-portable-tests.log (17 passed)",
+          "D:/BuildCache/sapid/plot-component-tests.log (6 passed)",
+          "D:/BuildCache/sapid/plots-lightbox-native-final-tests.log (18 kinds × 4 actual themes)",
+          "D:/BuildCache/sapid/plots-browser-web39.json (60 reports, zero errors)",
+          "D:/BuildCache/sapid/plots-lightbox-native-strict.log"
+        ]
       }
     },
     {
       "id": "P11-04",
       "phase": "P11",
       "name": "ScatterChart / BubbleChart / CandlestickChart",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "C:ScatterChart",
         "C:BubbleChart",
         "C:CandlestickChart"
       ],
-      "work": "二维/尺寸尺度、金融 OHLC、抽样和逐点访问预算。",
+      "work": "真实 XY/面积尺寸尺度与零尺寸、OHLC 交叉约束/方向、至多128次索引回调的显式采样及来源数量说明；有限逐点/完整表，四主题 Web/Native 实测。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/plot_model.rs",
+          "src/plot_scene.rs",
+          "src/plot_hierarchy.rs",
+          "src/plot_table.rs",
+          "src/plot_widget.rs",
+          "docs/plots.md"
+        ],
+        "tests": [
+          "tests/plots.rs",
+          "examples/native/tests/plots.rs",
+          "examples/web/plots-acceptance.js",
+          "D:/BuildCache/sapid/plot-core-portable-tests.log (17 passed)",
+          "D:/BuildCache/sapid/plot-component-tests.log (6 passed)",
+          "D:/BuildCache/sapid/plots-lightbox-native-final-tests.log (18 kinds × 4 actual themes)",
+          "D:/BuildCache/sapid/plots-browser-web39.json (60 reports, zero errors)",
+          "D:/BuildCache/sapid/plots-lightbox-native-strict.log"
+        ]
       }
     },
     {
       "id": "P11-05",
       "phase": "P11",
       "name": "RadarChart / FunnelChart / Sparkline",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "C:RadarChart",
         "C:FunnelChart",
         "C:Sparkline"
       ],
-      "work": "各自几何和文本替代，小图也保留数值说明。",
+      "work": "Radar 径向轴/缺值断线、Funnel 独立梯形、Sparkline 真正分段路径，保留文字与数值替代、受控交互及四主题 Web/Native 实测。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/plot_model.rs",
+          "src/plot_scene.rs",
+          "src/plot_hierarchy.rs",
+          "src/plot_table.rs",
+          "src/plot_widget.rs",
+          "docs/plots.md"
+        ],
+        "tests": [
+          "tests/plots.rs",
+          "examples/native/tests/plots.rs",
+          "examples/web/plots-acceptance.js",
+          "D:/BuildCache/sapid/plot-core-portable-tests.log (17 passed)",
+          "D:/BuildCache/sapid/plot-component-tests.log (6 passed)",
+          "D:/BuildCache/sapid/plots-lightbox-native-final-tests.log (18 kinds × 4 actual themes)",
+          "D:/BuildCache/sapid/plots-browser-web39.json (60 reports, zero errors)",
+          "D:/BuildCache/sapid/plots-lightbox-native-strict.log"
+        ]
       }
     },
     {
       "id": "P11-06",
       "phase": "P11",
       "name": "Heatmap / MatrixChart / WaffleChart",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "C:Heatmap",
         "C:MatrixChart",
         "C:WaffleChart"
       ],
-      "work": "离散矩阵与颜色图例，颜色之外仍可辨识。",
+      "work": "32×32/1024cells 有限 Heatmap/面积 Matrix、明确五档数值色标和每格原值，Waffle 确定性100格余数分配；数据表分块完整保留，Web/Native 实测。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/plot_model.rs",
+          "src/plot_scene.rs",
+          "src/plot_hierarchy.rs",
+          "src/plot_table.rs",
+          "src/plot_widget.rs",
+          "docs/plots.md"
+        ],
+        "tests": [
+          "tests/plots.rs",
+          "examples/native/tests/plots.rs",
+          "examples/web/plots-acceptance.js",
+          "D:/BuildCache/sapid/plot-core-portable-tests.log (17 passed)",
+          "D:/BuildCache/sapid/plot-component-tests.log (6 passed)",
+          "D:/BuildCache/sapid/plots-lightbox-native-final-tests.log (18 kinds × 4 actual themes)",
+          "D:/BuildCache/sapid/plots-browser-web39.json (60 reports, zero errors)",
+          "D:/BuildCache/sapid/plots-lightbox-native-strict.log"
+        ]
       }
     },
     {
       "id": "P11-07",
       "phase": "P11",
       "name": "BarsList / BulletChart / GaugeChart",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "C:BarsList",
         "C:BulletChart",
         "C:GaugeChart"
       ],
-      "work": "目标值、区间、刻度与进度范围语义。",
+      "work": "有符号水平 BarsList、目标/分段 Bullet、半环 Gauge；真实只读 Progress 范围、刻度/目标/精确表值、键盘受控交互，Web/Native 实测。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/plot_model.rs",
+          "src/plot_scene.rs",
+          "src/plot_hierarchy.rs",
+          "src/plot_table.rs",
+          "src/plot_widget.rs",
+          "docs/plots.md"
+        ],
+        "tests": [
+          "tests/plots.rs",
+          "examples/native/tests/plots.rs",
+          "examples/web/plots-acceptance.js",
+          "D:/BuildCache/sapid/plot-core-portable-tests.log (17 passed)",
+          "D:/BuildCache/sapid/plot-component-tests.log (6 passed)",
+          "D:/BuildCache/sapid/plots-lightbox-native-final-tests.log (18 kinds × 4 actual themes)",
+          "D:/BuildCache/sapid/plots-browser-web39.json (60 reports, zero errors)",
+          "D:/BuildCache/sapid/plots-lightbox-native-strict.log"
+        ]
       }
     },
     {
       "id": "P11-08",
       "phase": "P11",
       "name": "Treemap / SunburstChart / SankeyChart",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "C:Treemap",
         "C:SunburstChart",
         "C:SankeyChart"
       ],
-      "work": "层级/流图布局、稳定 key、导航和节点/边预算。",
+      "work": "128节点/depth32 当前层级权重/隐藏派生、交替 Treemap 与角度深度 Sunburst、256边有限 DAG Sankey 保持流量端口厚度；稳定key、父子导航和完整表，Web/Native 实测。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/plot_model.rs",
+          "src/plot_scene.rs",
+          "src/plot_hierarchy.rs",
+          "src/plot_table.rs",
+          "src/plot_widget.rs",
+          "docs/plots.md"
+        ],
+        "tests": [
+          "tests/plots.rs",
+          "examples/native/tests/plots.rs",
+          "examples/web/plots-acceptance.js",
+          "D:/BuildCache/sapid/plot-core-portable-tests.log (17 passed)",
+          "D:/BuildCache/sapid/plot-component-tests.log (6 passed)",
+          "D:/BuildCache/sapid/plots-lightbox-native-final-tests.log (18 kinds × 4 actual themes)",
+          "D:/BuildCache/sapid/plots-browser-web39.json (60 reports, zero errors)",
+          "D:/BuildCache/sapid/plots-lightbox-native-strict.log"
+        ]
       }
     },
     {
       "id": "P12-01",
       "phase": "P12",
       "name": "Schedule / Event model / Recurrence",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "T:Schedule",
         "T:Recurring events",
         "T:Events data"
       ],
-      "work": "事件区间、时区、重复/例外、冲突和请求窗口，不预展开无限重复。",
+      "work": "Schedule 有限当前请求窗口、事件/资源/冲突模型、daily/weekly/monthly/yearly 重复与例外、COUNT/UNTIL/月末策略、直跳窗口而非无限预展开；civil/fixed-offset/application resolver 显式 fold/gap。Schedule 当前已交付真实 Agenda；其余视图按独立任务验收。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/schedule_model.rs",
+          "src/schedule_recurrence.rs",
+          "src/schedule_layout.rs",
+          "src/schedule.rs",
+          "docs/schedule-model.md",
+          "docs/schedule.md"
+        ],
+        "tests": [
+          "tests/schedules.rs",
+          "D:/BuildCache/sapid/schedule-model-rust.log",
+          "D:/BuildCache/sapid/schedule-clippy.log",
+          "D:/BuildCache/sapid/schedule-browser-web35.json (12 reports, zero errors)",
+          "D:/BuildCache/sapid/schedule-native-final.log (2 actual native tests, including four themes)"
+        ]
       }
     },
     {
       "id": "P12-02",
       "phase": "P12",
       "name": "DayView / WeekView",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "T:DayView",
         "T:WeekView"
       ],
-      "work": "时间轴/重叠布局与键盘时段导航。",
+      "work": "Day/Week 真实时间 Grid、半开区间几何、独立重叠lane、slot/事件键盘访问、readonly/disabled、受控选择与实际 ScrollIntoView；当前有限窗口/稳定 key/Owner 清理，短日期表头在四主题 CSR/adoption 和 Native 实际布局中验收。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/schedule_timeline.rs",
+          "src/schedule_layout.rs",
+          "docs/schedule-timelines.md"
+        ],
+        "tests": [
+          "tests/schedule_timelines.rs",
+          "examples/native/tests/schedule_timeline.rs",
+          "examples/web/schedule-timeline-acceptance.js",
+          "D:/BuildCache/sapid/schedule-timeline-final-rust.log (7 passed)",
+          "D:/BuildCache/sapid/schedule-calendar-guard-native.log (2 timeline regressions)",
+          "D:/BuildCache/sapid/schedule-timeline-browser-web38.json (12 reports, zero errors)"
+        ]
       }
     },
     {
       "id": "P12-03",
       "phase": "P12",
       "name": "MonthView / YearView / MobileMonthView",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "T:MonthView",
         "T:YearView",
         "T:MobileMonthView"
       ],
-      "work": "日期汇总、溢出、窄屏呈现与可访问选择。",
+      "work": "真实42日Month/12月Year Grid，weekday列标题、预览上限、有限显式详情与Mobile单日展开；受控分页/选择/readonly、首末行箭头不串列、当前禁用focus护栏，四主题Web/Native实际几何/命中/像素/清理通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/schedule_calendar.rs",
+          "docs/schedule-calendars.md"
+        ],
+        "tests": [
+          "tests/schedule_calendars.rs",
+          "examples/native/tests/schedule_calendar.rs",
+          "examples/web/schedule-calendar-acceptance.js",
+          "D:/BuildCache/sapid/schedule-calendar-guard-native.log (3 actual native tests)",
+          "D:/BuildCache/sapid/schedule-calendar-native-clippy.log",
+          "D:/BuildCache/sapid/schedule-calendar-browser-web39.json (12 original reports, zero errors)"
+        ]
       }
     },
     {
       "id": "P12-04",
       "phase": "P12",
       "name": "AgendaView",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "T:AgendaView"
       ],
-      "work": "按日/区间的只读事件列表及窗口数据。",
+      "work": "真实按日期/半开请求区间分组的 Agenda List/Heading/事件按钮、受控选择/拒绝、readonly、窗口分页、当前数据稳定 key 更新、空状态与 Owner 清理；四主题 CSR/adoption、360px touch 与原生布局/命中/像素已验证。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/schedule.rs",
+          "docs/schedule.md",
+          "examples/web/src/schedule_form.rs"
+        ],
+        "tests": [
+          "tests/schedules.rs",
+          "examples/native/tests/schedule.rs",
+          "examples/web/schedule-acceptance.js",
+          "D:/BuildCache/sapid/schedule-rust.log (7 passed)",
+          "D:/BuildCache/sapid/schedule-browser-web35.json (12 reports, zero errors)",
+          "D:/BuildCache/sapid/schedule-native-final.log"
+        ]
       }
     },
     {
       "id": "P12-05",
       "phase": "P12",
       "name": "Resource schedule views",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "T:ResourcesDayView",
         "T:ResourcesWeekView",
         "T:ResourcesMonthView",
         "T:ResourcesSchedule"
       ],
-      "work": "资源列/行、二维窗口、事件定位、拖动编辑及权限校验由应用决定。",
+      "work": "真实单画布资源日/周/月排程与双轴Grid，当前有限资源/日期窗口和权限，鼠标/CDP触摸/query-backed跨日跨资源移动/端点调整、键盘等价提案、受控拒绝与同tick排序/Owner取消，所有业务授权/冲突/持久化归App；Web42强化12与Native3实际通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/schedule_model.rs",
+          "src/resource_schedule.rs",
+          "src/resource_schedule_timeline.rs",
+          "src/resource_schedule_drag.rs",
+          "src/schedule_resource_month.rs",
+          "docs/resource-schedule.md"
+        ],
+        "tests": [
+          "tests/schedule_resource_views.rs",
+          "tests/resource_schedules.rs",
+          "examples/native/tests/resource_schedule.rs",
+          "examples/web/resource-schedule-acceptance.js",
+          "D:/BuildCache/sapid/resource-schedule-final-rust.log",
+          "D:/BuildCache/sapid/resource-schedule-full-hit-rust.log (11 component tests)",
+          "D:/BuildCache/sapid/resource-schedule-full-hit-native.log (3 actual tests)",
+          "D:/BuildCache/sapid/resource-schedule-browser-web42.json (12 original strengthened reports, zero errors)"
+        ]
       }
     },
     {
       "id": "P13-01",
       "phase": "P13",
       "name": "Message / Bubble / Marker",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "S:Message",
         "S:Bubble",
         "S:Marker",
         "A:Message"
       ],
-      "work": "消息内容、作者/时间/状态、分组、引用标记；只显示调用方提供的数据。",
+      "work": "有限调用方消息数据、真实段落/Blockquote/Anchor、作者时间状态与分组、引用标记和调用方动作；完整模型先验收再更新，literal文本转义、稳定节点身份和Owner清理，四主题Web CSR/adoption及Native真实布局通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/chat/message.rs",
+          "docs/messages.md"
+        ],
+        "tests": [
+          "tests/chat_messages.rs",
+          "examples/native/tests/chat_messages.rs",
+          "examples/web/messages-acceptance.js",
+          "D:/BuildCache/sapid/chat-message-tests.log (5 passed)",
+          "D:/BuildCache/sapid/messages-browser-web38.json (12 reports, zero errors)",
+          "D:/BuildCache/sapid/chat-message-native-tests.log (actual four themes)"
+        ]
       }
     },
     {
       "id": "P13-02",
       "phase": "P13",
       "name": "MessageScroller / Chat",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "S:Message Scroller",
         "A:Chat"
       ],
-      "work": "消息窗口化、底部跟随/阅读锚点、未读提示、prepend 和内容高度变化。",
+      "work": "真实索引窗口消息列表/Chat组合，最多64live+focused1、256测量；显式accepted append通知/未读、用户离底/回尾与prepend和顶部相交key+within测量锚点；晚到program ack不冒充user，原始40浏览器12全通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/chat/scroller.rs",
+          "docs/message-scroller.md"
+        ],
+        "tests": [
+          "tests/chat_scrollers.rs",
+          "examples/native/tests/chat_messages.rs",
+          "examples/web/message-scroller-acceptance.js",
+          "D:/BuildCache/sapid/list-user-moved-ack-tests.log (35 passed)",
+          "D:/BuildCache/sapid/chat-native-ack-tests.log (2 passed; Scroller actual BlueLight)",
+          "D:/BuildCache/sapid/message-scroller-browser-web40.json (12 original reports, zero errors)"
+        ]
       }
     },
     {
       "id": "P13-03",
       "phase": "P13",
       "name": "PromptInput",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "A:Prompt Input"
       ],
-      "work": "多行输入、附件/发送/取消/建议与 IME，复用表单和文件协议。",
+      "work": "真实Form/Textarea/Submit和Cancel、受控提案拒绝、完整host tick后Owner任务回调，浏览器IME与输入法提交门控、有限建议；可选FileController显式文件权限/读取，无自动发送/清空或模型服务；四主题Web与Native实测，Native可选文件明确拒绝。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/chat/prompt.rs",
+          "docs/prompt-input.md"
+        ],
+        "tests": [
+          "tests/chat_prompts.rs",
+          "examples/native/tests/chat_prompts.rs",
+          "examples/web/prompt-acceptance.js",
+          "D:/BuildCache/sapid/chat-prompt-scroller-tests.log (6 Prompt tests; 12 combined)",
+          "D:/BuildCache/sapid/chat-prompt-native-tests.log (2 actual tests; four themes and optional file rejection)",
+          "D:/BuildCache/sapid/chat-prompt-native-strict.log",
+          "D:/BuildCache/sapid/chat-prompt-web-strict.log",
+          "D:/BuildCache/sapid/prompt-browser-web41-final.json (14 reports, zero errors; corrected fixture selectors/real three-line geometry, original failures retained)"
+        ]
       }
     },
     {
       "id": "P13-04",
       "phase": "P13",
       "name": "Questionnaire",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "S:Questionnaire"
       ],
-      "work": "从 typed schema 组合表单、步骤和答复校验；不绑定 React 表单库。",
+      "work": "真实typed FormState与Stepper的有限Questionnaire，受控步骤提案/拒绝、KeepMounted答案身份、当前步与最终全步骤重新验证，连续Invalid attempt与异步Back/Owner取消护栏；无JSON schema VM/服务。Web43原始12和四主题Native实测通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/chat/questionnaire.rs",
+          "docs/questionnaire.md"
+        ],
+        "tests": [
+          "tests/chat_questionnaires.rs",
+          "examples/native/tests/chat_questionnaires.rs",
+          "examples/web/questionnaire-acceptance.js",
+          "D:/BuildCache/sapid/chat-actions-tests.log (10 combined component tests)",
+          "D:/BuildCache/sapid/chat-actions-native-tests.log (3 combined actual/rejection tests)",
+          "D:/BuildCache/sapid/chat-actions-final-strict.log",
+          "D:/BuildCache/sapid/questionnaire-browser-web43.json (12 original reports, zero errors)",
+          "D:/BuildCache/sapid/chat-questionnaire-repeated-invalid-baseline.log (retained old-fault reproduction)"
+        ]
       }
     },
     {
       "id": "P13-05",
       "phase": "P13",
       "name": "ModelSelector",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "A:Model Selector"
       ],
-      "work": "分组模型数据、搜索和选择；不内置过时的服务商/价格清单。",
+      "work": "1024模型/32 provider组/128KiB显式业务catalog，真实Field/Combobox/Search/Listbox，accepted model与独立query明确分开，受控拒绝不多发None提案、readonly/禁用/当前值与Owner清理；不嵌服务/价格清单，Native editableChoice明确拒绝保prefix，Web43实际通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/chat/model_selector.rs",
+          "docs/model-selector.md",
+          "src/combobox.rs"
+        ],
+        "tests": [
+          "tests/chat_model_selectors.rs",
+          "examples/native/tests/chat_model_suggestions.rs",
+          "examples/web/model-suggestions-acceptance.js",
+          "D:/BuildCache/sapid/chat-actions-tests.log",
+          "D:/BuildCache/sapid/chat-actions-native-tests.log",
+          "D:/BuildCache/sapid/chat-actions-final-strict.log",
+          "D:/BuildCache/sapid/model-suggestions-browser-web43-accepted.json (12 combined reports, zero errors; native disabled/AX and host-frame focus assertions corrected, frozen original failures retained)"
+        ]
       }
     },
     {
       "id": "P13-06",
       "phase": "P13",
       "name": "Suggestion",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "A:Suggestion"
       ],
-      "work": "建议动作列表、键盘选择和来源传入。",
+      "work": "真实Toolbar/Buttons有限建议组，当前应用label/value、方向/箭头/Home/End单Tab、disabled与完整key/Owner清理，选择仅typed应用回调不自动发送；四主题Web43与Native实际通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/chat/suggestion.rs",
+          "docs/suggestion.md"
+        ],
+        "tests": [
+          "tests/chat_suggestions.rs",
+          "examples/native/tests/chat_model_suggestions.rs",
+          "examples/web/model-suggestions-acceptance.js",
+          "D:/BuildCache/sapid/chat-actions-tests.log",
+          "D:/BuildCache/sapid/chat-actions-native-tests.log",
+          "D:/BuildCache/sapid/chat-actions-final-strict.log",
+          "D:/BuildCache/sapid/model-suggestions-browser-web43-accepted.json (12 combined reports, zero errors)"
+        ]
       }
     },
     {
       "id": "P13-07",
       "phase": "P13",
       "name": "Confirmation / Checkpoint",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "A:Confirmation",
         "A:Checkpoint"
       ],
-      "work": "确认状态与检查点展示，实际授权/回退动作由应用执行。",
+      "work": "有限Confirmation/Checkpoint显式App状态与revision，真实Approve/Reject/Restore按钮仅提案，controlled拒绝/source静默/disabled或缺callback/Owner清理均验证；不授予权限或执行回退，Web43原9和四主题Native实际通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/chat/confirmation.rs",
+          "src/chat/confirmation_model.rs",
+          "docs/confirmation.md"
+        ],
+        "tests": [
+          "tests/chat_confirmation.rs",
+          "examples/native/tests/chat_confirmation.rs",
+          "examples/web/confirmation-acceptance.js",
+          "D:/BuildCache/sapid/confirmation-tests.log (7 passed)",
+          "D:/BuildCache/sapid/confirmation-native-tests.log (1 actual four-theme test)",
+          "D:/BuildCache/sapid/confirmation-component-clippy.log",
+          "D:/BuildCache/sapid/confirmation-browser-web43.json (9 original reports, zero errors)"
+        ]
       }
     },
     {
       "id": "P13-08",
       "phase": "P13",
       "name": "Plan / Task / Queue",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "A:Plan",
         "A:Task",
         "A:Queue"
       ],
-      "work": "进度、任务状态与队列展示，可操作项使用应用回调。",
+      "work": "有限128项/128KiB应用Plan/Task/Queue，真实有序列表和精确任务/processed进度、完整key稳定更新/重排、可操作项仅typed应用回调及受控拒绝、真实禁用/Owner清理，无调度/执行/授权服务；四主题Web和Native实际通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/chat/tasks.rs",
+          "docs/tasks.md"
+        ],
+        "tests": [
+          "tests/chat_tasks.rs",
+          "examples/native/tests/chat_tasks.rs",
+          "examples/web/tasks-acceptance.js",
+          "D:/BuildCache/sapid/chat-tasks-output-final-tests.log (7 Task/8 Output; 15 combined passed)",
+          "D:/BuildCache/sapid/chat-tasks-output-native-tests.log (actual four themes per component group)",
+          "D:/BuildCache/sapid/chat-tasks-output-native-strict.log",
+          "D:/BuildCache/sapid/tasks-browser-web42-stable-key.json (10 reports, zero errors; fixed stale-title selector, original frozen failure retained)"
+        ]
       }
     },
     {
       "id": "P13-09",
       "phase": "P13",
       "name": "Reasoning / ChainOfThought",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "A:Reasoning",
         "A:Chain of Thought"
       ],
-      "work": "折叠展示应用已提供、允许公开的说明或摘要，不生成或索取隐藏内部推理。",
+      "work": "仅显示应用已提供可公开摘要/有限步骤，真实Collapsible与无序/有序列表，显式状态/耗时、受控拒绝、完整模型先验和稳定key/Owner清理；无隐藏推理访问或模型服务，四主题Web/Native实际通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/chat/explanations.rs",
+          "docs/public-explanations.md"
+        ],
+        "tests": [
+          "tests/chat_evidence.rs",
+          "examples/native/tests/chat_evidence.rs",
+          "examples/web/chat-evidence-acceptance.js",
+          "D:/BuildCache/sapid/chat-evidence-tests.log (7 combined passed)",
+          "D:/BuildCache/sapid/chat-evidence-native-tests.log (actual four themes × two fixtures)",
+          "D:/BuildCache/sapid/chat-evidence-browser-web40.json (20 original combined reports, zero errors)"
+        ]
       }
     },
     {
       "id": "P13-10",
       "phase": "P13",
       "name": "Context / Sources / InlineCitation",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "A:Context",
         "A:Sources",
         "A:Inline Citation"
       ],
-      "work": "上下文用量、来源列表和文内引用，链接/预览与可信度由数据模型明确。",
+      "work": "显式上下文整数用量/未知容量/超限文字与只读Progress；有限Sources真实List/Link、literal预览与调用方可信度，InlineCitation真实文内链接/默认fragment导航和可选App接管，无自动抓取；四主题Web/Native实际通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/chat/citations.rs",
+          "docs/citations.md"
+        ],
+        "tests": [
+          "tests/chat_evidence.rs",
+          "examples/native/tests/chat_evidence.rs",
+          "examples/web/chat-evidence-acceptance.js",
+          "D:/BuildCache/sapid/chat-evidence-tests.log (7 combined passed)",
+          "D:/BuildCache/sapid/chat-evidence-native-tests.log",
+          "D:/BuildCache/sapid/chat-evidence-browser-web40.json (20 original combined reports, zero errors)"
+        ]
       }
     },
     {
       "id": "P13-11",
       "phase": "P13",
       "name": "Trace / StackTrace / Subagent / Tool",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "S:Trace",
         "A:Stack Trace",
         "A:Subagent",
         "A:Tool"
       ],
-      "work": "调用记录、层级状态、输入输出和耗时展示；截断/脱敏/预算，绝不隐式执行工具。",
+      "work": "sealed有限Trace森林/Stack帧和真实Tool/Subagent Collapsible/ordered list，显式Public/Truncated/无原文Redacted与应用状态/elapsed/Inspect或location回调；完整key/受控展开/hidden与Owner重入释放，严格360px/1100px和函数/位置分行；无工具执行/调度/file访问，Web44原始24和四主题Native2实际通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/chat/trace_model.rs",
+          "src/chat/traces.rs",
+          "src/chat/trace_entries.rs",
+          "src/chat/stack_trace.rs",
+          "docs/chat-traces.md"
+        ],
+        "tests": [
+          "tests/chat_trace_models.rs",
+          "tests/chat_traces.rs",
+          "examples/native/tests/chat_traces.rs",
+          "examples/web/trace-acceptance.js",
+          "examples/web/stack-trace-acceptance.js",
+          "D:/BuildCache/sapid/chat-traces-final-rust.log (8 model + 11 component)",
+          "D:/BuildCache/sapid/chat-traces-final-native.log (2 actual four-theme tests)",
+          "D:/BuildCache/sapid/chat-traces-final-clippy.log",
+          "D:/BuildCache/sapid/chat-traces-final-web-clippy.log",
+          "D:/BuildCache/sapid/chat-traces-final-native-clippy.log",
+          "D:/BuildCache/sapid/trace-browser-web44.json (12 original strengthened reports, zero errors)",
+          "D:/BuildCache/sapid/stack-trace-browser-web44.json (12 original strengthened reports, zero errors)",
+          "D:/BuildCache/sapid/trace-layout-before-fix-web43.json (retained regression on previous artifact)"
+        ]
       }
     },
     {
       "id": "P13-12",
       "phase": "P13",
       "name": "Terminal / TestResults",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "A:Terminal",
         "A:Test Results"
       ],
-      "work": "只读输出、测试状态与大日志窗口化；可选 ANSI 解析不赋予命令执行能力。",
+      "work": "只读Terminal和TestResults，十亿条索引源有界可见行/测量/稀疏索引，显式stdout/stderr/状态/统计、literal控制字符转义与无原文Redacted；真实测试详情/First/Newest/Pause、完整key和受控源、清空时序/Owner回收，无命令或测试执行；Web42原始10与四主题Native实际通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/chat/logs.rs",
+          "docs/output.md"
+        ],
+        "tests": [
+          "tests/chat_output.rs",
+          "examples/native/tests/chat_output.rs",
+          "examples/web/output-acceptance.js",
+          "D:/BuildCache/sapid/chat-tasks-output-final-tests.log (8 Output/7 Task; 15 combined passed)",
+          "D:/BuildCache/sapid/chat-tasks-output-native-tests.log",
+          "D:/BuildCache/sapid/chat-tasks-output-native-strict.log",
+          "D:/BuildCache/sapid/output-browser-web42.json (10 original reports, zero errors)",
+          "D:/BuildCache/sapid/probe-output-mobile42.log"
+        ]
       }
     }
   ],

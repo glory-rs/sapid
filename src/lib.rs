@@ -14,6 +14,8 @@ mod appearance;
 pub mod autocomplete;
 mod avatar;
 mod button;
+mod copy_button;
+pub use copy_button::{CopyButton, CopyState, copy_button};
 mod checkbox;
 mod checkbox_group;
 mod chip;
@@ -30,22 +32,154 @@ pub use code_model::{
     MAX_CODE_COMMENT_DEPTH, MAX_CODE_LINES, MAX_CODE_TOKENS, tokenize_code,
 };
 pub mod collection;
+pub mod focus_scope;
+pub use focus_scope::{
+    FocusScope, FocusScopeConfig, MAX_FOCUS_SCOPE_NODES, MAX_FOCUS_SCOPES, focus_scope,
+};
 mod color_model;
 mod color_slider;
 mod color_swatch;
 pub mod combobox;
 pub mod command;
 mod composite;
+mod tree_model;
+pub use tree_model::{
+    FileEntry, MAX_TREE_DEPTH, MAX_TREE_LABEL_BYTES, MAX_TREE_NODES, MAX_TREE_PAYLOAD_BYTES,
+    TreeError, TreeKind, TreeModel, TreeNode, TreeRow, TreeSelectionMode, file_tree_nodes,
+};
+mod tree;
+pub use tree::{Tree, file_tree, tree};
+mod tree_choice_model;
+pub use tree_choice_model::{
+    MAX_TREE_CHOICES, TreeChoiceModel, TreeChoicePolicy, TreeChoices, TreePath,
+};
+mod tree_select;
+pub use tree_select::{TreeSelect, tree_select};
+mod cascader;
+pub use cascader::{Cascader, cascader};
+#[cfg(feature = "charts")]
+mod chart_aux;
+#[cfg(feature = "charts")]
+mod chart_model;
+#[cfg(feature = "charts")]
+mod chart_scene;
+#[cfg(feature = "charts")]
+mod chart_widget;
+#[cfg(feature = "charts")]
+pub mod charts;
 pub mod data_table;
+#[cfg(feature = "charts")]
+mod plot_hierarchy;
+#[cfg(feature = "charts")]
+mod plot_model;
+#[cfg(feature = "charts")]
+mod plot_scene;
+#[cfg(feature = "charts")]
+mod plot_table;
+#[cfg(feature = "charts")]
+mod plot_widget;
 pub use data_table::{
     DataColumn, DataPage, DataPlan, DataRecord, DataRequest, DataSort, DataTable,
     DataTableError, DataTableQuery, data_table,
 };
 #[cfg(feature = "dates")]
+mod date_time_model;
+#[cfg(feature = "dates")]
+mod schedule;
+#[cfg(feature = "dates")]
+mod schedule_layout;
+#[cfg(feature = "dates")]
+mod schedule_model;
+#[cfg(feature = "dates")]
+pub use schedule::*;
+#[cfg(feature = "dates")]
+pub use schedule_layout::*;
+#[cfg(feature = "dates")]
+mod schedule_recurrence;
+#[cfg(feature = "dates")]
+pub use schedule_model::*;
+#[cfg(feature = "dates")]
+pub use schedule_recurrence::*;
+#[cfg(feature = "dates")]
+mod date_time_picker;
+#[cfg(feature = "dates")]
+mod date_time_picker_input;
+#[cfg(feature = "dates")]
+pub use date_time_model::*;
+#[cfg(feature = "dates")]
+pub use date_time_picker::*;
+#[cfg(feature = "dates")]
+pub use date_time_picker_input::*;
+#[cfg(feature = "dates")]
+mod time_parts;
+#[cfg(feature = "dates")]
+pub use time_parts::{TimeParts, TimePickerDraft, TimePickerStatus};
+#[cfg(feature = "dates")]
+mod time_picker;
+#[cfg(feature = "dates")]
+pub use time_picker::{TimePicker, time_picker};
+#[cfg(feature = "dates")]
+mod time_grid_model;
+#[cfg(feature = "dates")]
+pub use time_grid_model::{MAX_DISABLED_TIMES, MAX_TIME_GRID_ITEMS, TimeGridSpec};
+#[cfg(feature = "dates")]
+mod time_grid;
+#[cfg(feature = "dates")]
+pub use time_grid::{TimeGrid, time_grid};
+#[cfg(feature = "dates")]
+mod time_model;
+#[cfg(feature = "dates")]
+pub use time_model::*;
+#[cfg(feature = "dates")]
+mod time_input;
+#[cfg(feature = "dates")]
+pub use time_input::{TimeInput, TimeInputDraft, time_input};
+#[cfg(feature = "dates")]
+mod time_value;
+#[cfg(feature = "dates")]
+pub use time_value::{TimeValue, time_value};
+#[cfg(feature = "dates")]
 pub mod dates;
 mod display;
 #[cfg(feature = "dates")]
 pub use dates::*;
+#[cfg(feature = "dates")]
+mod period_picker_input;
+#[cfg(feature = "dates")]
+pub use period_picker_input::{
+    MonthPickerInput, PeriodPickerInput, YearPickerInput, month_picker_input, year_picker_input,
+};
+#[cfg(feature = "dates")]
+mod period_picker;
+#[cfg(feature = "dates")]
+pub use period_picker::{
+    MAX_EXCLUDED_PERIODS, MAX_PERIOD_SEARCH_STEPS, MonthPicker, PeriodPicker, YearPicker,
+    month_picker, year_picker,
+};
+#[cfg(feature = "dates")]
+mod period_model;
+#[cfg(feature = "dates")]
+pub use period_model::*;
+#[cfg(feature = "dates")]
+mod date_draft;
+#[cfg(feature = "dates")]
+pub use date_draft::*;
+#[cfg(feature = "dates")]
+mod date_input;
+#[cfg(feature = "dates")]
+pub use date_input::{DateInput, DateInputDraft, date_input};
+#[cfg(feature = "dates")]
+mod date_picker_input;
+#[cfg(feature = "dates")]
+pub use date_picker_input::{DatePickerInput, date_picker_input};
+#[cfg(feature = "dates")]
+mod date_picker;
+#[cfg(feature = "dates")]
+pub use date_picker::{DatePicker, date_picker};
+#[cfg(feature = "dates")]
+mod date_selection;
+#[cfg(feature = "dates")]
+pub use date_selection::*;
 #[cfg(feature = "dates")]
 mod calendar;
 #[cfg(feature = "dates")]
@@ -55,6 +189,21 @@ pub use calendar::{
 mod document;
 mod field;
 mod floating_indicator;
+mod floating_window;
+mod portal;
+mod tour;
+pub use floating_window::{
+    FloatingWindow, FloatingWindowHandle, MAX_WINDOW_COORDINATE, MAX_WINDOW_SIZE, WindowBounds,
+    WindowCommand, WindowLimits, floating_window,
+};
+pub use portal::{
+    MAX_PORTAL_TARGETS, MAX_PORTALS, Portal, PortalContext, PortalTarget, portal,
+    portal_context, portal_target,
+};
+pub use tour::{
+    MAX_TOUR_STEPS, Tour, TourContext, TourHandle, TourStep, TourTarget, tour, tour_context,
+    tour_step, tour_target,
+};
 mod marquee;
 pub use marquee::{MAX_MARQUEE_TEXT_BYTES, Marquee, MarqueeDirection, marquee};
 mod rolling_number;
@@ -279,20 +428,95 @@ pub use typography::{
 pub use visually_hidden::{MAX_VISUALLY_HIDDEN_BYTES, VisuallyHidden, visually_hidden};
 
 pub mod prelude {
+    #[cfg(feature = "chat")]
+    pub use crate::chat::*;
+    #[cfg(feature = "dates")]
+    pub use crate::date_time_model::*;
+    #[cfg(feature = "dates")]
+    pub use crate::date_time_picker::*;
+    #[cfg(feature = "dates")]
+    pub use crate::date_time_picker_input::*;
+    #[cfg(feature = "editor")]
+    pub use crate::rich_editor::*;
+    #[cfg(feature = "dates")]
+    pub use crate::schedule::*;
+    #[cfg(feature = "dates")]
+    pub use crate::schedule_layout::*;
+    #[cfg(feature = "dates")]
+    pub use crate::schedule_model::*;
+    #[cfg(feature = "dates")]
+    pub use crate::schedule_recurrence::*;
+    pub use crate::{
+        Breakpoint, Breakpoints, ControlMetrics, Locale, LocaleMessage, LocaleMessages,
+        MAX_LOCALE_TEXT_BYTES, ResponsiveContext, ResponsiveRoot, ResponsiveValues,
+        ThemeProvider, ThemeTokens, TypographyMetrics, TypographyRole, UiEnvironmentContext,
+        direction_provider, locale_provider, responsive_root, theme_provider,
+    };
+    pub use crate::{Carousel, MAX_CAROUSEL_COUNT, MAX_CAROUSEL_OVERSCAN, carousel};
+    #[cfg(feature = "editor")]
+    pub use crate::{
+        RichBlock, RichBlockKind, RichDocument, RichFormat, RichMarks, RichPoint, RichRun,
+        RichSelection,
+    };
+
+    #[cfg(feature = "dates")]
+    pub use crate::time_parts::{TimeParts, TimePickerDraft, TimePickerStatus};
+    #[cfg(feature = "dates")]
+    pub use crate::time_picker::{TimePicker, time_picker};
+    pub use crate::{
+        FocusScope, FocusScopeConfig, MAX_FOCUS_SCOPE_NODES, MAX_FOCUS_SCOPES, focus_scope,
+    };
+
+    #[cfg(feature = "dates")]
+    pub use crate::time_grid::{TimeGrid, time_grid};
+    #[cfg(feature = "dates")]
+    pub use crate::time_grid_model::{MAX_DISABLED_TIMES, MAX_TIME_GRID_ITEMS, TimeGridSpec};
+    pub use crate::{Cascader, cascader};
+
+    #[cfg(feature = "dates")]
+    pub use crate::time_input::{TimeInput, TimeInputDraft, time_input};
+    #[cfg(feature = "dates")]
+    pub use crate::time_model::*;
+    #[cfg(feature = "dates")]
+    pub use crate::time_value::{TimeValue, time_value};
+
     pub use crate::command::{
         Command, CommandAction, CommandGroup, CommandHandle, CommandResponse, CommandResults,
         MAX_COMMAND_ACTIONS, MAX_COMMAND_GROUPS, MAX_COMMAND_TEXT_BYTES, command,
         command_action, command_group, spotlight,
     };
+    pub use crate::copy_button::{CopyButton, CopyState, copy_button};
     pub use crate::data_table::{
         DataColumn, DataPage, DataPlan, DataRecord, DataRequest, DataSort, DataTable,
         DataTableError, DataTableQuery, data_table,
     };
     #[cfg(feature = "dates")]
+    pub use crate::date_draft::*;
+    #[cfg(feature = "dates")]
+    pub use crate::date_input::{DateInput, DateInputDraft, date_input};
+    #[cfg(feature = "dates")]
+    pub use crate::date_picker::{DatePicker, date_picker};
+    #[cfg(feature = "dates")]
+    pub use crate::date_picker_input::{DatePickerInput, date_picker_input};
+    #[cfg(feature = "dates")]
+    pub use crate::date_selection::*;
+    #[cfg(feature = "dates")]
     pub use crate::dates::*;
     pub use crate::floating_indicator::{
         FloatingIndicator, FloatingIndicatorContext, FloatingIndicatorTarget,
         MAX_FLOATING_TARGETS, floating_indicator, floating_indicator_target,
+    };
+    #[cfg(feature = "dates")]
+    pub use crate::period_model::*;
+    #[cfg(feature = "dates")]
+    pub use crate::period_picker::{
+        MAX_EXCLUDED_PERIODS, MAX_PERIOD_SEARCH_STEPS, MonthPicker, PeriodPicker, YearPicker,
+        month_picker, year_picker,
+    };
+    #[cfg(feature = "dates")]
+    pub use crate::period_picker_input::{
+        MonthPickerInput, PeriodPickerInput, YearPickerInput, month_picker_input,
+        year_picker_input,
     };
     pub use crate::table::{
         MAX_TABLE_CELLS, MAX_TABLE_COLUMNS, MAX_TABLE_ROWS, Table, TableCell, TableCellKind,
@@ -381,6 +605,14 @@ pub mod prelude {
         Decimal, MAX_NUMBER_INPUT_BYTES, NumberError, NumberInput, NumberParse, NumberValue,
         number_input, parse_number,
     };
+    pub use crate::{
+        FileEntry, Tree, TreeError, TreeKind, TreeModel, TreeNode, TreeRow, TreeSelectionMode,
+        file_tree, file_tree_nodes, tree,
+    };
+    pub use crate::{
+        FloatingWindow, FloatingWindowHandle, MAX_WINDOW_COORDINATE, MAX_WINDOW_SIZE,
+        WindowBounds, WindowCommand, WindowLimits, floating_window,
+    };
     #[cfg(feature = "json")]
     pub use crate::{
         JsonError, JsonErrorKind, JsonFormat, JsonInput, JsonKind, JsonLimits, JsonValidity,
@@ -390,6 +622,9 @@ pub mod prelude {
     pub use crate::{
         JsonTree, JsonViewError, JsonViewLimits, JsonViewNode, JsonViewer, json_viewer,
         parse_json_tree,
+    };
+    pub use crate::{
+        Lightbox, LightboxImage, LightboxView, LightboxZoom, lightbox, lightbox_image,
     };
     pub use crate::{
         MAX_BREADCRUMB_ITEMS, MAX_PAGINATION_WINDOW_ITEMS, MAX_STEPPER_STEPS, Step, StepStatus,
@@ -409,7 +644,15 @@ pub mod prelude {
         MAX_PENDING_SCROLL_INTENTS, ScrollArea, ScrollContext, ScrollHandle, Scrollbars,
         Scroller, scroll_area, scroller,
     };
+    pub use crate::{
+        MAX_PORTAL_TARGETS, MAX_PORTALS, Portal, PortalContext, PortalTarget, portal,
+        portal_context, portal_target,
+    };
     pub use crate::{MAX_RATING_COUNT, Rating, RatingPrecision, rating};
+    pub use crate::{
+        MAX_TOUR_STEPS, Tour, TourContext, TourHandle, TourStep, TourTarget, tour,
+        tour_context, tour_step, tour_target,
+    };
     pub use crate::{Marquee, MarqueeDirection, RollingNumber, marquee, rolling_number};
     pub use crate::{
         NavigationFocusable, NavigationMenu, NavigationMenuContext, NavigationMenuLink,
@@ -431,6 +674,9 @@ pub mod prelude {
     pub use crate::{RangeCollision, RangeSlider, RangeThumb, range_slider};
     pub use crate::{Slider, slider};
     pub use crate::{Splitter, splitter};
+    pub use crate::{
+        TreeChoiceModel, TreeChoicePolicy, TreeChoices, TreePath, TreeSelect, tree_select,
+    };
 }
 
 pub mod navigation_menu;
@@ -486,4 +732,53 @@ pub use table::{
     MAX_TABLE_CELLS, MAX_TABLE_COLUMNS, MAX_TABLE_ROWS, Table, TableCell, TableCellKind,
     TableRow, TableSection, table, table_body, table_cell, table_foot, table_head,
     table_header_cell, table_row, table_row_header,
+};
+
+mod theme_tokens;
+pub use theme_tokens::{ControlMetrics, ThemeTokens, TypographyMetrics, TypographyRole};
+
+mod environment;
+pub use environment::{
+    Locale, LocaleMessage, LocaleMessages, MAX_LOCALE_TEXT_BYTES, ThemeProvider,
+    UiEnvironmentContext, direction_provider, locale_provider, theme_provider,
+};
+
+mod responsive;
+pub use responsive::{
+    Breakpoint, Breakpoints, ResponsiveContext, ResponsiveRoot, ResponsiveValues,
+    responsive_root,
+};
+
+#[cfg(feature = "chat")]
+pub mod chat;
+#[cfg(feature = "chat")]
+pub use chat::*;
+
+#[cfg(feature = "files")]
+pub mod files;
+#[cfg(feature = "files")]
+pub use files::{
+    Dropzone, FileAttachment, FileButton, FileController, FileInput, FileStatus, dropzone,
+    file_attachment, file_button, file_input,
+};
+
+mod carousel;
+pub use carousel::{Carousel, MAX_CAROUSEL_COUNT, MAX_CAROUSEL_OVERSCAN, carousel};
+mod lightbox;
+pub use lightbox::{
+    Lightbox, LightboxImage, LightboxView, LightboxZoom, MAX_LIGHTBOX_IMAGES,
+    MAX_LIGHTBOX_METADATA_BYTES, lightbox, lightbox_image,
+};
+
+#[cfg(feature = "editor")]
+mod rich_editor;
+#[cfg(feature = "editor")]
+pub use glory::render::{
+    RichBlock, RichBlockKind, RichDocument, RichFormat, RichMarks, RichPoint, RichRun,
+    RichSelection,
+};
+#[cfg(feature = "editor")]
+pub use rich_editor::{
+    EditorController, EditorHistory, MAX_EDITOR_HISTORY, MAX_EDITOR_HISTORY_BYTES,
+    RichTextEditor, rich_text_editor,
 };

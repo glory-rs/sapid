@@ -1,14 +1,16 @@
 //! Bounded JSON disclosure lists. Tree widget keyboard/selection roles are not
 //! inferred from object shape; these are genuine document lists and buttons.
 use crate::appearance::{Common, common_methods, configure, observe};
-use crate::composite::{self, Callback};
+use crate::composite::{self, Callback, Observers};
 use crate::json_tree_model::*;
 use crate::state::{Control, Value};
-use glory::render::{DocumentPart, TextKind};
+use glory::render::{DocumentPart, EventKind, TextKind};
 use glory::style::{Display, Edges, Family, Style};
 use glory::ui::{Result, Widget};
 use glory::{Bond, Cage, Lotus, Scope};
 use std::{cell::Cell, collections::HashSet, rc::Rc};
+#[path = "json_viewer_tree.rs"]
+mod tree_mode;
 
 pub struct JsonViewer {
     common: Common,
@@ -18,6 +20,8 @@ pub struct JsonViewer {
     search: Lotus<String>,
     limits: JsonViewLimits,
     change: Option<Box<dyn FnMut(Vec<String>)>>,
+    copy: Option<crate::CopyButton>,
+    tree_navigation: bool,
 }
 pub fn json_viewer(key: impl Into<String>) -> JsonViewer {
     JsonViewer {
@@ -31,10 +35,22 @@ pub fn json_viewer(key: impl Into<String>) -> JsonViewer {
         search: "".into(),
         limits: JsonViewLimits::default(),
         change: None,
+        copy: None,
+        tree_navigation: false,
     }
 }
 impl JsonViewer {
     common_methods!();
+    /// Add a configured CopyButton for the whole accepted JSON source.
+    pub fn copy_button(mut self, value: crate::CopyButton) -> Self {
+        self.copy = Some(value);
+        self
+    }
+    /// Reuse the shared Tree keyboard, focus and accessibility controller.
+    pub fn tree_navigation(mut self, value: bool) -> Self {
+        self.tree_navigation = value;
+        self
+    }
     pub fn source(mut self, value: impl Into<Lotus<String>>) -> Self {
         self.source = value.into();
         self
@@ -118,6 +134,7 @@ struct State {
     query: Cage<String>,
     search: Bond<Rc<Search>>,
     changed: Callback<Vec<String>>,
+    activated: Observers,
     namespace: String,
     next: Cell<u64>,
     theme: crate::Theme,
@@ -215,6 +232,7 @@ fn branch(state: Rc<State>, item: Cage<Item>) -> Box<dyn Widget> {
                 let control = state.expanded.clone();
                 let owner = scope.id();
                 let weak = scope.downgrade();
+                let activated = state.activated.clone();
                 let child_state = state.clone();
                 let mut disclosure = crate::collapsible(format!(
                     "json-{}-{}-{slot}",
@@ -249,6 +267,9 @@ fn branch(state: Rc<State>, item: Cage<Item>) -> Box<dyn Widget> {
                     {
                         scope.report_error(error)
                     }
+                })
+                .on(EventKind::Activate, move |event| {
+                    activated.emit(owner, event)
                 })
                 .content(move || {
                     let state = child_state.clone();
@@ -328,7 +349,13 @@ impl Widget for JsonViewer {
         let initial = self
             .source
             .try_with(|source| parse_json_tree(source, self.limits).map_err(error))??;
-        let tree = scope.cage(Rc::new(initial));
+        let initial = Rc::new(initial);
+        let projection = if self.tree_navigation {
+            Some(scope.cage(tree_mode::Projection::prepare(initial.clone(), None)?))
+        } else {
+            None
+        };
+        let tree = scope.cage(initial);
         let source = self.source.clone();
         let limits = self.limits;
         let weak = scope.downgrade();
@@ -342,7 +369,20 @@ impl Widget for JsonViewer {
                     parse_json_tree(source, limits).map(Some).map_err(error)
                 })??;
                 if let Some(next) = next {
-                    tree.try_revise(|value| *value = Rc::new(next))?
+                    let next = Rc::new(next);
+                    let prepared = if let Some(projection) = projection {
+                        Some(glory::core::untracked(|| {
+                            projection.try_with(|previous| {
+                                tree_mode::Projection::prepare(next.clone(), Some(previous))
+                            })
+                        })??)
+                    } else {
+                        None
+                    };
+                    if let (Some(projection), Some(prepared)) = (projection, prepared) {
+                        projection.try_revise(|value| *value = prepared)?;
+                    }
+                    tree.try_revise(|value| *value = next)?;
                 }
                 Ok(())
             })();
@@ -384,6 +424,12 @@ impl Widget for JsonViewer {
             query,
             search,
             changed: Callback::new(self.change.take()),
+            activated: Observers::new(
+                self.common
+                    .handlers
+                    .remove(&EventKind::Activate)
+                    .unwrap_or_default(),
+            ),
             namespace: self.key.clone(),
             next: Cell::new(0),
             theme: self.common.theme.clone(),
@@ -408,6 +454,18 @@ impl Widget for JsonViewer {
         }
         root.show_in(scope)?;
         let area = scope.child_in(reference.get().ok_or(glory::ui::Error::Gone)?)?;
+        if let Some(mut copy) = self.copy.take() {
+            if self.common.unstyled {
+                copy = copy.unstyled();
+            }
+            copy.source(scope.bond(move || tree.with(|value| value.source().to_string())))
+                .show_in(&area)?;
+        }
+        if let Some(projection) = projection {
+            tree_mode::show(state, projection, &area)?;
+            scope.retain(area)?;
+            return Ok(());
+        }
         let items = scope.bond(move || vec![(tree.get(), 0usize)]);
         glory::ui::view()
             .document_part(DocumentPart::UnorderedList)

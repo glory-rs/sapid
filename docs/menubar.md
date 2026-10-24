@@ -61,7 +61,8 @@ the finite intrinsic refinement and rejects late focus to an old root;
 `html/src/menubar_tests.rs` checks prepared patches against the full-shape
 oracle, including default resets. The existing `ssr/src/stream/menu_tests.rs`
 producer transports Menubar role/orientation, root marker and expanded state
-through Shell/Patch/End using the current HTML v4/classic v2 format.
+through Shell/Patch/End. The original acceptance used HTML v4/classic v2;
+current producers use HTML v13 with the same classic v2 envelope.
 
 `blitz/tests/menubar.rs` verifies descriptor/patch preflight and direct rejection
 before engine facets, with the accepted-prefix Bounds watermark retained.

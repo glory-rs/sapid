@@ -263,3 +263,199 @@ fn four_theme_ssr_uses_lists_buttons_escaped_json_and_unstyled_tokens() {
         &glory::style::Style::new()
     );
 }
+#[test]
+fn disclosure_internal_and_typed_callbacks_precede_generic_activate_observers() {
+    let app = App::memory();
+    let log = Rc::new(RefCell::new(Vec::new()));
+    let typed = log.clone();
+    let generic = log.clone();
+    app.mount(
+        json_viewer("observe")
+            .source("{\"branch\":{\"leaf\":1}}")
+            .on_expanded_change(move |_| typed.borrow_mut().push("typed"))
+            .on(glory::render::EventKind::Activate, move |_| {
+                generic.borrow_mut().push("generic")
+            }),
+    )
+    .unwrap();
+    app.dispatch(trigger(&app, "branch: Object 1"), Event::Activate)
+        .unwrap();
+    app.flush().unwrap();
+    assert_eq!(&*log.borrow(), &["typed", "generic"]);
+    assert_eq!(values(&app), vec!["leaf: 1"]);
+}
+#[test]
+fn reusable_tree_mode_has_real_coordinates_controlled_expansion_search_and_retained_paths() {
+    use glory::render::{Role, TreeCommand};
+    let app = App::memory();
+    let source = app
+        .scope()
+        .cage("{\"😀/a~\":{\"leaf\":1},\"version\":2}".to_string());
+    let expanded = app
+        .scope()
+        .cage(vec![String::new(), "/future".into(), "/version".into()]);
+    let query = app.scope().cage(String::new());
+    let proposals = Rc::new(RefCell::new(vec![]));
+    let output = proposals.clone();
+    app.mount(
+        json_viewer("tree-json")
+            .source(source)
+            .tree_navigation(true)
+            .expanded(expanded)
+            .search(query)
+            .on_expanded_change(move |paths| output.borrow_mut().push(paths)),
+    )
+    .unwrap();
+    let find = |name: &str| {
+        ids(&app, "sapid-tree-item")
+            .into_iter()
+            .find(|id| {
+                app.tree()
+                    .node(*id)
+                    .unwrap()
+                    .descriptor
+                    .view()
+                    .name
+                    .as_deref()
+                    == Some(name)
+            })
+            .unwrap()
+    };
+    let root = ids(&app, "sapid-json-tree")[0];
+    let branch = find("😀/a~: Object");
+    assert_eq!(
+        app.tree().node(root).unwrap().descriptor.view().role,
+        Some(Role::Tree)
+    );
+    assert_eq!(
+        app.tree()
+            .node(branch)
+            .unwrap()
+            .descriptor
+            .view()
+            .semantics
+            .as_ref()
+            .unwrap()
+            .tree_item
+            .unwrap()
+            .level,
+        2
+    );
+    app.dispatch(
+        root,
+        Event::TreeNavigate {
+            from: branch,
+            command: TreeCommand::Open,
+        },
+    )
+    .unwrap();
+    app.flush().unwrap();
+    assert_eq!(proposals.borrow().len(), 1);
+    assert!(proposals.borrow()[0].contains(&"/😀~1a~0".into()));
+    assert!(proposals.borrow()[0].contains(&"/future".into()));
+    assert!(proposals.borrow()[0].contains(&"/version".into()));
+    assert!(!ids(&app,"sapid-json-tree-value").into_iter().any(|id|matches!(app.tree().node(id).unwrap().descriptor.view().props,Props::Text(t)if t.content=="leaf: 1")));
+    expanded.revise(|paths| *paths = proposals.borrow()[0].clone());
+    app.flush().unwrap();
+    let leaf = find("leaf: Number");
+    let leaf_before = leaf;
+    assert_eq!(
+        app.tree()
+            .node(leaf)
+            .unwrap()
+            .descriptor
+            .view()
+            .semantics
+            .as_ref()
+            .unwrap()
+            .tree_item
+            .unwrap()
+            .level,
+        3
+    );
+    source.revise(|value| *value = "{\"version\":2,\"😀/a~\":{\"leaf\":1}}".into());
+    app.flush().unwrap();
+    assert_eq!(find("leaf: Number"), leaf_before);
+    assert_eq!(find("😀/a~: Object"), branch);
+    expanded.revise(|v| *v = vec![String::new()]);
+    app.flush().unwrap();
+    query.revise(|v| *v = "leaf".into());
+    app.flush().unwrap();
+    assert!(app.tree().node(find("leaf: Number")).is_ok());
+    let calls = proposals.borrow().len();
+    app.dispatch(
+        root,
+        Event::TreeNavigate {
+            from: branch,
+            command: TreeCommand::Close,
+        },
+    )
+    .unwrap();
+    app.flush().unwrap();
+    assert_eq!(proposals.borrow().len(), calls);
+    assert_eq!(expanded.get(), vec![String::new()]);
+    query.revise(String::clear);
+    app.flush().unwrap();
+    assert_eq!(ids(&app, "sapid-tree-item").len(), 3);
+    app.clear().unwrap();
+    assert_eq!(app.runtime_stats().tasks, 0);
+    assert_eq!(app.stats().queries, 0);
+}
+#[test]
+fn tree_mode_full_leaf_and_finite_depth_reject_atomically_without_changing_copy() {
+    let app = App::memory();
+    let source = app
+        .scope()
+        .cage(format!("{{\"long\":\"{}\"}}", "x".repeat(5000)));
+    let copy = app.scope().cage(None);
+    app.mount(
+        json_viewer("long-tree")
+            .source(source)
+            .tree_navigation(true)
+            .limits(JsonViewLimits {
+                depth: 64,
+                ..Default::default()
+            })
+            .copy_button(copy_button().node_ref(copy)),
+    )
+    .unwrap();
+    let label = ids(&app, "sapid-json-tree-value")
+        .into_iter()
+        .find_map(
+            |id| match app.tree().node(id).unwrap().descriptor.view().props {
+                Props::Text(text) if text.content.starts_with("long:") => {
+                    Some(text.content.clone())
+                }
+                _ => None,
+            },
+        )
+        .unwrap();
+    assert!(label.len() > 5000);
+    let accepted = source.get();
+    source.revise(|v| *v = format!("{}0{}", "[".repeat(64), "]".repeat(64)));
+    assert!(app.flush().is_err());
+    assert_eq!(
+        app.tree()
+            .node(copy.get().unwrap())
+            .unwrap()
+            .descriptor
+            .view()
+            .semantics
+            .as_ref()
+            .unwrap()
+            .clipboard
+            .as_ref()
+            .unwrap()
+            .text,
+        accepted
+    );
+    let html = glory::ssr::render(
+        json_viewer("ssr-tree")
+            .tree_navigation(true)
+            .source("{\"a\":1}"),
+    )
+    .unwrap();
+    assert!(html.contains("role=\"tree\""));
+    assert!(html.contains("role=\"treeitem\""));
+    assert!(html.contains("aria-level=\"2\""));
+}

@@ -52,7 +52,7 @@ async (hostPage, baseURL='http://127.0.0.1:8794') => {
     reports.push({suite:'hints-dirty-hydration',status:'passed',checks:'actual focused editable target preserves identity/value/selection and opens description without autofocus'});
     await page.goto(`${baseURL}/hints-stream.html`);await page.waitForFunction(()=>document.querySelector('#hints-stream-root')?.dataset.glyStreamState==='ready');
     assert(await page.locator('#stream-tip-target').getAttribute('aria-describedby')==='stream-tip'&&await page.locator('#stream-tip').getAttribute('role')==='tooltip'&&await page.locator('#stream-tip').textContent()==='Loaded tooltip description'&&!await page.locator('#stream-tip').evaluate(e=>e.hidden),'classic stream description/role/text/hidden Set/Clear');
-    assert(await page.locator('#stream-tip-target').getAttribute('aria-haspopup')===null&&await page.locator('#stream-tip-target').getAttribute('aria-expanded')===null&&await page.evaluate(()=>GloryStream.active()===0&&document.querySelector('#hints-stream-root').firstChild.nodeValue==='gly:v:8'),'classic stream passive semantics and finite End rekey');
+    assert(await page.locator('#stream-tip-target').getAttribute('aria-haspopup')===null&&await page.locator('#stream-tip-target').getAttribute('aria-expanded')===null&&await page.evaluate(()=>GloryStream.active()===0&&document.querySelector('#hints-stream-root').firstChild.nodeValue==='gly:v:13'),'classic stream passive semantics and finite End rekey');
     reports.push({suite:'hints-classic-stream',status:'passed',checks:'actual Rust Shell/Patch/End description text/hidden reset, no popup/expanded, v3 rekey'});
     assert(errors.length===0,JSON.stringify(errors));return{reports,errors};
   } finally {await context.close();}

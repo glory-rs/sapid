@@ -32,7 +32,7 @@ close callback. No business source or visited-anchor history is retained.
 HTML format v6 introduced all six placement fields independently, including
 defaults and in builds without CSS flags. Snapshot adoption rejects older
 versions or mismatched fields before changing the root. Classic envelope remains
-v2; the current HTML version is 7 after Translation. Older Start data fails before a
+v2; the current HTML version is 13 after the finite rich-editor protocol. Older Start data fails before a
 controller is registered or DOM edits are applied. Stream configuration carries
 semantic shapes and provides no pre-WASM interaction driver.
 
@@ -79,8 +79,11 @@ Hints, Choice, Select, Command, ContextMenu and Menubar suites: 109 reports,
 `errors: []`, at `D:/BuildCache/sapid/layer-final-root23.json`.
 
 Native now uses the genuine `glory-rs/blitz` fork at full commit
-`7e0b5f85727da016285028f656a437d89ca10c46`: separate viewport layout, ordered
+`c127fd9699a89ff8ecba0c8d8c9eccb3330627af`: separate viewport layout, ordered
 paint/backdrops and reverse hit testing preserve the logical DOM/Stylo parents.
+The final current-pin fork and combined native regressions pass in
+`D:/BuildCache/sapid/final-engine-forks.log` and `final-native-acceptance.log`.
+The earlier native introduction logs below retain their original revision evidence.
 Dialog/AlertDialog Manage and nonmodal Dialog Preserve work with Center and all
 twelve AnchorPlacement combinations. Modal focus/AX admission includes live
 anchor-associated popups, scroll stays contained, controlled dismissal remains

@@ -33,7 +33,7 @@ async function runTranslationAcceptance(page) {
   }
   await page.emulateMedia({reducedMotion:'no-preference'});await page.goto(`${base}/translation-stream.html`);await page.waitForFunction(()=>document.querySelector('#translation-stream-root')?.dataset.glyStreamState==='ready');await turn();
   const streamed=page.locator('.stream-translation'),handle=await streamed.elementHandle();
-  assert(await page.evaluate(()=>GloryStream.active()===0&&document.querySelector('#translation-stream-root').firstChild.nodeValue==='gly:v:8'), 'translation classic: wrong End/released controller');
+  assert(await page.evaluate(()=>GloryStream.active()===0&&document.querySelector('#translation-stream-root').firstChild.nodeValue==='gly:v:13'), 'translation classic: wrong End/released controller');
   const initial=await streamed.evaluate(element=>element.getBoundingClientRect().x);await page.waitForTimeout(100);assert(Math.abs(await streamed.evaluate(element=>element.getBoundingClientRect().x)-initial)>2&&await streamed.evaluate(element=>element.getAnimations().some(animation=>animation.playState==='running')),'translation classic: live loop did not survive End');
   await page.emulateMedia({reducedMotion:'reduce'});await turn();assert(await streamed.evaluate(element=>Math.abs(element.getBoundingClientRect().x-8)<0.1&&element.getAnimations().length===0),'translation classic: live Reduce failed');
   await page.emulateMedia({reducedMotion:'no-preference'});await turn();assert(await streamed.evaluate(element=>element.getAnimations().some(animation=>animation.playState==='running')),'translation classic: preference restart failed');

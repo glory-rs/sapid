@@ -172,6 +172,43 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let tabs_dynamic = glory::ssr::snapshot(
                 sapid_web_example::tabs_dynamic_form::tabs_dynamic_form(theme.clone()),
             )?;
+            let floating_window = glory::ssr::snapshot(
+                sapid_web_example::floating_window_form::floating_window_form(theme.clone()),
+            )?;
+            let tour =
+                glory::ssr::snapshot(sapid_web_example::tour_form::tour_form(theme.clone()))?;
+            let focus_scope = glory::ssr::snapshot(
+                sapid_web_example::focus_scope_form::focus_scope_form(theme.clone()),
+            )?;
+            let environment = glory::ssr::snapshot(
+                sapid_web_example::environment_form::environment_form(theme.clone()),
+            )?;
+            let messages = glory::ssr::snapshot(
+                sapid_web_example::messages_form::messages_form(theme.clone()),
+            )?;
+            let message_scroller = glory::ssr::snapshot(
+                sapid_web_example::message_scroller_form::message_scroller_form(theme.clone()),
+            )?;
+            let prompt = glory::ssr::snapshot(sapid_web_example::prompt_form::prompt_form(
+                theme.clone(),
+            ))?;
+            let questionnaire = glory::ssr::snapshot(
+                sapid_web_example::questionnaire_form::questionnaire_form(theme.clone()),
+            )?;
+            let model_suggestions = glory::ssr::snapshot(
+                sapid_web_example::model_suggestions_form::model_suggestions_form(
+                    theme.clone(),
+                ),
+            )?;
+            let responsive = glory::ssr::snapshot(
+                sapid_web_example::responsive_form::responsive_form(theme.clone()),
+            )?;
+            let portal = glory::ssr::snapshot(sapid_web_example::portal_form::portal_form(
+                theme.clone(),
+            ))?;
+            let portal_missing = glory::ssr::snapshot(
+                sapid_web_example::portal_form::portal_missing_form(theme.clone()),
+            )?;
             let data_table_server = glory::ssr::snapshot(
                 sapid_web_example::data_table_server_form::data_table_server_form(
                     theme.clone(),
@@ -189,6 +226,74 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             )?;
             let text_motion = glory::ssr::snapshot(
                 sapid_web_example::text_motion_form::text_motion_form(theme.clone()),
+            )?;
+            let tree =
+                glory::ssr::snapshot(sapid_web_example::tree_form::tree_form(theme.clone()))?;
+            let charts = glory::ssr::snapshot(sapid_web_example::charts_form::charts_form(
+                theme.clone(),
+                false,
+            ))?;
+            let cartesian = glory::ssr::snapshot(sapid_web_example::charts_form::charts_form(
+                theme.clone(),
+                true,
+            ))?;
+            let plot_0 = glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(
+                theme.clone(),
+                0,
+            ))?;
+            let plot_1 = glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(
+                theme.clone(),
+                1,
+            ))?;
+            let plot_2 = glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(
+                theme.clone(),
+                2,
+            ))?;
+            let plot_3 = glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(
+                theme.clone(),
+                3,
+            ))?;
+            let plot_4 = glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(
+                theme.clone(),
+                4,
+            ))?;
+            let plot_5 = glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(
+                theme.clone(),
+                5,
+            ))?;
+            let lightbox = glory::ssr::snapshot(
+                sapid_web_example::lightbox_form::lightbox_form(theme.clone()),
+            )?;
+            let public_explanations = glory::ssr::snapshot(
+                sapid_web_example::chat_evidence_form::chat_evidence_form(theme.clone(), false),
+            )?;
+            let tasks =
+                glory::ssr::snapshot(sapid_web_example::tasks_form::tasks_form(theme.clone()))?;
+            let confirmation = glory::ssr::snapshot(
+                sapid_web_example::confirmation_form::confirmation_form(theme.clone()),
+            )?;
+            let output = glory::ssr::snapshot(sapid_web_example::output_form::output_form(
+                theme.clone(),
+            ))?;
+            let citations = glory::ssr::snapshot(
+                sapid_web_example::chat_evidence_form::chat_evidence_form(theme.clone(), true),
+            )?;
+            let tree_select = glory::ssr::snapshot(
+                sapid_web_example::tree_choices_form::tree_choices_form(theme.clone(), false),
+            )?;
+            let cascader = glory::ssr::snapshot(
+                sapid_web_example::tree_choices_form::tree_choices_form(theme.clone(), true),
+            )?;
+            let rich_editor = glory::ssr::snapshot(
+                sapid_web_example::rich_editor_form::rich_editor_form(theme.clone()),
+            )?;
+            let carousel = glory::ssr::snapshot(
+                sapid_web_example::carousel_form::carousel_form(theme.clone()),
+            )?;
+            let files =
+                glory::ssr::snapshot(sapid_web_example::files_form::files_form(theme.clone()))?;
+            let copy_button = glory::ssr::snapshot(
+                sapid_web_example::copy_button_form::copy_button_form(theme.clone()),
             )?;
             let code =
                 glory::ssr::snapshot(sapid_web_example::code_form::code_form(theme.clone()))?;
@@ -237,6 +342,42 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             })?;
             let mask_input = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::mask_input_form::form(scope, theme.clone()).0
+            })?;
+            let time_picker = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::time_picker_form::form(scope, theme.clone()).0
+            })?;
+            let date_time_picker = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::date_time_picker_form::form(scope, theme.clone()).0
+            })?;
+            let schedule = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::schedule_form::form(scope, theme.clone()).0
+            })?;
+            let schedule_timeline = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::schedule_timeline_form::form(scope, theme.clone()).0
+            })?;
+            let schedule_calendar = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::schedule_calendar_form::form(scope, theme.clone()).0
+            })?;
+            let resource_schedule = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::resource_schedule_form::form(scope, theme.clone()).0
+            })?;
+            let trace = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::trace_form::form(scope, theme.clone(), false).0
+            })?;
+            let stack_trace = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::trace_form::form(scope, theme.clone(), true).0
+            })?;
+            let time_input = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::time_input_form::form(scope, theme.clone()).0
+            })?;
+            let period_picker = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::period_picker_form::form(scope, theme.clone()).0
+            })?;
+            let date_input = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::date_input_form::form(scope, theme.clone()).0
+            })?;
+            let date_picker = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::date_picker_form::form(scope, theme.clone()).0
             })?;
             let calendar = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::calendar_form::form(scope, theme.clone()).0
@@ -303,6 +444,62 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     "mask-input-hydrate",
                     include_str!("../../mask-input.html"),
                     mask_input,
+                ),
+                (
+                    "time-picker-hydrate",
+                    include_str!("../../time-picker.html"),
+                    time_picker,
+                ),
+                (
+                    "date-time-picker-hydrate",
+                    include_str!("../../date-time-picker.html"),
+                    date_time_picker,
+                ),
+                (
+                    "schedule-hydrate",
+                    include_str!("../../schedule.html"),
+                    schedule,
+                ),
+                (
+                    "schedule-timeline-hydrate",
+                    include_str!("../../schedule-timeline.html"),
+                    schedule_timeline,
+                ),
+                (
+                    "schedule-calendar-hydrate",
+                    include_str!("../../schedule-calendar.html"),
+                    schedule_calendar,
+                ),
+                (
+                    "resource-schedule-hydrate",
+                    include_str!("../../resource-schedule.html"),
+                    resource_schedule,
+                ),
+                ("trace-hydrate", include_str!("../../trace.html"), trace),
+                (
+                    "stack-trace-hydrate",
+                    include_str!("../../stack-trace.html"),
+                    stack_trace,
+                ),
+                (
+                    "time-input-hydrate",
+                    include_str!("../../time-input.html"),
+                    time_input,
+                ),
+                (
+                    "period-picker-hydrate",
+                    include_str!("../../period-picker.html"),
+                    period_picker,
+                ),
+                (
+                    "date-input-hydrate",
+                    include_str!("../../date-input.html"),
+                    date_input,
+                ),
+                (
+                    "date-picker-hydrate",
+                    include_str!("../../date-picker.html"),
+                    date_picker,
                 ),
                 (
                     "calendar-hydrate",
@@ -410,6 +607,54 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     tabs_dynamic,
                 ),
                 (
+                    "floating-window-hydrate",
+                    include_str!("../../floating-window.html"),
+                    floating_window,
+                ),
+                ("tour-hydrate", include_str!("../../tour.html"), tour),
+                (
+                    "questionnaire-hydrate",
+                    include_str!("../../questionnaire.html"),
+                    questionnaire,
+                ),
+                (
+                    "model-suggestions-hydrate",
+                    include_str!("../../model-suggestions.html"),
+                    model_suggestions,
+                ),
+                ("prompt-hydrate", include_str!("../../prompt.html"), prompt),
+                (
+                    "message-scroller-hydrate",
+                    include_str!("../../message-scroller.html"),
+                    message_scroller,
+                ),
+                (
+                    "messages-hydrate",
+                    include_str!("../../messages.html"),
+                    messages,
+                ),
+                (
+                    "environment-hydrate",
+                    include_str!("../../environment.html"),
+                    environment,
+                ),
+                (
+                    "responsive-hydrate",
+                    include_str!("../../responsive.html"),
+                    responsive,
+                ),
+                (
+                    "focus-scope-hydrate",
+                    include_str!("../../focus-scope.html"),
+                    focus_scope,
+                ),
+                ("portal-hydrate", include_str!("../../portal.html"), portal),
+                (
+                    "portal-missing-hydrate",
+                    include_str!("../../portal-missing.html"),
+                    portal_missing,
+                ),
+                (
                     "data-table-server-hydrate",
                     include_str!("../../data-table-server.html"),
                     data_table_server,
@@ -439,6 +684,91 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     "text-motion-hydrate",
                     include_str!("../../text-motion.html"),
                     text_motion,
+                ),
+                ("tree-hydrate", include_str!("../../tree.html"), tree),
+                ("charts-hydrate", include_str!("../../charts.html"), charts),
+                (
+                    "public-explanations-hydrate",
+                    include_str!("../../public-explanations.html"),
+                    public_explanations,
+                ),
+                (
+                    "citations-hydrate",
+                    include_str!("../../citations.html"),
+                    citations,
+                ),
+                ("output-hydrate", include_str!("../../output.html"), output),
+                ("tasks-hydrate", include_str!("../../tasks.html"), tasks),
+                (
+                    "confirmation-hydrate",
+                    include_str!("../../confirmation.html"),
+                    confirmation,
+                ),
+                (
+                    "rich-editor-hydrate",
+                    include_str!("../../rich-editor.html"),
+                    rich_editor,
+                ),
+                (
+                    "lightbox-hydrate",
+                    include_str!("../../lightbox.html"),
+                    lightbox,
+                ),
+                (
+                    "polar-charts-hydrate",
+                    include_str!("../../polar-charts.html"),
+                    plot_0,
+                ),
+                (
+                    "point-charts-hydrate",
+                    include_str!("../../point-charts.html"),
+                    plot_1,
+                ),
+                (
+                    "shape-charts-hydrate",
+                    include_str!("../../shape-charts.html"),
+                    plot_2,
+                ),
+                (
+                    "matrix-charts-hydrate",
+                    include_str!("../../matrix-charts.html"),
+                    plot_3,
+                ),
+                (
+                    "range-charts-hydrate",
+                    include_str!("../../range-charts.html"),
+                    plot_4,
+                ),
+                (
+                    "hierarchy-charts-hydrate",
+                    include_str!("../../hierarchy-charts.html"),
+                    plot_5,
+                ),
+                (
+                    "cartesian-hydrate",
+                    include_str!("../../cartesian.html"),
+                    cartesian,
+                ),
+                (
+                    "tree-select-hydrate",
+                    include_str!("../../tree-select.html"),
+                    tree_select,
+                ),
+                (
+                    "cascader-hydrate",
+                    include_str!("../../cascader.html"),
+                    cascader,
+                ),
+                ("files-hydrate", include_str!("../../files.html"), files),
+                (
+                    "carousel-hydrate",
+                    include_str!("../../carousel.html"),
+                    carousel,
+                ),
+                (
+                    "copy-button-hydrate",
+                    include_str!("../../copy-button.html"),
+                    copy_button,
                 ),
                 ("code-hydrate", include_str!("../../code.html"), code),
                 (

@@ -27,14 +27,22 @@ pub mod command_form;
 pub mod composite_form;
 #[path = "../context_menu_form.rs"]
 pub mod context_menu_form;
+#[path = "../copy_button_form.rs"]
+pub mod copy_button_form;
 #[path = "../display_form.rs"]
 pub mod display_form;
 pub mod display_pages;
 #[path = "../document_form.rs"]
 pub mod document_form;
+#[path = "../environment_form.rs"]
+pub mod environment_form;
 pub mod fields_form;
+#[path = "../files_form.rs"]
+pub mod files_form;
 #[path = "../floating_indicator_form.rs"]
 pub mod floating_indicator_form;
+#[path = "../floating_window_form.rs"]
+pub mod floating_window_form;
 pub mod form;
 pub mod forms_form;
 #[path = "../graphics_form.rs"]
@@ -44,6 +52,8 @@ pub mod grid_form;
 pub mod hints_form;
 #[path = "../image_form.rs"]
 pub mod image_form;
+#[path = "../json_tree_example.rs"]
+pub mod json_tree_example;
 #[path = "../layout_form.rs"]
 pub mod layout_form;
 #[path = "../loading_overlay_form.rs"]
@@ -62,8 +72,12 @@ pub mod notifications_form;
 #[path = "../overflow_list_form.rs"]
 pub mod overflow_list_form;
 pub mod overlay_form;
+#[path = "../portal_form.rs"]
+pub mod portal_form;
 #[path = "../progress_form.rs"]
 pub mod progress_form;
+#[path = "../responsive_form.rs"]
+pub mod responsive_form;
 pub mod scroll_area_form;
 #[path = "../select_form.rs"]
 pub mod select_form;
@@ -87,6 +101,8 @@ pub mod timeline_form;
 pub mod toggles_form;
 #[path = "../toolbar_form.rs"]
 pub mod toolbar_form;
+#[path = "../tour_form.rs"]
+pub mod tour_form;
 #[path = "../translation_form.rs"]
 pub mod translation_form;
 pub mod typography_form;
@@ -398,3 +414,65 @@ pub mod data_table_form;
 
 #[path = "../data_table_server_form.rs"]
 pub mod data_table_server_form;
+
+pub mod date_picker_form;
+
+#[path = "../charts_form.rs"]
+pub mod charts_form;
+#[path = "../chat_evidence_form.rs"]
+pub mod chat_evidence_form;
+#[path = "../confirmation_form.rs"]
+pub mod confirmation_form;
+#[path = "../lightbox_form.rs"]
+pub mod lightbox_form;
+#[path = "../output_form.rs"]
+pub mod output_form;
+#[path = "../plots_form.rs"]
+pub mod plots_form;
+#[path = "../tasks_form.rs"]
+pub mod tasks_form;
+#[path = "../tree_choices_form.rs"]
+pub mod tree_choices_form;
+#[path = "../tree_form.rs"]
+pub mod tree_form;
+
+pub mod date_input_form;
+
+pub mod period_picker_form;
+
+pub mod time_input_form;
+
+pub mod date_time_picker_form;
+pub mod resource_schedule_form;
+pub mod schedule_calendar_form;
+pub mod schedule_form;
+pub mod schedule_timeline_form;
+pub mod showcase;
+pub mod showcase_catalog;
+pub mod showcase_examples;
+pub mod showcase_home;
+pub mod showcase_host;
+pub mod time_picker_form;
+pub mod trace_form;
+
+#[path = "../focus_scope_form.rs"]
+pub mod focus_scope_form;
+pub mod focus_scope_pages;
+
+#[path = "../message_scroller_form.rs"]
+pub mod message_scroller_form;
+#[path = "../messages_form.rs"]
+pub mod messages_form;
+#[path = "../prompt_form.rs"]
+pub mod prompt_form;
+#[path = "../questionnaire_form.rs"]
+pub mod questionnaire_form;
+
+#[path = "../carousel_form.rs"]
+pub mod carousel_form;
+
+#[path = "../rich_editor_form.rs"]
+pub mod rich_editor_form;
+
+#[path = "../model_suggestions_form.rs"]
+pub mod model_suggestions_form;

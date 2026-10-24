@@ -137,6 +137,13 @@ impl<T> Default for FieldOptions<T> {
     }
 }
 impl<T> FieldOptions<T> {
+    /// Add a composite's validation gate without discarding application disabling.
+    #[cfg(feature = "chat")]
+    pub(crate) fn gate_disabled(mut self, scope: &Scope, gate: Lotus<bool>) -> Self {
+        let disabled = self.disabled;
+        self.disabled = scope.bond(move || disabled.get() || gate.get()).into();
+        self
+    }
     pub fn validate(mut self, callback: impl Fn(&T) -> ValidationErrors + 'static) -> Self {
         self.validator = Some(Rc::new(callback));
         self

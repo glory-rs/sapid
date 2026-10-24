@@ -20,13 +20,17 @@ INTRO = """# Sapid widgets 对照与逐项实现计划
 这是一个冻结的对照快照，后续上游新增项需要显式核对并更新清单，不自动改变目标范围。
 本页由 `docs/widget-inventory.json` 生成；修改清单后运行 `python scripts/widget-plan.py`，
 运行 `python scripts/widget-plan.py --check` 检查覆盖完整性和文档同步。
+最终全量验收、复现命令与宿主边界见 [验证记录](widgets-verification.md)。
+Glory + Sapid 构建的首页、组件文档和实际示例见 [展示站](showcase-site.md)，
+运行 `./scripts/check-showcase.ps1 -Serve -Browser` 后打开 `http://127.0.0.1:8795/`。
 
 ## 当前判断
 
 原有九个主要组件为 Button、TextField、Checkbox、Collapsible、Accordion、Tabs、
 Dialog、Drawer、Popover；第一批已增加 Field、Label/Description/Error、Fieldset/Legend，
 并接入 TextField/Checkbox 的标签及 required/readonly/invalid。已有测试证明相应功能，
-不表示与某个上游组件全部功能等价。蓝/绿各有明暗主题，方向/locale/完整 motion 仍待补齐。
+不表示与某个上游组件全部功能等价。蓝/绿各有明暗主题；有限主题 token/provider、方向、locale、
+响应式和运动契约已有独立验收，支持范围与明确拒绝见 P0 和逐组件能力记录。
 第二批已增加 Textarea、PasswordInput、InputGroup/Addon/Section，完成 Field、受控状态、
 Web/SSR 与原生引擎验收。Textarea 自动高度依赖浏览器 field-sizing:content，Blitz 明确拒绝；
 固定行数可用于原生。后续批次已增加 Form/FormState、成功控件快照、MixedCheckbox/组、
@@ -34,21 +38,23 @@ Switch、RadioGroup/SegmentedControl、动作按钮、展示表面、NumberForma
 对应证据逐项记录在下表。Toggle、Chip、布局、Typography、Grid/比例、Timeline、Spoiler 与导航
 已增加实际宿主证据；Menu、Stepper、辅助文本、图像、提示层、原生选择和应用框架亦已验收，
 新批次的完成状态及宿主边界以清单和逐组件证据为准。
-Glory 的布局/图像/窗口列表基础不等于 Sapid 已完成 DataTable、Tree 等后续组件。
+DataTable、Tree/FileTree、TreeSelect 和 Cascader 已按有限契约完成实现和宿主验收；
+图表、文件、编辑器、日程和聊天模块的当前完成状态以清单及对应证据为准。
 
 名称需要按语义对照：当前 Dialog 对应 Mantine Modal / shadcn Dialog；Mantine Dialog
 是另外的非模态提示需求，单列 FloatingDialog。Sheet 已在 Drawer 上增加有限手势与 snap
-points；验收和宿主边界见对应证据。Collapse 与 Collapsible 复用展开模型，动画单独补齐。Mantine 布局 Group
+points；验收和宿主边界见对应证据。Collapse 与 Collapsible 复用展开模型并接入有限运动协议。Mantine 布局 Group
 不是 Glory 的 boxless Group。菜单、Tooltip、Combobox 也不能仅改 Popover 的外观就算完成。
 
 Dialog/Popover 已验收 Web/SSR/hydration、Document 跨 App 栈、完整有限锚点定位与滚动锁，
 并接通原生 WindowApp 的真实 top layer、焦点/AX、布局和像素。Drawer/Sheet、Menu/Tooltip/Listbox
-等其余原生 Layer facet 仍按证据明确拒绝。独立 FocusScope/Portal、完整主题及尚未交付组件继续列为后续工作。
+等其余原生 Layer facet 仍按证据明确拒绝。独立 Portal 与 FocusScope 已完成真实宿主、跨 App 和生命周期验收；
+完整主题和其他组件的当前状态均以逐项证据为准。
 
 ## 目标边界
 
 1. 覆盖两套官方目录中可见的核心 widgets，并纳入 Mantine 日期/图表/日程/编辑器等扩展。
-   shadcn 新增的消息、问卷、Trace 和 AI Elements 也保留条目，作为后期可选展示模块。
+   shadcn 新增的消息、问卷、Trace 和 AI Elements 也保留条目，作为可选展示模块。
 2. 同义名称和紧密变体共享实现，但清单保留每个来源 URL。149 项工作不是 149 个独立 widgets；
    其中包含已有组件补强、公共基础设施和多个变体的共同实现。每个变体都要有自己的验收证据。
 3. 不照搬 React/JSX API、hooks、JS 库依赖和代码分发 CLI。继续使用手写 Rust builder、
@@ -56,7 +62,8 @@ Dialog/Popover 已验收 Web/SSR/hydration、Document 跨 App 栈、完整有限
 4. 社区 Registry、页面 Blocks、完整业务应用和任意第三方插件不是有限可穷尽的 widgets 清单。
    React 表单库绑定不移植，但对应表单能力列入 P1；主题/provider/方向/locale 是基础设施。
 5. 默认 Sapid 保持轻依赖。日期、图表、文件、富文本、日程和聊天组件使用可选模块或独立 crate。
-   `sapid-dates/charts/files/editor/schedule/chat` 仅是候选拆分，尚未创建，不宣称接口已确定。
+   当前是 Sapid 的 `dates/charts/files/editor/chat/code/json` 可选 features，日程随 `dates`；
+   尚未拆为同名独立 crate，也不把可选宿主依赖带入默认组件图。
    图表需要可访问数据表示和跨宿主绘图能力；富文本需要独立文档/编辑协议，不能空壳交付。
 6. 实现默认样式、主题 token、尺寸/状态和 unstyled 组合能力；不把黑白原生控件包装当完整设计系统。
    组合部件可表达 Root/Trigger/Content/Label/Description 等角色，但不引入 UI DSL 或任意 HTML API。
@@ -93,7 +100,7 @@ Dialog/Popover 已验收 Web/SSR/hydration、Document 跨 App 栈、完整有限
 | Table / Grid / Schedule | 表头与单元格关联、网格游标、选择与编辑；只遍历挂载窗口，不能扫描大数据源 |
 | File / Clipboard / Editor | 受限文件句柄和预算、剪贴板动作及错误、富文档/选择/IME/undo 协议，宿主负责系统访问 |
 
-这些是分阶段设计目标，不是现在已经增加的 enum/API。优先扩展共享有限契约、验证、mapper 和实际
+这些行描述组件所需的能力类别，实际 enum/API 及宿主边界见实现与协议文档。优先扩展共享有限契约、验证、mapper 和实际
 适配器；不在 Sapid 内注入 DOM/ARIA/脚本，也不把交互 View 随意改 role 冒充原生控件。
 新增语义必须明确 Web、SSR/stream、Blitz、AccessKit 的支持或拒绝；不能默默降级成错误语义。
 

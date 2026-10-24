@@ -4,51 +4,55 @@ Composable widgets for Glory, written with Rust builders and the public
 `Cage` / `Bond` / `Lotus` reactive model. Applications select their host; Sapid
 does not install a browser runtime, stylesheet, font loader, or native engine.
 
-This implementation contains **Button**, **TextField**, **Checkbox**,
-**Collapsible**, **Accordion**, **Tabs**, **Dialog**, **Drawer**, **Popover**,
-**Field**, **Label**, **Description**, **FieldError**, **Fieldset**, **Textarea**,
-**PasswordInput**, **InputGroup**, **InputAddon**, **InputSection**, **Form** /
-**FormState**, **MixedCheckbox**, **CheckboxGroup**, **Switch**, **RadioGroup**,
-**SegmentedControl**, **Toggle** / **ToggleGroup**, **ActionIcon**, **CloseButton**,
-**Burger**, **ButtonGroup**, **Badge**, **Pill**, **Card**, **Paper**, **EmptyState**,
-**NumberFormatter**, **Code**, **Mark**, **Highlight**, **Kbd**, **TextList**,
-**Blockquote**, **Item**, **DataList**, portable **layout boxes**, **Grid** /
-**SimpleGrid**, **AspectRatio**, **Text** / **Title** / **Typography**, **Anchor**,
-**Separator**, **Timeline**, **Spoiler**, **Breadcrumbs**, **Pagination** and
-**NavLink**, **Menu** / **DropdownMenu**, **Stepper**, **VisuallyHidden**,
-**Tooltip** / **HoverCard**, **Avatar** / **Image**, **Indicator** / **ThemeIcon**,
-**NativeSelect**, **Alert** / **AlertDialog** / **FloatingDialog**, **Skeleton**,
-**Progress** / **RingProgress** / **SemiCircleProgress**, **Sidebar** / **AppShell**,
-**ScrollArea** / **Scroller**, **Splitter**, **Affix**, **Select**,
-**Spinner** / **Loader**, **NavigationProgress**, **ModalsManager**, **Combobox**,
-**Overlay** / **LoadingOverlay**, **Notification** / **Toaster**, **Sheet**,
-**NavigationMenu**, **Toolbar** / **ActionBar**, **Autocomplete** / **MultiSelect**,
-**ColorSwatch**, **HueSlider** / **AlphaSlider**, **AngleSlider**, **Rating**,
-**ContextMenu**, **Menubar**, **Command** / **Spotlight**, **ColorPicker** /
-**ColorInput**, **OverflowList**, **NumberInput**, **PinInput** / **InputOTP**,
-**MaskInput**, **TableOfContents**, **FloatingIndicator**, **Marquee** /
-**RollingNumber** and **Table**. The roadmap records the exact implemented contracts and
-remaining components. Unified Web15 passed all 46 suites (406 reports) with no
-errors. Web16 added TagsInput/PillsInput, Slider, RangeSlider and optional JsonInput;
-all 50 suites (447 reports) passed with no errors. The fixed Web18 snapshot
-passed all 54 suites (489 reports), including dynamic Accordion, ContextMenu,
-Hue/AlphaSlider and AngleSlider. Their component documents record
-exact limits and test scope. Web20 passed 60 suites (555 reports), and the fixed
-Web21 replay passed 62 suites (577 reports), including OverflowList and the finite
-Popover placement matrix, with no browser errors. Web23 passed 67 suites (633
-reports), including NumberInput, OTP, TableOfContents, FloatingIndicator and
-cross-App layers. Web25 passed 68 suites (645 reports), including real Table
-semantics/spans and the new shared input protocol, with no errors. Web26 added
-MaskInput (12 reports) and text motion/shared translation (9 reports each),
-including dirty adoption, current geometry, browser AX and classic streams.
-Native limitations remain explicit.
-Optional `features = ["json"]` adds bounded multiline **JsonInput**, validation
-and lossless whitespace formatting. See [JsonInput](docs/json-input.md) for
-controlled drafts, error relations and byte/depth/output budgets.
+The frozen catalogue covers **268 upstream entries in 149 completed work items**.
+Each item records its finite implementation, tests and adapter boundaries in the
+[roadmap](docs/widgets-roadmap.md) and [capability ledger](docs/component-capabilities.md).
+Completion does not imply every upstream feature or every platform is supported.
+
+Final commands, host boundaries and run evidence are collected in the
+[verification record](docs/widgets-verification.md).
+
+The library includes typed controls and forms; layout, typography and themes;
+menus, layers and navigation; tables, trees and indexed choices; dates and
+resource schedules; accessible charts; files, carousel and lightbox; a finite
+rich document editor; and application-supplied chat, questionnaire, task and
+trace displays. Applications retain ownership of data, authorization, transport
+and execution. Builders use real semantic controls and the existing Glory host
+contracts.
+
+Default builds keep the core widget graph small. Optional features are explicit:
+
+| Feature | Components / scope |
+|---|---|
+| `json` | Bounded JsonInput / JsonViewer and explicit JSON parsing |
+| `code` | CodeBlock / CodeHighlight |
+| `dates` | Civil date/time controls, calendars and resource schedules |
+| `charts` | Cartesian and specialized charts, tables and bounded sampling; portable `libm` geometry |
+| `files` | Permission- and budget-bound file controls |
+| `editor` | Finite rich documents, Web editing and classic streams; native editing is explicitly rejected |
+| `chat` | Messages, indexed output, prompts, questionnaires, model/suggestion controls, plans, confirmations and public traces; includes `files` |
+
+Browser, native and AccessKit acceptance are recorded separately. Native facets
+that are unavailable return typed errors; browser composition tests do not imply
+OS IME or screen-reader acceptance.
+
+The [Sapid showcase](docs/showcase-site.md) provides a Mantine-inspired home page,
+149 component guides, live Rust examples, search, themes, source code and a
+Button property playground. The page and its controls are built with Glory +
+Sapid; the HTML entry only boots WASM. Build and open it locally:
+
+```powershell
+./scripts/check-showcase.ps1 -Serve -Browser
+# http://127.0.0.1:8795/
+```
+
+The separate [capability audit gallery](examples/web/gallery.html) preserves
+the detailed host evidence and original acceptance fixtures.
+
 It targets the current semantic Glory checkout in the sibling `../glory`
 directory. Publishing and a standalone versioned Glory dependency are pending.
 
-Full widget comparison and implementation queue:
+Full widget comparison and completed work records:
 [widgets roadmap](docs/widgets-roadmap.md), with a
 [machine-readable inventory](docs/widget-inventory.json) covering the Mantine
 and shadcn official catalogues. Run `python scripts/widget-plan.py --check` to
@@ -205,7 +209,7 @@ each supplied part independently; no ambient child mutation is performed.
 
 Default tokens are portable typed Glory styles. Choose `Theme::blue_light()`,
 `Theme::blue_dark()`, `Theme::green_light()` or `Theme::green_dark()`, customize
-public token fields, and choose `Size::{Small, Medium, Large}`. `light()` and
+public token fields, and choose `Size::{ExtraSmall, Small, Medium, Large, ExtraLarge}`. `light()` and
 `dark()` select the blue variants. Each hue exposes ten palette steps, while
 semantic tokens independently select surfaces, readable text, accents, errors,
 borders and disabled states. Green's filled-button color is darker than its
@@ -433,7 +437,8 @@ observers. Trigger toggles and the built-in close button call `on_open_change`.
 Controlled rejection leaves the layer open and retains its focus constraints.
 `.close_label(...)` customizes the close button; `.show_close(false)` omits it.
 
-The browser adapter owns the stack and uses the HTML manual popover top layer,
+The browser adapter coordinates layers across Apps in the same Document and uses
+the HTML manual popover top layer,
 preserving the semantic/DOM ancestry and delegated events. Modal layers make
 outside branches inert, constrain actual focus and cycle Tab/Shift+Tab. Opening
 focuses `.initial_focus(SemanticId)` when it resolves to an enabled focusable
@@ -447,23 +452,33 @@ actual outcome. Composition and repeated Escape keys do not dismiss layers.
 
 Drawer supports Left/Right/Top/Bottom viewport edges and optional finite Sheet
 snap points with captured pointer/touch grips, viewport cancellation and reduced
-motion. See [Drawer evidence](docs/drawer.md) and [Sheet](docs/sheet.md). Popover supports
-`PopoverAlign::{Start, End}`, prefers below its trigger, flips above when there
-is room and clamps to the viewport. Scroll/resize placement work coalesces at
-the host read boundary. `.class/.style/.theme/.size/.unstyled` configure the
+motion. See [Drawer evidence](docs/drawer.md) and [Sheet](docs/sheet.md). Popover uses
+`.placement(AnchorPlacement { side, align, gap, viewport_padding, flip, shift })`
+with four physical sides and Start/Center/End alignment. Flip and shift are
+independent collision policies. The default is Bottom/Start with a 6 px gap and
+8 px viewport padding. Scroll/resize placement work coalesces at the host read
+boundary. `trigger_content` and `close_content` customize the actual Buttons
+while retaining their accessible names and control behavior. See
+[placement and native evidence](docs/popover.md). `.class/.style/.theme/.size/.unstyled` configure the
 panel; placement and modality remain host semantics. The default content policy
 is Unmount; KeepMounted preserves factory content and its tasks while hidden.
 Titles, descriptions, the close button and panel shell have permanent Owners.
 
-Layers share a stack within one WebApp. Use a single App as the overlay owner
-when embedding several Apps in a document; cross-App layer stacking is not
-implemented. SSR emits stable inert markup; top-layer presentation, focus and
-modal blocking begin after successful browser adoption. The stream edit format
-remains unchanged. Browser top-layer support is required and checked before
-semantic mutation. The pinned native Blitz engine currently rejects layer
-declarations in both preflight and direct apply; ordinary native controls and
-composites keep their existing support. Native top-layer interaction, animation,
-drag/swipe dismissal and mobile visual-viewport positioning remain future work.
+A document-owned weak registry coordinates current layer leases across Apps.
+The active modal controls Escape/Tab routing, focus, background inertness and
+viewport scroll locking. Closing layers out of order and retiring nested Apps
+preserve the surviving modal's constraints; final cleanup restores the host's
+original scroll/style state. SSR emits stable inert markup; physical top-layer
+presentation begins after successful browser adoption. Classic streams carry
+finite HTML shapes without a pre-WASM interaction driver.
+
+Native Dialog/AlertDialog and nonmodal Dialog Preserve use the genuine pinned
+Blitz fork's viewport layout, top-layer painting and hit testing while retaining
+logical ancestry and editor identity. Native Drawer/Sheet, Menu/Tooltip/Listbox
+layers and ContextPoint remain explicit capability rejections. These boundaries
+are checked before mutation and preserve accepted-prefix query watermarks;
+[Popover evidence](docs/popover.md) records the exact supported placements,
+focus/AX behavior and real native consumer tests.
 
 The focus rules follow WAI's [modal dialog pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/);
 top-layer presentation uses the [HTML popover contract](https://html.spec.whatwg.org/multipage/popover.html).
@@ -526,13 +541,16 @@ may refer forward or to absent nodes at the lower Glory layer; Sapid's stable
 panel shells avoid dangling controls. Snapshot IDs are independent of NodeId and
 canonical rekeying, and the existing HTML edit representation is retained.
 
-Verified on 2026-10-24: **55 Sapid component/SSR/documentation tests** and
-**21 Chromium acceptance groups** cover the basic, composite, layer and Field
-fixtures. **210 Glory render/UI/HTML/SSR tests** and **46 native tests** (including
-the layer rejection regression) passed. The HTML patch differential oracle,
-strict Clippy, and WASM checks/build are included in the verification script.
-Two native tests requiring a displayed
-window remain ignored by default.
+The completed inventory and per-component evidence are the current verification
+record. `scripts/browser.cjs` registers 120 acceptance suites; registration is
+separate from a successful run, whose JSON records every completed suite,
+report and error. The check script runs the HTML patch differential oracle,
+strict Clippy and WASM checks/build. Native engine/AX tests remain separate from
+browser tests and from displayed-window or OS-client acceptance.
+
+The earlier 2026-10-24 baseline of 55 Sapid tests, 21 Chromium groups, 210 Glory
+tests and 46 native tests is historical; it does not describe the completed
+catalogue or the final verification totals.
 
 Field regressions verify native label focus/checkbox activation, independent
 required/read-only/invalid state, combined help/error descriptions, inherited
@@ -544,14 +562,15 @@ matrix mounts all three older galleries in four themes with CSR and SSR adoption
 Native probes
 exercise engine pointer/key handling and a valid AccessKit consumer tree.
 
-Local evidence lives under `D:/BuildCache/sapid`: `fields-final-check.log`,
-`field-render-final.log`, `fields-doc-test.log`, `browser-results.json`,
-`fields-{blue,green}-{light,dark}.png`, `widgets.png`, `composites.png`, and
-`overlays.png`. All native build output stays in the verified D-drive Glory
+Local evidence lives under `D:/BuildCache/sapid`. Each component document links
+its exact immutable snapshot, acceptance JSON, native logs and screenshots;
+`browser-results.json` records the final runner's current output. Earlier Field
+logs and gallery screenshots remain historical evidence. All native build output stays in the verified D-drive Glory
 target. The default normal dependency graph still contains only Glory's
 facade/core/render/style/ui packages.
 
-Pressed-state animation remains in the plan. Browser protocol tests do not
-establish actual OS IME or screen-reader acceptance. The native tests use the
+Motion support and reduced-motion boundaries are recorded per component; no
+universal animation behavior is inferred from catalogue completion. Browser
+protocol tests do not establish actual OS IME or screen-reader acceptance. The native tests use the
 Glory document/shell and AccessKit consumer without claiming displayed windows,
 new Windows UIA client acceptance, or screen-reader speech for Sapid.

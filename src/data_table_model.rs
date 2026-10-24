@@ -141,8 +141,8 @@ pub fn validate_data_columns(columns: &[DataColumn]) -> Result<()> {
         if !(48..=600).contains(&column.width) || !keys.insert(&column.key) {
             return Err(DataTableError::Columns);
         }
-        if column.label.trim().is_empty()
-            || !valid_text(&column.label, 256)
+        if !valid_text(&column.label, 256)
+            || column.label.trim().is_empty()
             || column.label.contains('\n')
         {
             return Err(DataTableError::Text);
@@ -397,8 +397,10 @@ mod tests {
             validate_data_records(&cols, &data),
             Err(DataTableError::DuplicateKey)
         );
-        let mut q = DataTableQuery::default();
-        q.hidden = cols.iter().map(|c| c.key.clone()).collect();
+        let mut q = DataTableQuery {
+            hidden: cols.iter().map(|c| c.key.clone()).collect(),
+            ..DataTableQuery::default()
+        };
         assert_eq!(validate_data_query(&cols, &q), Err(DataTableError::Query));
         q = DataTableQuery::default();
         q.request.page = usize::MAX;

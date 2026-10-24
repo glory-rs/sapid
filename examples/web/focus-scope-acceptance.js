@@ -1,0 +1,72 @@
+async(hostPage,baseURL='http://127.0.0.1:8794')=>{
+  const context=await hostPage.context().browser().newContext({viewport:{width:1200,height:900}}),reports=[],errors=[];
+  const assert=(value,message)=>{if(!value)throw new Error(message)};
+  try{
+    const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));page.on('console',e=>{if(e.type()==='error')errors.push(e.text())});
+    const tick=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    const button=name=>page.getByRole('button',{name,exact:true});
+    const draft=()=>page.getByRole('textbox',{name:'Scope draft',exact:true});
+    const nested=()=>page.getByRole('textbox',{name:'Nested draft',exact:true});
+    const focused=locator=>locator.evaluate(element=>element===document.activeElement);
+    const command=async name=>{await button(name).evaluate(element=>element.click());await tick()};
+    const open=async(path='focus-scope.html')=>{await page.goto(`${baseURL}/${path}`);await page.waitForFunction(()=>window.ready===true);await tick()};
+    for(const hue of ['blue','green'])for(const scheme of ['light','dark'])for(const mode of ['csr','hydrate']){
+      await open(`${mode==='csr'?'focus-scope':`focus-scope-hydrate-${hue}-${scheme}`}.html?theme=${hue}&scheme=${scheme}`);
+      assert(await page.locator('[data-gly-focus-scope="false"]').count()===2,'both inactive focus policies are present');
+      await button('Activate scope').click();await tick();assert(await focused(draft()),'activation focuses actual first editor');
+      await page.keyboard.press('Shift+Tab');assert(await focused(button('Scope last control')),'reverse Tab wraps within scope');
+      await page.keyboard.press('Tab');assert(await focused(draft()),'forward Tab wraps within scope');
+      assert(await page.getByRole('dialog').count()===0&&await button('After scope').evaluate(el=>!el.closest('[inert]')),'scope has no modal role or background inert state');
+      await page.keyboard.press('Escape');await tick();assert(await page.locator('#scope-outer').getAttribute('data-gly-focus-scope')==='true','Escape does not invent a dismiss operation');
+      await button('Deactivate scope').click();await tick();assert(await focused(button('Activate scope')),'deactivation restores the real previously focused control');
+      reports.push({suite:`focus-scope-${hue}-${scheme}-${mode}`,status:'passed'});
+    }
+    await open();await button('Activate scope').click();await tick();
+    await draft().evaluate(el=>{el.focus();el.setSelectionRange(3,8);window.__scopeEditor=el});
+    await command('Toggle loop policy');await button('Scope last control').focus();await page.keyboard.press('Tab');
+    assert(await focused(button('Scope last control')),'contain without loop holds forward boundary');
+    await draft().focus();await page.keyboard.press('Shift+Tab');assert(await focused(draft()),'contain without loop holds reverse boundary');
+    await command('Toggle containment policy');await button('Scope last control').focus();await page.keyboard.press('Tab');
+    assert(await focused(button('After scope')),'uncontained nonlooping scope permits document Tab exit');
+    await command('Deactivate scope');assert(await focused(button('After scope')),'unfocused scope closing does not steal focus');
+    reports.push({suite:'focus-scope-loop-contain-and-document-exit',status:'passed'});
+    await open();await command('Toggle autofocus policy');await button('Activate scope').click();await tick();
+    assert(await focused(button('Activate scope')),'auto_focus=false preserves existing focus at activation');
+    await draft().focus();assert(await focused(draft()),'ordinary explicit entry still works');
+    reports.push({suite:'focus-scope-autofocus-policy',status:'passed'});
+    await open();await button('Activate scope').click();await tick();await button('Enable nested scope').click();await tick();
+    assert(await focused(nested()),'nested scope gains actual focus');await page.keyboard.press('Shift+Tab');assert(await focused(button('Close nested scope')),'inner reverse boundary loops in inner policy');
+    await button('Close nested scope').click();await tick();assert(await focused(button('Enable nested scope')),'inner retirement restores into outer scope');
+    await button('Enable nested scope').click();await tick();await command('Toggle scope owner');
+    assert(await draft().count()===0&&await nested().count()===0&&await focused(button('Activate scope')),'simultaneous nested Owner retirement resolves the original live return chain');
+    reports.push({suite:'focus-scope-nested-owner-retirement',status:'passed'});
+    await page.goto(`${baseURL}/focus-scope-hydrate-blue-light.html?manual`);await page.waitForFunction(()=>window.moduleReady===true);
+    await draft().fill('Dirty scope adoption');await draft().evaluate(el=>{el.setSelectionRange(2,7);window.__earlyScope=el});
+    await page.evaluate(()=>demo.mount_focus_scope(true,'blue','light'));await tick();
+    assert(await draft().evaluate(el=>el===window.__earlyScope&&el.value==='Dirty scope adoption'&&el.selectionStart===2&&el.selectionEnd===7),'inactive scope adoption preserves actual editor and selection');
+    reports.push({suite:'focus-scope-dirty-adoption',status:'passed'});
+    await open();await button('Activate scope').click();await tick();await page.evaluate(()=>demo.unmount_display());await tick();
+    await page.evaluate(()=>demo.mount_focus_scope(false,'blue','light'));await tick();assert(await page.locator('[data-gly-focus-scope="true"]').count()===0,'new App has no retired focus leases');
+    await button('Activate scope').click();await tick();assert(await focused(draft()),'fresh App activates normally');
+    reports.push({suite:'focus-scope-app-retirement',status:'passed'});
+    await open('focus-scope-document.html');
+    const left=page.locator('#scope-left'),right=page.locator('#scope-right');
+    const control=(root,name)=>root.getByRole('button',{name,exact:true});
+    const editor=root=>root.getByRole('textbox',{name:'Scope draft',exact:true});
+    await control(left,'Activate scope').click();await tick();assert(await focused(editor(left)),'left App owns current focus scope');
+    await control(right,'Activate scope').click();await tick();assert(await focused(editor(right)),'later App activates through the same document coordinator');
+    await editor(left).focus();assert(await focused(editor(right)),'top document focus policy rejects an earlier App focus crossing');
+    await control(right,'Deactivate scope').evaluate(el=>el.click());await tick();assert(await focused(editor(left)),'right App close restores the live left App editor');
+    assert(await control(right,'After scope').evaluate(el=>!el.closest('[inert]')),'cross-App focus policy leaves background AX and clicks nonmodal');
+    reports.push({suite:'focus-scope-cross-app-focus-and-return',status:'passed'});
+    await control(right,'Activate scope').evaluate(el=>el.click());await tick();
+    await control(left,'Deactivate scope').evaluate(el=>el.click());await tick();assert(await focused(editor(right)),'out-of-order earlier App deactivation preserves current focus');
+    await control(right,'Deactivate scope').evaluate(el=>el.click());await tick();assert(await focused(control(left,'Activate scope')),'return path transfers through the closed earlier App scope');
+    await control(left,'Activate scope').click();await tick();await control(right,'Activate scope').evaluate(el=>el.click());await tick();
+    await page.evaluate(()=>demo.retire_focus_scope_app(0));await tick();assert(await focused(editor(right)),'retiring an earlier App does not disturb the current App scope');
+    await control(right,'Deactivate scope').evaluate(el=>el.click());await tick();assert(await page.evaluate(()=>document.activeElement?.isConnected),'retired App cannot resurrect a disconnected return target');
+    await page.evaluate(()=>demo.mount_focus_scope_pair());await tick();assert(await page.locator('[data-gly-focus-scope="true"]').count()===0,'fresh pair has no retained scope history');
+    reports.push({suite:'focus-scope-cross-app-out-of-order-retirement',status:'passed'});
+  }catch(error){errors.push(error.message)}finally{await context.close()}
+  return{reports,errors};
+}

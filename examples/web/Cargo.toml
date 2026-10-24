@@ -11,7 +11,7 @@ publish = false
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-sapid = { path = "../..", features = ["json", "code", "dates"] }
+sapid = { path = "../..", features = ["json", "code", "dates", "files", "charts", "chat", "editor"] }
 glory = { path = "../../../glory/crates/glory", default-features = false, features = ["web", "ssr", "hydrate"] }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]

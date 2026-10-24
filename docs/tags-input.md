@@ -77,8 +77,9 @@ unaffected. Exact origin, Input revision, finite text and UTF-16 offsets are
 shared validation. App ignores old revisions, and all same-revision edits and
 tag commits in one drained host tick run before dirty reconciliation. HTML's
 prepared-field lowering retains its full-shape difference oracle and keeps
-value/revision untouched on policy changes. The existing HTML v4/classic stream
-v2 attribute schema remains unchanged.
+value/revision untouched on policy changes. This batch used HTML v4/classic
+stream v2 without new edit operations. Current producers follow HTML v13 with
+the classic v2 envelope; the original snapshot evidence below retains its version.
 
 Blitz explicitly rejects tags policy in descriptor preflight and direct apply
 before registering facets. Plain native Inputs remain supported. The rejection
