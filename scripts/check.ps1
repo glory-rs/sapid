@@ -3,7 +3,7 @@ $ErrorActionPreference = 'Stop'
 $taskRoot = Split-Path -Parent $PSScriptRoot
 $taskBuild = 'D:/BuildCache/sapid'
 $saved = @{}
-foreach ($name in @('CARGO_HOME', 'CARGO_TARGET_DIR', 'TEMP', 'TMP', 'PYTHONPYCACHEPREFIX', 'GLORY_DOCUMENT_STREAM_FIXTURE', 'GLORY_MENU_STREAM_FIXTURE', 'GLORY_HINTS_STREAM_FIXTURE', 'GLORY_SELECT_STREAM_FIXTURE')) {
+foreach ($name in @('CARGO_HOME', 'CARGO_TARGET_DIR', 'CARGO_BUILD_JOBS', 'TEMP', 'TMP', 'PYTHONPYCACHEPREFIX', 'GLORY_DOCUMENT_STREAM_FIXTURE', 'GLORY_MENU_STREAM_FIXTURE', 'GLORY_HINTS_STREAM_FIXTURE', 'GLORY_SELECT_STREAM_FIXTURE', 'GLORY_GRAPHICS_STREAM_FIXTURE', 'GLORY_PROGRESS_STREAM_FIXTURE', 'GLORY_SPINNER_STREAM_FIXTURE', 'GLORY_CHOICE_STREAM_FIXTURE', 'GLORY_INERT_STREAM_FIXTURE', 'GLORY_SHEET_STREAM_FIXTURE', 'GLORY_GRAPHIC_TRANSITION_STREAM_FIXTURE')) {
     $saved[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
 }
 function Invoke-Cargo {
@@ -26,6 +26,7 @@ try {
     $env:TEMP = "$taskBuild/tmp"
     $env:TMP = $env:TEMP
     $env:PYTHONPYCACHEPREFIX = "$taskBuild/pycache"
+    $env:CARGO_BUILD_JOBS = '2'
     New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
     Confirm-Target 'Cargo.toml'
     Invoke-Cargo -Arguments @('fmt', '--all', '--', '--check')
@@ -38,17 +39,19 @@ try {
         # Reuse the verified D-drive engine target; no native dependencies enter
         # Sapid's default production graph.
         $env:CARGO_TARGET_DIR = 'D:/BuildCache/glory-semantic-ui/target'
+        $env:CARGO_BUILD_JOBS = '1'
         $env:TEMP = 'D:/BuildCache/glory-semantic-ui/tmp'
         $env:TMP = $env:TEMP
         New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
         Confirm-Target '../glory/Cargo.toml'
-        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-blitz', '--features', 'accesskit,raster', '--lib', '--test', 'layers', '--test', 'style_profile', '--test', 'check_modes', '--test', 'links', '--test', 'shadow', '--test', 'flex_wrap', '--test', 'inline_flex', '--test', 'grid', '--test', 'menu', '--', '--test-threads=1')
+        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-blitz', '--features', 'accesskit,raster', '--lib', '--test', 'layers', '--test', 'style_profile', '--test', 'check_modes', '--test', 'links', '--test', 'shadow', '--test', 'flex_wrap', '--test', 'inline_flex', '--test', 'grid', '--test', 'menu', '--test', 'hints', '--test', 'image_events', '--test', 'object_fit', '--test', 'graphic', '--test', 'graphic_transition', '--test', 'select', '--test', 'scroll', '--test', 'choice', '--test', 'sheet', '--test', 'positioning', '--', '--test-threads=1')
         Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-blitz', '--features', 'accesskit,raster', '--all-targets', '--', '-D', 'warnings')
         Confirm-Target 'examples/native/Cargo.toml'
         Invoke-Cargo -Arguments @('fmt', '--manifest-path', 'examples/native/Cargo.toml', '--', '--check')
         Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', 'examples/native/Cargo.toml', '--', '--test-threads=1')
         Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', 'examples/native/Cargo.toml', '--all-targets', '--', '-D', 'warnings')
         $env:CARGO_TARGET_DIR = "$taskBuild/target"
+        $env:CARGO_BUILD_JOBS = '2'
         $env:TEMP = "$taskBuild/tmp"
         $env:TMP = $env:TEMP
     }
@@ -66,7 +69,7 @@ try {
         Copy-Item -LiteralPath examples/web/composites.html -Destination "$taskBuild/web/composites.html"
         Copy-Item -LiteralPath examples/web/overlays.html -Destination "$taskBuild/web/overlays.html"
         Copy-Item -LiteralPath examples/web/fields.html -Destination "$taskBuild/web/fields.html"
-        foreach($page in @('choices','forms','display','actions','document','toggles','layout','typography','timeline','spoiler','navigation','grid','menu','stepper','visually-hidden','avatar','shell','hints','image','buttons','scroll-area','alerts','graphics','native-select')) {Copy-Item -LiteralPath "examples/web/$page.html" -Destination "$taskBuild/web/$page.html"}
+        foreach($page in @('choices','forms','display','actions','document','toggles','layout','typography','timeline','spoiler','navigation','grid','menu','stepper','visually-hidden','avatar','shell','hints','image','buttons','scroll-area','alerts','graphics','native-select','progress','modals','notifications','toolbar','color-swatch','sheet','choice-extras','combobox','loading-overlay','select','spinner','navigation-progress','splitter','affix','navigation-menu','slider')) {Copy-Item -LiteralPath "examples/web/$page.html" -Destination "$taskBuild/web/$page.html"}
         Copy-Item -LiteralPath ../glory/crates/web/src/stream.js -Destination "$taskBuild/web/glory-stream.js"
         New-Item -ItemType Directory -Force -Path "$taskBuild/web/assets" | Out-Null
         Copy-Item -Path examples/web/assets/* -Destination "$taskBuild/web/assets"
@@ -82,6 +85,20 @@ try {
         Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'tooltip_stream_preserves_description_relation_and_passive_layer_through_end')
         $env:GLORY_SELECT_STREAM_FIXTURE = "$taskBuild/web/native-select-stream.html"
         Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'select_stream_uses_v4_shape_v2_envelope_and_preserves_native_selection_through_end')
+        $env:GLORY_GRAPHICS_STREAM_FIXTURE = "$taskBuild/web/graphics-stream.html"
+        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'finite_graphic_construction_and_field_patch_survive_stream_end')
+        $env:GLORY_PROGRESS_STREAM_FIXTURE = "$taskBuild/web/progress-stream.html"
+        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'read_only_progress_numeric_and_indeterminate_metadata_survives_stream_patch_and_end')
+        $env:GLORY_SPINNER_STREAM_FIXTURE = "$taskBuild/web/spinner-stream.html"
+        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'finite_rotation_survives_stream_content_attribute_patch_and_end')
+        $env:GLORY_CHOICE_STREAM_FIXTURE = "$taskBuild/web/select-stream.html"
+        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'choice_stream_retains_focus_preserving_intrinsics_and_live_active_descendant')
+        $env:GLORY_INERT_STREAM_FIXTURE = "$taskBuild/web/inert-stream.html"
+        $env:GLORY_SHEET_STREAM_FIXTURE = "$taskBuild/web/sheet-stream.html"
+        $env:GLORY_GRAPHIC_TRANSITION_STREAM_FIXTURE = "$taskBuild/web/graphic-transition-stream.html"
+        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'compatible_path_transition_config_survives_content_patch_and_classic_stream_end')
+        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'bounded_sheet_config_and_revision_survive_stream_patch_and_end_without_input_driver')
+        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'busy_inert_content_and_retained_layer_survive_a_stream_patch_and_end')
         Write-Output "Browser fixture: $taskBuild/web"
         if ($Serve) { & python -m http.server 8794 --bind 127.0.0.1 --directory "$taskBuild/web" }
     }

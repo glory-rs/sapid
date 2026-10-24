@@ -27,7 +27,7 @@ Both components preserve custom classes and explicit Style precedence. Unstyled
 Indicator retains its essential anchor geometry and omits theme decoration;
 unstyled ThemeIcon retains real path content and omits frame decoration.
 ThemeIcon uses Glory's typed Graphic protocol, documented in
-`../glory/docs/finite-graphics.md`. Native rendering requires Glory's opt-in paint
+`../../glory/docs/finite-graphics.md`. Native rendering requires Glory's opt-in paint
 feature and its supported graphic box declarations; there is no resource loader,
 SVG string parser, font glyph dependency or application DOM injection.
 
@@ -37,5 +37,10 @@ rejection/recovery, identity and unstyled overrides. `tests/theme_icon.rs` has
 three cases covering all four paths, three variants, four themes, names,
 decoration, updates and invalid source recovery. The shared host fixture is
 `examples/web/graphics_form.rs`; native geometry and engine widget installation
-are checked by `examples/native/tests/graphics.rs`. Actual browser results are
-recorded separately after host execution.
+are checked by `examples/native/tests/graphics.rs` (four themes passed). Chromium
+148.0.7778.96 passed eight CSR/hydration cases and one classic-stream case; the
+actual report is `D:/BuildCache/sapid/graphics-browser.json`. Hydration screenshots
+are stored beside it. The stream producer test supports the explicit environment
+variable `GLORY_GRAPHICS_STREAM_FIXTURE`; its browser test checks actual SVG
+creation, path patches, alternatives and End/controller release. This does not
+establish screen-reader announcements.

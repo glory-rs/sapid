@@ -89,6 +89,26 @@ pub(crate) fn metadata(value: Semantics) -> Option<Box<Semantics>> {
     Some(Box::new(value))
 }
 
+pub(crate) fn form_name(
+    scope: &Scope,
+    value: &Option<Lotus<String>>,
+) -> Result<Option<Cage<String>>> {
+    value
+        .as_ref()
+        .map(|value| {
+            validated(scope, value, |value| {
+                if value.len() > 256 || value.contains(['\0', '\r', '\n']) {
+                    return Err(glory::render::Error::InvalidProps(
+                        "invalid successful-control name",
+                    )
+                    .into());
+                }
+                Ok(())
+            })
+        })
+        .transpose()
+}
+
 pub(crate) fn column(gap: f64) -> Style {
     Style::new()
         .display(Display::Flex)

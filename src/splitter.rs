@@ -3,8 +3,8 @@ use crate::appearance::{Common, configure, merge};
 use crate::composite::{self, Callback, Observers};
 use crate::state::{Control, Value};
 use glory::render::{
-    Action, DragPhase, Event, EventKind, FocusMode, NodeId, Orientation, Query, QueryValue,
-    RangeCommand, RangeValue, Role, SemanticId, Semantics,
+    Action, DragPhase, Event, EventKind, FocusMode, NodeId, Orientation, Query, QueryToken,
+    QueryValue, RangeCommand, RangeValue, Role, SemanticId, Semantics,
 };
 use glory::style::{Display, Edges, FlexDirection, Length, Overflow, Style};
 use glory::ui::{Result, WeakScope, Widget};
@@ -73,6 +73,7 @@ struct Controller {
     range_events: Observers,
     drag_events: Observers,
     drag: RefCell<Option<Drag>>,
+    pending: Cell<Option<QueryToken>>,
     next: Cell<u64>,
 }
 impl Controller {
@@ -106,6 +107,8 @@ impl Controller {
             state.value
         };
         let next = match command {
+            RangeCommand::PageDecrease => (current - self.step * 10.0).max(state.min),
+            RangeCommand::PageIncrease => (current + self.step * 10.0).min(state.max),
             RangeCommand::Decrease => (current - self.step).max(state.min),
             RangeCommand::Increase => (current + self.step).min(state.max),
             RangeCommand::Minimum => state.min,
@@ -120,6 +123,14 @@ impl Controller {
     }
     fn cancel(&self) {
         self.drag.borrow_mut().take();
+        if let Some(token) = self.pending.take()
+            && let Some(scope) = self.weak.upgrade()
+            && let Err(error) = scope.cancel_request(token)
+            && self.live.get()
+            && self.owner.is_alive()
+        {
+            scope.report_error(error);
+        }
     }
     fn retire(&self) {
         self.live.set(false);
@@ -195,6 +206,7 @@ impl Controller {
             return Ok(());
         }
         if phase == DragPhase::Start {
+            self.cancel();
             let ticket = self
                 .next
                 .get()
@@ -215,10 +227,14 @@ impl Controller {
             let scope = self.weak.upgrade().ok_or(glory::ui::Error::Gone)?;
             let root = self.root.try_get()?.ok_or(glory::ui::Error::Gone)?;
             let controller = self.clone();
-            scope.request(Query::Bounds(root), move |result| {
+            let token = scope.request(Query::Bounds(root), move |result| {
                 if controller.ensure().is_err() {
                     return;
                 }
+                if controller.drag.borrow().as_ref().map(|drag| drag.ticket) != Some(ticket) {
+                    return;
+                }
+                controller.pending.set(None);
                 let Some(scope) = controller.weak.upgrade() else {
                     return;
                 };
@@ -249,6 +265,7 @@ impl Controller {
                     scope.report_error(error);
                 }
             })?;
+            self.pending.set(Some(token));
             self.drag_events.emit(self.owner, event);
         } else {
             {
@@ -435,6 +452,7 @@ impl Widget for Splitter {
                     .unwrap_or_default(),
             ),
             drag: RefCell::new(None),
+            pending: Cell::new(None),
             next: Cell::new(0),
         });
         let cleanup = controller.clone();
@@ -579,8 +597,9 @@ impl Widget for Splitter {
             if !state.enabled {
                 adapt.cancel();
             }
-            if (state.value == 0.0 && first_focused.get()
-                || state.value == 100.0 && second_focused.get())
+            if state.enabled
+                && (state.value == 0.0 && first_focused.get()
+                    || state.value == 100.0 && second_focused.get())
                 && let Some(scope) = weak.upgrade()
                 && let Some(handle) = handle.get_untracked()
             {
@@ -616,7 +635,13 @@ fn build_handle(
     glory::ui::view()
         .role(Role::Separator)
         .name(name)
-        .focus(FocusMode::TabStop)
+        .focus(scope.bond(move || {
+            if accepted.get().enabled {
+                FocusMode::TabStop
+            } else {
+                FocusMode::Programmatic
+            }
+        }))
         .class("sapid-splitter-handle")
         .node_ref(controller.handle)
         .semantics(scope.bond(move || {
@@ -651,13 +676,13 @@ fn build_handle(
                 .margin(Edges::all(0.0))
         })
         .on(EventKind::Range, move |event| {
-            if let Event::Range { command, .. } = event {
-                if let Err(error) = range.key(command) {
-                    if let Some(scope) = weak.upgrade() {
-                        scope.report_error(error);
-                    }
-                    return;
+            if let Event::Range { command, .. } = event
+                && let Err(error) = range.key(command)
+            {
+                if let Some(scope) = weak.upgrade() {
+                    scope.report_error(error);
                 }
+                return;
             }
             range.range_events.emit(range.owner, event);
         })

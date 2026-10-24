@@ -52,6 +52,28 @@ mod browser {
                 Box::new(crate::alerts_form::alerts_form(theme.clone()))
             } else if family == 12 {
                 Box::new(crate::graphics_form::graphics_form(theme.clone()))
+            } else if family == 13 {
+                Box::new(crate::progress_form::progress_form(theme.clone()))
+            } else if family == 14 {
+                Box::new(crate::navigation_progress_form::navigation_progress_form(
+                    theme.clone(),
+                ))
+            } else if family == 15 {
+                Box::new(crate::spinner_form::spinner_form(theme.clone()))
+            } else if family == 16 {
+                Box::new(crate::modals_form::modals_form(theme.clone()))
+            } else if family == 17 {
+                Box::new(crate::loading_overlay_form::loading_overlay_form(
+                    theme.clone(),
+                ))
+            } else if family == 19 {
+                Box::new(crate::sheet_form::sheet_form(theme.clone()))
+            } else if family == 22 {
+                Box::new(crate::color_swatch_form::color_swatch_form(theme.clone()))
+            } else if family == 21 {
+                Box::new(crate::toolbar_form::toolbar_form(theme.clone()))
+            } else if family == 18 {
+                Box::new(crate::notifications_form::notifications_form(theme.clone()))
             } else {
                 Box::new(crate::display_form::display_form(theme.clone()))
             }
@@ -119,6 +141,80 @@ mod browser {
     #[wasm_bindgen]
     pub fn mount_graphics(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 12, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_progress(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
+        mount(hydrate, 13, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_navigation_progress(
+        hydrate: bool,
+        hue: String,
+        scheme: String,
+    ) -> Result<(), JsValue> {
+        mount(hydrate, 14, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_spinner(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
+        mount(hydrate, 15, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_loading_overlay(
+        hydrate: bool,
+        hue: String,
+        scheme: String,
+    ) -> Result<(), JsValue> {
+        mount(hydrate, 17, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_inert_stream_probe() -> Result<(), JsValue> {
+        let root = web_sys::window()
+            .and_then(|w| w.document())
+            .and_then(|d| d.get_element_by_id("inert-stream-root"))
+            .ok_or_else(|| js("missing inert stream root"))?;
+        let app = glory::web::hydrate(root, crate::loading_overlay_form::inert_stream_probe())
+            .map_err(js)?;
+        APP.with(|slot| *slot.borrow_mut() = Some(app));
+        Ok(())
+    }
+    #[wasm_bindgen]
+    pub fn mount_modals(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
+        mount(hydrate, 16, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_notifications(
+        hydrate: bool,
+        hue: String,
+        scheme: String,
+    ) -> Result<(), JsValue> {
+        mount(hydrate, 18, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_toolbar(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
+        mount(hydrate, 21, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_color_swatch(
+        hydrate: bool,
+        hue: String,
+        scheme: String,
+    ) -> Result<(), JsValue> {
+        mount(hydrate, 22, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_sheet(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
+        mount(hydrate, 19, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_sheet_stream_probe() -> Result<(), JsValue> {
+        let root = web_sys::window()
+            .and_then(|w| w.document())
+            .and_then(|d| d.get_element_by_id("sheet-stream-root"))
+            .ok_or_else(|| js("missing sheet stream root"))?;
+        let app =
+            glory::web::hydrate(root, crate::sheet_form::sheet_stream_probe()).map_err(js)?;
+        APP.with(|slot| *slot.borrow_mut() = Some(app));
+        Ok(())
     }
     #[wasm_bindgen]
     pub fn unmount_display() {

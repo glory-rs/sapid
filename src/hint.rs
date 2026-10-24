@@ -479,6 +479,7 @@ impl Hint {
             Role::Dialog
         };
         let config = Layer {
+            sheet: None,
             modal: false,
             escape: true,
             outside: self.kind == Kind::HoverCard,

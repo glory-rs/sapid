@@ -94,6 +94,20 @@ impl Widget for Checkbox {
             self.readonly.clone(),
             self.invalid.clone(),
         );
+        if !self.common.unstyled && (enabled.is_reactive() || !enabled.try_get()?) {
+            let active = enabled.clone();
+            let own = self.common.style.clone();
+            let color = self.common.theme.disabled_text;
+            self.common.style = scope
+                .bond(move || {
+                    let mut style = own.get();
+                    if !active.get() {
+                        style.color.get_or_insert(color);
+                    }
+                    style
+                })
+                .into();
+        }
         let mut inner = configure!(
             self.common,
             glory::ui::check(),

@@ -114,6 +114,8 @@ impl Widget for TextField {
             self.invalid.clone(),
         );
         if metadata.is_reactive()
+            || enabled.is_reactive()
+            || !enabled.try_get()?
             || self.required.get()
             || self.readonly.get()
             || self.invalid.get()
@@ -122,15 +124,22 @@ impl Widget for TextField {
             let styles = self.common.style.clone();
             let theme = self.common.theme.clone();
             let unstyled = self.common.unstyled;
+            let active = enabled.clone();
             self.common.style = scope
                 .bond(move || {
                     let mut style = styles.get();
-                    if !unstyled && let Some(state) = state.get() {
-                        if state.invalid && style.border_color.is_none() {
-                            style.border_color = Some(theme.danger);
+                    if !unstyled {
+                        if !active.get() {
+                            style.background.get_or_insert(theme.disabled);
+                            style.color.get_or_insert(theme.disabled_text);
                         }
-                        if state.readonly && style.background.is_none() {
-                            style.background = Some(theme.disabled);
+                        if let Some(state) = state.get() {
+                            if state.invalid && style.border_color.is_none() {
+                                style.border_color = Some(theme.danger);
+                            }
+                            if state.readonly && style.background.is_none() {
+                                style.background = Some(theme.disabled);
+                            }
                         }
                     }
                     style

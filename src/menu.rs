@@ -831,6 +831,7 @@ impl Level {
         let open = visible.clone();
         let direction = self.direction;
         let config = Layer {
+            sheet: None,
             modal: false,
             escape: true,
             outside: true,

@@ -1,6 +1,6 @@
 # Navigation
 
-`Breadcrumbs`, `Pagination`, and `NavLink` are handwritten semantic widgets. They install no router, history policy, HTTP transport, or automatic destination fetching. NavigationMenu popup, menu keyboard behavior, and nested menu placement remain a separate unfinished roadmap feature.
+`Breadcrumbs`, `Pagination`, and `NavLink` are handwritten semantic widgets. They install no router, history policy, HTTP transport, or automatic destination fetching. The separate NavigationMenu now adds real links, disclosure buttons and nested nonmodal Group Layers; see [its API and host evidence](navigation-menu.md).
 
 ```rust
 use sapid::{breadcrumb_item, breadcrumbs, pagination, nav_link};

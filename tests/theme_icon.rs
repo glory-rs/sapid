@@ -5,8 +5,7 @@ use sapid::{Icon, Theme, ThemeIconVariant, theme_icon};
 fn drawing(app: &App) -> GraphicProps {
     let tree = app.tree();
     let root = tree.node(tree.roots()[0]).unwrap();
-    let Props::Graphic(graphic) =
-        tree.node(root.children[0]).unwrap().descriptor.view().props
+    let Props::Graphic(graphic) = tree.node(root.children[0]).unwrap().descriptor.view().props
     else {
         panic!()
     };

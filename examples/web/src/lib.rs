@@ -1,12 +1,19 @@
-#[path = "../alerts_form.rs"]
-pub mod alerts_form;
 #[path = "../actions_form.rs"]
 pub mod actions_form;
+pub mod affix_form;
+#[path = "../alerts_form.rs"]
+pub mod alerts_form;
 #[path = "../avatar_form.rs"]
 pub mod avatar_form;
 #[path = "../button_form.rs"]
 pub mod button_form;
+#[path = "../choice_extras_form.rs"]
+pub mod choice_extras_form;
 pub mod choices_form;
+#[path = "../color_swatch_form.rs"]
+pub mod color_swatch_form;
+#[path = "../combobox_form.rs"]
+pub mod combobox_form;
 pub mod composite_form;
 #[path = "../display_form.rs"]
 pub mod display_form;
@@ -25,18 +32,37 @@ pub mod hints_form;
 pub mod image_form;
 #[path = "../layout_form.rs"]
 pub mod layout_form;
+#[path = "../loading_overlay_form.rs"]
+pub mod loading_overlay_form;
 pub mod menu_form;
-pub mod navigation_form;
+#[path = "../modals_form.rs"]
+pub mod modals_form;
 pub mod native_select_form;
+pub mod navigation_form;
+#[path = "../navigation_progress_form.rs"]
+pub mod navigation_progress_form;
+#[path = "../notifications_form.rs"]
+pub mod notifications_form;
 pub mod overlay_form;
+#[path = "../progress_form.rs"]
+pub mod progress_form;
 pub mod scroll_area_form;
+#[path = "../select_form.rs"]
+pub mod select_form;
+#[path = "../sheet_form.rs"]
+pub mod sheet_form;
 pub mod shell_form;
+#[path = "../spinner_form.rs"]
+pub mod spinner_form;
+pub mod splitter_form;
 #[path = "../spoiler_form.rs"]
 pub mod spoiler_form;
 pub mod stepper_form;
 #[path = "../timeline_form.rs"]
 pub mod timeline_form;
 pub mod toggles_form;
+#[path = "../toolbar_form.rs"]
+pub mod toolbar_form;
 pub mod typography_form;
 #[path = "../visually_hidden_form.rs"]
 pub mod visually_hidden_form;
@@ -309,3 +335,7 @@ mod browser {
         })
     }
 }
+
+pub mod navigation_menu_form;
+
+pub mod slider_form;

@@ -335,3 +335,69 @@ fn invalid_field_successful_values_fail_explicitly() {
         .is_err()
     );
 }
+
+#[test]
+fn invalid_form_names_are_borrow_checked_before_the_control_factory_runs() {
+    for name in [
+        "x".repeat(1_000_000),
+        "bad\nname".into(),
+        "bad\0name".into(),
+        "bad\rname".into(),
+    ] {
+        let app = App::memory();
+        let called = std::rc::Rc::new(std::cell::Cell::new(false));
+        let out = called.clone();
+        assert!(
+            app.mount(field("bounded-name").form_name(name).control(move |ctx| {
+                out.set(true);
+                text_field().field(ctx)
+            }))
+            .is_err()
+        );
+        assert!(!called.get());
+        assert!(app.tree().roots().is_empty());
+    }
+}
+
+#[test]
+fn successful_name_and_value_validate_as_one_pair_without_an_invented_value_limit() {
+    let app = App::memory();
+    let name = app.scope().cage("accepted".to_owned());
+    let value = app.scope().cage("v".repeat(5000));
+    let reference = app.scope().cage(None);
+    app.mount(
+        field("pair")
+            .form_name(name)
+            .form_value(value)
+            .control(move |ctx| sapid::checkbox().field(ctx).node_ref(reference)),
+    )
+    .unwrap();
+    let node = reference.get().unwrap();
+    let metadata = || {
+        app.tree()
+            .node(node)
+            .unwrap()
+            .descriptor
+            .view()
+            .semantics
+            .as_ref()
+            .unwrap()
+            .form_control
+            .clone()
+            .unwrap()
+    };
+    assert_eq!(metadata().value.as_ref().unwrap().len(), 5000);
+    app.scope()
+        .batch(|| {
+            name.revise(|name| *name = "next".into());
+            value.revise(|value| *value = "bad\rvalue".into());
+        })
+        .unwrap();
+    assert!(app.flush().is_err());
+    assert_eq!(metadata().name, "accepted");
+    assert_eq!(metadata().value.as_ref().unwrap().len(), 5000);
+    value.revise(|value| *value = "valid\nvalue".into());
+    app.flush().unwrap();
+    assert_eq!(metadata().name, "next");
+    assert_eq!(metadata().value.as_deref(), Some("valid\nvalue"));
+}

@@ -1,0 +1,39 @@
+async (hostPage) => {
+ const browser=hostPage.context().browser(),context=await browser.newContext({viewport:{width:1100,height:900}}),reports=[],errors=[];
+ const assert=(v,m)=>{if(!v)throw new Error(m)},settle=p=>p.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>requestAnimationFrame(r))))),number=e=>e.getAttribute('aria-valuenow').then(Number);
+ const install=p=>{p.on('pageerror',e=>errors.push(e.message));p.on('console',e=>{if(e.type()==='error')errors.push(e.text())})};
+ try {const page=await context.newPage();install(page);
+  for(const hue of ['blue','green'])for(const scheme of ['light','dark'])for(const hydration of [false,true]) {
+   const label=`slider-${hue}-${scheme}-${hydration?'hydrate':'csr'}`;
+   await page.goto(`http://127.0.0.1:8794/${hydration?`slider-hydrate-${hue}-${scheme}.html`:`slider.html?theme=${hue}&scheme=${scheme}`}`);await page.waitForFunction(()=>window.ready===true);
+   const range=page.getByRole('slider',{name:'Volume',exact:true}),vertical=page.getByRole('slider',{name:'Vertical level'}),rtl=page.getByRole('slider',{name:'RTL level'}),draft=page.getByRole('textbox',{name:'Slider draft'});
+   assert(await range.getAttribute('aria-valuemin')==='0'&&await range.getAttribute('aria-valuemax')==='100'&&await range.getAttribute('aria-valuetext')==='25 units',`${label}: finite range text missing`);
+   assert(await range.getAttribute('aria-required')==='true'&&await range.getAttribute('aria-describedby'),`${label}: Field relations missing`);
+   await draft.fill('Stable range draft');await draft.evaluate(e=>{window.sliderDraft=e;e.setSelectionRange(2,8,'backward')});
+   await page.getByText('Volume',{exact:true}).click();await settle(page);assert(await range.evaluate(e=>e===document.activeElement),`${label}: Field label failed focus`);
+   await page.keyboard.press('ArrowRight');await settle(page);assert(await number(range)===26,`${label}: arrow missed step`);
+   await page.keyboard.press('PageUp');await settle(page);assert(await number(range)===36,`${label}: PageUp missed step`);
+   await page.evaluate(()=>window.demo.slider_policy(false,true,false));await page.keyboard.press('ArrowRight');await settle(page);assert(await number(range)===36&&(await page.locator('.slider-status').textContent()).includes('request=37.00'),`${label}: controlled reject mutated UI`);
+   await page.evaluate(()=>window.demo.slider_policy(true,true,false));await page.keyboard.press('Home');await settle(page);assert(await number(range)===0,`${label}: Home missed min`);await page.keyboard.press('End');await settle(page);assert(await number(range)===100,`${label}: End missed max`);
+   const box=await range.boundingBox();await page.mouse.click(box.x+box.width*.25,box.y+box.height/2);await settle(page);assert(await number(range)===25,`${label}: track click missed value`);
+   await page.mouse.move(box.x+box.width*.25,box.y+box.height/2);await page.mouse.down();await page.mouse.move(box.x+box.width+50,box.y+90,{steps:4});await page.mouse.up();await settle(page);assert(await number(range)===100,`${label}: captured release outside track missed endpoint`);
+   await vertical.focus();await page.keyboard.press('ArrowUp');await settle(page);assert(await number(vertical)===26&&await vertical.getAttribute('aria-orientation')==='vertical',`${label}: vertical axis failed`);
+   await rtl.focus();await page.keyboard.press('ArrowRight');await settle(page);assert(await number(rtl)===49,`${label}: RTL direction failed`);
+   await range.focus();await page.evaluate(()=>window.demo.slider_policy(true,true,true));await page.keyboard.press('Home');await settle(page);assert(await number(range)===100&&await range.getAttribute('aria-readonly')==='true'&&await range.getAttribute('tabindex')==='0',`${label}: readonly changed value/focus`);
+   await page.evaluate(()=>window.demo.slider_policy(true,false,false));await settle(page);assert(await range.getAttribute('aria-disabled')==='true'&&await range.getAttribute('tabindex')==='-1',`${label}: disabled remained tabbable`);
+   await page.evaluate(()=>window.demo.slider_policy(true,true,false));await page.evaluate(()=>window.demo.slider_error('Amount is required'));await settle(page);assert(await range.getAttribute('aria-invalid')==='true'&&await range.getAttribute('aria-errormessage'),`${label}: Field error relation missing`);
+   await page.evaluate(()=>window.demo.slider_error(''));await settle(page);assert(await draft.evaluate(e=>e===window.sliderDraft&&e.value==='Stable range draft'&&e.selectionStart===2&&e.selectionEnd===8),`${label}: range update replaced unrelated editor/caret`);
+   assert(await range.getAttribute('data-gly-control-name')==='volume'&&await range.getAttribute('data-gly-control-value')==='100'&&!await range.getAttribute('name'),`${label}: custom successful snapshot contract missing`);
+   assert((await page.locator('.slider-status').textContent()).includes('ordered=true'),`${label}: Range observer preceded typed callback`);
+   await page.screenshot({path:`D:/BuildCache/sapid/${label}.png`,fullPage:true});reports.push({suite:label,status:'passed',checks:'Field role/name/error, keys/pages/endpoints, controlled rejection, track click/captured mouse release, vertical/RTL, readonly/disabled, stable editor/caret, explicit successful snapshot, typed order'});
+  }
+  await page.goto('http://127.0.0.1:8794/slider-hydrate-green-dark.html?manual');await page.waitForFunction(()=>window.moduleReady===true);const draft=page.locator('.slider-draft');await draft.fill('Before range hydration');await draft.evaluate(e=>{window.sliderBefore=e;e.focus();e.setSelectionRange(2,9,'backward')});await page.evaluate(()=>window.demo.mount_slider(true,'green','dark'));await settle(page);assert(await draft.evaluate(e=>e===window.sliderBefore&&e.value==='Before range hydration'&&e.selectionStart===2&&e.selectionEnd===9),'slider dirty editor hydration replaced node/value/selection');await page.evaluate(()=>window.demo.unmount_slider());await settle(page);assert(await page.locator('.slider-demo').count()===0,'slider Owner retirement leaked visuals');reports.push({suite:'slider-dirty-editor-hydration-retirement',status:'passed'});
+  const touch=await browser.newContext({viewport:{width:1100,height:900},hasTouch:true,isMobile:true});try {
+   const p=await touch.newPage();install(p);await p.goto('http://127.0.0.1:8794/slider.html');await p.waitForFunction(()=>window.ready===true);const range=p.getByRole('slider',{name:'Volume',exact:true}),draft=p.locator('.slider-draft'),status=p.locator('.slider-status'),client=await touch.newCDPSession(p),box=await range.boundingBox(),y=box.y+box.height/2;
+   assert(await range.evaluate(e=>getComputedStyle(e).touchAction)==='none','slider touch-action missing');await draft.evaluate(e=>e.setSelectionRange(2,7));const scroll=await p.evaluate(()=>scrollY),send=(type,points)=>client.send('Input.dispatchTouchEvent',{type,touchPoints:points}),point=x=>[{x,y,id:7}];
+   await send('touchStart',point(box.x+box.width*.25));await send('touchMove',point(box.x+box.width*.75));await send('touchEnd',[]);await settle(p);assert(await number(range)===75,'slider touch endpoint wrong');assert(await p.evaluate(()=>scrollY)===scroll&&await draft.evaluate(e=>e.selectionStart===2&&e.selectionEnd===7),'slider touch scrolled page or changed selection');
+   const commits=Number((await status.textContent()).match(/commits=(\d+)/)[1]);await send('touchStart',point(box.x+box.width*.75));await send('touchMove',point(box.x+box.width*.5));await send('touchCancel',[]);await settle(p);assert((await status.textContent()).includes('phase=Cancel')&&Number((await status.textContent()).match(/commits=(\d+)/)[1])===commits,'slider touchCancel committed or failed cleanup');reports.push({suite:'slider-touch-capture-cancel',status:'passed'});
+  }finally{await touch.close()}
+  return {reports,errors};
+ }finally{await context.close()}
+}

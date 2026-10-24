@@ -1,7 +1,7 @@
 use glory::render::{FieldPart, FormControl, SemanticId, Semantics};
 use glory::style::{BorderStyle, Edges};
 use glory::ui::{IntoChildren, Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Cage, Lotus, Scope};
 
 use crate::appearance::{Common, common_methods, configure};
 use crate::composite;
@@ -11,8 +11,7 @@ use crate::composite;
 #[derive(Clone)]
 pub struct FieldControl {
     pub id: SemanticId,
-    form_name: Option<Lotus<String>>,
-    form_value: Option<Lotus<String>>,
+    form_control: Option<Cage<FormControl>>,
     label: Option<SemanticId>,
     description: Option<SemanticId>,
     error_id: Option<SemanticId>,
@@ -41,13 +40,10 @@ impl FieldControl {
         let field = self.clone();
         scope
             .bond(move || {
-                let error = !field.error.get().is_empty();
+                let error = field.error.with(|error| !error.is_empty());
                 composite::metadata(Semantics {
                     id: Some(field.id.clone()),
-                    form_control: field.form_name.as_ref().map(|name| FormControl {
-                        name: name.get(),
-                        value: field.form_value.as_ref().map(|value| value.get()),
-                    }),
+                    form_control: field.form_control.as_ref().map(|control| control.get()),
                     labelled_by: if named { None } else { field.label.clone() },
                     described_by: field.description.clone(),
                     error_message: if error { field.error_id.clone() } else { None },
@@ -62,6 +58,63 @@ impl FieldControl {
 }
 
 type ControlFactory = Box<dyn FnMut(FieldControl) -> Box<dyn Widget>>;
+fn accepted_form_control(
+    scope: &Scope,
+    name: Option<Lotus<String>>,
+    value: Option<Lotus<String>>,
+) -> Result<Option<Cage<FormControl>>> {
+    let Some(name) = name else { return Ok(None) };
+    fn read(name: &Lotus<String>, value: &Option<Lotus<String>>) -> Result<FormControl> {
+        name.try_with(|name| {
+            if name.len() > 256 || name.contains(['\0', '\r', '\n']) {
+                return Err(glory::render::Error::InvalidProps(
+                    "invalid successful-control name",
+                )
+                .into());
+            }
+            if let Some(value) = value {
+                value.try_with(|value| {
+                    if value.contains(['\0', '\r']) {
+                        return Err(glory::render::Error::InvalidProps(
+                            "invalid successful-control value",
+                        )
+                        .into());
+                    }
+                    Ok(FormControl {
+                        name: name.clone(),
+                        value: Some(value.clone()),
+                    })
+                })?
+            } else {
+                Ok(FormControl {
+                    name: name.clone(),
+                    value: None,
+                })
+            }
+        })?
+    }
+    // Raw Lotus values move into the observer; invalid strings are checked by
+    // borrow before either name/value is cloned into the accepted pair.
+    let accepted = scope.cage(read(&name, &value)?);
+    if !name.is_reactive() && !value.as_ref().is_some_and(Lotus::is_reactive) {
+        return Ok(Some(accepted));
+    }
+    let weak = scope.downgrade();
+    scope.structural(move || {
+        let Some(scope) = weak.upgrade() else { return };
+        let result = (|| -> Result {
+            let next = read(&name, &value)?;
+            if accepted.try_with(|old| old != &next)? {
+                accepted.try_revise(|old| *old = next)?
+            }
+            Ok(())
+        })();
+        if let Err(error) = result {
+            scope.report_error(error)
+        }
+    });
+    Ok(Some(accepted))
+}
 pub struct Field {
     key: String,
     common: Common,
@@ -152,10 +205,11 @@ impl Widget for Field {
         let description_id = composite::id("field", &self.key, "description", "root")?;
         let error_id = composite::id("field", &self.key, "error", "root")?;
         let enabled = self.common.enabled.clone();
+        let form_control =
+            accepted_form_control(scope, self.form_name.take(), self.form_value.take())?;
         let context = FieldControl {
             id: id.clone(),
-            form_name: self.form_name.clone(),
-            form_value: self.form_value.clone(),
+            form_control,
             label: self.label.as_ref().map(|_| label_id.clone()),
             description: self.description.as_ref().map(|_| description_id.clone()),
             error_id: self.error.as_ref().map(|_| error_id.clone()),

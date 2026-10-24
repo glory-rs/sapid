@@ -15,9 +15,20 @@ This implementation contains **Button**, **TextField**, **Checkbox**,
 **Blockquote**, **Item**, **DataList**, portable **layout boxes**, **Grid** /
 **SimpleGrid**, **AspectRatio**, **Text** / **Title** / **Typography**, **Anchor**,
 **Separator**, **Timeline**, **Spoiler**, **Breadcrumbs**, **Pagination** and
-**NavLink**. **Menu** / **DropdownMenu**, **Stepper** and **VisuallyHidden** have
-implementation and Rust/native evidence; their current browser acceptance is
-tracked in the roadmap alongside remaining components.
+**NavLink**, **Menu** / **DropdownMenu**, **Stepper**, **VisuallyHidden**,
+**Tooltip** / **HoverCard**, **Avatar** / **Image**, **Indicator** / **ThemeIcon**,
+**NativeSelect**, **Alert** / **AlertDialog** / **FloatingDialog**, **Skeleton**,
+**Progress** / **RingProgress** / **SemiCircleProgress**, **Sidebar** / **AppShell**,
+**ScrollArea** / **Scroller**, **Splitter**, **Affix**, **Select**,
+**Spinner** / **Loader**, **NavigationProgress**, **ModalsManager**, **Combobox**,
+**Overlay** / **LoadingOverlay**, **Notification** / **Toaster**, **Sheet**,
+**NavigationMenu**, and **Toolbar** / **ActionBar**. The roadmap records the exact implemented
+contracts and remaining components. Unified Web11 passed all 36 suites (309
+reports); Combobox and LoadingOverlay have actual focused Web12 reports.
+Notifications passed Web13, and Sheet, NavigationMenu and Toolbar passed Web14
+focused matrices. Unified Web14 then passed all 43 suites (378 reports) with no
+errors. Their component documents record exact limits and test scope.
+Native limitations remain explicit.
 It targets the current semantic Glory checkout in the sibling `../glory`
 directory. Publishing and a standalone versioned Glory dependency are pending.
 
@@ -74,6 +85,7 @@ app.mount_with(|| {
 Further APIs and exact acceptance boundaries:
 
 - [Forms and requests](docs/form-components.md), [validation and serialization](docs/forms-state.md).
+- [TextField and Checkbox state, themes and evidence](docs/basic-controls.md).
 - [Mixed checks, switches, radios and segmented values](docs/choices-implementation.md), [toggle buttons](docs/toggles.md).
 - [Action buttons and connected groups](docs/action-components.md), [tags and surfaces](docs/display-components.md).
 - [Intrinsic document content](docs/document-components.md), [finite number formatting](docs/number-formatter.md).
@@ -81,6 +93,11 @@ Further APIs and exact acceptance boundaries:
 - [Grid and ratio](docs/grid-layout.md), [typography](docs/typography.md), [links](docs/anchor.md).
 - [Timeline and separators](docs/timeline-separator.md), [Spoiler](docs/spoiler.md), [navigation](docs/navigation.md).
 - [Stepper](docs/stepper.md), [VisuallyHidden](docs/visually-hidden.md), [mounted collections](docs/collection-implementation.md).
+- [Button sections, sizes and loading](docs/button.md), [menus](docs/menu-implementation.md), [hints](docs/hints-implementation.md).
+- [Native selection](docs/native-select-implementation.md), [alerts, dialogs and skeletons](docs/feedback-components.md), [progress](docs/progress.md).
+- [Custom Select](docs/select-implementation.md), [Spinner and motion](docs/spinner.md), [NavigationProgress](docs/navigation-progress.md), [modal queues](docs/modals-manager.md).
+- [Indicators and icons](docs/indicators-icons.md), [Sidebar and AppShell](docs/sidebar-app-shell.md), [scrolling](docs/scroll-area.md), [Splitter](docs/splitter.md).
+- [Affix positioning](docs/affix.md).
 - [Adapter capabilities and actual host evidence](docs/adapter-capabilities.md).
 
 Input controls support `name`, `enabled`, `focus`, `node_ref`, `on`, `theme`,
@@ -516,8 +533,7 @@ Local evidence lives under `D:/BuildCache/sapid`: `fields-final-check.log`,
 target. The default normal dependency graph still contains only Glory's
 facade/core/render/style/ui packages.
 
-Mixed checkboxes, a validation engine, form submission/reset/serialization,
-and pressed-state animation remain in the plan. Browser protocol tests do not
+Pressed-state animation remains in the plan. Browser protocol tests do not
 establish actual OS IME or screen-reader acceptance. The native tests use the
 Glory document/shell and AccessKit consumer without claiming displayed windows,
 new Windows UIA client acceptance, or screen-reader speech for Sapid.

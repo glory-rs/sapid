@@ -57,7 +57,8 @@ field("updates")
 
 动态 form_name/form_value 通过既有语义 Patch 更新，Input 的 identity/revision/selection 保持不变。
 受控接受/拒绝、readonly、required、invalid 及描述/错误关联继续由现有 Field/控件实现。
-名字/值字符串遵循 Glory 的有界 metadata 校验，不开放任意 HTML 属性。
+名字最多 256 字节且禁 NUL/CR/LF；显式值禁 NUL/CR，未额外添加长度上限。两者先借用校验，再共同发布到 accepted metadata；无效的动态 pair 保留原有 UI。
+不开放任意 HTML 属性。
 
 ## 宿主与限制
 
@@ -73,8 +74,9 @@ field("updates")
 
 ## 证据
 
-`tests/forms.rs` 的 9 项测试覆盖 typed/observer 顺序、按钮与单行 Enter 默认动作、Textarea 不提交、
-稳定禁用 Fieldset、名称/值分离、metadata 更新保持输入版本、显式 reset、Owner 退休和 SSR escaping。
+`tests/forms.rs` 的 11 项测试覆盖 typed/observer 顺序、按钮与单行 Enter 默认动作、Textarea 不提交、
+稳定禁用 Fieldset、名称/值分离、metadata 更新保持输入版本、显式 reset、Owner 退休和 SSR escaping，另验证百万字节无效名字在控件 factory 前拒绝、
+5000 字节合法值可接受及无效 pair 原子保旧/恢复。
 FormState 的 22 项独立测试见 `docs/forms-state.md`。
 
 `examples/web/src/forms_form.rs` 显式连接 FormState；`forms.html` 与

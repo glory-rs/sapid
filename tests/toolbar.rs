@@ -1,176 +1,210 @@
 use glory::prelude::*;
-use glory::render::{Direction, Event, EventKind, FocusMode, Navigation, NodeId, Props, Role};
-use sapid::{button, button_group};
-use std::{cell::Cell, rc::Rc};
-fn children(app: &App) -> Vec<NodeId> {
-    app.tree()
-        .node(app.tree().roots()[0])
-        .unwrap()
-        .children
-        .to_vec()
-}
-#[test]
-fn toolbar_has_one_roving_entry_and_never_activates_on_navigation() {
-    let app = App::memory();
-    let loading = app.scope().cage(false);
-    let disabled = app.scope().cage(false);
-    let calls = Rc::new(Cell::new(0));
-    let out = calls.clone();
-    app.mount(
-        button_group()
-            .toolbar(true)
-            .name("Editing")
-            .direction(Direction::Rtl)
-            .buttons([
-                button()
-                    .label("First")
-                    .on_press(move || out.set(out.get() + 1)),
-                button().label("Busy").loading(loading),
-                button().label("Disabled").enabled(false),
-                button()
-                    .label("Last")
-                    .enabled(app.scope().bond(move || !disabled.get())),
-            ]),
-    )
-    .unwrap();
-    let ids = children(&app);
-    let root = app.tree().roots()[0];
-    assert_eq!(
-        app.tree().node(root).unwrap().descriptor.view().role,
-        Some(Role::Toolbar)
-    );
-    assert_eq!(
-        ids.iter()
-            .filter(|id| app.tree().node(**id).unwrap().descriptor.view().focus
-                == FocusMode::TabStop)
-            .count(),
-        1
-    );
-    for (from, command, to) in [
-        (ids[0], Navigation::Next, ids[1]),
-        (ids[1], Navigation::Next, ids[3]),
-        (ids[3], Navigation::Next, ids[0]),
-        (ids[0], Navigation::Last, ids[3]),
-    ] {
-        app.dispatch(from, Event::Navigate { from, command })
-            .unwrap();
-        assert_eq!(
-            app.tree().node(to).unwrap().descriptor.view().focus,
-            FocusMode::TabStop
-        );
-        assert_eq!(calls.get(), 0);
+use glory::render::{Event, EventKind, FocusMode, Navigation, NodeId, Role};
+use sapid::{action_bar, button, toolbar, toolbar_group};
+use std::{
+    cell::{Cell, RefCell},
+    rc::Rc,
+};
+fn nodes(app: &App) -> Vec<NodeId> {
+    let tree = app.tree();
+    let mut pending = tree.roots().to_vec();
+    let mut out = Vec::new();
+    while let Some(id) = pending.pop() {
+        pending.extend(tree.node(id).unwrap().children.iter());
+        out.push(id)
     }
-    disabled.revise(|value| *value = true);
-    loading.revise(|value| *value = true);
+    out
+}
+fn action(app: &App, label: &str) -> NodeId {
+    let tree = app.tree();
+    nodes(app).into_iter().find(|id|matches!(tree.node(*id).unwrap().descriptor.view().props,glory::render::Props::Button(p)if p.label==label)).unwrap()
+}
+fn toolbar_node(app: &App) -> NodeId {
+    let tree = app.tree();
+    nodes(app)
+        .into_iter()
+        .find(|id| tree.node(*id).unwrap().descriptor.view().role == Some(Role::Toolbar))
+        .unwrap()
+}
+fn tab(app: &App, id: NodeId) -> FocusMode {
+    app.tree().node(id).unwrap().descriptor.view().focus
+}
+#[test]
+fn grouped_actions_share_one_roving_entry_and_repair_disabled_without_replacing_buttons() {
+    let app = App::memory();
+    let middle = app.scope().cage(false);
+    app.mount(
+        toolbar("tools")
+            .group(
+                toolbar_group("edit")
+                    .name("Editing")
+                    .button(button().label("Cut"))
+                    .button(button().label("Copy").enabled(middle)),
+            )
+            .group(toolbar_group("more").button(button().label("Paste"))),
+    )
+    .unwrap();
+
+    let a = action(&app, "Cut");
+    let b = action(&app, "Copy");
+    let c = action(&app, "Paste");
+    assert_eq!(tab(&app, a), FocusMode::TabStop);
+    assert_eq!(tab(&app, b), FocusMode::Programmatic);
+    assert_eq!(tab(&app, c), FocusMode::Programmatic);
+    app.dispatch(
+        a,
+        Event::Navigate {
+            from: a,
+            command: Navigation::Next,
+        },
+    )
+    .unwrap();
     app.flush().unwrap();
-    assert_eq!(
-        app.tree().node(ids[0]).unwrap().descriptor.view().focus,
-        FocusMode::TabStop
-    );
-    assert!(
-        matches!(&app.tree().node(ids[1]).unwrap().descriptor.view().props.clone(),Props::Button(p) if !p.enabled)
-    );
-    app.dispatch(ids[0], Event::Activate).unwrap();
+    assert_eq!(tab(&app, c), FocusMode::TabStop);
+    app.dispatch(
+        c,
+        Event::Navigate {
+            from: c,
+            command: Navigation::First,
+        },
+    )
+    .unwrap();
+    app.flush().unwrap();
+    assert_eq!(tab(&app, a), FocusMode::TabStop);
+    middle.revise(|v| *v = true);
+    app.flush().unwrap();
+    app.dispatch(
+        a,
+        Event::Navigate {
+            from: a,
+            command: Navigation::Next,
+        },
+    )
+    .unwrap();
+    app.flush().unwrap();
+    assert_eq!(tab(&app, b), FocusMode::TabStop);
+    middle.revise(|v| *v = false);
+    app.flush().unwrap();
+    assert_eq!(tab(&app, a), FocusMode::TabStop);
+    assert_eq!(action(&app, "Copy"), b);
+}
+#[test]
+fn selection_bar_is_source_silent_and_clear_proposes_before_its_owner_retires() {
+    let app = App::memory();
+    let count = app.scope().cage(0usize);
+    let calls = Rc::new(Cell::new(0));
+    let observed = calls.clone();
+    app.mount(
+        action_bar("selection")
+            .selected_count(count)
+            .on_clear_selection(move || observed.set(observed.get() + 1))
+            .group(toolbar_group("edit").button(button().label("Delete"))),
+    )
+    .unwrap();
+    let clear = action(&app, "Clear selection");
+    let delete = action(&app, "Delete");
+    assert!(!app.dispatch(clear, Event::Activate).unwrap());
+    count.revise(|v| *v = 3);
+    app.flush().unwrap();
+    assert!(app.dispatch(clear, Event::Activate).unwrap());
+    assert_eq!(count.get(), 3);
     assert_eq!(calls.get(), 1);
-    app.clear().unwrap();
-    loading.revise(|value| *value = false);
+    count.revise(|v| *v = 0);
     app.flush().unwrap();
-    assert!(app.tree().is_empty());
+    assert!(!app.dispatch(delete, Event::Activate).unwrap());
+    assert_eq!(action(&app, "Delete"), delete);
 }
 #[test]
-fn actual_focus_runs_before_generic_observers_and_plain_groups_keep_natural_tab_order() {
+fn invalid_names_preserve_accepted_metadata_and_duplicate_or_unbounded_declarations_reject() {
     let app = App::memory();
-    let node = app.scope().cage(None);
-    let seen = Rc::new(Cell::new(false));
-    let out = seen.clone();
+    let name = app.scope().cage("Editing tools".to_string());
     app.mount(
-        button_group().toolbar(true).buttons([
-            button().label("First"),
-            button()
-                .label("Second")
-                .node_ref(node)
-                .on(EventKind::FocusChanged, move |_| {
-                    out.set(node.get().is_some())
-                }),
-        ]),
+        toolbar("names")
+            .name(name)
+            .group(toolbar_group("edit").button(button().label("A"))),
     )
     .unwrap();
-    let ids = children(&app);
-    app.dispatch(ids[1], Event::FocusChanged(true)).unwrap();
-    assert!(seen.get());
-    assert_eq!(
-        app.tree().node(ids[1]).unwrap().descriptor.view().focus,
-        FocusMode::TabStop
-    );
-    app.clear().unwrap();
-    app.mount(button_group().buttons([button().label("One"), button().label("Two")]))
-        .unwrap();
-    assert!(
-        children(&app)
-            .iter()
-            .all(|id| app.tree().node(*id).unwrap().descriptor.view().focus == FocusMode::Auto)
-    );
-}
-#[test]
-fn unstyled_keeps_layout_non_looping_edges_and_explicit_focus_is_rejected() {
-    let app = App::memory();
-    app.mount(
-        button_group()
-            .toolbar(true)
-            .unstyled()
-            .loop_focus(false)
-            .orientation(glory::render::Orientation::Vertical)
-            .buttons([button().label("First"), button().label("Last")]),
-    )
-    .unwrap();
-    let root = app.tree().roots()[0];
-    let ids = children(&app);
+
+    let root = toolbar_node(&app);
+    name.revise(|v| *v = "x".repeat(1_000_000));
+    assert!(app.flush().is_err());
     assert_eq!(
         app.tree()
             .node(root)
             .unwrap()
             .descriptor
             .view()
-            .style
-            .display,
-        Some(glory::style::Display::Flex)
+            .name
+            .as_deref(),
+        Some("Editing tools")
     );
-    app.dispatch(
-        ids[0],
-        Event::Navigate {
-            from: ids[0],
-            command: Navigation::Previous,
-        },
-    )
-    .unwrap();
-    assert_eq!(
-        app.tree().node(ids[0]).unwrap().descriptor.view().focus,
-        FocusMode::TabStop
-    );
+    name.revise(|v| *v = "Accepted tools".into());
+    app.flush().unwrap();
     assert!(
         App::memory()
             .mount(
-                button_group()
-                    .toolbar(true)
-                    .button(button().focus(FocusMode::TabStop))
+                toolbar("duplicate")
+                    .group(toolbar_group("same").button(button()))
+                    .group(toolbar_group("same").button(button()))
             )
             .is_err()
     );
+    let consumed = Rc::new(Cell::new(0));
+    let count = consumed.clone();
+    let huge = (0..1_000_000).map(move |_| {
+        count.set(count.get() + 1);
+        button()
+    });
+    assert!(
+        App::memory()
+            .mount(toolbar("bounded").group(toolbar_group("many").buttons(huge)))
+            .is_err()
+    );
+    assert_eq!(consumed.get(), 129);
 }
 #[test]
-fn ssr_has_true_toolbar_orientation_and_one_native_button_tab_entry() {
-    let html = glory::ssr::render(
-        button_group()
-            .toolbar(true)
-            .orientation(glory::render::Orientation::Vertical)
-            .name("Edit <tools>")
-            .buttons([button().label("One"), button().label("Two")]),
+fn navigation_observer_runs_after_roving_and_retirement_drops_captures() {
+    let app = App::memory();
+    let log = Rc::new(RefCell::new(Vec::new()));
+    let writes = log.clone();
+    let dropped = Rc::new(Cell::new(0));
+    struct Capture(Rc<Cell<usize>>);
+    impl Drop for Capture {
+        fn drop(&mut self) {
+            self.0.set(self.0.get() + 1)
+        }
+    }
+    let capture = Capture(dropped.clone());
+    let mount = app
+        .scope()
+        .mount_with(|| {
+            toolbar("observe")
+                .on(EventKind::Navigate, move |_| {
+                    let _ = &capture;
+                    writes.borrow_mut().push("navigate")
+                })
+                .group(
+                    toolbar_group("one")
+                        .button(button().label("A"))
+                        .button(button().label("B")),
+                )
+        })
+        .unwrap();
+    let a = action(&app, "A");
+    let b = action(&app, "B");
+    app.dispatch(
+        a,
+        Event::Navigate {
+            from: a,
+            command: Navigation::Next,
+        },
     )
     .unwrap();
-    assert!(
-        html.contains("role=\"toolbar\"") && html.contains("aria-orientation=\"vertical\"")
-    );
-    assert!(html.contains("Edit &lt;tools&gt;"));
-    assert_eq!(html.matches("tabindex=\"0\"").count(), 1);
-    assert_eq!(html.matches("tabindex=\"-1\"").count(), 1);
+    app.flush().unwrap();
+    assert_eq!(tab(&app, b), FocusMode::TabStop);
+    assert_eq!(*log.borrow(), ["navigate"]);
+    drop(mount);
+    app.flush().unwrap();
+    assert_eq!(dropped.get(), 1);
+    assert_eq!(app.stats().nodes, 0);
 }

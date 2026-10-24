@@ -32,12 +32,13 @@ Web/SSR 与原生引擎验收。Textarea 自动高度依赖浏览器 field-sizin
 固定行数可用于原生。后续批次已增加 Form/FormState、成功控件快照、MixedCheckbox/组、
 Switch、RadioGroup/SegmentedControl、动作按钮、展示表面、NumberFormatter 和文档文本/列表组件，
 对应证据逐项记录在下表。Toggle、Chip、布局、Typography、Grid/比例、Timeline、Spoiler 与导航
-已增加实际宿主证据；Menu、Stepper、辅助文本及图像队列继续推进，完成状态以清单为准。
-Glory 的布局/图像/窗口列表基础不等于 Sapid 已完成 Grid/DataTable 等组件。
+已增加实际宿主证据；Menu、Stepper、辅助文本、图像、提示层、原生选择和应用框架亦已验收，
+新批次的完成状态及宿主边界以清单和逐组件证据为准。
+Glory 的布局/图像/窗口列表基础不等于 Sapid 已完成 DataTable、Tree 等后续组件。
 
 名称需要按语义对照：当前 Dialog 对应 Mantine Modal / shadcn Dialog；Mantine Dialog
-是另外的非模态提示需求，单列 FloatingDialog。Sheet 复用 Drawer 的边缘浮层能力，手势和 snap
-points 仍需实现。Collapse 与 Collapsible 复用展开模型，动画单独补齐。Mantine 布局 Group
+是另外的非模态提示需求，单列 FloatingDialog。Sheet 已在 Drawer 上增加有限手势与 snap
+points；验收和宿主边界见对应证据。Collapse 与 Collapsible 复用展开模型，动画单独补齐。Mantine 布局 Group
 不是 Glory 的 boxless Group。菜单、Tooltip、Combobox 也不能仅改 Popover 的外观就算完成。
 
 当前浮层交互支持 Web，SSR 输出与 hydration 已验证；Blitz 仍明确拒绝 Layer。跨 App 浮层栈、
@@ -72,7 +73,7 @@ points 仍需实现。Collapse 与 Collapsible 复用展开模型，动画单独
    Glory 的 required/readonly/invalid 和真实标签/分组关联已接通 TextField/Checkbox，证据见对应任务。
 2. 已完成 P1-04 Textarea、P1-05 PasswordInput、P1-06 InputGroup；保留组合输入、选区和受控恢复。
 3. 已完成 P1-07 FormState/Validation、P1-08 有限提交/重置/序列化契约；不默认接入网络。
-4. 已完成 MixedCheckbox/组、Switch、RadioGroup、SegmentedControl；Toggle/Chip 与后续展示/布局继续验收。
+4. 已完成 MixedCheckbox/组、Switch、RadioGroup、SegmentedControl、Toggle/Chip；后续批次按有限契约逐项验收。
 
 每完成一项：更新 JSON 状态和实现/测试证据，再重新生成本页。`baseline` 只表示已有本轮之前的
 功能基线；`partial` 表示只有部分部件或 Glory 基础；`planned` 表示没有实现。改为 `done` 必须在

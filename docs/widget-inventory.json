@@ -214,32 +214,56 @@
       "id": "P0-02",
       "phase": "P0",
       "name": "TextField",
-      "status": "baseline",
+      "status": "done",
       "sources": [
         "M:TextInput",
         "S:Input"
       ],
-      "work": "已有受控/本地文本、版本和组合输入；通过 P1 接入完整 Field 语义。",
+      "work": "受控/本地状态、Field/Fieldset元数据、表单成功值、版本/组合输入及typed disabled主题已补齐；真实Web/SSR/dirty hydration与native身份、输入事件已验收。",
       "baseline_at_snapshot": true,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/text_field.rs",
+          "docs/basic-controls.md",
+          "docs/form-components.md"
+        ],
+        "tests": [
+          "tests/components.rs",
+          "tests/fields.rs",
+          "tests/inputs.rs",
+          "tests/forms.rs",
+          "tests/basic_control_state.rs",
+          "D:/BuildCache/sapid/gate-snapshot8.log",
+          "D:/BuildCache/sapid/browser-snapshot8-results.json"
+        ]
       }
     },
     {
       "id": "P0-03",
       "phase": "P0",
       "name": "Checkbox",
-      "status": "baseline",
+      "status": "done",
       "sources": [
         "M:Checkbox",
         "S:Checkbox"
       ],
-      "work": "已有布尔状态；P2 补 mixed、分组及表单值。",
+      "work": "布尔受控/本地状态、Field/Fieldset与表单值、独立readonly/invalid及typed disabled主题已补齐；mixed与分组通过独立组件提供，Web/native边界已有证据。",
       "baseline_at_snapshot": true,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/checkbox.rs",
+          "docs/basic-controls.md",
+          "docs/form-components.md"
+        ],
+        "tests": [
+          "tests/components.rs",
+          "tests/fields.rs",
+          "tests/inputs.rs",
+          "tests/forms.rs",
+          "tests/basic_control_state.rs",
+          "D:/BuildCache/sapid/gate-snapshot8.log",
+          "D:/BuildCache/sapid/browser-snapshot8-results.json"
+        ]
       }
     },
     {
@@ -908,7 +932,7 @@
           "tests/actions.rs",
           "tests/toolbar.rs (4 passed)",
           "examples/web/display-acceptance.js",
-          "D:/BuildCache/sapid/browser-progress.json",
+          "D:/BuildCache/sapid/browser-snapshot4-results.json",
           "examples/native/tests/toolbar.rs"
         ]
       }
@@ -1113,7 +1137,7 @@
           "../glory/crates/render/tests/links.rs"
         ],
         "tests": [
-          "tests/anchor.rs",
+          "tests/anchors.rs",
           "examples/native/tests/typography.rs",
           "D:/BuildCache/sapid/typography-browser.json",
           "D:/BuildCache/sapid/links-toggle-native.log"
@@ -1356,16 +1380,29 @@
       "id": "P3-15",
       "phase": "P3",
       "name": "Indicator / ThemeIcon",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Indicator",
         "M:ThemeIcon"
       ],
-      "work": "状态标记、装饰图标和可访问名称，设计跨宿主矢量/图标协议。",
+      "work": "有界Indicator九种实际锚定与四种finite ThemeIcon已实现；Graphic纯typed路径、HTML真实SVG/namespace、native CPU矢量与clip/opacity/patch已验收，具名/装饰语义和四主题Web/SSR/stream通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/indicator.rs",
+          "src/theme_icon.rs",
+          "docs/indicators-icons.md",
+          "../glory/docs/finite-graphics.md"
+        ],
+        "tests": [
+          "tests/indicator.rs (5 passed)",
+          "tests/theme_icon.rs (3 passed)",
+          "examples/native/tests/graphics.rs",
+          "../glory/crates/blitz/tests/graphic.rs",
+          "../glory/crates/blitz/tests/graphic_rejection.rs",
+          "examples/web/graphics-acceptance.js",
+          "D:/BuildCache/sapid/graphics-browser.json (9 passed, final web7, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
@@ -1590,78 +1627,123 @@
       "id": "P4-04",
       "phase": "P4",
       "name": "NativeSelect",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:NativeSelect",
         "S:Native Select"
       ],
-      "work": "扩展 Glory 原生选项/分组/选中值及 Change 协议，不能用文本 Input 冒充。",
+      "work": "真实select/option/optgroup、单/多选独立key/value、Field/Form/required和受控整tick恢复已实现；HTMLv4/classicv2版本升级及旧版本无突变拒绝、dirty adoption/stream已验收。readonly与native Select明确拒绝，不伪装Input。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/native_select.rs",
+          "docs/native-select-implementation.md",
+          "../glory/crates/render/src/select.rs"
+        ],
+        "tests": [
+          "tests/native_select.rs (7 passed)",
+          "../glory/crates/render/tests/select.rs (4 passed)",
+          "../glory/crates/ui/tests/select.rs (3 passed)",
+          "../glory/crates/blitz/tests/select.rs",
+          "../glory/crates/ssr/src/stream/select_tests.rs",
+          "D:/BuildCache/sapid/native-select-browser-web7.json (12 passed, final Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P4-05",
       "phase": "P4",
       "name": "Select",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Select",
         "S:Select"
       ],
-      "work": "Listbox/Option、值与活动项、空值、分组、disabled 和受控恢复。",
+      "work": "有限Listbox/Option、独立活动项与受控值、清空/分组/disabled/readonly与Field成功值代理已完成；真实Web11字符循环、同tick按键、触摸/dirty接管/AX和typed透明主题通过；native显式拒绝，classic仅有限DOM传递、不伪造pre-WASM Layer驱动。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/select.rs",
+          "docs/select-implementation.md",
+          "../glory/crates/render/src/choice.rs"
+        ],
+        "tests": [
+          "src/select.rs (9 tests)",
+          "examples/web/select-acceptance.js",
+          "D:/BuildCache/sapid/select-browser-web11.json",
+          "D:/BuildCache/sapid/gate-snapshot9.log"
+        ]
       }
     },
     {
       "id": "P4-06",
       "phase": "P4",
       "name": "Combobox",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Combobox",
         "S:Combobox"
       ],
-      "work": "editable combobox、active-descendant、搜索与输入法、弹层和输入焦点协调。",
+      "work": "真实Input editable Combobox，active-descendant、有限过滤、composition冻结/结束协调、独立搜索/选中/open受控状态与Field/FormData已实现。四主题CSR/hydration、dirty adoption、classic stream、真实键鼠触摸/AX及CDP组合输入通过；不宣称OS IME/屏幕阅读器验收，native Choice facet明确拒绝。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/combobox.rs",
+          "docs/combobox-implementation.md"
+        ],
+        "tests": [
+          "src/combobox.rs::tests (11 passed)",
+          "examples/web/combobox-acceptance.js",
+          "D:/BuildCache/sapid/combobox-browser-web12.json (12 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/gate-snapshot10.log"
+        ]
       }
     },
     {
       "id": "P4-07",
       "phase": "P4",
       "name": "Autocomplete",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Autocomplete"
       ],
-      "work": "允许自由输入，过滤/高亮/选择与输入值分离。",
+      "work": "真实单行Input支持自由文字、建议value/label/key分离、过滤活动高亮、composition冻结、Field/native required与实际成功控件值；百万来源预算和受控拒绝恢复、四主题CSR/hydration/dirty/触屏/IME协议/classic通过。共享Choice native明确拒绝；不宣称OS IME。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/autocomplete.rs",
+          "src/combobox.rs",
+          "docs/autocomplete-multi-select.md"
+        ],
+        "tests": [
+          "src/combobox_advanced_tests.rs (22 passed shared Auto/Multi tests)",
+          "examples/web/choice-extras-acceptance.js",
+          "D:/BuildCache/sapid/choice-extras-browser-choice-extras-next.json (12 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/browser-web14-results.json (43 suites, 378 reports)"
+        ]
       }
     },
     {
       "id": "P4-08",
       "phase": "P4",
       "name": "MultiSelect",
-      "status": "planned",
+      "status": "partial",
       "sources": [
         "M:MultiSelect"
       ],
-      "work": "多选值、选中标签、全选/移除、键盘和大数据选项预算。",
+      "work": "真实Multiple Input、独立受控搜索与known-key Vec、动态tags/移除、IME保护、multiple成功值proxy和有界选项已通过模型/四主题browser；路线图所列全选/清空命令继续补齐后再关闭。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/multi_select.rs",
+          "src/combobox.rs",
+          "docs/autocomplete-multi-select.md"
+        ],
+        "tests": [
+          "src/combobox_advanced_tests.rs (22 passed shared Auto/Multi tests)",
+          "examples/web/choice-extras-acceptance.js",
+          "D:/BuildCache/sapid/choice-extras-browser-choice-extras-next.json (12 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
@@ -1700,30 +1782,53 @@
       "id": "P5-01",
       "phase": "P5",
       "name": "AlertDialog",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "S:Alert Dialog"
       ],
-      "work": "独立 alertdialog 角色、描述、确认/取消、初始安全焦点及关闭策略；复用 Dialog。",
+      "work": "独立AlertDialog角色与描述、明确确认/取消和默认安全Cancel初始焦点、默认禁用outside、受控拒绝/confirm_enabled/回调退休已实现；复用host Modal Layer，四主题Web/SSR真实焦点/AX与native明确拒绝已验收。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/overlay.rs",
+          "docs/feedback-components.md",
+          "../glory/crates/render/src/semantics.rs"
+        ],
+        "tests": [
+          "tests/alert_dialog.rs (5 passed)",
+          "tests/overlays.rs (6 passed)",
+          "../glory/crates/render/tests/alert_dialog.rs",
+          "../glory/crates/html/src/patch_tests.rs",
+          "../glory/crates/blitz/src/accessibility_alert_tests.rs",
+          "examples/native/tests/alerts.rs",
+          "D:/BuildCache/sapid/alerts-browser.json (8 passed, web8, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P5-02",
       "phase": "P5",
       "name": "Sheet / Drawer gestures",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "S:Sheet"
       ],
-      "work": "复用 Drawer 四侧布局；补 drag-to-dismiss、snap points、滚动冲突和 reduced-motion。",
+      "work": "Drawer有限Sheet snap config与单调revision、四edge握柄capture/触屏拖动和受控snap/close拒绝回弹已实现。真实viewport变化/失焦/inert取消、动态reducedmotion、有限settle中间几何与classic End同DOM水合通过；原生Layer/sheet facet明确拒绝，未宣称OS触屏/AT公告。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/sheet.rs",
+          "src/overlay.rs",
+          "docs/sheet.md"
+        ],
+        "tests": [
+          "tests/sheet.rs (3 passed)",
+          "examples/web/sheet-acceptance.js",
+          "D:/BuildCache/sapid/sheet-browser.json (9 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/sheet-native.log",
+          "D:/BuildCache/sapid/sheet-protocol.log",
+          "D:/BuildCache/sapid/sheet-protocol-clippy.log"
+        ]
       }
     },
     {
@@ -1749,7 +1854,7 @@
           "../glory/crates/ui/tests/pointer_within.rs",
           "../glory/crates/ssr/src/stream/hints_tests.rs",
           "examples/web/hints-acceptance.js",
-          "D:/BuildCache/sapid/hints-browser-148.json (10 passed)",
+          "D:/BuildCache/sapid/hints-browser-web7.json (10 passed)",
           "../glory/crates/blitz/tests/hints.rs",
           "../glory/crates/blitz/src/accessibility_hint_tests.rs"
         ]
@@ -1775,7 +1880,7 @@
         "tests": [
           "tests/hints.rs (7 passed)",
           "examples/web/hints-acceptance.js",
-          "D:/BuildCache/sapid/hints-browser-148.json (10 passed)",
+          "D:/BuildCache/sapid/hints-browser-web7.json (10 passed)",
           "../glory/crates/blitz/tests/hints.rs"
         ]
       }
@@ -1784,144 +1889,231 @@
       "id": "P5-05",
       "phase": "P5",
       "name": "Alert",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Alert",
         "S:Alert"
       ],
-      "work": "status/alert 与严重级别，关闭按钮与可选播报策略。",
+      "work": "Info/Success/Warning/Danger与Off/Polite/Assertive公告策略独立，具名真实status/alert和受控/本地关闭、动态文本接受/恢复已实现；四主题Web真实AX与原生布局/身份已验收，不声明读屏语音。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/alert.rs",
+          "docs/feedback-components.md"
+        ],
+        "tests": [
+          "tests/alerts.rs (5 passed)",
+          "examples/native/tests/alerts.rs",
+          "D:/BuildCache/sapid/alerts-native-final.log",
+          "examples/web/alerts-acceptance.js",
+          "D:/BuildCache/sapid/alerts-browser.json (8 passed, web8)"
+        ]
       }
     },
     {
       "id": "P5-06",
       "phase": "P5",
       "name": "Notification / Toast system",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Notification",
         "X:Notifications system",
         "S:Toast"
       ],
-      "work": "有界队列、替换/去重、定时/暂停、动作、live region、Owner 清理；不持有全部历史。",
+      "work": "Notification/Toaster有限去重FIFO、原子更新/替换、动作与关闭、Owner清理和显式Clock共享单timer已实现。精确暂停/过早完成/满队列/析构重入模型10项、四主题原生2项及Web13真实浏览器10项通过；默认永久显示，原生hover与OS公告未宣称。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/notifications.rs",
+          "docs/notifications.md"
+        ],
+        "tests": [
+          "tests/notifications.rs (10 passed)",
+          "examples/native/tests/notifications.rs (2 passed)",
+          "D:/BuildCache/sapid/notifications-rust-final.log",
+          "D:/BuildCache/sapid/notifications-native-final.log",
+          "examples/web/notifications-acceptance.js",
+          "D:/BuildCache/sapid/notifications-browser-web13.json (10 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P5-07",
       "phase": "P5",
       "name": "Spinner / Loader",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Loader",
         "S:Spinner"
       ],
-      "work": "加载名称、busy 状态和 reduced-motion；纯装饰时不重复播报。",
+      "work": "加载名称/busy与decorative模式、有限旋转Graphic动画、动态reduced-motion及原生共享时钟已实现；四主题真实Web旋转矩阵/零逐帧DOM写与原生像素、隐藏暂停/Resume/Owner清理通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/spinner.rs",
+          "docs/spinner.md",
+          "../glory/crates/blitz/src/graphic_motion.rs"
+        ],
+        "tests": [
+          "tests/spinner.rs",
+          "examples/native/tests/spinner.rs",
+          "examples/web/spinner-acceptance.js",
+          "D:/BuildCache/sapid/spinner-browser.json",
+          "D:/BuildCache/sapid/gate-snapshot9.log"
+        ]
       }
     },
     {
       "id": "P5-08",
       "phase": "P5",
       "name": "Progress / Ring / SemiCircle",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Progress",
         "M:RingProgress",
         "M:SemiCircleProgress",
         "S:Progress"
       ],
-      "work": "共享 finite range/progressbar 值域与文本替代，线性和圆形视图。",
+      "work": "只读ProgressBar有限min/max/current与本地化value_text、indeterminate不伪造0、typed line与有界圆弧Ring/SemiCircle已实现；非法源保留接受状态，四主题原生真实arc/track像素与AX、Web/SSR/stream通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/progress.rs",
+          "docs/progress.md",
+          "../glory/crates/render/src/progress.rs"
+        ],
+        "tests": [
+          "tests/progress.rs (5 passed)",
+          "../glory/crates/render/tests/progress.rs (3 passed)",
+          "examples/native/tests/progress.rs",
+          "D:/BuildCache/sapid/progress-native.log",
+          "../glory/crates/ssr/src/stream/progress_tests.rs",
+          "examples/web/progress-acceptance.js",
+          "D:/BuildCache/sapid/progress-browser.json (9 passed, final web8, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P5-09",
       "phase": "P5",
       "name": "NavigationProgress",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "X:NavigationProgress"
       ],
-      "work": "由应用提交开始/进度/结束，复用 Progress；不劫持网络或路由，取消与 Owner 清理一致。",
+      "work": "应用显式开始/数值/结束/取消、单当前操作及不回绕token已实现；替换撤销过期结果，Owner退休无Scope保留，真实Web八主题/adoption场景与native四主题宽度/身份通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/navigation_progress.rs",
+          "docs/navigation-progress.md"
+        ],
+        "tests": [
+          "tests/navigation_progress.rs",
+          "examples/native/tests/navigation_progress.rs",
+          "examples/web/navigation-progress-acceptance.js",
+          "D:/BuildCache/sapid/navigation-progress-browser.json",
+          "D:/BuildCache/sapid/gate-snapshot9.log"
+        ]
       }
     },
     {
       "id": "P5-10",
       "phase": "P5",
       "name": "Skeleton",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Skeleton",
         "S:Skeleton"
       ],
-      "work": "占位尺寸、busy 隶属和装饰可访问性。",
+      "work": "有限像素/百分比占位尺寸、circle/radius、独立busy区域与decorative Graphic已实现；loading隐藏保持identity，不启动计时或动画，四主题Web/SSR及native paint实际geometry/身份已验收。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/skeleton.rs",
+          "docs/feedback-components.md"
+        ],
+        "tests": [
+          "tests/skeleton.rs (4 passed)",
+          "examples/native/tests/alerts.rs",
+          "D:/BuildCache/sapid/alerts-native-final.log",
+          "examples/web/alerts-acceptance.js",
+          "D:/BuildCache/sapid/alerts-browser.json (8 passed, web8)"
+        ]
       }
     },
     {
       "id": "P5-11",
       "phase": "P5",
       "name": "Overlay / LoadingOverlay",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Overlay",
         "M:LoadingOverlay"
       ],
-      "work": "装饰遮罩与实际阻止交互分别建模，区域 busy，不冒用全局 modal。",
+      "work": "Overlay保留真正绘制的装饰遮罩及pointer透传；LoadingOverlay以busy+inert抑制区域输入/焦点/AX，保留原控件身份并阻止已有top-layer逃逸。四主题CSR/hydration、classic stream/adoption及原生像素/命中/AX通过；不冒用全局modal或通用滚轮锁。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/loading_overlay.rs",
+          "docs/loading-overlay.md"
+        ],
+        "tests": [
+          "tests/loading_overlay.rs (4 passed)",
+          "examples/native/tests/loading_overlay.rs (2 passed)",
+          "examples/web/loading-overlay-acceptance.js",
+          "D:/BuildCache/sapid/loading-overlay-browser.json (9 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/gate-snapshot10.log"
+        ]
       }
     },
     {
       "id": "P5-12",
       "phase": "P5",
       "name": "FloatingDialog",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Dialog"
       ],
-      "work": "Mantine Dialog 对应非模态边角提示；以可访问的具名非模态浮层实现，区别于当前 modal Dialog。",
+      "work": "独立FloatingDialog为具名居中非模态notice，Preserve焦点、不trap Tab、背景可交互、默认无outside关闭，受控/本地及保留草稿策略已实现；Web/SSR真实行为通过，native Layer明确拒绝。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/overlay.rs",
+          "docs/feedback-components.md"
+        ],
+        "tests": [
+          "tests/floating_dialog.rs (3 passed)",
+          "tests/overlays.rs (6 passed)",
+          "examples/native/tests/alerts.rs",
+          "examples/web/alerts-acceptance.js",
+          "D:/BuildCache/sapid/alerts-browser.json (8 passed, web8)"
+        ]
       }
     },
     {
       "id": "P5-13",
       "phase": "P5",
       "name": "ModalsManager",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "X:Modals manager"
       ],
-      "work": "应用内集中打开/更新/关闭与确认队列，复用 Layer，不创建第二套真值。",
+      "work": "应用内有限FIFO打开/更新/关闭和确认队列、单active Layer、token去重与Owner清理已实现；复用真实Dialog/AlertDialog，更新保留editor，结果回调在manager Owner无借用重入；Web11真实最终焦点恢复/安全取消通过，native mount时明确拒绝。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/modals.rs",
+          "src/overlay.rs",
+          "docs/modals-manager.md"
+        ],
+        "tests": [
+          "tests/modals.rs (8 passed)",
+          "examples/native/tests/modals.rs",
+          "examples/web/modals-acceptance.js",
+          "D:/BuildCache/sapid/modals-browser-web11.json",
+          "D:/BuildCache/sapid/modals-native.log"
+        ]
       }
     },
     {
@@ -2008,24 +2200,25 @@
       "id": "P6-03",
       "phase": "P6",
       "name": "NavLink / NavigationMenu",
-      "status": "partial",
+      "status": "done",
       "sources": [
         "M:NavLink",
         "S:Navigation Menu"
       ],
-      "work": "NavLink真实链接与独立展开按钮、稳定panel/Owner政策、Current::Page已实现；浏览器9组及原生2项通过，隐藏卸载引擎修复已固定真实fork提交。NavigationMenu尚待实现。",
+      "work": "NavLink与真正Navigation/Link/Button/Group组成的NavigationMenu支持水平/嵌套键盘、hover、typed导航请求、受控拒绝与动态Owner焦点清理。track_focusable适配自定义动态控件；一次性打开父子浮层/resize定位已修复。模型13、原生2、四主题CSR/hydration/dirty浏览器9项通过；native可用NavLink/closed header而Group Layer打开明确拒绝。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
           "src/navigation.rs",
-          "docs/navigation.md",
-          "../glory/crates/render/tests/current.rs"
+          "src/navigation_menu.rs",
+          "docs/navigation-menu.md",
+          "docs/navigation.md"
         ],
         "tests": [
-          "tests/navigation.rs (15 passed)",
-          "examples/native/tests/navigation.rs",
-          "D:/BuildCache/sapid/navigation-browser.json (9 passed; errors=[])",
-          "D:/BuildCache/sapid/navigation-native-fixed.log (2 passed)"
+          "tests/navigation_menu.rs (13 passed)",
+          "examples/native/tests/navigation_menu.rs (2 passed)",
+          "examples/web/navigation-menu-acceptance.js",
+          "D:/BuildCache/sapid/navigation-menu-browser.json (9 passed, Chromium 148.0.7778.96)"
         ]
       }
     },
@@ -2095,7 +2288,7 @@
           "tests/stepper.rs (13 passed)",
           "examples/native/tests/stepper.rs (2 passed; four themes/real focus/Unmount)",
           "examples/web/stepper-acceptance.js",
-          "D:/BuildCache/sapid/stepper-browser.json (Chrome 155.0.8059.84; 9 passed; errors=[])"
+          "D:/BuildCache/sapid/browser-snapshot8-results.json (Stepper 9 passed; Chromium 148.0.7778.96; errors=[])"
         ]
       }
     },
@@ -2103,64 +2296,105 @@
       "id": "P6-07",
       "phase": "P6",
       "name": "ScrollArea / Scroller",
-      "status": "partial",
+      "status": "done",
       "sources": [
         "M:ScrollArea",
         "M:Scroller",
         "S:Scroll Area"
       ],
-      "work": "Glory 有滚动查询/动作；补统一视口/滚动条/可见性/键盘与嵌套滚动。",
+      "work": "ScrollArea/Scroller使用真实ScrollMetrics与有界顺序intent、viewport自身键盘、嵌套输入保留原生编辑、实际边界和focus行为已实现；Owner query取消/晚到拒绝、四主题Web/SSR/native均已验收，水平动作明确LTR边界。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/scroll_area.rs",
+          "docs/scroll-area.md",
+          "../glory/crates/render/src/scroll.rs"
+        ],
+        "tests": [
+          "tests/scroll_area.rs",
+          "../glory/crates/ui/tests/query_barriers.rs",
+          "../glory/crates/blitz/tests/scroll.rs",
+          "examples/native/tests/scroll_area.rs",
+          "examples/web/scroll-area-acceptance.js",
+          "D:/BuildCache/sapid/scroll-area-browser.json (9 passed, final fixture, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P6-08",
       "phase": "P6",
       "name": "Resizable / Splitter",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Splitter",
         "S:Resizable"
       ],
-      "work": "可聚焦 separator、键盘调整、指针捕获、最小/最大和布局守恒。",
+      "work": "双pane守恒比例与bounds、控/本地更新、disabled tabstop、真实Separator numeric语义和queued AX动作、keyboard/mouse/touch capture已实现；单pending几何query可取消，晚到/Owner退休有界，四主题Web/SSR及native真实协议通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/splitter.rs",
+          "docs/splitter.md",
+          "../glory/crates/render/src/range.rs"
+        ],
+        "tests": [
+          "tests/splitter.rs (6 passed)",
+          "../glory/crates/render/tests/splitter.rs",
+          "../glory/crates/ui/tests/query_barriers.rs",
+          "examples/native/tests/splitter.rs",
+          "D:/BuildCache/sapid/splitter-native.log",
+          "examples/web/splitter-acceptance.js",
+          "D:/BuildCache/sapid/splitter-browser.json (10 passed incl CDP Touch, web8, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P6-09",
       "phase": "P6",
       "name": "Affix",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Affix"
       ],
-      "work": "视口/容器锚定、响应式偏移，补 typed fixed/sticky 的实际宿主保证。",
+      "work": "typed Fixed/right/bottom视口锚定、显式Relative容器Absolute/Sticky与响应式偏移已实现；native实际祖先scroll/viewport resize通过，Sticky仍明确拒绝。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/affix.rs",
+          "docs/affix.md"
+        ],
+        "tests": [
+          "tests/affix.rs",
+          "examples/native/tests/affix.rs",
+          "examples/web/affix-acceptance.js",
+          "D:/BuildCache/sapid/affix-browser.json",
+          "D:/BuildCache/sapid/gate-snapshot9.log"
+        ]
       }
     },
     {
       "id": "P6-10",
       "phase": "P6",
       "name": "Toolbar / ActionBar",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Toolbar",
         "M:ActionBar"
       ],
-      "work": "工具栏 roving focus、分组动作和选择态操作条。",
+      "work": "有界具名分组Toolbar共享roving入口，方向键/Home/End、RTL/垂直/非循环、动态disabled与身份保留。ActionBar按受控selection count展示、只提议清空、不制造modal或夺取焦点。四项模型、一项含四主题原生实际布局和Web14四主题CSR/hydration八项通过；任意Widget/动态业务集合自动注册不在契约内。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/toolbar.rs",
+          "docs/toolbar.md"
+        ],
+        "tests": [
+          "tests/toolbar.rs (4 passed)",
+          "examples/native/tests/toolbar.rs (1 passed, four themes)",
+          "examples/web/toolbar-acceptance.js",
+          "D:/BuildCache/sapid/toolbar-browser-web14.json (8 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/toolbar-native.log"
+        ]
       }
     },
     {
@@ -2304,15 +2538,22 @@
       "id": "P7-06",
       "phase": "P7",
       "name": "ColorSwatch",
-      "status": "planned",
+      "status": "partial",
       "sources": [
         "M:ColorSwatch"
       ],
-      "work": "颜色文本替代、透明背景和可选选择状态。",
+      "work": "有限RGBA preview、灰白透明棋盘、可选真实Button/pressed勾选、受控来源静默和名称/大小预算已实现；模型5项与四主题原生alpha像素/命中/engine identity1项通过，Web fixture实际验收待下一构建。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/color_swatch.rs",
+          "docs/color-swatch.md"
+        ],
+        "tests": [
+          "tests/color_swatch.rs (5 passed)",
+          "examples/native/tests/color_swatch.rs (1 passed, four themes)",
+          "D:/BuildCache/sapid/color-swatch-native.log"
+        ]
       }
     },
     {

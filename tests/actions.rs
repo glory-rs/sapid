@@ -99,7 +99,12 @@ fn burger_local_expansion_updates_name_glyph_and_controls_without_new_identity()
     app.flush().unwrap();
     let d = app.tree().node(id).unwrap().descriptor.view().to_owned();
     assert_eq!(d.name.as_deref(), Some("Hide menu"));
-    assert!(matches!(d.props,Props::Button(ref p) if p.label=="×"));
+    assert!(matches!(d.props,Props::Button(ref p) if p.label.is_empty()));
+    assert_eq!(d.semantics.as_ref().unwrap().pressed, Some(true));
+    let glyph = app.tree().node(id).unwrap().children[0];
+    assert!(
+        matches!(app.tree().node(glyph).unwrap().descriptor.view().props,Props::Graphic(p) if p.commands.len()==6 && p.alternative.is_none())
+    );
     assert_eq!(d.semantics.as_ref().unwrap().expanded, Some(true));
     assert_eq!(d.semantics.as_ref().unwrap().controls, Some(target));
     assert_eq!(*calls.borrow(), [true]);

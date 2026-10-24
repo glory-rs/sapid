@@ -1,8 +1,6 @@
 use glory::style::{Edges, Length, Style};
 use glory::ui::{Widget, component};
-use sapid::{
-    Icon, IndicatorPosition, Theme, ThemeIconVariant, button, indicator, theme_icon,
-};
+use sapid::{Icon, IndicatorPosition, Theme, ThemeIconVariant, button, indicator, theme_icon};
 pub fn graphics_form(theme: Theme) -> impl Widget {
     component(move |scope| {
         let visible = scope.cage(true);

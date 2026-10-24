@@ -1,36 +1,35 @@
-use glory::blitz::shell::WindowApp;
-use glory::prelude::*;
-use glory::render::{Action, Event, Navigation, NodeId, Props, Query, QueryValue};
-use std::{cell::RefCell, rc::Rc};
-#[path = "../../web/actions_form.rs"]
+#[path = "../../web/toolbar_form.rs"]
 mod fixture;
-fn button(app: &App, label: &str) -> NodeId {
+use glory::blitz::shell::WindowApp;
+use glory::render::{Event, Navigation, NodeId, Props, Query, QueryValue, Rect};
+use std::{cell::RefCell, rc::Rc};
+fn button(app: &glory::App, label: &str) -> NodeId {
     let tree = app.tree();
     let mut pending = tree.roots().to_vec();
     while let Some(id) = pending.pop() {
         let node = tree.node(id).unwrap();
-        if matches!(node.descriptor.view().props,Props::Button(p) if p.label==label) {
+        if matches!(node.descriptor.view().props,Props::Button(p)if p.label==label) {
             return id;
         }
-        pending.extend(node.children.iter().copied())
+        pending.extend(&node.children)
     }
     panic!("missing {label}")
 }
-fn focused(app: &App, id: NodeId) -> bool {
-    let result = Rc::new(RefCell::new(None));
-    let out = result.clone();
-    app.request(Query::Focus(id), move |value| {
-        *out.borrow_mut() = Some(value.unwrap())
+fn bounds(app: &glory::App, node: NodeId) -> Rect {
+    let out = Rc::new(RefCell::new(None));
+    let saved = out.clone();
+    app.request(Query::Bounds(node), move |value| {
+        *saved.borrow_mut() = Some(value.unwrap())
     })
     .unwrap();
     app.pump().unwrap();
-    let QueryValue::Focus(value) = result.borrow_mut().take().unwrap() else {
-        panic!("focus")
+    let QueryValue::Bounds(value) = out.borrow_mut().take().unwrap() else {
+        panic!()
     };
     value
 }
 #[test]
-fn native_toolbar_moves_actual_focus_without_activation_and_retains_engine_buttons() {
+fn grouped_toolbar_native_layout_and_selection_updates_keep_engine_identities() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),
@@ -38,47 +37,69 @@ fn native_toolbar_moves_actual_focus_without_activation_and_retains_engine_butto
         sapid::Theme::green_dark(),
     ] {
         let host = WindowApp::new();
-        host.mount(fixture::actions_form(theme)).unwrap();
+        host.mount(fixture::toolbar_form(theme)).unwrap();
         let app = host.app();
-        app.settle(8).unwrap();
-        let first = button(app, "Toolbar first");
-        let last = button(app, "Toolbar last");
-        let physical = host
+        app.settle(16).unwrap();
+        let cut = button(app, "Cut draft");
+        let undo = button(app, "Undo draft");
+        let copy = button(app, "Copy draft");
+        let identity = host
             .renderer()
-            .engine_id(first, glory::html::Part::Main)
+            .engine_id(cut, glory::html::Part::Main)
             .unwrap();
-        app.scope().action(Action::Focus(first)).unwrap();
-        app.settle(8).unwrap();
-        assert!(focused(app, first));
-        for (from, command, to) in [
-            (first, Navigation::Next, last),
-            (last, Navigation::Next, first),
-            (first, Navigation::Last, last),
-        ] {
-            app.dispatch(from, Event::Navigate { from, command })
-                .unwrap();
-            app.settle(8).unwrap();
-            assert!(focused(app, to));
-        }
+        let first = bounds(app, cut);
+        let next = bounds(app, undo);
+        assert!(first.width > 40. && first.height >= 30.);
+        assert!(next.x > first.x + first.width);
+        app.dispatch(
+            cut,
+            Event::Navigate {
+                from: cut,
+                command: Navigation::Next,
+            },
+        )
+        .unwrap();
+        app.settle(16).unwrap();
+        assert_eq!(
+            app.tree().node(undo).unwrap().descriptor.view().focus,
+            glory::render::FocusMode::TabStop
+        );
+        app.dispatch(button(app, "Toggle copy enabled"), Event::Activate)
+            .unwrap();
+        app.settle(16).unwrap();
+        assert!(
+            matches!(app.tree().node(copy).unwrap().descriptor.view().props,Props::Button(p)if p.enabled)
+        );
+        app.dispatch(button(app, "Select three rows"), Event::Activate)
+            .unwrap();
+        app.settle(16).unwrap();
+        let archive = button(app, "Archive selected");
+        assert!(bounds(app, archive).width > 60.);
+        let retained = host
+            .renderer()
+            .engine_id(archive, glory::html::Part::Main)
+            .unwrap();
+        app.dispatch(button(app, "Accept clear selection"), Event::Activate)
+            .unwrap();
+        app.dispatch(button(app, "Clear selection"), Event::Activate)
+            .unwrap();
+        app.settle(16).unwrap();
+        assert!(!app.tree().active(archive));
+        app.dispatch(button(app, "Select three rows"), Event::Activate)
+            .unwrap();
+        app.settle(16).unwrap();
         assert_eq!(
             host.renderer()
-                .engine_id(first, glory::html::Part::Main)
+                .engine_id(archive, glory::html::Part::Main)
                 .unwrap(),
-            physical
+            retained
         );
-        let tree = app.tree();
-        let mut pending = tree.roots().to_vec();
-        let mut found = false;
-        while let Some(id) = pending.pop() {
-            let node = tree.node(id).unwrap();
-            if matches!(node.descriptor.view().props,Props::Text(p) if p.content=="Toolbar activations: 0")
-            {
-                found = true;
-            }
-            pending.extend(node.children.iter().copied())
-        }
-        assert!(found);
-        drop(tree);
+        assert_eq!(
+            host.renderer()
+                .engine_id(cut, glory::html::Part::Main)
+                .unwrap(),
+            identity
+        );
         app.clear().unwrap();
         assert!(app.tree().is_empty());
     }

@@ -216,6 +216,8 @@ pub struct Burger {
     on_change: Option<Box<dyn FnMut(bool)>>,
     open_name: String,
     close_name: String,
+    animated: Lotus<bool>,
+    duration_millis: u16,
     controls: Option<SemanticId>,
     presses: Vec<Box<dyn FnMut()>>,
 }
@@ -226,11 +228,21 @@ pub fn burger() -> Burger {
         on_change: None,
         open_name: "Open navigation".into(),
         close_name: "Close navigation".into(),
+        animated: true.into(),
+        duration_millis: 180,
         controls: None,
         presses: Vec::new(),
     }
 }
 impl Burger {
+    pub fn animated(mut self, value: impl Into<Lotus<bool>>) -> Self {
+        self.animated = value.into();
+        self
+    }
+    pub fn duration_millis(mut self, value: u16) -> Self {
+        self.duration_millis = value;
+        self
+    }
     action_methods!();
     pub fn open(mut self, source: impl Into<Lotus<bool>>) -> Self {
         self.open.source = Some(source.into());
@@ -258,12 +270,17 @@ impl Widget for Burger {
     fn build(&mut self, scope: &Scope) -> Result {
         validate_name(&self.open_name)?;
         validate_name(&self.close_name)?;
+        glory::render::GraphicTransition {
+            duration_millis: self.duration_millis,
+        }
+        .validate()?;
         let control = std::mem::take(&mut self.open).mount(scope);
         let open = control.source.clone();
         let target = self.controls.clone();
         let semantics = scope.bond(move || {
             Some(Box::new(Semantics {
                 expanded: Some(open.get()),
+                pressed: Some(open.get()),
                 controls: target.clone(),
                 ..Default::default()
             }))
@@ -279,25 +296,81 @@ impl Widget for Burger {
             }
         });
         let open = control.source.clone();
-        let glyph = scope.bond(move || {
-            if open.get() {
-                "×".to_string()
+        let animated = self.animated.clone();
+        let duration_millis = self.duration_millis;
+        let theme = self.common.theme.clone();
+        let unstyled = self.common.unstyled;
+        let enabled = self.common.enabled.clone();
+        let own_style = self.common.style.clone();
+        let mut base = square(&self.common)
+            .display(Display::InlineFlex)
+            .padding(Edges::all(4.0));
+        base.align = Some(glory::style::Align::Center);
+        base.justify = Some(glory::style::Justify::Center);
+        self.common.style = scope
+            .bond(move || {
+                let mut style = if unstyled { Style::new() } else { base.clone() };
+                if !unstyled && !enabled.get() {
+                    style.background = Some(theme.disabled);
+                    style.color = Some(theme.disabled_text);
+                    style.border_color = Some(theme.border);
+                }
+                crate::appearance::merge(style, own_style.get())
+            })
+            .into();
+        let style = self.common.style.clone();
+        let fallback = self.common.theme.foreground;
+        let drawing = scope.bond(move || {
+            use glory::render::{GraphicPoint as P, PathCommand as C};
+            let coordinates = if open.get() {
+                [(5., 5., 19., 19.), (12., 12., 12., 12.), (5., 19., 19., 5.)]
             } else {
-                "☰".to_string()
+                [(4., 6., 20., 6.), (4., 12., 20., 12.), (4., 18., 20., 18.)]
+            };
+            glory::render::GraphicProps {
+                commands: coordinates
+                    .into_iter()
+                    .flat_map(|(x, y, a, b)| [C::Move(P::new(x, y)), C::Line(P::new(a, b))])
+                    .collect(),
+                stroke: Some(glory::render::GraphicStroke {
+                    color: style.get().color.unwrap_or(fallback),
+                    width: 2.,
+                    cap: glory::render::StrokeCap::Round,
+                }),
+                transition: animated
+                    .get()
+                    .then_some(glory::render::GraphicTransition { duration_millis }),
+                ..Default::default()
             }
         });
-        let base = square(&self.common);
+        let icon_side = match self.common.size {
+            crate::Size::ExtraSmall => 12.,
+            crate::Size::Small => 15.,
+            crate::Size::Medium => 18.,
+            crate::Size::Large => 21.,
+            crate::Size::ExtraLarge => 25.,
+        };
         let mut button = configure!(
             self.common,
             glory::ui::button(),
             scope,
             "sapid-burger",
-            base
+            Style::new()
         )
         .enabled(self.common.enabled.clone())
         .semantics(semantics)
         .name(name)
-        .label(glyph);
+        .label("")
+        .fill(
+            glory::ui::graphic()
+                .class("sapid-burger-graphic")
+                .drawing(drawing)
+                .style(
+                    Style::new()
+                        .width(Length::Px(icon_side))
+                        .height(Length::Px(icon_side)),
+                ),
+        );
         let weak = scope.downgrade();
         let owner = scope.id();
         let mut callback = self.on_change.take();

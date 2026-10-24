@@ -8,7 +8,7 @@ publish = false
 
 [dependencies]
 sapid = { path = "../.." }
-glory = { path = "../../../glory/crates/glory", default-features = false, features = ["html", "blitz-accesskit"] }
+glory = { path = "../../../glory/crates/glory", default-features = false, features = ["html", "blitz-accesskit", "blitz-raster"] }
 
 [lints.rust]
 unsafe_code = "forbid"

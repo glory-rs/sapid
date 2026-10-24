@@ -46,7 +46,8 @@ Tab order. Both modes keep structural flex/orientation/gaps when unstyled.
 
 ## Disclosure action
 
-`burger()` is a named disclosure button with glyphs `☰` and `×`. It owns local
+`burger()` is a named disclosure button with a decorative three-line Graphic that
+transitions to a cross. It owns local
 expanded state by default. `open(source)` is controlled: activation proposes the
 opposite source value through `on_open_change`, and never mutates the supplied
 source. `default_open` cannot override controlled ownership regardless of setter
@@ -57,8 +58,8 @@ callbacks and generic observers; disabled activation is suppressed natively.
 names; `controls(SemanticId)` links to an application-owned panel. The control's
 NodeId remains stable as name, glyph and expanded metadata change. This component
 does not create the panel, infer actual focus or implement routing. It uses real
-expanded/controls metadata. A pressed toggle role and animated bar interpolation
-are not implemented; the remaining Burger animation work stays explicit.
+expanded/pressed/controls metadata and finite host-owned bar interpolation. See
+`docs/burger.md` for motion budgets, interruption and evidence.
 
 Burger event closures use WeakScope. Local state, names, bindings, node references
 and callback captures retire with its Owner; no timeouts or independent tasks are
@@ -78,7 +79,7 @@ source-silent updates, controls/SSR escaping, all themes/unstyled, Owner cleanup
 connected borders/orientations/source order, group/child disabled AND, reactive
 style precedence and empty groups. Real browser and native host acceptance are
 separate integration checks; these tests do not claim OS IME, spoken screen
-reader output or animation.
+reader output; animation has its own focused checks in `docs/burger.md`.
 
 
 Integrated host checks on 2026-10-24 passed: `display-acceptance.js` ran 16

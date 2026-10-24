@@ -1,8 +1,7 @@
 //! Passive themed icons backed by Glory's finite cross-host vector paths.
 use crate::appearance::{Common, configure};
 use glory::render::{
-    GraphicPoint as Point, GraphicProps, GraphicStroke, NodeId, PathCommand as Path,
-    StrokeCap,
+    GraphicPoint as Point, GraphicProps, GraphicStroke, NodeId, PathCommand as Path, StrokeCap,
 };
 use glory::style::{Align, BorderStyle, Color, Display, Edges, Justify, Length, Style};
 use glory::ui::{Result, Widget};
@@ -205,8 +204,7 @@ impl Widget for ThemeIcon {
         };
         let color = self.color.unwrap_or(color);
         let icon = self.icon.clone();
-        let reactive =
-            icon.is_reactive() || accepted.as_ref().is_some_and(Lotus::is_reactive);
+        let reactive = icon.is_reactive() || accepted.as_ref().is_some_and(Lotus::is_reactive);
         let drawing = move || GraphicProps {
             width: 24.,
             height: 24.,

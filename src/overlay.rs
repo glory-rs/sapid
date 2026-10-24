@@ -40,6 +40,7 @@ struct Overlay {
     description: Option<Lotus<String>>,
     close_label: Lotus<String>,
     show_close: bool,
+    show_trigger: bool,
     open: Value<bool>,
     change: Option<Box<dyn FnMut(bool)>>,
     dismiss: Option<Box<dyn FnMut(DismissReason)>>,
@@ -48,6 +49,9 @@ struct Overlay {
     trigger: Option<Cage<Option<NodeId>>>,
     panel: Option<Cage<Option<NodeId>>>,
     config: Layer,
+    snaps: Option<Lotus<crate::DrawerSnaps>>,
+    snap: Value<usize>,
+    snap_change: Option<Box<dyn FnMut(usize)>>,
     confirm_label: Lotus<String>,
     confirm: Option<Box<dyn FnMut(())>>,
     cancel: Option<Box<dyn FnMut(AlertCancelReason)>>,
@@ -75,6 +79,7 @@ impl Overlay {
             }
             .into(),
             show_close: true,
+            show_trigger: true,
             open: Value::default(),
             change: None,
             dismiss: None,
@@ -82,10 +87,18 @@ impl Overlay {
             policy: ContentPolicy::Unmount,
             trigger: None,
             panel: None,
+            snaps: None,
+            snap: Value::default(),
+            snap_change: None,
             config: Layer {
                 modal,
                 placement,
-                outside: kind != "alert-dialog",
+                outside: !matches!(kind, "alert-dialog" | "floating-dialog"),
+                focus: if kind == "floating-dialog" {
+                    glory::render::LayerFocus::Preserve
+                } else {
+                    glory::render::LayerFocus::Manage
+                },
                 ..Default::default()
             },
             confirm_label: "Confirm".into(),
@@ -137,6 +150,12 @@ macro_rules! overlay {
                 self.inner.show_close = value;
                 self
             }
+            /// An externally controlled dialog may omit its built-in trigger.
+            /// Provide a title or name; anchored Popovers require their trigger.
+            pub fn show_trigger(mut self, value: bool) -> Self {
+                self.inner.show_trigger = value;
+                self
+            }
             pub fn on_open_change(mut self, callback: impl FnMut(bool) + 'static) -> Self {
                 self.inner.change = Some(Box::new(callback));
                 self
@@ -151,16 +170,6 @@ macro_rules! overlay {
             }
             pub fn dismiss_on_outside(mut self, value: bool) -> Self {
                 self.inner.config.outside = value;
-                self
-            }
-            /// Resolve a stable semantic name inside the live panel; otherwise
-            /// the host chooses its first enabled tab stop, then the panel.
-            pub fn initial_focus(mut self, id: SemanticId) -> Self {
-                self.inner.config.initial_focus = Some(id);
-                self
-            }
-            pub fn return_focus(mut self, id: SemanticId) -> Self {
-                self.inner.config.return_focus = Some(id);
                 self
             }
             pub fn content<W: Widget>(
@@ -235,6 +244,22 @@ overlay!(Dialog, dialog, "dialog", true, Center);
 overlay!(Drawer, drawer, "drawer", true, Right);
 overlay!(Popover, popover, "popover", false, AnchorStart);
 overlay!(AlertDialog, alert_dialog, "alert-dialog", true, Center);
+overlay!(
+    FloatingDialog,
+    floating_dialog,
+    "floating-dialog",
+    false,
+    Center
+);
+macro_rules! managed_focus {
+    ($($name:ident),+)=>{$(impl $name {
+        /// Resolve a stable semantic name inside the live panel; otherwise the
+        /// host chooses its first enabled tab stop, then the panel.
+        pub fn initial_focus(mut self,id:SemanticId)->Self{self.inner.config.initial_focus=Some(id);self}
+        pub fn return_focus(mut self,id:SemanticId)->Self{self.inner.config.return_focus=Some(id);self}
+    })+};
+}
+managed_focus!(Dialog, Drawer, Popover, AlertDialog);
 impl AlertDialog {
     pub fn confirm_enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
         self.inner.confirm_enabled = value.into();
@@ -262,6 +287,27 @@ impl AlertDialog {
     }
 }
 impl Drawer {
+    /// Enable a bounded draggable sheet, with explicit accessible snap labels.
+    pub fn snap_points(mut self, points: impl IntoIterator<Item = crate::DrawerSnap>) -> Self {
+        self.inner.snaps = Some(crate::DrawerSnaps::new(points).into());
+        self
+    }
+    pub fn snap_config(mut self, options: impl Into<Lotus<crate::DrawerSnaps>>) -> Self {
+        self.inner.snaps = Some(options.into());
+        self
+    }
+    pub fn snap_index(mut self, value: impl Into<Lotus<usize>>) -> Self {
+        self.inner.snap.source = Some(value.into());
+        self
+    }
+    pub fn default_snap(mut self, value: usize) -> Self {
+        self.inner.snap.default = value;
+        self
+    }
+    pub fn on_snap_change(mut self, callback: impl FnMut(usize) + 'static) -> Self {
+        self.inner.snap_change = Some(Box::new(callback));
+        self
+    }
     pub fn side(mut self, side: DrawerSide) -> Self {
         self.inner.config.placement = match side {
             DrawerSide::Left => LayerPlacement::Left,
@@ -288,19 +334,36 @@ impl Popover {
 impl Widget for Overlay {
     fn build(&mut self, scope: &Scope) -> Result {
         let alert = self.kind == "alert-dialog";
+        let floating = self.kind == "floating-dialog";
+        if !self.show_trigger
+            && (self.title.is_none() && self.common.name.is_none()
+                || matches!(
+                    self.config.placement,
+                    LayerPlacement::AnchorStart
+                        | LayerPlacement::AnchorEnd
+                        | LayerPlacement::AnchorRight
+                        | LayerPlacement::AnchorLeft
+                ))
+        {
+            return Err(glory::render::Error::InvalidProps(
+                "a triggerless dialog requires a name/title and non-anchored placement",
+            )
+            .into());
+        }
         let trigger_id = composite::id(self.kind, &self.key, "trigger", "root")?;
         let panel_id = composite::id(self.kind, &self.key, "panel", "root")?;
         let title_id = composite::id(self.kind, &self.key, "title", "root")?;
         let description_id = composite::id(self.kind, &self.key, "description", "root")?;
         let close_id = composite::id(self.kind, &self.key, "close", "root")?;
-        if alert {
-            if !self.show_close
+        if alert || floating || !self.show_trigger {
+            if (alert && (!self.show_close || self.description.is_none()))
                 || (self.title.is_none() && self.common.name.is_none())
-                || self.description.is_none()
             {
-                return Err(glory::render::Error::InvalidProps(
-                    "alert dialog requires a name/title, description and safe cancel action",
-                )
+                return Err(glory::render::Error::InvalidProps(if alert {
+                    "alert dialog requires a name/title, description and safe cancel action"
+                } else {
+                    "floating dialog requires a title or explicit name"
+                })
                 .into());
             }
             fn nonempty(value: &str) -> Result {
@@ -318,18 +381,42 @@ impl Widget for Overlay {
                 &mut self.title,
                 &mut self.description,
                 &mut self.common.name,
-            ].into_iter().flatten() {
+            ]
+            .into_iter()
+            .flatten()
+            {
                 *text = composite::validated(scope, text, |value| nonempty(value))?.into();
             }
             self.close_label =
                 composite::validated(scope, &self.close_label, |value| nonempty(value))?.into();
-            self.confirm_label =
-                composite::validated(scope, &self.confirm_label, |value| nonempty(value))?
-                    .into();
-            if self.config.initial_focus.is_none() {
+            if alert {
+                self.confirm_label =
+                    composite::validated(scope, &self.confirm_label, |value| nonempty(value))?
+                        .into();
+            }
+            if alert && self.config.initial_focus.is_none() {
                 self.config.initial_focus = Some(close_id.clone());
             }
         }
+        if self.snaps.is_some() && !self.show_close {
+            return Err(glory::render::Error::InvalidProps(
+                "a sheet requires its accessible close action",
+            )
+            .into());
+        }
+        let snap_control = std::mem::take(&mut self.snap).mount(scope);
+        let sheet = self
+            .snaps
+            .as_ref()
+            .map(|options| crate::sheet::mount(scope, options, &snap_control))
+            .transpose()?;
+        let snap_change = Callback::new(self.snap_change.take());
+        let sheet_observers = Observers::new(
+            self.common
+                .handlers
+                .remove(&EventKind::Sheet)
+                .unwrap_or_default(),
+        );
         let control = std::mem::take(&mut self.open).mount(scope);
         let source = control.source.clone();
         let change = Callback::new(self.change.take());
@@ -384,7 +471,10 @@ impl Widget for Overlay {
             trigger = trigger.style(self.common.theme.control(self.common.size));
         }
         let mut config = self.config.clone();
-        if config.return_focus.is_none() {
+        if self.show_trigger
+            && config.focus == glory::render::LayerFocus::Manage
+            && config.return_focus.is_none()
+        {
             config.return_focus = Some(trigger_id.clone());
         }
         if matches!(
@@ -415,6 +505,7 @@ impl Widget for Overlay {
         let cb = change.clone();
         let weak = scope.downgrade();
         let cancel_dismiss = cancel.clone();
+        let sheet_dismiss = dismiss.clone();
         let mut panel = glory::ui::view()
             .role(if alert {
                 Role::AlertDialog
@@ -427,7 +518,13 @@ impl Widget for Overlay {
                     id: Some(id.clone()),
                     labelled_by: label.clone(),
                     described_by: description.clone(),
-                    layer: Some(config.clone()),
+                    layer: Some({
+                        let mut next = config.clone();
+                        if let Some(sheet) = sheet {
+                            next.sheet = Some(sheet.get().protocol);
+                        }
+                        next
+                    }),
                     hidden: !open.get(),
                     ..Default::default()
                 })
@@ -455,6 +552,65 @@ impl Widget for Overlay {
                     scope.report_error(error);
                 }
             });
+        let panel_reference = self.panel.unwrap_or_else(|| scope.cage(None));
+        let sheet_handler = if let Some(accepted) = sheet {
+            let open = control.clone();
+            let on_open = change.clone();
+            let on_snap = snap_change.clone();
+            let observers = sheet_observers.clone();
+            let snap = snap_control.clone();
+            let weak = scope.downgrade();
+            Some(Callback::new(Some(Box::new(move |event: Event| {
+                let Some(scope) = weak.upgrade() else { return };
+                let result = (|| -> Result {
+                    if !open.source.try_get()? {
+                        return Ok(());
+                    }
+                    let Event::Sheet {
+                        revision, command, ..
+                    } = event
+                    else {
+                        return Ok(());
+                    };
+                    if accepted.try_with(|state| state.protocol.revision != revision)? {
+                        return Ok(());
+                    }
+                    match command {
+                        glory::render::SheetCommand::Snap(index) => {
+                            if accepted.try_with(|state| {
+                                index >= state.options.points.len()
+                                    || index == state.protocol.current
+                            })? {
+                                return Ok(());
+                            }
+                            snap.accept(&index)?;
+                            on_snap.emit(owner, index);
+                        }
+                        glory::render::SheetCommand::Dismiss => {
+                            if !accepted.try_with(|state| state.protocol.dismissible)? {
+                                return Ok(());
+                            }
+                            open.accept(&false)?;
+                            sheet_dismiss.emit(owner, DismissReason::Gesture);
+                            on_open.emit(owner, false);
+                        }
+                    }
+                    observers.emit(owner, event);
+                    Ok(())
+                })();
+                if let Err(error) = result {
+                    scope.report_error(error);
+                }
+            }))))
+        } else {
+            None
+        };
+        if let Some(handler) = sheet_handler.clone() {
+            panel = panel.on(EventKind::Sheet, move |event| handler.emit(owner, event));
+        }
+        if sheet.is_some() {
+            panel = panel.node_ref(panel_reference);
+        }
         let mut base = composite::column(12.0)
             .width(Length::Px(360.0))
             .padding(Edges::all(20.0))
@@ -464,7 +620,25 @@ impl Widget for Overlay {
         let (classes, styles) =
             self.common
                 .appearance(scope, &format!("sapid-{} sapid-layer", self.kind), base);
-        panel = panel.class(classes).style(styles);
+        panel = panel.class(classes);
+        if sheet.is_some() {
+            let edge = self.config.placement;
+            panel = panel.style(scope.bond(move || {
+                let mut style = styles.get();
+                let mut padding = style.padding.unwrap_or_else(|| Edges::all(0.0));
+                match edge {
+                    LayerPlacement::Left => padding.right = padding.right.max(24.0),
+                    LayerPlacement::Right => padding.left = padding.left.max(24.0),
+                    LayerPlacement::Top => padding.bottom = padding.bottom.max(24.0),
+                    LayerPlacement::Bottom => padding.top = padding.top.max(24.0),
+                    _ => {}
+                }
+                style.padding = Some(padding);
+                style
+            }));
+        } else {
+            panel = panel.style(styles);
+        }
         if let Some(name) = self.common.name.clone() {
             panel = panel.name(name);
         }
@@ -486,6 +660,16 @@ impl Widget for Overlay {
         let content_open = source;
         let weak = scope.downgrade();
         panel = panel.fill(glory::ui::component(move |scope| {
+            if let (Some(accepted), Some(handler)) = (sheet, sheet_handler.clone()) {
+                crate::sheet::controls(
+                    scope,
+                    accepted,
+                    panel_reference,
+                    handler,
+                    theme.muted,
+                    unstyled,
+                )?;
+            }
             if let Some(title) = title.clone() {
                 glory::ui::text()
                     .kind(TextKind::Heading(2))
@@ -577,9 +761,16 @@ impl Widget for Overlay {
             let observers = Observers::new(handlers);
             panel = panel.on(kind, move |event| observers.emit(owner, event));
         }
-        glory::ui::view()
-            .class("sapid-layer-root")
-            .fill((trigger, panel))
-            .show_in(scope)
+        if self.show_trigger {
+            glory::ui::view()
+                .class("sapid-layer-root")
+                .fill((trigger, panel))
+                .show_in(scope)
+        } else {
+            glory::ui::view()
+                .class("sapid-layer-root")
+                .fill(panel)
+                .show_in(scope)
+        }
     }
 }

@@ -5,6 +5,7 @@ use sapid::{Theme, action_icon, burger, button, button_group, close_button};
 pub fn actions_form(theme: Theme) -> impl Widget {
     component(move |scope| {
         let open = scope.cage(false);
+        let motion = scope.cage(true);
         let proposals = scope.cage(0_u32);
         let enabled = scope.cage(true);
         let toolbar_calls = scope.cage(0_u32);
@@ -18,10 +19,17 @@ pub fn actions_form(theme: Theme) -> impl Widget {
                     .theme(theme.clone())
                     .icon(text().content("↻")),
                 close_button().theme(theme.clone()).name("Dismiss preview"),
-                burger().theme(theme.clone()).class("local-burger"),
+                burger()
+                    .theme(theme.clone())
+                    .class("local-burger")
+                    .animated(motion)
+                    .duration_millis(240),
                 burger()
                     .theme(theme.clone())
                     .class("controlled-burger")
+                    .animated(motion)
+                    .duration_millis(240)
+                    .enabled(enabled)
                     .open(open)
                     .on_open_change(move |_| proposals.revise(|v| *v += 1)),
                 button()
@@ -72,6 +80,12 @@ pub fn actions_form(theme: Theme) -> impl Widget {
                         button().label("Toolbar below"),
                     ]),
             ))
+            .fill(
+                button()
+                    .theme(theme.clone())
+                    .label("Toggle burger motion")
+                    .on_press(move || motion.revise(|v| *v = !*v)),
+            )
             .show_in(scope)
     })
 }
