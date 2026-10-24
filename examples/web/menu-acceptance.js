@@ -1,0 +1,74 @@
+async (hostPage, baseURL = 'http://127.0.0.1:8794') => {
+  const context=await hostPage.context().browser().newContext({viewport:{width:1100,height:900}}),reports=[],errors=[];
+  const assert=(condition,message)=>{if(!condition)throw new Error(message);};
+  try {
+    const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));page.on('console',message=>{if(message.type()==='error')errors.push(message.text());});
+    const tick=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    for(const hue of ['blue','green'])for(const scheme of ['light','dark'])for(const hydrate of [false,true]) {
+      const mode=`menu-${hue}-${scheme}-${hydrate?'hydrate':'csr'}`;
+      await page.goto(`${baseURL}/${hydrate?`menu-hydrate-${hue}-${scheme}.html`:'menu.html'}?theme=${hue}&scheme=${scheme}`);await page.waitForFunction(()=>window.ready===true);
+      const trigger=page.getByRole('button',{name:'Tools',exact:true}),root=page.locator('[role=menu][aria-label=Tools]');
+      const fresh=page.getByRole('menuitem',{name:'New document',exact:true}),grid=page.getByRole('menuitemcheckbox',{name:'Show grid',exact:true});
+      const comfortable=page.getByRole('menuitemradio',{name:'Comfortable',exact:true}),compact=page.getByRole('menuitemradio',{name:'Compact',exact:true});
+      const share=page.getByRole('menuitem',{name:'Share',exact:true}),shareMenu=page.locator('[role=menu][aria-label=Share]');
+      const exportItem=page.getByRole('menuitem',{name:'Export',exact:true}),exportMenu=page.locator('[role=menu][aria-label=Export]');
+      const email=page.getByRole('menuitem',{name:'Email link',exact:true}),more=page.getByRole('menuitem',{name:'More sharing',exact:true}),copy=page.getByRole('menuitem',{name:'Copy link',exact:true});
+      assert(!await root.isVisible()&&await trigger.getAttribute('aria-haspopup')==='menu'&&await trigger.getAttribute('aria-expanded')==='false',`${mode}: closed typed Menu trigger`);
+      await trigger.focus();await page.keyboard.press('ArrowUp');await tick();assert(await root.isVisible()&&await exportItem.evaluate(e=>e===document.activeElement),`${mode}: Up opens last menu member`);
+      await page.keyboard.press('Escape');await tick();assert(!await root.isVisible()&&await trigger.evaluate(e=>e===document.activeElement),`${mode}: Escape returns actual focus`);
+      await page.keyboard.press('ArrowDown');await tick();assert(await fresh.evaluate(e=>e===document.activeElement),`${mode}: Down opens first`);
+      await page.keyboard.press('ArrowDown');await tick();assert(await grid.evaluate(e=>e===document.activeElement),`${mode}: shared roving skips disabled`);
+      await page.keyboard.press('Enter');await tick();assert(await grid.isChecked()&&await root.isVisible(),`${mode}: Enter activates native menu checkbox without closing`);
+      await page.keyboard.press('Space');await tick();assert(!await grid.isChecked(),`${mode}: Space activates native menu checkbox`);
+      await compact.focus();await page.keyboard.press('Enter');await tick();assert(await compact.isChecked()&&!await comfortable.isChecked(),`${mode}: native menu radio Enter and exclusive group`);
+      assert(await compact.evaluate(e=>e.type==='radio'&&e.form===null)&&await grid.evaluate(e=>e.type==='checkbox'&&e.form===null)&&await page.locator('form').evaluate(e=>[...new FormData(e)].length===0),`${mode}: menu choices do not leak into enclosing Form`);
+      await fresh.focus();await page.keyboard.press('e');await tick();assert(await exportItem.evaluate(e=>e===document.activeElement),`${mode}: mounted-label typeahead`);
+      await share.focus();await page.keyboard.press('ArrowRight');await tick();assert(await shareMenu.isVisible()&&await email.evaluate(e=>e===document.activeElement),`${mode}: Right opens submenu and first focus`);
+      await page.keyboard.press('ArrowDown');await tick();assert(await more.evaluate(e=>e===document.activeElement),`${mode}: child roving`);
+      await page.keyboard.press('ArrowRight');await tick();assert(await copy.evaluate(e=>e===document.activeElement),`${mode}: third menu level`);
+      await page.keyboard.press('Escape');await tick();assert(await more.evaluate(e=>e===document.activeElement)&&await shareMenu.isVisible(),`${mode}: Escape closes only deepest submenu`);
+      await page.keyboard.press('ArrowLeft');await tick();assert(!await shareMenu.isVisible()&&await share.evaluate(e=>e===document.activeElement),`${mode}: Left closes one level`);
+      await share.hover();await page.waitForTimeout(30);await exportItem.hover();await page.waitForTimeout(30);await fresh.hover();await page.waitForTimeout(180);await tick();
+      assert(!await shareMenu.isVisible()&&!await exportMenu.isVisible(),`${mode}: owner task cancels delayed hover on leave/sibling`);
+      await share.hover();await page.waitForTimeout(180);await tick();assert(await shareMenu.isVisible(),`${mode}: actual delayed hover opens submenu`);
+      const shareBox=await share.boundingBox(),childBox=await shareMenu.boundingBox();assert(shareBox&&childBox,`${mode}: positioned live submenu`);
+      assert(Math.abs(childBox.y-shareBox.y)<12&&childBox.x>=0&&childBox.x+childBox.width<=1101,`${mode}: shared side anchor and viewport collision`);
+      await page.mouse.move(shareBox.x+shareBox.width+2,shareBox.y+shareBox.height/2);await email.hover();await tick();
+      assert(await shareMenu.isVisible()&&await email.evaluate(e=>e===document.activeElement),`${mode}: pointer crosses submenu gap without premature close`);
+      const cdp=await context.newCDPSession(page),ax=await cdp.send('Accessibility.getFullAXTree');await cdp.detach();
+      assert(ax.nodes.some(node=>node.role?.value==='menu'&&node.name?.value==='Tools')&&ax.nodes.some(node=>node.role?.value==='menuitemcheckbox'&&node.name?.value==='Show grid')&&ax.nodes.some(node=>node.role?.value==='menuitemradio'&&node.name?.value==='Compact'&&node.properties?.some(property=>property.name==='checked'&&property.value?.value==='true')),`${mode}: AX actual menu/check/radio roles`);
+      await page.screenshot({path:`D:/BuildCache/sapid/${mode}.png`,fullPage:true});
+      await email.click();await tick();assert(!await root.isVisible()&&await trigger.evaluate(e=>e===document.activeElement)&&await page.getByText('Actions performed: 1',{exact:true}).count()===1,`${mode}: nested action closes root tree and returns focus`);
+      await trigger.click();await fresh.focus();await page.keyboard.press('Tab');await tick();assert(!await root.isVisible()&&await page.getByRole('button',{name:'After tools',exact:true}).evaluate(e=>e===document.activeElement),`${mode}: host Tab exits the complete Menu tree`);
+      await trigger.click();await fresh.focus();await page.keyboard.press('Shift+Tab');await tick();assert(!await root.isVisible()&&await page.getByRole('button',{name:'Before tools',exact:true}).evaluate(e=>e===document.activeElement),`${mode}: host ShiftTab exits backwards`);
+      await page.evaluate(()=>window.demo.menu_state('reject',true));await trigger.click();await tick();assert(!await root.isVisible(),`${mode}: controlled open rejection`);
+      await page.evaluate(()=>{window.demo.menu_state('open',true);window.demo.menu_state('radio',false);});
+      await grid.click();await compact.click();await tick();assert(!await grid.isChecked()&&await comfortable.isChecked()&&!await compact.isChecked(),`${mode}: controlled native check/radio peer rejection`);
+      await share.focus();await page.keyboard.press('ArrowRight');await tick();assert(!await shareMenu.isVisible()&&await share.evaluate(e=>e===document.activeElement),`${mode}: controlled submenu rejection`);
+      await page.keyboard.press('Tab');await tick();assert(await root.isVisible()&&await page.getByRole('button',{name:'After tools',exact:true}).evaluate(e=>e===document.activeElement),`${mode}: rejected close preserves open truth while host focus exits`);
+      await page.evaluate(()=>{window.demo.menu_state('reject',false);window.demo.menu_state('open',false);});
+      await trigger.click();await page.getByRole('button',{name:'Outside tools',exact:true}).click();await tick();assert(!await root.isVisible()&&await page.getByRole('button',{name:'Outside tools',exact:true}).evaluate(e=>e===document.activeElement),`${mode}: outside dismissal preserves clicked focus`);
+      await page.evaluate(()=>window.demo.menu_state('disabled',true));assert(await trigger.isDisabled(),`${mode}: root disabled`);await page.evaluate(()=>window.demo.menu_state('disabled',false));
+      await trigger.click();await share.hover();await page.setViewportSize({width:390,height:844});await tick();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${mode}: narrow viewport`);await page.setViewportSize({width:1100,height:900});
+      await page.evaluate(()=>window.demo.unmount_menu());await page.waitForTimeout(180);assert(await page.locator('#app').evaluate(e=>e.childElementCount===0),`${mode}: Owner retirement cancels pending timer and clears all layers`);
+      reports.push({suite:mode,status:'passed',checks:'typed PopupKind, real menu/menuitem/checkbox/radio, native Enter/Space, Collection/Typeahead/disabled, 3-level keyboard/return focus, actual side anchor/hover delay cancellation/gap crossing, controlled rejection, Form ownership, AX, host Tab exit, outside focus, Owner cleanup'});
+    }
+    await page.goto(`${baseURL}/menu.html`);await page.waitForFunction(()=>window.ready===true);
+    await page.getByRole('button',{name:'RTL tools',exact:true}).focus();await page.keyboard.press('ArrowUp');await tick();
+    const rtlMore=page.getByRole('menuitem',{name:'RTL more',exact:true}),rtlChild=page.getByRole('menuitem',{name:'RTL child',exact:true});
+    assert(await rtlMore.evaluate(e=>e===document.activeElement),'RTL opens last');await page.keyboard.press('ArrowLeft');await tick();
+    assert(await rtlChild.evaluate(e=>e===document.activeElement),'RTL Left opens actual submenu');await page.keyboard.press('ArrowRight');await tick();
+    assert(await rtlMore.evaluate(e=>e===document.activeElement),'RTL Right closes actual submenu');
+    reports.push({suite:'menu-rtl',status:'passed',checks:'actual RTL keyboard hierarchy and side placement'});
+    await page.goto(`${baseURL}/menu-hydrate-blue-light.html?manual=1`);await page.waitForFunction(()=>window.moduleReady===true);
+    await page.evaluate(()=>{window.menuDirtyNodes=[...document.querySelectorAll('[role=menuitemcheckbox],[role=menuitemradio]')];window.menuDirtyNodes[0].checked=true;window.menuDirtyNodes[1].checked=false;window.menuDirtyNodes[2].checked=true;window.demo.mount_menu(true,'blue','light');});await tick();
+    assert(await page.evaluate(()=>window.menuDirtyNodes.every(e=>e.isConnected)&&!window.menuDirtyNodes[0].checked&&window.menuDirtyNodes[1].checked&&!window.menuDirtyNodes[2].checked),'dirty retained hidden menu check/radio adopt and restore without replacement');
+    reports.push({suite:'menu-dirty-hydration',status:'passed',checks:'native dirty properties restore canonical hidden menu states and retain DOM identity'});
+    await page.goto(`${baseURL}/menu-stream.html`);await page.waitForFunction(()=>document.querySelector('#menu-stream-root')?.dataset.glyStreamState==='ready');
+    assert(await page.locator('#stream-menu-trigger').getAttribute('aria-haspopup')==='menu'&&await page.getByRole('button',{name:'Cleared popup'}).getAttribute('aria-haspopup')===null,'classic stream finite PopupKind Set/Clear');
+    assert(await page.locator('[role=menuitemcheckbox]').isChecked()&&await page.locator('[role=menuitemradio]').isChecked()&&!await page.locator('#stream-menu').evaluate(e=>e.hidden)&&await page.locator('#stream-menu').getAttribute('data-gly-layer')==='anchor-right','classic stream native properties, menu roles, hidden reset and side anchor');
+    assert(await page.evaluate(()=>GloryStream.active()===0&&document.querySelector('#menu-stream-root').firstChild.nodeValue==='gly:v:4'&&JSON.parse(document.querySelector('#menu-stream-data').textContent).records[0].name==='menu'),'classic stream End rekey and resource handoff');
+    reports.push({suite:'menu-classic-stream',status:'passed',checks:'real Rust Shell/Patch/End, typed PopupKind Set/Clear, menu check/radio properties, hidden reset, side anchor and finite v3 rekey'});
+    assert(errors.length===0,JSON.stringify(errors));return{reports,errors};
+  }finally{await context.close();}
+}

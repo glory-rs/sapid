@@ -1,0 +1,20 @@
+[package]
+name = "sapid"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.94"
+license = "MIT OR Apache-2.0"
+description = "Composable semantic widgets for Glory"
+publish = false
+
+[dependencies]
+glory = { path = "../glory/crates/glory", default-features = false }
+
+[dev-dependencies]
+glory = { path = "../glory/crates/glory", default-features = false, features = ["ssr"] }
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "warn"

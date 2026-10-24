@@ -1,0 +1,68 @@
+/* Opt-in interaction styles. Rust Theme owns the same semantic tokens. */
+.sapid-theme-blue-light,.sapid-theme-green-light{--sp-surface:#fff;--sp-input:#fff;--sp-text:#212529;--sp-muted:#5c6470;--sp-border:#ced4da;--sp-disabled:#f1f3f5;--sp-disabled-text:#868e96;--sp-danger:#c92a2a;color-scheme:light}
+.sapid-theme-blue-dark,.sapid-theme-green-dark{--sp-surface:#1a1b1e;--sp-input:#25262b;--sp-text:#dee2e6;--sp-muted:#adb5bd;--sp-border:#495057;--sp-disabled:#25262b;--sp-disabled-text:#909296;--sp-danger:#ffa8a8;color-scheme:dark}
+.sapid-theme-blue-light,.sapid-theme-blue-dark{--sp-accent:#1971c2;--sp-hover:#1864ab;--sp-ring:#74c0fc;--sp-input-focus:#228be6}
+.sapid-theme-green-light,.sapid-theme-green-dark{--sp-accent:#237032;--sp-hover:#1b5e2a;--sp-ring:#8ce99a;--sp-input-focus:#2f9e44}
+.sapid-theme-green-dark{--sp-input-focus:#51cf66}
+.sapid-field-label:where(:not(.sapid-unstyled)){width:fit-content;cursor:default}.sapid-field-label:where(:not(.sapid-unstyled)).is-required::after{content:" *" / "";color:var(--sp-danger)}
+.sapid-fieldset:where(:not(.sapid-unstyled)){margin:0;min-inline-size:0}.sapid-fieldset-legend:where(:not(.sapid-unstyled)){padding:0 6px;margin-left:-6px}
+.sapid-fieldset:where(:not(.sapid-unstyled)):disabled{opacity:.65}.sapid-fieldset:where(:not(.sapid-unstyled)):disabled .sapid-field-label:where(:not(.sapid-unstyled)){cursor:not-allowed}
+.sapid-text-field:where(:not(.sapid-unstyled)){width:100%;box-sizing:border-box;transition:border-color .12s;outline:0;box-shadow:none}
+.sapid-text-field:where(:not(.sapid-unstyled))::placeholder{color:var(--sp-muted)}
+/* Theme borders are inline typed styles; focus changes only their color. */
+.sapid-text-field:where(:not(.sapid-unstyled)):focus:not([data-gly-invalid]){border-color:var(--sp-input-focus)!important}
+.sapid-text-field:where(:not(.sapid-unstyled))[data-gly-invalid]{color:var(--sp-danger)}
+.sapid-text-field:where(:not(.sapid-unstyled))[readonly]{cursor:default}
+.sapid-text-field:where(:not(.sapid-unstyled)):disabled,.sapid-button:where(:not(.sapid-unstyled)):disabled{background:var(--sp-disabled);color:var(--sp-disabled-text);cursor:not-allowed}
+.sapid-checkbox:where(:not(.sapid-unstyled)){display:inline-flex;gap:9px;align-items:center;cursor:pointer}.sapid-checkbox:where(:not(.sapid-unstyled)) input{width:17px;height:17px;margin:0;accent-color:var(--sp-accent);cursor:inherit}.sapid-checkbox:where(:not(.sapid-unstyled)):has(input:disabled){color:var(--sp-disabled-text);cursor:not-allowed}
+.sapid-checkbox:where(:not(.sapid-unstyled)) input[aria-invalid=true]{outline:1px solid var(--sp-danger);outline-offset:2px}
+.sapid-checkbox:where(:not(.sapid-unstyled)) input[readonly]{cursor:default}
+.sapid-button:where(:not(.sapid-unstyled)){cursor:pointer;transition:filter .12s,background .12s}.sapid-button:where(:not(.sapid-unstyled)):hover:enabled{filter:brightness(.94)}
+.sapid-button:where(:not(.sapid-unstyled)):focus-visible,.sapid-checkbox:where(:not(.sapid-unstyled)) input:focus-visible{outline:2px solid var(--sp-ring);outline-offset:2px}
+.sapid-layer:where(:not(.sapid-unstyled)){border:1px solid var(--sp-border);box-shadow:0 10px 42px #0002}
+.sapid-accordion-trigger:where(:not(.sapid-unstyled)),.sapid-tab:where(:not(.sapid-unstyled)),.sapid-collapsible-trigger:where(:not(.sapid-unstyled)),[class$='-trigger']{cursor:pointer}
+@media(prefers-reduced-motion:reduce){.sapid-text-field:where(:not(.sapid-unstyled)),.sapid-button:where(:not(.sapid-unstyled)){transition:none}}
+
+/* The semantic switch remains a native checkbox input for keyboard activation. */
+.sapid-switch:where(:not(.sapid-unstyled)){display:inline-flex;align-items:center;gap:9px;cursor:pointer}
+.sapid-switch:where(:not(.sapid-unstyled)) input{appearance:none;width:34px;height:20px;margin:0;border:1px solid var(--sp-border);border-radius:12px;background-color:var(--sp-muted);background-image:radial-gradient(circle,#fff 0 6px,transparent 6.5px);background-size:18px 18px;background-position:left center;background-repeat:no-repeat;cursor:inherit}
+.sapid-switch:where(:not(.sapid-unstyled)) input:checked{background-color:var(--sp-accent);background-position:right center}
+.sapid-switch:where(:not(.sapid-unstyled)) input:focus-visible{outline:2px solid var(--sp-ring);outline-offset:2px}
+.sapid-switch:where(:not(.sapid-unstyled)):has(input:disabled){color:var(--sp-disabled-text);cursor:not-allowed;opacity:.65}
+.sapid-switch:where(:not(.sapid-unstyled)) input[readonly]{cursor:default}
+.sapid-switch:where(:not(.sapid-unstyled)) input[aria-invalid=true]{outline:1px solid var(--sp-danger);outline-offset:2px}
+.sapid-checkbox-group:where(:not(.sapid-unstyled)){margin:0;min-inline-size:0;border:0;padding:0}
+
+/* Compact value selection keeps native radios focusable and semantically live. */
+.sapid-segmented-control:where(:not(.sapid-unstyled)) .sapid-radio-group-items{width:fit-content;max-width:100%;padding:3px;border-radius:8px;background:var(--sp-disabled);gap:3px!important;flex-wrap:wrap}
+.sapid-segmented-control:where(:not(.sapid-unstyled)) .sapid-segment{position:relative;margin:0;padding:7px 12px;border:1px solid transparent;border-radius:6px;cursor:pointer;gap:0}
+.sapid-segmented-control:where(:not(.sapid-unstyled)) .sapid-segment input{position:absolute;appearance:none;opacity:0;width:1px;height:1px;overflow:hidden;margin:0}
+.sapid-segmented-control:where(:not(.sapid-unstyled)) .sapid-segment:has(input:checked){background:var(--sp-input);border-color:var(--sp-border)}
+.sapid-segmented-control:where(:not(.sapid-unstyled)) .sapid-segment:has(input:focus-visible){outline:2px solid var(--sp-ring);outline-offset:1px}
+.sapid-segmented-control:where(:not(.sapid-unstyled)) .sapid-segment:has(input:disabled){cursor:not-allowed;color:var(--sp-disabled-text);opacity:.55}
+
+.sapid-radio:where(:not(.sapid-unstyled)):has(input:disabled){opacity:.6}
+
+/* Chips select values; native inputs remain focusable inside their labels. */
+.sapid-chip:where(:not(.sapid-unstyled)){width:fit-content;max-width:100%;box-sizing:border-box}
+
+.sapid-menu:where(:not(.sapid-unstyled)){border:1px solid var(--sp-border);box-shadow:0 6px 24px #0003}
+.sapid-menu-item:where(:not(.sapid-unstyled)){display:flex;align-items:center;gap:8px;text-align:start;cursor:pointer;flex-shrink:0}
+.sapid-menu-item:where(:not(.sapid-unstyled)):hover:enabled,.sapid-menu-item:where(:not(.sapid-unstyled)):has(input:enabled):hover{filter:brightness(.94)}
+.sapid-menu-item:where(:not(.sapid-unstyled)):focus-visible,.sapid-menu-item:where(:not(.sapid-unstyled)):has(input:focus-visible){outline:2px solid var(--sp-ring);outline-offset:-2px}
+.sapid-menu-item:where(:not(.sapid-unstyled)):disabled,.sapid-menu-item:where(:not(.sapid-unstyled)):has(input:disabled){opacity:.55;cursor:not-allowed}
+.sapid-menu-check:where(:not(.sapid-unstyled)) input,.sapid-menu-radio:where(:not(.sapid-unstyled)) input{width:16px;height:16px;margin:0;accent-color:var(--sp-accent)}
+.sapid-menu-submenu-trigger:where(:not(.sapid-unstyled)){justify-content:space-between}
+.sapid-menu-submenu-trigger:where(:not(.sapid-unstyled))::after{content:'›' / '';font-size:18px}
+.sapid-menu[dir=rtl]:where(:not(.sapid-unstyled))>.sapid-menu-submenu-trigger::after{content:'‹' / ''}
+.sapid-menu-radio-group:where(:not(.sapid-unstyled)){display:flex;flex-direction:column;gap:2px}
+.sapid-menu-separator:where(:not(.sapid-unstyled)){height:0;margin:4px 2px;border-top:1px solid var(--sp-border)}
+.sapid-chip:where(:not(.sapid-unstyled)),.sapid-chip-group:where(:not(.sapid-unstyled)) .sapid-checkbox-group-item,.sapid-chip-group:where(:not(.sapid-unstyled)) .sapid-radio{position:relative;display:inline-flex;padding:6px 12px;margin:0;gap:0;border:1px solid var(--sp-border);border-radius:999px;background:var(--sp-input);cursor:pointer}
+.sapid-chip:where(:not(.sapid-unstyled)) input,.sapid-chip-group:where(:not(.sapid-unstyled)) .sapid-checkbox-group-item input,.sapid-chip-group:where(:not(.sapid-unstyled)) .sapid-radio input{position:absolute;appearance:none;opacity:0;width:1px;height:1px;overflow:hidden;margin:0}
+.sapid-chip:where(:not(.sapid-unstyled)):has(input:checked),.sapid-chip-group:where(:not(.sapid-unstyled)) label:has(input:checked){border-color:var(--sp-accent);box-shadow:inset 0 0 0 1px var(--sp-accent)}
+.sapid-chip:where(:not(.sapid-unstyled)):has(input:focus-visible),.sapid-chip-group:where(:not(.sapid-unstyled)) label:has(input:focus-visible){outline:2px solid var(--sp-ring);outline-offset:2px}
+.sapid-chip:where(:not(.sapid-unstyled)):has(input:disabled),.sapid-chip-group:where(:not(.sapid-unstyled)) label:has(input:disabled){opacity:.55;cursor:not-allowed}
+.sapid-chip-group:where(:not(.sapid-unstyled)) .sapid-radio-group-items{flex-wrap:wrap}
+.sapid-chip-group:where(:not(.sapid-unstyled)){flex-wrap:wrap}
+
+.sapid-chip:where(:not(.sapid-unstyled)):has(input[aria-invalid=true]),.sapid-chip-group:where(:not(.sapid-unstyled)) label:has(input[aria-invalid=true]),.sapid-segmented-control:where(:not(.sapid-unstyled)) .sapid-segment:has(input[aria-invalid=true]){border-color:var(--sp-danger)}

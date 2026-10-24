@@ -1,0 +1,15 @@
+async(hostPage)=>{
+ const context=await hostPage.context().browser().newContext({viewport:{width:1440,height:1000}}),reports=[],errors=[];const assert=(value,message)=>{if(!value)throw new Error(message)};
+ try{const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));page.on('console',e=>{if(e.type()==='error')errors.push(e.text())});
+ for(const hue of ['blue','green'])for(const scheme of ['light','dark'])for(const hydrate of [false,true]){
+  const mode=`hidden-${hue}-${scheme}-${hydrate?'hydrate':'csr'}`;await page.goto(`http://127.0.0.1:8794/${hydrate?`visually-hidden-hydrate-${hue}-${scheme}.html`:`visually-hidden.html?theme=${hue}&scheme=${scheme}`}`);await page.waitForFunction(()=>window.ready===true);
+  const detail=page.locator('.hidden-detail');assert(await detail.evaluate(e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);window.savedHidden={element:e,text:e.firstChild};return r.width===0&&r.height===0&&s.position==='absolute'&&s.overflowX==='hidden'&&s.display!=='none'&&!e.hidden&&e.getAttribute('aria-hidden')!=='true'}),`${mode}: zero clipped box remains semantically present`);
+  assert(await page.getByRole('button',{name:'Invisible action name',exact:true}).count()===1,`${mode}: child text names button`);
+  const cdp=await context.newCDPSession(page);let ax=await cdp.send('Accessibility.getFullAXTree');assert(ax.nodes.some(n=>!n.ignored&&n.role?.value==='button'&&n.name?.value==='Save'&&n.description?.value==='Changes are stored in this workspace.'),`${mode}: actual AX description`);
+  assert((await page.locator('.hidden-row').boundingBox()).height===40,`${mode}: neighboring layout unchanged`);
+  await page.getByRole('button',{name:'Invisible action name',exact:true}).focus();await page.keyboard.press('Tab');assert(await page.getByRole('button',{name:'Update hidden detail',exact:true}).evaluate(e=>e===document.activeElement),`${mode}: hidden text has no Tab stop`);
+  await page.getByRole('button',{name:'Update hidden detail',exact:true}).click();await page.waitForFunction(()=>document.querySelector('.hidden-detail').textContent==='New accessible detail.');assert(await detail.evaluate(e=>e===window.savedHidden.element&&e.firstChild===window.savedHidden.text),`${mode}: text node identity`);
+  ax=await cdp.send('Accessibility.getFullAXTree');assert(ax.nodes.some(n=>!n.ignored&&n.role?.value==='button'&&n.name?.value==='Save'&&n.description?.value==='New accessible detail.'),`${mode}: live AX description`);await cdp.detach();
+  await page.setViewportSize({width:390,height:844});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${mode}: mobile overflow`);await page.setViewportSize({width:1440,height:1000});if(hydrate)await page.screenshot({path:`D:/BuildCache/sapid/${mode}.png`,fullPage:true});await page.evaluate(()=>window.demo.unmount_display());assert(await page.locator('#app').evaluate(e=>e.childNodes.length===0),`${mode}: retirement`);reports.push({suite:mode,status:'passed'});
+ }assert(errors.length===0,JSON.stringify(errors));return{reports,errors};}finally{await context.close()}
+}

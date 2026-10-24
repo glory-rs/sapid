@@ -1,0 +1,5031 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-10-24",
+  "mantine_docs_version": "9.7.3",
+  "scope": "官方目录可见组件/工具条目；不同名称按语义归并，基础设施和扩展单列，不宣称上游 API 全兼容。",
+  "sources": [
+    {
+      "id": "mantine-core",
+      "url": "https://mantine.dev/core/package/"
+    },
+    {
+      "id": "shadcn-components",
+      "url": "https://ui.shadcn.com/docs/components"
+    },
+    {
+      "id": "mantine-extensions",
+      "url": "https://mantine.dev/x/extensions/"
+    },
+    {
+      "id": "mantine-dates",
+      "url": "https://mantine.dev/dates/getting-started/"
+    },
+    {
+      "id": "mantine-charts",
+      "url": "https://mantine.dev/charts/getting-started/"
+    },
+    {
+      "id": "mantine-schedule",
+      "url": "https://mantine.dev/schedule/getting-started/"
+    },
+    {
+      "id": "mantine-code",
+      "url": "https://mantine.dev/code-highlight/getting-started/"
+    },
+    {
+      "id": "shadcn-ai",
+      "url": "https://ui.shadcn.com/docs/ai-elements"
+    }
+  ],
+  "excluded": [
+    "社区 Registry/Blocks/演示页面的无限组合",
+    "React hooks/JSX/CLI/Next.js 等技术栈绑定接口",
+    "第三方 React 表单库绑定层（保留表单能力目标）",
+    "主题与 provider 不计为 widget；作为 P0 基础设施跟踪"
+  ],
+  "phases": [
+    {
+      "id": "P0",
+      "title": "现有组件与共享基础",
+      "depends_on": [],
+      "goal": "保留九个组件的已验证基线；按后续组件需求逐步增加公共能力，避免先做一次庞大重写。"
+    },
+    {
+      "id": "P1",
+      "title": "字段与表单基础",
+      "depends_on": [
+        "P0"
+      ],
+      "goal": "先完成 Field 关联，再处理 required/readonly/invalid、分组、校验、提交与重置。"
+    },
+    {
+      "id": "P2",
+      "title": "常用选择与按钮",
+      "depends_on": [
+        "P1"
+      ],
+      "goal": "补齐最常用的布尔、单选、多按钮选择交互；状态与实际焦点分离。"
+    },
+    {
+      "id": "P3",
+      "title": "展示、排版与基础布局",
+      "depends_on": [
+        "P0"
+      ],
+      "goal": "统一主题和组合 API，为后续菜单、导航、数据展示提供稳定外观。"
+    },
+    {
+      "id": "P4",
+      "title": "菜单与选择器",
+      "depends_on": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "goal": "先共享 Collection/Listbox，再实现菜单与 Combobox 家族，复用定位与键盘模型。"
+    },
+    {
+      "id": "P5",
+      "title": "浮层与反馈",
+      "depends_on": [
+        "P0",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "goal": "补齐现有浮层差距，再增加提示、确认、通知、进度与集中管理。"
+    },
+    {
+      "id": "P6",
+      "title": "导航与应用布局",
+      "depends_on": [
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "goal": "覆盖页面导航、侧栏、响应式壳、滚动和可调整布局。"
+    },
+    {
+      "id": "P7",
+      "title": "数值、范围与颜色输入",
+      "depends_on": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "goal": "先可靠的值域/步进/精度，再做拖动、多滑块和颜色二维交互。"
+    },
+    {
+      "id": "P8",
+      "title": "表格与树形数据",
+      "depends_on": [
+        "P3",
+        "P4",
+        "P6"
+      ],
+      "goal": "静态语义表格先行，数据模型、选择排序、虚拟化和树导航分步加入。"
+    },
+    {
+      "id": "P9",
+      "title": "日期与时间",
+      "depends_on": [
+        "P1",
+        "P4",
+        "P7"
+      ],
+      "goal": "独立日期模型和国际化策略；日历网格先于弹出式日期输入。"
+    },
+    {
+      "id": "P10",
+      "title": "文件、媒体、代码与编辑器",
+      "depends_on": [
+        "P1",
+        "P4",
+        "P5",
+        "P6",
+        "P8"
+      ],
+      "goal": "宿主能力显式授权；文件、剪贴板、富文本与高亮保持可选依赖。"
+    },
+    {
+      "id": "P11",
+      "title": "图表",
+      "depends_on": [
+        "P3",
+        "P5",
+        "P7"
+      ],
+      "goal": "可选图表模块，先可访问的数据替代表示和绘图协议，再逐图形扩展。"
+    },
+    {
+      "id": "P12",
+      "title": "日程",
+      "depends_on": [
+        "P8",
+        "P9",
+        "P10"
+      ],
+      "goal": "先事件/时区/重复模型和只读视图，再资源视图与拖动编辑。"
+    },
+    {
+      "id": "P13",
+      "title": "对话及 AI 应用展示",
+      "depends_on": [
+        "P4",
+        "P5",
+        "P6",
+        "P8",
+        "P10"
+      ],
+      "goal": "以传入的数据和动作构造展示组件；不绑定模型服务、网络、工具执行或隐藏推理数据。"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "P0-01",
+      "phase": "P0",
+      "name": "Button",
+      "status": "done",
+      "sources": [
+        "M:Button",
+        "M:UnstyledButton",
+        "S:Button"
+      ],
+      "work": "五档尺寸、左右插槽与独立动态标签、typed disabled颜色和busy/loading、受控静默与Owner存活回调顺序已补齐；四主题Web/SSR接管与原生实际布局/身份和AX busy已验收。",
+      "baseline_at_snapshot": true,
+      "evidence": {
+        "implementation": [
+          "src/button.rs",
+          "src/theme.rs",
+          "docs/button.md"
+        ],
+        "tests": [
+          "tests/button_enhancements.rs (8 passed)",
+          "tests/actions.rs (14 passed)",
+          "tests/toolbar.rs (4 passed)",
+          "examples/web/buttons-acceptance.js",
+          "D:/BuildCache/sapid/buttons-browser.json (8 passed, Chromium 148.0.7778.96)",
+          "examples/native/tests/button_enhancements.rs",
+          "D:/BuildCache/sapid/button-native-enhancements.log"
+        ]
+      }
+    },
+    {
+      "id": "P0-02",
+      "phase": "P0",
+      "name": "TextField",
+      "status": "baseline",
+      "sources": [
+        "M:TextInput",
+        "S:Input"
+      ],
+      "work": "已有受控/本地文本、版本和组合输入；通过 P1 接入完整 Field 语义。",
+      "baseline_at_snapshot": true,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P0-03",
+      "phase": "P0",
+      "name": "Checkbox",
+      "status": "baseline",
+      "sources": [
+        "M:Checkbox",
+        "S:Checkbox"
+      ],
+      "work": "已有布尔状态；P2 补 mixed、分组及表单值。",
+      "baseline_at_snapshot": true,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P0-04",
+      "phase": "P0",
+      "name": "Collapsible",
+      "status": "baseline",
+      "sources": [
+        "M:Collapse",
+        "S:Collapsible"
+      ],
+      "work": "已有展开和内容策略；补独立触发器/内容插槽与可选高度过渡。",
+      "baseline_at_snapshot": true,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P0-05",
+      "phase": "P0",
+      "name": "Accordion",
+      "status": "baseline",
+      "sources": [
+        "M:Accordion",
+        "S:Accordion"
+      ],
+      "work": "已有单/多开和方向键；共享集合升级后增加动态成员与更多组合插槽。",
+      "baseline_at_snapshot": true,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P0-06",
+      "phase": "P0",
+      "name": "Tabs",
+      "status": "baseline",
+      "sources": [
+        "M:Tabs",
+        "S:Tabs"
+      ],
+      "work": "已有自动/手动激活与 roving focus；补动态成员、方向和国际化。",
+      "baseline_at_snapshot": true,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P0-07",
+      "phase": "P0",
+      "name": "Dialog",
+      "status": "baseline",
+      "sources": [
+        "M:Modal",
+        "S:Dialog"
+      ],
+      "work": "已有 Web modal/focus/Escape/outside；仍需原生浮层、滚动锁、组合插槽与跨 App 策略。",
+      "baseline_at_snapshot": true,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P0-08",
+      "phase": "P0",
+      "name": "Drawer",
+      "status": "baseline",
+      "sources": [
+        "M:Drawer",
+        "S:Drawer"
+      ],
+      "work": "已有四侧贴边 Web 浮层；P5 补手势、snap points、移动 viewport 和滚动协调。",
+      "baseline_at_snapshot": true,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P0-09",
+      "phase": "P0",
+      "name": "Popover",
+      "status": "baseline",
+      "sources": [
+        "M:Popover",
+        "M:ComboboxPopover",
+        "S:Popover"
+      ],
+      "work": "已有交互式弹层及底部定位；补完整 placement/collision、锚点失效与可组合触发器。",
+      "baseline_at_snapshot": true,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P0-10",
+      "phase": "P0",
+      "name": "Collection / RovingFocus / Typeahead",
+      "status": "done",
+      "sources": [],
+      "work": "有界存活Owner/key注册、roving禁用/循环/首尾/RTL及有限字符搜索已实现；Radio接入并完成Web/SSR验收，原生RTL已验证、字符搜索驱动明确拒绝，不保留访问历史。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/collection.rs",
+          "docs/collection-implementation.md",
+          "../glory/crates/render/src/typeahead.rs"
+        ],
+        "tests": [
+          "tests/collection.rs",
+          "../glory/crates/render/tests/typeahead.rs",
+          "../glory/crates/blitz/tests/check_modes.rs",
+          "D:/BuildCache/sapid/choices-browser-results.json (10 passed; errors=[])"
+        ]
+      }
+    },
+    {
+      "id": "P0-11",
+      "phase": "P0",
+      "name": "FocusScope / Layer / Portal",
+      "status": "partial",
+      "sources": [
+        "M:FocusTrap",
+        "M:Portal"
+      ],
+      "work": "现有宿主浮层已有范围管理；补通用焦点范围、嵌套模态和非模态关系、原生 top layer，明确 Portal 目标和 Owner 归属。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P0-12",
+      "phase": "P0",
+      "name": "Theme / Direction / Locale / Motion",
+      "status": "partial",
+      "sources": [
+        "S:Direction",
+        "M:Transition"
+      ],
+      "work": "已完成蓝/绿各明暗主题、十阶色板、独立语义色和正文/按钮对比度检查、可选 focus/hover 样式、reduced-motion；主题为挂载配置。方向/本地化、完整 spacing/typography/radius token 系统、宿主时钟和过渡生命周期仍待实现。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/theme.rs",
+          "src/appearance.rs",
+          "styles/sapid.css"
+        ],
+        "tests": [
+          "tests/fields.rs (four_themes_have_distinct_surfaces_and_readable_semantic_text)",
+          "examples/web/field-acceptance.js"
+        ]
+      }
+    },
+    {
+      "id": "P0-13",
+      "phase": "P0",
+      "name": "VisuallyHidden",
+      "status": "done",
+      "sources": [
+        "M:VisuallyHidden"
+      ],
+      "work": "纯文本绝对定位零尺寸与双轴裁剪，不使用hidden/display:none；动态文字及稳定描述关系、四主题真实Web/native布局和AX名称/描述已验收。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/visually_hidden.rs",
+          "docs/visually-hidden.md"
+        ],
+        "tests": [
+          "tests/visually_hidden.rs (4 passed)",
+          "examples/native/tests/visually_hidden.rs (4 themes)",
+          "../glory/crates/blitz/src/accessibility_current_tests.rs",
+          "D:/BuildCache/sapid/hidden-browser.json (8 passed; errors=[])",
+          "D:/BuildCache/sapid/hidden-native.log",
+          "D:/BuildCache/sapid/hidden-ax.log"
+        ]
+      }
+    },
+    {
+      "id": "P0-14",
+      "phase": "P0",
+      "name": "Gallery / Adapter capability matrix",
+      "status": "partial",
+      "sources": [],
+      "work": "已更新文档展示站：导航/搜索、四套主题、交互预览、API 表、响应式布局；基础/组合/浮层页均保留当前页切换主题，跨页保留配色，24 组 CSR/SSR 主题实例已验收。Field 的 Web/SSR/hydration 与原生语义已有证据。完整逐组件适配器矩阵、其他新组件及真实 OS/AT 验收仍需持续补充。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "examples/web/fields.html",
+          "examples/web/showcase.css",
+          "examples/web/showcase.js",
+          "examples/web/src/fields_form.rs",
+          "README.md",
+          "examples/web/src/form.rs",
+          "examples/web/src/composite_form.rs",
+          "examples/web/src/overlay_form.rs",
+          "examples/web/src/bin/ssr.rs"
+        ],
+        "tests": [
+          "examples/web/field-acceptance.js",
+          "D:/BuildCache/sapid/browser-results.json"
+        ]
+      }
+    },
+    {
+      "id": "P1-01",
+      "phase": "P1",
+      "name": "Field / InputWrapper",
+      "status": "done",
+      "sources": [
+        "M:Input",
+        "S:Field"
+      ],
+      "work": "关联 Label/Description/Error；统一 required、readonly、invalid、disabled、命名优先级和稳定 ID；输入控件本身仍保持内在角色。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/field.rs",
+          "src/text_field.rs",
+          "src/checkbox.rs",
+          "../glory/crates/render/src/semantics.rs",
+          "../glory/crates/html/src/semantics.rs",
+          "../glory/crates/web/src/browser/events.rs",
+          "../glory/crates/blitz/src/shell.rs",
+          "../glory/crates/blitz/src/accessibility.rs"
+        ],
+        "tests": [
+          "tests/fields.rs",
+          "../glory/crates/render/tests/fields.rs",
+          "../glory/crates/html/src/patch_tests.rs",
+          "../glory/crates/blitz/src/command_tests.rs (native_field_label_readonly_and_disabled_group_preserve_editor_identity)",
+          "../glory/crates/blitz/src/accessibility_tests.rs (field_states_label_description_error_and_disabled_group_reach_accesskit)",
+          "examples/web/field-acceptance.js (four themes, CSR/SSR, AX, draft adoption)",
+          "D:/BuildCache/sapid/fields-final-check.log",
+          "D:/BuildCache/sapid/browser-results.json"
+        ]
+      }
+    },
+    {
+      "id": "P1-02",
+      "phase": "P1",
+      "name": "Label / FieldDescription / FieldError",
+      "status": "done",
+      "sources": [
+        "S:Label"
+      ],
+      "work": "真实标签激活、控件聚焦、错误描述与多控件分组，区分名称和内容。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/field.rs",
+          "src/text_field.rs",
+          "src/checkbox.rs",
+          "../glory/crates/render/src/semantics.rs",
+          "../glory/crates/html/src/semantics.rs",
+          "../glory/crates/web/src/browser/events.rs",
+          "../glory/crates/blitz/src/shell.rs",
+          "../glory/crates/blitz/src/accessibility.rs"
+        ],
+        "tests": [
+          "tests/fields.rs",
+          "../glory/crates/render/tests/fields.rs",
+          "../glory/crates/html/src/patch_tests.rs",
+          "../glory/crates/blitz/src/command_tests.rs (native_field_label_readonly_and_disabled_group_preserve_editor_identity)",
+          "../glory/crates/blitz/src/accessibility_tests.rs (field_states_label_description_error_and_disabled_group_reach_accesskit)",
+          "examples/web/field-acceptance.js (four themes, CSR/SSR, AX, draft adoption)",
+          "D:/BuildCache/sapid/fields-final-check.log",
+          "D:/BuildCache/sapid/browser-results.json"
+        ]
+      }
+    },
+    {
+      "id": "P1-03",
+      "phase": "P1",
+      "name": "Fieldset / Legend",
+      "status": "done",
+      "sources": [
+        "M:Fieldset"
+      ],
+      "work": "组级禁用和可访问命名，补齐 Glory 的分组控件契约。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/field.rs",
+          "src/text_field.rs",
+          "src/checkbox.rs",
+          "../glory/crates/render/src/semantics.rs",
+          "../glory/crates/html/src/semantics.rs",
+          "../glory/crates/web/src/browser/events.rs",
+          "../glory/crates/blitz/src/shell.rs",
+          "../glory/crates/blitz/src/accessibility.rs"
+        ],
+        "tests": [
+          "tests/fields.rs",
+          "../glory/crates/render/tests/fields.rs",
+          "../glory/crates/html/src/patch_tests.rs",
+          "../glory/crates/blitz/src/command_tests.rs (native_field_label_readonly_and_disabled_group_preserve_editor_identity)",
+          "../glory/crates/blitz/src/accessibility_tests.rs (field_states_label_description_error_and_disabled_group_reach_accesskit)",
+          "examples/web/field-acceptance.js (four themes, CSR/SSR, AX, draft adoption)",
+          "D:/BuildCache/sapid/fields-final-check.log",
+          "D:/BuildCache/sapid/browser-results.json"
+        ]
+      }
+    },
+    {
+      "id": "P1-04",
+      "phase": "P1",
+      "name": "Textarea",
+      "status": "done",
+      "sources": [
+        "M:Textarea",
+        "S:Textarea"
+      ],
+      "work": "独立 Textarea、Field、正整数 rows/min_rows/max_rows 与 typed FieldSizing 自动高度；支持软换行/缩回/上限滚动，保留 caret/IME。Web/SSR 已验收；Blitz 支持固定行，明确拒绝自动高度；其他浏览器需支持 field-sizing:content。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/textarea.rs",
+          "src/text_input.rs",
+          "src/text_field.rs",
+          "../glory/crates/style/src/lib.rs (FieldSizing; HTML/RECORD v4)",
+          "../glory/crates/html/src/styles.rs",
+          "../glory/crates/blitz/src/document.rs (Blitz v5 explicitly rejects FieldSizing)"
+        ],
+        "tests": [
+          "tests/inputs.rs (6 focused tests)",
+          "examples/web/input-acceptance.js (8 themed CSR/SSR mounts + dirty adoption)",
+          "examples/native/src/lib.rs (3 actual engine tests; no OS IME/speech claim)",
+          "../glory/crates/style/tests/sheet.rs",
+          "../glory/crates/html/src/patch_tests.rs",
+          "../glory/crates/html/tests/sheet.rs",
+          "../glory/crates/blitz/tests/style_profile.rs (preflight/direct apply/prefix/query recovery)",
+          "D:/BuildCache/sapid/inputs-check.log",
+          "D:/BuildCache/sapid/inputs-native-widgets.log",
+          "D:/BuildCache/sapid/inputs-native-profile.log",
+          "D:/BuildCache/sapid/browser-results.json",
+          "D:/BuildCache/sapid/inputs-browser.log (Chromium 148.0.7778.96; 30 reports, zero errors across all suites)"
+        ]
+      }
+    },
+    {
+      "id": "P1-05",
+      "phase": "P1",
+      "name": "PasswordInput",
+      "status": "done",
+      "sources": [
+        "M:PasswordInput"
+      ],
+      "work": "独立 PasswordInput、具名显隐动作、受控/本地可见性和 Field 禁用；Purpose 更新保持节点、值版本、UTF-16 选区及组合协议。原生引擎身份/原始值已验收，实际 OS IME/读屏仍待平台验收。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/password_input.rs",
+          "src/text_input.rs",
+          "src/text_field.rs"
+        ],
+        "tests": [
+          "tests/inputs.rs (6 focused tests)",
+          "examples/web/input-acceptance.js (8 themed CSR/SSR mounts + dirty adoption)",
+          "examples/native/src/lib.rs (3 actual engine tests; no OS IME/speech claim)",
+          "../glory/crates/style/tests/sheet.rs",
+          "../glory/crates/html/src/patch_tests.rs",
+          "../glory/crates/html/tests/sheet.rs",
+          "../glory/crates/blitz/tests/style_profile.rs (preflight/direct apply/prefix/query recovery)",
+          "D:/BuildCache/sapid/inputs-check.log",
+          "D:/BuildCache/sapid/inputs-native-widgets.log",
+          "D:/BuildCache/sapid/inputs-native-profile.log",
+          "D:/BuildCache/sapid/browser-results.json",
+          "D:/BuildCache/sapid/inputs-browser.log (Chromium 148.0.7778.96; 30 reports, zero errors across all suites)"
+        ]
+      }
+    },
+    {
+      "id": "P1-06",
+      "phase": "P1",
+      "name": "InputGroup / Addon / InputSection",
+      "status": "done",
+      "sources": [
+        "S:Input Group"
+      ],
+      "work": "InputGroup 前/后插槽、文本 Addon 和可含原生按钮的 InputSection；Field 只关联主输入，保留名称与自然 Tab 顺序；分组禁用复用 Fieldset。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/input_group.rs",
+          "src/password_input.rs"
+        ],
+        "tests": [
+          "tests/inputs.rs (6 focused tests)",
+          "examples/web/input-acceptance.js (8 themed CSR/SSR mounts + dirty adoption)",
+          "examples/native/src/lib.rs (3 actual engine tests; no OS IME/speech claim)",
+          "../glory/crates/style/tests/sheet.rs",
+          "../glory/crates/html/src/patch_tests.rs",
+          "../glory/crates/html/tests/sheet.rs",
+          "../glory/crates/blitz/tests/style_profile.rs (preflight/direct apply/prefix/query recovery)",
+          "D:/BuildCache/sapid/inputs-check.log",
+          "D:/BuildCache/sapid/inputs-native-widgets.log",
+          "D:/BuildCache/sapid/inputs-native-profile.log",
+          "D:/BuildCache/sapid/browser-results.json",
+          "D:/BuildCache/sapid/inputs-browser.log (Chromium 148.0.7778.96; 30 reports, zero errors across all suites)"
+        ]
+      }
+    },
+    {
+      "id": "P1-07",
+      "phase": "P1",
+      "name": "Form / FormState / Validation",
+      "status": "done",
+      "sources": [],
+      "work": "Owner范围FormState与Form，值留在Cage；同步/异步校验、touched/dirty/errors、取消、ABA版本、reset原子观察与submit token均有回归；Web/原生请求不触发默认网络。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/form_state.rs",
+          "src/form.rs",
+          "docs/forms-state.md",
+          "docs/form-components.md",
+          "../glory/crates/core/src/runtime.rs (Cage::try_version)",
+          "../glory/crates/ui/src/app.rs (Scope::batch; queued form defaults)"
+        ],
+        "tests": [
+          "tests/form_state.rs (22 passed)",
+          "tests/forms.rs (9 passed)",
+          "examples/web/form-acceptance.js (10 reports; zero errors)",
+          "D:/BuildCache/sapid/forms-browser.json",
+          "../glory/crates/blitz/src/command_tests.rs::native_form_requests_queue_enter_and_button_defaults_without_resetting_the_editor",
+          "D:/BuildCache/sapid/forms-native-host.log"
+        ]
+      }
+    },
+    {
+      "id": "P1-08",
+      "phase": "P1",
+      "name": "Form submission / serialization",
+      "status": "done",
+      "sources": [],
+      "work": "有限FormControl name/value与真实submit/reset按钮；注册key顺序的有界显式成功控件快照，缺失/disabled/重复名/多值/错误/取消明确；文件值明确拒绝，宿主/应用负责传输，不声明DOM FormData全等。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/form.rs",
+          "src/form_state.rs",
+          "src/field.rs",
+          "../glory/crates/render/src/semantics.rs (FormControl/FormAction)",
+          "../glory/crates/web/src/browser/events.rs",
+          "docs/forms-state.md"
+        ],
+        "tests": [
+          "tests/forms.rs",
+          "tests/form_state.rs",
+          "../glory/crates/render/tests/forms.rs (nested move rollback, retired/reused submitter)",
+          "../glory/crates/html/src/patch_tests.rs (form metadata differential oracle)",
+          "D:/BuildCache/sapid/forms-browser.json (actual requests/reset/dirty adoption)"
+        ]
+      }
+    },
+    {
+      "id": "P2-01",
+      "phase": "P2",
+      "name": "MixedCheckbox / CheckboxGroup",
+      "status": "done",
+      "sources": [],
+      "work": "真实三态indeterminate与有限CheckboxGroup全选/禁用保留；Web脏接管/stream已验证。纯无JS SSR记录三态；Blitz明确拒绝Mixed，保留成功前缀与查询水位。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/mixed_checkbox.rs",
+          "src/checkbox_group.rs",
+          "src/switch.rs",
+          "src/radio.rs",
+          "src/segmented_control.rs",
+          "docs/choices-implementation.md",
+          "../glory/crates/render/src/props.rs (CheckMode)",
+          "../glory/crates/html/src/patch.rs",
+          "../glory/crates/web/src/stream.js"
+        ],
+        "tests": [
+          "tests/choices.rs (8 passed)",
+          "tests/radio.rs (7 passed)",
+          "tests/segmented_control.rs (2 passed)",
+          "examples/web/choice-acceptance.js (10 reports; zero errors)",
+          "D:/BuildCache/sapid/choices-browser-results.json",
+          "../glory/crates/blitz/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)",
+          "../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name"
+        ]
+      }
+    },
+    {
+      "id": "P2-02",
+      "phase": "P2",
+      "name": "Switch",
+      "status": "done",
+      "sources": [
+        "M:Switch",
+        "S:Switch"
+      ],
+      "work": "真实Switch角色/checked、Field、受控拒绝/外部静默、键盘与主题轨道；Web四主题和原生checked/AX Switch身份已验证。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/mixed_checkbox.rs",
+          "src/checkbox_group.rs",
+          "src/switch.rs",
+          "src/radio.rs",
+          "src/segmented_control.rs",
+          "docs/choices-implementation.md",
+          "../glory/crates/render/src/props.rs (CheckMode)",
+          "../glory/crates/html/src/patch.rs",
+          "../glory/crates/web/src/stream.js"
+        ],
+        "tests": [
+          "tests/choices.rs (8 passed)",
+          "tests/radio.rs (7 passed)",
+          "tests/segmented_control.rs (2 passed)",
+          "examples/web/choice-acceptance.js (10 reports; zero errors)",
+          "D:/BuildCache/sapid/choices-browser-results.json",
+          "../glory/crates/blitz/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)",
+          "../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name"
+        ]
+      }
+    },
+    {
+      "id": "P2-03",
+      "phase": "P2",
+      "name": "Radio / RadioGroup",
+      "status": "done",
+      "sources": [
+        "M:Radio",
+        "S:Radio Group"
+      ],
+      "work": "真实Radio/RadioGroup、single Tab、方向/Home/End、禁用与整组受控恢复；native name与successful name须一致；Web/adoption/stream保护脏同组，Blitz明确拒绝Radio。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/mixed_checkbox.rs",
+          "src/checkbox_group.rs",
+          "src/switch.rs",
+          "src/radio.rs",
+          "src/segmented_control.rs",
+          "docs/choices-implementation.md",
+          "../glory/crates/render/src/props.rs (CheckMode)",
+          "../glory/crates/html/src/patch.rs",
+          "../glory/crates/web/src/stream.js"
+        ],
+        "tests": [
+          "tests/choices.rs (8 passed)",
+          "tests/radio.rs (7 passed)",
+          "tests/segmented_control.rs (2 passed)",
+          "examples/web/choice-acceptance.js (10 reports; zero errors)",
+          "D:/BuildCache/sapid/choices-browser-results.json",
+          "../glory/crates/blitz/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)",
+          "../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name"
+        ]
+      }
+    },
+    {
+      "id": "P2-04",
+      "phase": "P2",
+      "name": "Toggle / ToggleGroup",
+      "status": "done",
+      "sources": [
+        "M:Toggle",
+        "S:Toggle",
+        "S:Toggle Group"
+      ],
+      "work": "真实Button pressed、单/多选清空、roving焦点与箭头不改值，12项组件测试、四主题原生及9组浏览器验收通过。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/toggle.rs",
+          "docs/toggles.md",
+          "../glory/crates/render/src/semantics.rs (pressed)",
+          "../glory/crates/html/src/semantics.rs",
+          "../glory/crates/blitz/src/accessibility.rs"
+        ],
+        "tests": [
+          "tests/toggles.rs (12 passed)",
+          "examples/native/tests/toggles.rs",
+          "../glory/crates/render/tests/toggles.rs",
+          "../glory/crates/html/tests/toggles.rs",
+          "../glory/crates/blitz/src/accessibility_tests.rs::toggle_button_state_updates_accesskit_without_replacing_native_button",
+          "D:/BuildCache/sapid/toggles-native.log",
+          "D:/BuildCache/sapid/toggles-browser.json (9 passed; errors=[])"
+        ]
+      }
+    },
+    {
+      "id": "P2-05",
+      "phase": "P2",
+      "name": "SegmentedControl",
+      "status": "done",
+      "sources": [
+        "M:SegmentedControl"
+      ],
+      "work": "SegmentedControl复用真实单选值模型，水平默认/有限items、单Tab与受控拒绝；未冒用Tabs面板语义，原生沿用Radio拒绝。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/mixed_checkbox.rs",
+          "src/checkbox_group.rs",
+          "src/switch.rs",
+          "src/radio.rs",
+          "src/segmented_control.rs",
+          "docs/choices-implementation.md",
+          "../glory/crates/render/src/props.rs (CheckMode)",
+          "../glory/crates/html/src/patch.rs",
+          "../glory/crates/web/src/stream.js"
+        ],
+        "tests": [
+          "tests/choices.rs (8 passed)",
+          "tests/radio.rs (7 passed)",
+          "tests/segmented_control.rs (2 passed)",
+          "examples/web/choice-acceptance.js (10 reports; zero errors)",
+          "D:/BuildCache/sapid/choices-browser-results.json",
+          "../glory/crates/blitz/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)",
+          "../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name"
+        ]
+      }
+    },
+    {
+      "id": "P2-06",
+      "phase": "P2",
+      "name": "Chip / ChipGroup",
+      "status": "done",
+      "sources": [
+        "M:Chip"
+      ],
+      "work": "Chip真实Checkbox、ChipGroup单选Radio/多选Checkbox，接入受控值、Field、禁用与有限集合；Web/SSR验收通过，原生Radio明确拒绝而Checkbox可用。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/chip.rs",
+          "docs/choices-implementation.md"
+        ],
+        "tests": [
+          "tests/chip.rs",
+          "examples/web/choice-acceptance.js",
+          "D:/BuildCache/sapid/choices-browser-results.json"
+        ]
+      }
+    },
+    {
+      "id": "P2-07",
+      "phase": "P2",
+      "name": "ButtonGroup",
+      "status": "done",
+      "sources": [
+        "S:Button Group"
+      ],
+      "work": "自然Tab的ButtonGroup与可选真实Toolbar roving均已实现；禁用/loading跳过、首尾/循环/RTL/垂直焦点导航不激活，Web与原生实际焦点/身份已验收。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/actions.rs",
+          "src/button.rs",
+          "docs/action-components.md"
+        ],
+        "tests": [
+          "tests/actions.rs",
+          "tests/toolbar.rs (4 passed)",
+          "examples/web/display-acceptance.js",
+          "D:/BuildCache/sapid/browser-progress.json",
+          "examples/native/tests/toolbar.rs"
+        ]
+      }
+    },
+    {
+      "id": "P2-08",
+      "phase": "P2",
+      "name": "ActionIcon / CloseButton",
+      "status": "done",
+      "sources": [
+        "M:ActionIcon",
+        "M:CloseButton"
+      ],
+      "work": "ActionIcon与CloseButton复用真实Button激活，强制非空名称、主题尺寸/unstyled与disabled；浏览器AX名称和原生布局已验证。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/actions.rs",
+          "docs/action-components.md"
+        ],
+        "tests": [
+          "tests/actions.rs (14 family tests passed)",
+          "examples/web/display-acceptance.js (16 family reports; zero errors)",
+          "D:/BuildCache/sapid/display-browser.json",
+          "examples/native/tests/display.rs",
+          "D:/BuildCache/sapid/display-native.log"
+        ]
+      }
+    },
+    {
+      "id": "P2-09",
+      "phase": "P2",
+      "name": "Burger",
+      "status": "partial",
+      "sources": [
+        "M:Burger"
+      ],
+      "work": "Burger已有具名展开控制、本地/受控状态、拒绝恢复、controls/expanded和稳定身份，Web/原生已验证；pressed与bar动画仍待补齐。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/actions.rs",
+          "docs/action-components.md"
+        ],
+        "tests": [
+          "tests/actions.rs",
+          "D:/BuildCache/sapid/display-browser.json",
+          "examples/native/tests/display.rs"
+        ]
+      }
+    },
+    {
+      "id": "P3-01",
+      "phase": "P3",
+      "name": "Box / Flex / Stack / Group",
+      "status": "done",
+      "sources": [
+        "M:Box",
+        "M:Flex",
+        "M:Stack",
+        "M:Group"
+      ],
+      "work": "Box/Flex/Stack/布局Group使用真实View，支持gap/对齐/换行与结构unstyled；Rust/SSR、四主题原生geometry和8组布局浏览器验收通过。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/layout.rs",
+          "docs/layout-components.md",
+          "../glory/crates/style/src/lib.rs (FlexWrap)"
+        ],
+        "tests": [
+          "tests/layout.rs (5 passed)",
+          "examples/native/tests/layout.rs (4 themes real geometry)",
+          "D:/BuildCache/sapid/layout-native.log",
+          "../glory/crates/blitz/tests/flex_wrap.rs",
+          "examples/web/layout-acceptance.js",
+          "D:/BuildCache/sapid/layout-display-browser.json (24 combined reports; errors=[])"
+        ]
+      }
+    },
+    {
+      "id": "P3-02",
+      "phase": "P3",
+      "name": "Center / Container / Space",
+      "status": "partial",
+      "sources": [
+        "M:Center",
+        "M:Container",
+        "M:Space"
+      ],
+      "work": "Center/Container/Space已实现双轴居中、居中内框/最大宽度及显式px/percent spacing；四主题SSR/Web/native通过，全局breakpoint token仍待补。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/layout.rs",
+          "docs/layout-components.md",
+          "../glory/crates/style/src/lib.rs (FlexWrap)"
+        ],
+        "tests": [
+          "tests/layout.rs (5 passed)",
+          "examples/native/tests/layout.rs (4 themes real geometry)",
+          "D:/BuildCache/sapid/layout-native.log",
+          "../glory/crates/blitz/tests/flex_wrap.rs",
+          "examples/web/layout-acceptance.js",
+          "D:/BuildCache/sapid/layout-display-browser.json"
+        ]
+      }
+    },
+    {
+      "id": "P3-03",
+      "phase": "P3",
+      "name": "Grid / SimpleGrid",
+      "status": "partial",
+      "sources": [
+        "M:Grid",
+        "M:SimpleGrid"
+      ],
+      "work": "真实typed Grid/SimpleGrid、有限轨道/跨度/offset/自动排布、独立profile/CSS拒绝与SSR/Web/native已验证；响应式断点provider仍待补。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/grid_layout.rs",
+          "docs/grid-layout.md",
+          "../glory/crates/style/src/grid.rs"
+        ],
+        "tests": [
+          "tests/grid_layout.rs",
+          "../glory/crates/style/tests/grid.rs",
+          "../glory/crates/html/tests/grid.rs",
+          "../glory/crates/blitz/tests/grid.rs",
+          "examples/native/tests/grid.rs",
+          "D:/BuildCache/sapid/grid-browser.json (8 passed; errors=[])"
+        ]
+      }
+    },
+    {
+      "id": "P3-04",
+      "phase": "P3",
+      "name": "AspectRatio",
+      "status": "done",
+      "sources": [
+        "M:AspectRatio",
+        "S:Aspect Ratio"
+      ],
+      "work": "有限正比例/Auto与尺寸约束已接入共享typed Style；非法值先拒绝，源恢复和节点identity由Rust、四主题Web/native真实布局验证。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/grid_layout.rs",
+          "docs/grid-layout.md",
+          "../glory/crates/style/src/grid.rs"
+        ],
+        "tests": [
+          "tests/grid_layout.rs",
+          "../glory/crates/style/tests/grid.rs",
+          "../glory/crates/html/tests/grid.rs",
+          "../glory/crates/blitz/tests/grid.rs",
+          "examples/native/tests/grid.rs",
+          "D:/BuildCache/sapid/grid-browser.json (8 passed; errors=[])"
+        ]
+      }
+    },
+    {
+      "id": "P3-05",
+      "phase": "P3",
+      "name": "Text / Title / Typography",
+      "status": "done",
+      "sources": [
+        "M:Text",
+        "M:Title",
+        "M:Typography",
+        "S:Typography"
+      ],
+      "work": "Text/Title/Typography统一变体、主题字号/行高/颜色、语义段落/标题与富内容组合，typed ellipsis在Web真实验收、native显式拒绝；17项联合测试及四主题宿主证据已齐。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/typography.rs",
+          "docs/typography.md"
+        ],
+        "tests": [
+          "tests/typography.rs",
+          "examples/native/tests/typography.rs",
+          "D:/BuildCache/sapid/typography-browser.json (9 passed; errors=[])"
+        ]
+      }
+    },
+    {
+      "id": "P3-06",
+      "phase": "P3",
+      "name": "Anchor",
+      "status": "done",
+      "sources": [
+        "M:Anchor"
+      ],
+      "work": "Anchor使用真正Link.target、名称和受控导航请求，读取已接受语义；NewContext输出_blank/noopener/noreferrer，native创建与patch明确拒绝，Current导航已验收。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/anchor.rs",
+          "docs/anchor.md",
+          "../glory/crates/render/tests/links.rs"
+        ],
+        "tests": [
+          "tests/anchor.rs",
+          "examples/native/tests/typography.rs",
+          "D:/BuildCache/sapid/typography-browser.json",
+          "D:/BuildCache/sapid/links-toggle-native.log"
+        ]
+      }
+    },
+    {
+      "id": "P3-07",
+      "phase": "P3",
+      "name": "List",
+      "status": "done",
+      "sources": [
+        "M:List"
+      ],
+      "work": "有序/无序/嵌套TextList与Item真实ol/ul/li结构，区别于虚拟List；透明Group放置内容规则、原生角色与四主题Web/native已验证。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/document.rs",
+          "docs/document-components.md",
+          "../glory/crates/render/src/document.rs",
+          "../glory/crates/html/src/mapping.rs",
+          "../glory/crates/web/src/stream.js",
+          "../glory/crates/blitz/src/accessibility.rs"
+        ],
+        "tests": [
+          "tests/document.rs (15 passed)",
+          "examples/web/document-acceptance.js (8 themed CSR/hydrate passed; zero errors)",
+          "examples/web/document-stream-acceptance.js (actual Shell/Patch/End passed)",
+          "../glory/crates/ssr/src/stream/document_tests.rs",
+          "examples/native/tests/document.rs (4 themes real engine)",
+          "../glory/crates/blitz/src/accessibility_document_tests.rs",
+          "D:/BuildCache/sapid/display-native.log"
+        ]
+      }
+    },
+    {
+      "id": "P3-08",
+      "phase": "P3",
+      "name": "Blockquote",
+      "status": "done",
+      "sources": [
+        "M:Blockquote"
+      ],
+      "work": "Blockquote含引文/出处插槽，真实blockquote标签与AccessKit角色、主题/unstyled，SSR转义和Web/native布局已验证。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/document.rs",
+          "docs/document-components.md",
+          "../glory/crates/render/src/document.rs",
+          "../glory/crates/html/src/mapping.rs",
+          "../glory/crates/web/src/stream.js",
+          "../glory/crates/blitz/src/accessibility.rs"
+        ],
+        "tests": [
+          "tests/document.rs (15 passed)",
+          "examples/web/document-acceptance.js (8 themed CSR/hydrate passed; zero errors)",
+          "examples/web/document-stream-acceptance.js (actual Shell/Patch/End passed)",
+          "../glory/crates/ssr/src/stream/document_tests.rs",
+          "examples/native/tests/document.rs (4 themes real engine)",
+          "../glory/crates/blitz/src/accessibility_document_tests.rs",
+          "D:/BuildCache/sapid/display-native.log"
+        ]
+      }
+    },
+    {
+      "id": "P3-09",
+      "phase": "P3",
+      "name": "Code / Mark / Highlight",
+      "status": "done",
+      "sources": [
+        "M:Code",
+        "M:Mark",
+        "M:Highlight"
+      ],
+      "work": "Code/Mark真实行内语义；Highlight为有预算的挂载时精确子串切分，保留原文本与跨Mark选择。Code反应更新保持元素/文本身份；不声明动态富文档range重建。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/document.rs",
+          "docs/document-components.md",
+          "../glory/crates/render/src/document.rs",
+          "../glory/crates/html/src/mapping.rs",
+          "../glory/crates/web/src/stream.js",
+          "../glory/crates/blitz/src/accessibility.rs"
+        ],
+        "tests": [
+          "tests/document.rs (15 passed)",
+          "examples/web/document-acceptance.js (8 themed CSR/hydrate passed; zero errors)",
+          "examples/web/document-stream-acceptance.js (actual Shell/Patch/End passed)",
+          "../glory/crates/ssr/src/stream/document_tests.rs",
+          "examples/native/tests/document.rs (4 themes real engine)",
+          "../glory/crates/blitz/src/accessibility_document_tests.rs",
+          "D:/BuildCache/sapid/display-native.log"
+        ]
+      }
+    },
+    {
+      "id": "P3-10",
+      "phase": "P3",
+      "name": "Badge / Pill",
+      "status": "done",
+      "sources": [
+        "M:Badge",
+        "M:Pill",
+        "S:Badge"
+      ],
+      "work": "Badge被动展示与可移除Pill分别建模；关闭动作独立名称，受控拒绝/本地接受、禁用、稳定shell与Owner清理均已验证。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/display.rs",
+          "docs/display-components.md"
+        ],
+        "tests": [
+          "tests/display.rs (12 family tests passed)",
+          "examples/web/display-acceptance.js (16 family reports passed)",
+          "D:/BuildCache/sapid/display-browser.json",
+          "examples/native/tests/display.rs",
+          "D:/BuildCache/sapid/display-native.log"
+        ]
+      }
+    },
+    {
+      "id": "P3-11",
+      "phase": "P3",
+      "name": "Card / Paper",
+      "status": "done",
+      "sources": [
+        "M:Card",
+        "M:Paper",
+        "S:Card"
+      ],
+      "work": "Card/Paper插槽/边框/主题、typed单层outset shadow/None及三级主题token已实现；四主题浏览器实际阴影与原生CPU像素证据通过。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/display.rs",
+          "docs/display-components.md",
+          "docs/portable-shadow-wrap.md",
+          "../glory/crates/style/src/lib.rs (BoxShadow/Shadow; HTML v6/Blitz v7)"
+        ],
+        "tests": [
+          "tests/display.rs",
+          "../glory/crates/style/tests/shadow.rs",
+          "../glory/crates/html/tests/shadow.rs",
+          "../glory/crates/blitz/tests/shadow.rs",
+          "D:/BuildCache/sapid/layout-display-browser.json (includes latest 16 display/action reports and shadow checks)"
+        ]
+      }
+    },
+    {
+      "id": "P3-12",
+      "phase": "P3",
+      "name": "Separator",
+      "status": "done",
+      "sources": [
+        "M:Divider",
+        "S:Separator"
+      ],
+      "work": "横/纵装饰分隔与静态可访问Separator，禁用无效焦点/action/children，HTML aria-orientation与native AX Splitter一致；四主题真实几何通过。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/separator.rs",
+          "src/timeline.rs",
+          "docs/timeline-separator.md"
+        ],
+        "tests": [
+          "tests/separator.rs",
+          "tests/timeline.rs",
+          "examples/native/tests/timeline.rs",
+          "../glory/crates/render/tests/separator.rs",
+          "../glory/crates/html/tests/separator.rs",
+          "D:/BuildCache/sapid/timeline-browser.json (8 passed; errors=[])"
+        ]
+      }
+    },
+    {
+      "id": "P3-13",
+      "phase": "P3",
+      "name": "Avatar / AvatarGroup",
+      "status": "done",
+      "sources": [
+        "M:Avatar",
+        "S:Avatar"
+      ],
+      "work": "真实Image source与有界AvatarGroup、圆/方五档尺寸、叠放/更多人数及失败文本回退已实现；版本化加载与旧结果/Owner退休控制、四主题Web/SSR/native实际几何及身份已验收。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/avatar.rs",
+          "src/image.rs",
+          "docs/avatar-images.md"
+        ],
+        "tests": [
+          "tests/avatar.rs (9 passed)",
+          "examples/native/tests/avatar.rs",
+          "examples/native/tests/image.rs",
+          "D:/BuildCache/sapid/image-avatar-native.log",
+          "examples/web/avatar-acceptance.js",
+          "D:/BuildCache/sapid/avatar-browser.json (8 passed, Chromium 148.0.7778.96)"
+        ]
+      }
+    },
+    {
+      "id": "P3-14",
+      "phase": "P3",
+      "name": "Image / BackgroundImage",
+      "status": "done",
+      "sources": [
+        "M:Image",
+        "M:BackgroundImage"
+      ],
+      "work": "具名/装饰Image、五值ObjectFit、占位尺寸、单次fallback及BackgroundImage内容叠放已实现；Glory版本化Source/ImageStatus与Web decode/native请求代数、旧A/B/A结果/卸载、实际资源和布局已验收。宿主拥有资源加载。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/image.rs",
+          "docs/avatar-images.md",
+          "../glory/docs/image-request-observations.md",
+          "../glory/docs/engine-forks.json"
+        ],
+        "tests": [
+          "tests/image.rs (8 passed)",
+          "tests/avatar.rs (9 passed)",
+          "examples/native/tests/image.rs",
+          "../glory/crates/blitz/tests/image_events.rs",
+          "../glory/crates/blitz/tests/object_fit.rs",
+          "D:/BuildCache/sapid/image-host-native.log",
+          "D:/BuildCache/sapid/image-avatar-native.log",
+          "examples/web/image-acceptance.js",
+          "D:/BuildCache/sapid/image-browser.json (10 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/engine-image-pins-check.log"
+        ]
+      }
+    },
+    {
+      "id": "P3-15",
+      "phase": "P3",
+      "name": "Indicator / ThemeIcon",
+      "status": "planned",
+      "sources": [
+        "M:Indicator",
+        "M:ThemeIcon"
+      ],
+      "work": "状态标记、装饰图标和可访问名称，设计跨宿主矢量/图标协议。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P3-16",
+      "phase": "P3",
+      "name": "Kbd",
+      "status": "done",
+      "sources": [
+        "M:Kbd",
+        "S:Kbd"
+      ],
+      "work": "Kbd真实kbd与Windows/Mac/Linux键名；显示提示不注册快捷键，Web与原生布局/标签已验证。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/document.rs",
+          "docs/document-components.md",
+          "../glory/crates/render/src/document.rs",
+          "../glory/crates/html/src/mapping.rs",
+          "../glory/crates/web/src/stream.js",
+          "../glory/crates/blitz/src/accessibility.rs"
+        ],
+        "tests": [
+          "tests/document.rs (15 passed)",
+          "examples/web/document-acceptance.js (8 themed CSR/hydrate passed; zero errors)",
+          "examples/web/document-stream-acceptance.js (actual Shell/Patch/End passed)",
+          "../glory/crates/ssr/src/stream/document_tests.rs",
+          "examples/native/tests/document.rs (4 themes real engine)",
+          "../glory/crates/blitz/src/accessibility_document_tests.rs",
+          "D:/BuildCache/sapid/display-native.log"
+        ]
+      }
+    },
+    {
+      "id": "P3-17",
+      "phase": "P3",
+      "name": "EmptyState",
+      "status": "done",
+      "sources": [
+        "M:EmptyState",
+        "S:Empty"
+      ],
+      "work": "EmptyState提供标题/描述/图示/body/actions插槽，无自动alert或loading推断，真实heading/button、主题与Web/native已验证。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/display.rs",
+          "docs/display-components.md"
+        ],
+        "tests": [
+          "tests/display.rs (12 family tests passed)",
+          "examples/web/display-acceptance.js (16 family reports passed)",
+          "D:/BuildCache/sapid/display-browser.json",
+          "examples/native/tests/display.rs",
+          "D:/BuildCache/sapid/display-native.log"
+        ]
+      }
+    },
+    {
+      "id": "P3-18",
+      "phase": "P3",
+      "name": "Item / DataList",
+      "status": "done",
+      "sources": [
+        "M:DataList",
+        "S:Item"
+      ],
+      "work": "Item展示title/description/media/body/actions无隐式选择；DataList为真实dl/dt/dd直系结构，分组/主题/动作与选择语义分离。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/document.rs",
+          "docs/document-components.md",
+          "../glory/crates/render/src/document.rs",
+          "../glory/crates/html/src/mapping.rs",
+          "../glory/crates/web/src/stream.js",
+          "../glory/crates/blitz/src/accessibility.rs"
+        ],
+        "tests": [
+          "tests/document.rs (15 passed)",
+          "examples/web/document-acceptance.js (8 themed CSR/hydrate passed; zero errors)",
+          "examples/web/document-stream-acceptance.js (actual Shell/Patch/End passed)",
+          "../glory/crates/ssr/src/stream/document_tests.rs",
+          "examples/native/tests/document.rs (4 themes real engine)",
+          "../glory/crates/blitz/src/accessibility_document_tests.rs",
+          "D:/BuildCache/sapid/display-native.log"
+        ]
+      }
+    },
+    {
+      "id": "P3-19",
+      "phase": "P3",
+      "name": "Timeline",
+      "status": "done",
+      "sources": [
+        "M:Timeline"
+      ],
+      "work": "有界稳定key的真实有序列表、节点标记、进度/当前文本替代与children；四主题SSR/Web/native验证布局及子输入identity。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/separator.rs",
+          "src/timeline.rs",
+          "docs/timeline-separator.md"
+        ],
+        "tests": [
+          "tests/separator.rs",
+          "tests/timeline.rs",
+          "examples/native/tests/timeline.rs",
+          "../glory/crates/render/tests/separator.rs",
+          "../glory/crates/html/tests/separator.rs",
+          "D:/BuildCache/sapid/timeline-browser.json (8 passed; errors=[])"
+        ]
+      }
+    },
+    {
+      "id": "P3-20",
+      "phase": "P3",
+      "name": "NumberFormatter",
+      "status": "done",
+      "sources": [
+        "M:NumberFormatter"
+      ],
+      "work": "NumberFormatter明确有限EnUs/DeDe/ZhCn、Usd/Eur/Cny与decimal/currency/percent，18位小数预算；非有限/溢出拒绝后可恢复，不写数值来源；SSR/四主题Web/native已验证。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/number_formatter.rs",
+          "docs/number-formatter.md"
+        ],
+        "tests": [
+          "tests/number_formatter.rs (11 passed)",
+          "examples/web/display-acceptance.js",
+          "D:/BuildCache/sapid/display-browser.json",
+          "examples/native/tests/display.rs",
+          "D:/BuildCache/sapid/display-native.log"
+        ]
+      }
+    },
+    {
+      "id": "P3-21",
+      "phase": "P3",
+      "name": "Spoiler",
+      "status": "done",
+      "sources": [
+        "M:Spoiler"
+      ],
+      "work": "有界纯文本与真实高度测量后截断，稳定展开/收起按钮及controls关系；内容缩短时焦点交接、受控拒绝/恢复/退休与四主题Web/native几何验证通过。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/spoiler.rs",
+          "docs/spoiler.md"
+        ],
+        "tests": [
+          "tests/spoiler.rs (8 passed)",
+          "examples/native/tests/spoiler.rs (4 themes)",
+          "D:/BuildCache/sapid/spoiler-native.log",
+          "D:/BuildCache/sapid/spoiler-browser.json (8 passed; errors=[])"
+        ]
+      }
+    },
+    {
+      "id": "P4-01",
+      "phase": "P4",
+      "name": "Menu / DropdownMenu",
+      "status": "done",
+      "sources": [
+        "M:Menu",
+        "S:Dropdown Menu"
+      ],
+      "work": "真实Menu/MenuItem/原生勾选单选、共享Collection/RTL/Typeahead、层级键盘与指针延迟/间隙、Tab退出和受控拒绝已实现；浏览器11组及SSR stream通过，原生Layer/输入明确拒绝并验证前缀水位。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/menu.rs",
+          "docs/menu-implementation.md",
+          "../glory/crates/render/src/menu.rs"
+        ],
+        "tests": [
+          "tests/menu.rs (6 passed)",
+          "../glory/crates/render/tests/menu.rs",
+          "../glory/crates/html/tests/menu.rs",
+          "../glory/crates/blitz/tests/menu.rs",
+          "../glory/crates/blitz/src/accessibility_menu_tests.rs",
+          "D:/BuildCache/sapid/menu-browser-results.json (11 passed; errors=[]; isolated menu-next snapshot)"
+        ]
+      }
+    },
+    {
+      "id": "P4-02",
+      "phase": "P4",
+      "name": "ContextMenu",
+      "status": "planned",
+      "sources": [
+        "S:Context Menu"
+      ],
+      "work": "右键/键盘菜单键、坐标锚点，触屏另设明确策略。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P4-03",
+      "phase": "P4",
+      "name": "Menubar",
+      "status": "planned",
+      "sources": [
+        "M:Menubar",
+        "S:Menubar"
+      ],
+      "work": "横向根导航、嵌套菜单及焦点恢复，复用 Menu 模型。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P4-04",
+      "phase": "P4",
+      "name": "NativeSelect",
+      "status": "planned",
+      "sources": [
+        "M:NativeSelect",
+        "S:Native Select"
+      ],
+      "work": "扩展 Glory 原生选项/分组/选中值及 Change 协议，不能用文本 Input 冒充。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P4-05",
+      "phase": "P4",
+      "name": "Select",
+      "status": "planned",
+      "sources": [
+        "M:Select",
+        "S:Select"
+      ],
+      "work": "Listbox/Option、值与活动项、空值、分组、disabled 和受控恢复。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P4-06",
+      "phase": "P4",
+      "name": "Combobox",
+      "status": "planned",
+      "sources": [
+        "M:Combobox",
+        "S:Combobox"
+      ],
+      "work": "editable combobox、active-descendant、搜索与输入法、弹层和输入焦点协调。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P4-07",
+      "phase": "P4",
+      "name": "Autocomplete",
+      "status": "planned",
+      "sources": [
+        "M:Autocomplete"
+      ],
+      "work": "允许自由输入，过滤/高亮/选择与输入值分离。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P4-08",
+      "phase": "P4",
+      "name": "MultiSelect",
+      "status": "planned",
+      "sources": [
+        "M:MultiSelect"
+      ],
+      "work": "多选值、选中标签、全选/移除、键盘和大数据选项预算。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P4-09",
+      "phase": "P4",
+      "name": "TagsInput / PillsInput",
+      "status": "planned",
+      "sources": [
+        "M:TagsInput",
+        "M:PillsInput"
+      ],
+      "work": "自由标签、重复策略、分隔/粘贴/删除，保留组合输入。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P4-10",
+      "phase": "P4",
+      "name": "Command / Spotlight",
+      "status": "planned",
+      "sources": [
+        "S:Command",
+        "X:Spotlight"
+      ],
+      "work": "搜索分组动作、快捷键入口、空态/异步结果及取消；命令动作由应用提供。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P5-01",
+      "phase": "P5",
+      "name": "AlertDialog",
+      "status": "planned",
+      "sources": [
+        "S:Alert Dialog"
+      ],
+      "work": "独立 alertdialog 角色、描述、确认/取消、初始安全焦点及关闭策略；复用 Dialog。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P5-02",
+      "phase": "P5",
+      "name": "Sheet / Drawer gestures",
+      "status": "planned",
+      "sources": [
+        "S:Sheet"
+      ],
+      "work": "复用 Drawer 四侧布局；补 drag-to-dismiss、snap points、滚动冲突和 reduced-motion。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P5-03",
+      "phase": "P5",
+      "name": "Tooltip",
+      "status": "done",
+      "sources": [
+        "M:Tooltip",
+        "S:Tooltip"
+      ],
+      "work": "被动Tooltip角色与稳定描述、hover/focus、可取消Owner延迟及Escape已实现；不抢焦点/禁止交互后代，Web实际AX、dirty接管与classicstream通过，原生Layer和PointerWithin驱动明确拒绝。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/hint.rs",
+          "src/state.rs",
+          "docs/hints-implementation.md"
+        ],
+        "tests": [
+          "tests/hints.rs (7 passed)",
+          "../glory/crates/render/tests/hints.rs",
+          "../glory/crates/ui/tests/pointer_within.rs",
+          "../glory/crates/ssr/src/stream/hints_tests.rs",
+          "examples/web/hints-acceptance.js",
+          "D:/BuildCache/sapid/hints-browser-148.json (10 passed)",
+          "../glory/crates/blitz/tests/hints.rs",
+          "../glory/crates/blitz/src/accessibility_hint_tests.rs"
+        ]
+      }
+    },
+    {
+      "id": "P5-04",
+      "phase": "P5",
+      "name": "HoverCard",
+      "status": "done",
+      "sources": [
+        "M:HoverCard",
+        "S:Hover Card"
+      ],
+      "work": "交互HoverCard复用非模态Preserve焦点Layer、真实PointerWithin与FocusWithin联合区间、可取消开闭延迟、受控拒绝及稳定内容策略已实现；四主题Web/SSR及实际焦点/Tab通过，原生Layer明确拒绝。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/hint.rs",
+          "src/state.rs",
+          "docs/hints-implementation.md"
+        ],
+        "tests": [
+          "tests/hints.rs (7 passed)",
+          "examples/web/hints-acceptance.js",
+          "D:/BuildCache/sapid/hints-browser-148.json (10 passed)",
+          "../glory/crates/blitz/tests/hints.rs"
+        ]
+      }
+    },
+    {
+      "id": "P5-05",
+      "phase": "P5",
+      "name": "Alert",
+      "status": "planned",
+      "sources": [
+        "M:Alert",
+        "S:Alert"
+      ],
+      "work": "status/alert 与严重级别，关闭按钮与可选播报策略。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P5-06",
+      "phase": "P5",
+      "name": "Notification / Toast system",
+      "status": "planned",
+      "sources": [
+        "M:Notification",
+        "X:Notifications system",
+        "S:Toast"
+      ],
+      "work": "有界队列、替换/去重、定时/暂停、动作、live region、Owner 清理；不持有全部历史。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P5-07",
+      "phase": "P5",
+      "name": "Spinner / Loader",
+      "status": "planned",
+      "sources": [
+        "M:Loader",
+        "S:Spinner"
+      ],
+      "work": "加载名称、busy 状态和 reduced-motion；纯装饰时不重复播报。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P5-08",
+      "phase": "P5",
+      "name": "Progress / Ring / SemiCircle",
+      "status": "planned",
+      "sources": [
+        "M:Progress",
+        "M:RingProgress",
+        "M:SemiCircleProgress",
+        "S:Progress"
+      ],
+      "work": "共享 finite range/progressbar 值域与文本替代，线性和圆形视图。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P5-09",
+      "phase": "P5",
+      "name": "NavigationProgress",
+      "status": "planned",
+      "sources": [
+        "X:NavigationProgress"
+      ],
+      "work": "由应用提交开始/进度/结束，复用 Progress；不劫持网络或路由，取消与 Owner 清理一致。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P5-10",
+      "phase": "P5",
+      "name": "Skeleton",
+      "status": "planned",
+      "sources": [
+        "M:Skeleton",
+        "S:Skeleton"
+      ],
+      "work": "占位尺寸、busy 隶属和装饰可访问性。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P5-11",
+      "phase": "P5",
+      "name": "Overlay / LoadingOverlay",
+      "status": "planned",
+      "sources": [
+        "M:Overlay",
+        "M:LoadingOverlay"
+      ],
+      "work": "装饰遮罩与实际阻止交互分别建模，区域 busy，不冒用全局 modal。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P5-12",
+      "phase": "P5",
+      "name": "FloatingDialog",
+      "status": "planned",
+      "sources": [
+        "M:Dialog"
+      ],
+      "work": "Mantine Dialog 对应非模态边角提示；以可访问的具名非模态浮层实现，区别于当前 modal Dialog。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P5-13",
+      "phase": "P5",
+      "name": "ModalsManager",
+      "status": "planned",
+      "sources": [
+        "X:Modals manager"
+      ],
+      "work": "应用内集中打开/更新/关闭与确认队列，复用 Layer，不创建第二套真值。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P5-14",
+      "phase": "P5",
+      "name": "FloatingWindow",
+      "status": "planned",
+      "sources": [
+        "M:FloatingWindow"
+      ],
+      "work": "窗口移动/缩放、标题栏、焦点层级，依赖有限拖动及 Bounds。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P5-15",
+      "phase": "P5",
+      "name": "Tour",
+      "status": "planned",
+      "sources": [
+        "M:Tour"
+      ],
+      "work": "步骤锚点、目标失效/滚动、聚焦和取消，不能扫描未挂载业务列表。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P6-01",
+      "phase": "P6",
+      "name": "Breadcrumbs",
+      "status": "done",
+      "sources": [
+        "M:Breadcrumbs",
+        "S:Breadcrumb"
+      ],
+      "work": "Breadcrumbs导航地标、当前位置、真实链接与有界中间折叠已实现，Rust/四主题CSR水合通过；真实四主题原生布局/Current/identity和隐藏卸载回归已通过。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/navigation.rs",
+          "docs/navigation.md",
+          "../glory/crates/render/tests/current.rs"
+        ],
+        "tests": [
+          "tests/navigation.rs (15 passed)",
+          "examples/native/tests/navigation.rs",
+          "D:/BuildCache/sapid/navigation-browser.json (9 passed; errors=[])",
+          "D:/BuildCache/sapid/navigation-native-fixed.log (2 passed)"
+        ]
+      }
+    },
+    {
+      "id": "P6-02",
+      "phase": "P6",
+      "name": "Pagination",
+      "status": "done",
+      "sources": [
+        "M:Pagination",
+        "S:Pagination"
+      ],
+      "work": "Pagination已支持1-based u64当前页/已知与未知总数、边界/跳页/禁用，恒定35slot预算；Rust与四主题浏览器通过，原生套件待完整重跑。；真实四主题原生布局/Current/identity和隐藏卸载回归已通过。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/navigation.rs",
+          "docs/navigation.md",
+          "../glory/crates/render/tests/current.rs"
+        ],
+        "tests": [
+          "tests/navigation.rs (15 passed)",
+          "examples/native/tests/navigation.rs",
+          "D:/BuildCache/sapid/navigation-browser.json (9 passed; errors=[])",
+          "D:/BuildCache/sapid/navigation-native-fixed.log (2 passed)"
+        ]
+      }
+    },
+    {
+      "id": "P6-03",
+      "phase": "P6",
+      "name": "NavLink / NavigationMenu",
+      "status": "partial",
+      "sources": [
+        "M:NavLink",
+        "S:Navigation Menu"
+      ],
+      "work": "NavLink真实链接与独立展开按钮、稳定panel/Owner政策、Current::Page已实现；浏览器9组及原生2项通过，隐藏卸载引擎修复已固定真实fork提交。NavigationMenu尚待实现。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/navigation.rs",
+          "docs/navigation.md",
+          "../glory/crates/render/tests/current.rs"
+        ],
+        "tests": [
+          "tests/navigation.rs (15 passed)",
+          "examples/native/tests/navigation.rs",
+          "D:/BuildCache/sapid/navigation-browser.json (9 passed; errors=[])",
+          "D:/BuildCache/sapid/navigation-native-fixed.log (2 passed)"
+        ]
+      }
+    },
+    {
+      "id": "P6-04",
+      "phase": "P6",
+      "name": "Sidebar",
+      "status": "done",
+      "sources": [
+        "S:Sidebar"
+      ],
+      "work": "折叠Sidebar、嵌套导航、复用Modal Layer的移动Drawer及同一Owner在桌面/移动容器间移动已实现；应用选择路由/持久化，四主题浏览器焦点/受控拒绝与原生桌面布局/Layer拒绝已验收。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/app_shell.rs",
+          "docs/sidebar-app-shell.md"
+        ],
+        "tests": [
+          "tests/app_shell.rs (10 passed)",
+          "examples/native/tests/app_shell.rs (2 passed, four themes)",
+          "examples/web/shell-acceptance.js",
+          "D:/BuildCache/sapid/shell-browser.json (9 passed, Chromium 148.0.7778.96)"
+        ]
+      }
+    },
+    {
+      "id": "P6-05",
+      "phase": "P6",
+      "name": "AppShell",
+      "status": "done",
+      "sources": [
+        "M:AppShell"
+      ],
+      "work": "真实Banner/ContentInfo/Main与侧栏布局、局部ShellLayout尺寸/断点context、Resize响应式及skip link实际聚焦已实现；不绑定路由，同一导航Owner/控件身份跨布局保持。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/app_shell.rs",
+          "docs/sidebar-app-shell.md"
+        ],
+        "tests": [
+          "tests/app_shell.rs (10 passed)",
+          "examples/native/tests/app_shell.rs (2 passed, four themes)",
+          "examples/web/shell-acceptance.js",
+          "D:/BuildCache/sapid/shell-browser.json (9 passed, Chromium 148.0.7778.96)"
+        ]
+      }
+    },
+    {
+      "id": "P6-06",
+      "phase": "P6",
+      "name": "Stepper",
+      "status": "done",
+      "sources": [
+        "M:Stepper"
+      ],
+      "work": "Stepper已实现Current::Step/list/状态说明、可选跳步、错误/完成、受控拒绝、KeepMounted/Unmount与实际焦点交接；FormState同步/可取消异步校验屏障显式集成，四主题CSR/水合及原生证据已通过。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [
+          "src/stepper.rs",
+          "docs/stepper.md",
+          "examples/web/src/stepper_form.rs"
+        ],
+        "tests": [
+          "tests/stepper.rs (13 passed)",
+          "examples/native/tests/stepper.rs (2 passed; four themes/real focus/Unmount)",
+          "examples/web/stepper-acceptance.js",
+          "D:/BuildCache/sapid/stepper-browser.json (Chrome 155.0.8059.84; 9 passed; errors=[])"
+        ]
+      }
+    },
+    {
+      "id": "P6-07",
+      "phase": "P6",
+      "name": "ScrollArea / Scroller",
+      "status": "partial",
+      "sources": [
+        "M:ScrollArea",
+        "M:Scroller",
+        "S:Scroll Area"
+      ],
+      "work": "Glory 有滚动查询/动作；补统一视口/滚动条/可见性/键盘与嵌套滚动。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P6-08",
+      "phase": "P6",
+      "name": "Resizable / Splitter",
+      "status": "planned",
+      "sources": [
+        "M:Splitter",
+        "S:Resizable"
+      ],
+      "work": "可聚焦 separator、键盘调整、指针捕获、最小/最大和布局守恒。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P6-09",
+      "phase": "P6",
+      "name": "Affix",
+      "status": "planned",
+      "sources": [
+        "M:Affix"
+      ],
+      "work": "视口/容器锚定、响应式偏移，补 typed fixed/sticky 的实际宿主保证。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P6-10",
+      "phase": "P6",
+      "name": "Toolbar / ActionBar",
+      "status": "planned",
+      "sources": [
+        "M:Toolbar",
+        "M:ActionBar"
+      ],
+      "work": "工具栏 roving focus、分组动作和选择态操作条。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P6-11",
+      "phase": "P6",
+      "name": "TableOfContents",
+      "status": "planned",
+      "sources": [
+        "M:TableOfContents"
+      ],
+      "work": "标题注册、当前节、滚动与嵌套结构，索引仅持有存活标题。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P6-12",
+      "phase": "P6",
+      "name": "OverflowList",
+      "status": "planned",
+      "sources": [
+        "M:OverflowList"
+      ],
+      "work": "测量容纳项、溢出入口和焦点转移，避免全业务数据预排版。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P6-13",
+      "phase": "P6",
+      "name": "FloatingIndicator",
+      "status": "planned",
+      "sources": [
+        "M:FloatingIndicator"
+      ],
+      "work": "跟随活动项的测量/动画与方向变化，不改变语义焦点。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P6-14",
+      "phase": "P6",
+      "name": "Marquee / RollingNumber",
+      "status": "planned",
+      "sources": [
+        "M:Marquee",
+        "M:RollingNumber"
+      ],
+      "work": "运动展示、停止/暂停、稳定文本替代和 reduced-motion。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P7-01",
+      "phase": "P7",
+      "name": "NumberInput",
+      "status": "planned",
+      "sources": [
+        "M:NumberInput"
+      ],
+      "work": "spinbutton 语义、decimal 模型/步进/范围、空值/中间输入态、locale，不能只依赖 Purpose::Number。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P7-02",
+      "phase": "P7",
+      "name": "Slider",
+      "status": "planned",
+      "sources": [
+        "M:Slider",
+        "S:Slider"
+      ],
+      "work": "range/slider 角色、值域、方向键/Page/Home/End、pointer capture 和 Field。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P7-03",
+      "phase": "P7",
+      "name": "RangeSlider",
+      "status": "planned",
+      "sources": [
+        "M:RangeSlider"
+      ],
+      "work": "多个具名滑块、顺序/最小间距、焦点与交换策略。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P7-04",
+      "phase": "P7",
+      "name": "AngleSlider",
+      "status": "planned",
+      "sources": [
+        "M:AngleSlider"
+      ],
+      "work": "角度环绕、二维指针到数值、可访问的键盘等价操作。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P7-05",
+      "phase": "P7",
+      "name": "Rating",
+      "status": "planned",
+      "sources": [
+        "M:Rating"
+      ],
+      "work": "离散/半星值、单选语义与只读展示。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P7-06",
+      "phase": "P7",
+      "name": "ColorSwatch",
+      "status": "planned",
+      "sources": [
+        "M:ColorSwatch"
+      ],
+      "work": "颜色文本替代、透明背景和可选选择状态。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P7-07",
+      "phase": "P7",
+      "name": "HueSlider / AlphaSlider",
+      "status": "planned",
+      "sources": [
+        "M:HueSlider",
+        "M:AlphaSlider"
+      ],
+      "work": "共享 Slider，颜色域和 alpha 保持精度。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P7-08",
+      "phase": "P7",
+      "name": "ColorPicker / ColorInput",
+      "status": "planned",
+      "sources": [
+        "M:ColorPicker",
+        "M:ColorInput"
+      ],
+      "work": "二维饱和/亮度、色彩空间转换、输入解析和键盘替代，复用浮层。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P7-09",
+      "phase": "P7",
+      "name": "PinInput / InputOTP",
+      "status": "planned",
+      "sources": [
+        "M:PinInput",
+        "S:Input OTP"
+      ],
+      "work": "分段显示、完整粘贴/退格、单次输入模型、自动填充与 IME；不把验证码写日志。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P7-10",
+      "phase": "P7",
+      "name": "MaskInput",
+      "status": "planned",
+      "sources": [
+        "M:MaskInput"
+      ],
+      "work": "显示与原始值映射、选择/粘贴/删除/组合输入，不在每个按键后粗暴替换文本。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P7-11",
+      "phase": "P7",
+      "name": "JsonInput",
+      "status": "planned",
+      "sources": [
+        "M:JsonInput"
+      ],
+      "work": "文本草稿、解析错误、格式化与预算；解析器可选，不进入默认组件依赖。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P8-01",
+      "phase": "P8",
+      "name": "Table",
+      "status": "partial",
+      "sources": [
+        "M:Table",
+        "S:Table"
+      ],
+      "work": "Glory 已有 table/row/cell 角色；补表头关联、caption、列/行和 Sapid 组合 API。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P8-02",
+      "phase": "P8",
+      "name": "DataTable",
+      "status": "planned",
+      "sources": [
+        "S:Data Table"
+      ],
+      "work": "排序/筛选/选择/列显隐/分页，服务端和本地模型分离，再接 Glory 窗口列表。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P8-03",
+      "phase": "P8",
+      "name": "Tree",
+      "status": "planned",
+      "sources": [
+        "M:Tree",
+        "A:File Tree"
+      ],
+      "work": "tree/treeitem、层级/展开/选择、方向键与懒加载；FileTree 作为数据适配器。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P8-04",
+      "phase": "P8",
+      "name": "TreeSelect",
+      "status": "planned",
+      "sources": [
+        "M:TreeSelect"
+      ],
+      "work": "复用 Tree 和 Combobox，路径值与多选/半选策略。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P8-05",
+      "phase": "P8",
+      "name": "Cascader",
+      "status": "planned",
+      "sources": [
+        "M:Cascader"
+      ],
+      "work": "分列路径选择、懒加载、返回/展开导航。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P9-01",
+      "phase": "P9",
+      "name": "Date model / DatesProvider",
+      "status": "planned",
+      "sources": [],
+      "work": "选择 Rust 日期类型；分开 civil date/local time/instant/timezone，显式 locale/week-start 和解析策略。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P9-02",
+      "phase": "P9",
+      "name": "Calendar / MiniCalendar",
+      "status": "planned",
+      "sources": [
+        "D:Calendar",
+        "D:MiniCalendar",
+        "S:Calendar"
+      ],
+      "work": "日历网格、月/年跳转、禁用日、焦点日期与选中值，日历范围算法独立测试。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P9-03",
+      "phase": "P9",
+      "name": "DatePicker / DatePickerInput",
+      "status": "planned",
+      "sources": [
+        "D:DatePicker",
+        "D:DatePickerInput",
+        "S:Date Picker"
+      ],
+      "work": "单日/多日/范围、弹层、Field 和键盘输入，复用 Calendar。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P9-04",
+      "phase": "P9",
+      "name": "DateInput",
+      "status": "planned",
+      "sources": [
+        "D:DateInput"
+      ],
+      "work": "允许中间文本状态、可自定义解析、非法/越界值诊断。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P9-05",
+      "phase": "P9",
+      "name": "MonthPicker / MonthPickerInput",
+      "status": "planned",
+      "sources": [
+        "D:MonthPicker",
+        "D:MonthPickerInput"
+      ],
+      "work": "按月选择及范围，网格键盘导航。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P9-06",
+      "phase": "P9",
+      "name": "YearPicker / YearPickerInput",
+      "status": "planned",
+      "sources": [
+        "D:YearPicker",
+        "D:YearPickerInput"
+      ],
+      "work": "年份/区间、十年视图和边界。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P9-07",
+      "phase": "P9",
+      "name": "TimeInput / TimeValue",
+      "status": "planned",
+      "sources": [
+        "D:TimeInput",
+        "D:TimeValue"
+      ],
+      "work": "小时/分/秒、12/24h、空值和本地化展示。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P9-08",
+      "phase": "P9",
+      "name": "TimePicker / TimeGrid",
+      "status": "planned",
+      "sources": [
+        "D:TimePicker",
+        "D:TimeGrid"
+      ],
+      "work": "分段时间输入与可选时间网格、步长/禁用值。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P9-09",
+      "phase": "P9",
+      "name": "DateTimePicker / InlineDateTimePicker",
+      "status": "planned",
+      "sources": [
+        "D:DateTimePicker",
+        "D:InlineDateTimePicker"
+      ],
+      "work": "日期时间组合和时区/夏令时歧义的显式策略，不默默变成 UTC。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P10-01",
+      "phase": "P10",
+      "name": "FileInput / FileButton",
+      "status": "planned",
+      "sources": [
+        "M:FileInput",
+        "M:FileButton"
+      ],
+      "work": "类型化文件引用、选择取消/多选/过滤；宿主返回非 ambient 路径句柄。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P10-02",
+      "phase": "P10",
+      "name": "Dropzone / Attachment",
+      "status": "planned",
+      "sources": [
+        "X:Dropzone",
+        "S:Attachment"
+      ],
+      "work": "文件拖入、容量/类型/数量预算、预览/取消与错误；上传网络由应用提供。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P10-03",
+      "phase": "P10",
+      "name": "CopyButton",
+      "status": "planned",
+      "sources": [
+        "M:CopyButton"
+      ],
+      "work": "显式剪贴板 action、权限/拒绝、成功短暂反馈和计时取消。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P10-04",
+      "phase": "P10",
+      "name": "Carousel",
+      "status": "planned",
+      "sources": [
+        "X:Carousel",
+        "S:Carousel"
+      ],
+      "work": "页/slide 状态、按钮/键盘/手势、自动播放暂停和窗口化。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P10-05",
+      "phase": "P10",
+      "name": "Lightbox",
+      "status": "planned",
+      "sources": [
+        "X:Lightbox"
+      ],
+      "work": "图片预览、切换/缩放、替代文本和资源预算，复用 modal 层。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P10-06",
+      "phase": "P10",
+      "name": "CodeBlock / CodeHighlight",
+      "status": "planned",
+      "sources": [
+        "H:CodeHighlight",
+        "S:Code Block"
+      ],
+      "work": "可选语言 tokenizer、行号/复制/选区/大文件预算；HTML 和 native 使用同一文本模型。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P10-07",
+      "phase": "P10",
+      "name": "JsonViewer",
+      "status": "planned",
+      "sources": [
+        "H:JsonViewer"
+      ],
+      "work": "可折叠结构、搜索、复制和深度/节点预算，复用 Tree。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P10-08",
+      "phase": "P10",
+      "name": "RichTextEditor",
+      "status": "planned",
+      "sources": [
+        "X:Rich text editor"
+      ],
+      "work": "Glory 需 rich editing/document/selection/IME/undo 协议；单独架构和安全内容模型，不能拿 Textarea 冒充。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P11-01",
+      "phase": "P11",
+      "name": "Chart / ChartTheme / Legend / Tooltip",
+      "status": "planned",
+      "sources": [
+        "S:Chart"
+      ],
+      "work": "设计有限可选绘图协议、尺度/轴/可访问表格、交互与导出；不要求 Sapid 用户安装 JS 图表库。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P11-02",
+      "phase": "P11",
+      "name": "AreaChart / LineChart / BarChart / CompositeChart",
+      "status": "planned",
+      "sources": [
+        "C:AreaChart",
+        "C:LineChart",
+        "C:BarChart",
+        "C:CompositeChart"
+      ],
+      "work": "先基础 Cartesian 图，覆盖空值、堆叠、刻度、刷选和数据预算。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P11-03",
+      "phase": "P11",
+      "name": "PieChart / DonutChart / RadialBarChart",
+      "status": "planned",
+      "sources": [
+        "C:PieChart",
+        "C:DonutChart",
+        "C:RadialBarChart"
+      ],
+      "work": "角度/占比/零值和键盘数据访问。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P11-04",
+      "phase": "P11",
+      "name": "ScatterChart / BubbleChart / CandlestickChart",
+      "status": "planned",
+      "sources": [
+        "C:ScatterChart",
+        "C:BubbleChart",
+        "C:CandlestickChart"
+      ],
+      "work": "二维/尺寸尺度、金融 OHLC、抽样和逐点访问预算。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P11-05",
+      "phase": "P11",
+      "name": "RadarChart / FunnelChart / Sparkline",
+      "status": "planned",
+      "sources": [
+        "C:RadarChart",
+        "C:FunnelChart",
+        "C:Sparkline"
+      ],
+      "work": "各自几何和文本替代，小图也保留数值说明。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P11-06",
+      "phase": "P11",
+      "name": "Heatmap / MatrixChart / WaffleChart",
+      "status": "planned",
+      "sources": [
+        "C:Heatmap",
+        "C:MatrixChart",
+        "C:WaffleChart"
+      ],
+      "work": "离散矩阵与颜色图例，颜色之外仍可辨识。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P11-07",
+      "phase": "P11",
+      "name": "BarsList / BulletChart / GaugeChart",
+      "status": "planned",
+      "sources": [
+        "C:BarsList",
+        "C:BulletChart",
+        "C:GaugeChart"
+      ],
+      "work": "目标值、区间、刻度与进度范围语义。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P11-08",
+      "phase": "P11",
+      "name": "Treemap / SunburstChart / SankeyChart",
+      "status": "planned",
+      "sources": [
+        "C:Treemap",
+        "C:SunburstChart",
+        "C:SankeyChart"
+      ],
+      "work": "层级/流图布局、稳定 key、导航和节点/边预算。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P12-01",
+      "phase": "P12",
+      "name": "Schedule / Event model / Recurrence",
+      "status": "planned",
+      "sources": [
+        "T:Schedule",
+        "T:Recurring events",
+        "T:Events data"
+      ],
+      "work": "事件区间、时区、重复/例外、冲突和请求窗口，不预展开无限重复。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P12-02",
+      "phase": "P12",
+      "name": "DayView / WeekView",
+      "status": "planned",
+      "sources": [
+        "T:DayView",
+        "T:WeekView"
+      ],
+      "work": "时间轴/重叠布局与键盘时段导航。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P12-03",
+      "phase": "P12",
+      "name": "MonthView / YearView / MobileMonthView",
+      "status": "planned",
+      "sources": [
+        "T:MonthView",
+        "T:YearView",
+        "T:MobileMonthView"
+      ],
+      "work": "日期汇总、溢出、窄屏呈现与可访问选择。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P12-04",
+      "phase": "P12",
+      "name": "AgendaView",
+      "status": "planned",
+      "sources": [
+        "T:AgendaView"
+      ],
+      "work": "按日/区间的只读事件列表及窗口数据。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P12-05",
+      "phase": "P12",
+      "name": "Resource schedule views",
+      "status": "planned",
+      "sources": [
+        "T:ResourcesDayView",
+        "T:ResourcesWeekView",
+        "T:ResourcesMonthView",
+        "T:ResourcesSchedule"
+      ],
+      "work": "资源列/行、二维窗口、事件定位、拖动编辑及权限校验由应用决定。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P13-01",
+      "phase": "P13",
+      "name": "Message / Bubble / Marker",
+      "status": "planned",
+      "sources": [
+        "S:Message",
+        "S:Bubble",
+        "S:Marker",
+        "A:Message"
+      ],
+      "work": "消息内容、作者/时间/状态、分组、引用标记；只显示调用方提供的数据。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P13-02",
+      "phase": "P13",
+      "name": "MessageScroller / Chat",
+      "status": "planned",
+      "sources": [
+        "S:Message Scroller",
+        "A:Chat"
+      ],
+      "work": "消息窗口化、底部跟随/阅读锚点、未读提示、prepend 和内容高度变化。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P13-03",
+      "phase": "P13",
+      "name": "PromptInput",
+      "status": "planned",
+      "sources": [
+        "A:Prompt Input"
+      ],
+      "work": "多行输入、附件/发送/取消/建议与 IME，复用表单和文件协议。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P13-04",
+      "phase": "P13",
+      "name": "Questionnaire",
+      "status": "planned",
+      "sources": [
+        "S:Questionnaire"
+      ],
+      "work": "从 typed schema 组合表单、步骤和答复校验；不绑定 React 表单库。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P13-05",
+      "phase": "P13",
+      "name": "ModelSelector",
+      "status": "planned",
+      "sources": [
+        "A:Model Selector"
+      ],
+      "work": "分组模型数据、搜索和选择；不内置过时的服务商/价格清单。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P13-06",
+      "phase": "P13",
+      "name": "Suggestion",
+      "status": "planned",
+      "sources": [
+        "A:Suggestion"
+      ],
+      "work": "建议动作列表、键盘选择和来源传入。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P13-07",
+      "phase": "P13",
+      "name": "Confirmation / Checkpoint",
+      "status": "planned",
+      "sources": [
+        "A:Confirmation",
+        "A:Checkpoint"
+      ],
+      "work": "确认状态与检查点展示，实际授权/回退动作由应用执行。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P13-08",
+      "phase": "P13",
+      "name": "Plan / Task / Queue",
+      "status": "planned",
+      "sources": [
+        "A:Plan",
+        "A:Task",
+        "A:Queue"
+      ],
+      "work": "进度、任务状态与队列展示，可操作项使用应用回调。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P13-09",
+      "phase": "P13",
+      "name": "Reasoning / ChainOfThought",
+      "status": "planned",
+      "sources": [
+        "A:Reasoning",
+        "A:Chain of Thought"
+      ],
+      "work": "折叠展示应用已提供、允许公开的说明或摘要，不生成或索取隐藏内部推理。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P13-10",
+      "phase": "P13",
+      "name": "Context / Sources / InlineCitation",
+      "status": "planned",
+      "sources": [
+        "A:Context",
+        "A:Sources",
+        "A:Inline Citation"
+      ],
+      "work": "上下文用量、来源列表和文内引用，链接/预览与可信度由数据模型明确。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P13-11",
+      "phase": "P13",
+      "name": "Trace / StackTrace / Subagent / Tool",
+      "status": "planned",
+      "sources": [
+        "S:Trace",
+        "A:Stack Trace",
+        "A:Subagent",
+        "A:Tool"
+      ],
+      "work": "调用记录、层级状态、输入输出和耗时展示；截断/脱敏/预算，绝不隐式执行工具。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    },
+    {
+      "id": "P13-12",
+      "phase": "P13",
+      "name": "Terminal / TestResults",
+      "status": "planned",
+      "sources": [
+        "A:Terminal",
+        "A:Test Results"
+      ],
+      "work": "只读输出、测试状态与大日志窗口化；可选 ANSI 解析不赋予命令执行能力。",
+      "baseline_at_snapshot": false,
+      "evidence": {
+        "implementation": [],
+        "tests": []
+      }
+    }
+  ],
+  "catalogue": [
+    {
+      "id": "M:AppShell",
+      "source": "mantine-core",
+      "name": "AppShell",
+      "url": "https://mantine.dev/core/app-shell/",
+      "task": "P6-05"
+    },
+    {
+      "id": "M:AspectRatio",
+      "source": "mantine-core",
+      "name": "AspectRatio",
+      "url": "https://mantine.dev/core/aspect-ratio/",
+      "task": "P3-04"
+    },
+    {
+      "id": "M:Center",
+      "source": "mantine-core",
+      "name": "Center",
+      "url": "https://mantine.dev/core/center/",
+      "task": "P3-02"
+    },
+    {
+      "id": "M:Container",
+      "source": "mantine-core",
+      "name": "Container",
+      "url": "https://mantine.dev/core/container/",
+      "task": "P3-02"
+    },
+    {
+      "id": "M:Flex",
+      "source": "mantine-core",
+      "name": "Flex",
+      "url": "https://mantine.dev/core/flex/",
+      "task": "P3-01"
+    },
+    {
+      "id": "M:Grid",
+      "source": "mantine-core",
+      "name": "Grid",
+      "url": "https://mantine.dev/core/grid/",
+      "task": "P3-03"
+    },
+    {
+      "id": "M:Group",
+      "source": "mantine-core",
+      "name": "Group",
+      "url": "https://mantine.dev/core/group/",
+      "task": "P3-01"
+    },
+    {
+      "id": "M:SimpleGrid",
+      "source": "mantine-core",
+      "name": "SimpleGrid",
+      "url": "https://mantine.dev/core/simple-grid/",
+      "task": "P3-03"
+    },
+    {
+      "id": "M:Space",
+      "source": "mantine-core",
+      "name": "Space",
+      "url": "https://mantine.dev/core/space/",
+      "task": "P3-02"
+    },
+    {
+      "id": "M:Splitter",
+      "source": "mantine-core",
+      "name": "Splitter",
+      "url": "https://mantine.dev/core/splitter/",
+      "task": "P6-08"
+    },
+    {
+      "id": "M:Stack",
+      "source": "mantine-core",
+      "name": "Stack",
+      "url": "https://mantine.dev/core/stack/",
+      "task": "P3-01"
+    },
+    {
+      "id": "M:AlphaSlider",
+      "source": "mantine-core",
+      "name": "AlphaSlider",
+      "url": "https://mantine.dev/core/alpha-slider/",
+      "task": "P7-07"
+    },
+    {
+      "id": "M:AngleSlider",
+      "source": "mantine-core",
+      "name": "AngleSlider",
+      "url": "https://mantine.dev/core/angle-slider/",
+      "task": "P7-04"
+    },
+    {
+      "id": "M:Checkbox",
+      "source": "mantine-core",
+      "name": "Checkbox",
+      "url": "https://mantine.dev/core/checkbox/",
+      "task": "P0-03"
+    },
+    {
+      "id": "M:Chip",
+      "source": "mantine-core",
+      "name": "Chip",
+      "url": "https://mantine.dev/core/chip/",
+      "task": "P2-06"
+    },
+    {
+      "id": "M:ColorInput",
+      "source": "mantine-core",
+      "name": "ColorInput",
+      "url": "https://mantine.dev/core/color-input/",
+      "task": "P7-08"
+    },
+    {
+      "id": "M:ColorPicker",
+      "source": "mantine-core",
+      "name": "ColorPicker",
+      "url": "https://mantine.dev/core/color-picker/",
+      "task": "P7-08"
+    },
+    {
+      "id": "M:Fieldset",
+      "source": "mantine-core",
+      "name": "Fieldset",
+      "url": "https://mantine.dev/core/fieldset/",
+      "task": "P1-03"
+    },
+    {
+      "id": "M:FileInput",
+      "source": "mantine-core",
+      "name": "FileInput",
+      "url": "https://mantine.dev/core/file-input/",
+      "task": "P10-01"
+    },
+    {
+      "id": "M:HueSlider",
+      "source": "mantine-core",
+      "name": "HueSlider",
+      "url": "https://mantine.dev/core/hue-slider/",
+      "task": "P7-07"
+    },
+    {
+      "id": "M:Input",
+      "source": "mantine-core",
+      "name": "Input",
+      "url": "https://mantine.dev/core/input/",
+      "task": "P1-01"
+    },
+    {
+      "id": "M:JsonInput",
+      "source": "mantine-core",
+      "name": "JsonInput",
+      "url": "https://mantine.dev/core/json-input/",
+      "task": "P7-11"
+    },
+    {
+      "id": "M:MaskInput",
+      "source": "mantine-core",
+      "name": "MaskInput",
+      "url": "https://mantine.dev/core/mask-input/",
+      "task": "P7-10"
+    },
+    {
+      "id": "M:NativeSelect",
+      "source": "mantine-core",
+      "name": "NativeSelect",
+      "url": "https://mantine.dev/core/native-select/",
+      "task": "P4-04"
+    },
+    {
+      "id": "M:NumberInput",
+      "source": "mantine-core",
+      "name": "NumberInput",
+      "url": "https://mantine.dev/core/number-input/",
+      "task": "P7-01"
+    },
+    {
+      "id": "M:PasswordInput",
+      "source": "mantine-core",
+      "name": "PasswordInput",
+      "url": "https://mantine.dev/core/password-input/",
+      "task": "P1-05"
+    },
+    {
+      "id": "M:PinInput",
+      "source": "mantine-core",
+      "name": "PinInput",
+      "url": "https://mantine.dev/core/pin-input/",
+      "task": "P7-09"
+    },
+    {
+      "id": "M:Radio",
+      "source": "mantine-core",
+      "name": "Radio",
+      "url": "https://mantine.dev/core/radio/",
+      "task": "P2-03"
+    },
+    {
+      "id": "M:RangeSlider",
+      "source": "mantine-core",
+      "name": "RangeSlider",
+      "url": "https://mantine.dev/core/range-slider/",
+      "task": "P7-03"
+    },
+    {
+      "id": "M:Rating",
+      "source": "mantine-core",
+      "name": "Rating",
+      "url": "https://mantine.dev/core/rating/",
+      "task": "P7-05"
+    },
+    {
+      "id": "M:SegmentedControl",
+      "source": "mantine-core",
+      "name": "SegmentedControl",
+      "url": "https://mantine.dev/core/segmented-control/",
+      "task": "P2-05"
+    },
+    {
+      "id": "M:Slider",
+      "source": "mantine-core",
+      "name": "Slider",
+      "url": "https://mantine.dev/core/slider/",
+      "task": "P7-02"
+    },
+    {
+      "id": "M:Switch",
+      "source": "mantine-core",
+      "name": "Switch",
+      "url": "https://mantine.dev/core/switch/",
+      "task": "P2-02"
+    },
+    {
+      "id": "M:Textarea",
+      "source": "mantine-core",
+      "name": "Textarea",
+      "url": "https://mantine.dev/core/textarea/",
+      "task": "P1-04"
+    },
+    {
+      "id": "M:TextInput",
+      "source": "mantine-core",
+      "name": "TextInput",
+      "url": "https://mantine.dev/core/text-input/",
+      "task": "P0-02"
+    },
+    {
+      "id": "M:Autocomplete",
+      "source": "mantine-core",
+      "name": "Autocomplete",
+      "url": "https://mantine.dev/core/autocomplete/",
+      "task": "P4-07"
+    },
+    {
+      "id": "M:Cascader",
+      "source": "mantine-core",
+      "name": "Cascader",
+      "url": "https://mantine.dev/core/cascader/",
+      "task": "P8-05"
+    },
+    {
+      "id": "M:Combobox",
+      "source": "mantine-core",
+      "name": "Combobox",
+      "url": "https://mantine.dev/core/combobox/",
+      "task": "P4-06"
+    },
+    {
+      "id": "M:ComboboxPopover",
+      "source": "mantine-core",
+      "name": "ComboboxPopover",
+      "url": "https://mantine.dev/core/combobox-popover/",
+      "task": "P0-09"
+    },
+    {
+      "id": "M:MultiSelect",
+      "source": "mantine-core",
+      "name": "MultiSelect",
+      "url": "https://mantine.dev/core/multi-select/",
+      "task": "P4-08"
+    },
+    {
+      "id": "M:Pill",
+      "source": "mantine-core",
+      "name": "Pill",
+      "url": "https://mantine.dev/core/pill/",
+      "task": "P3-10"
+    },
+    {
+      "id": "M:PillsInput",
+      "source": "mantine-core",
+      "name": "PillsInput",
+      "url": "https://mantine.dev/core/pills-input/",
+      "task": "P4-09"
+    },
+    {
+      "id": "M:Select",
+      "source": "mantine-core",
+      "name": "Select",
+      "url": "https://mantine.dev/core/select/",
+      "task": "P4-05"
+    },
+    {
+      "id": "M:TagsInput",
+      "source": "mantine-core",
+      "name": "TagsInput",
+      "url": "https://mantine.dev/core/tags-input/",
+      "task": "P4-09"
+    },
+    {
+      "id": "M:TreeSelect",
+      "source": "mantine-core",
+      "name": "TreeSelect",
+      "url": "https://mantine.dev/core/tree-select/",
+      "task": "P8-04"
+    },
+    {
+      "id": "M:ActionIcon",
+      "source": "mantine-core",
+      "name": "ActionIcon",
+      "url": "https://mantine.dev/core/action-icon/",
+      "task": "P2-08"
+    },
+    {
+      "id": "M:Button",
+      "source": "mantine-core",
+      "name": "Button",
+      "url": "https://mantine.dev/core/button/",
+      "task": "P0-01"
+    },
+    {
+      "id": "M:CloseButton",
+      "source": "mantine-core",
+      "name": "CloseButton",
+      "url": "https://mantine.dev/core/close-button/",
+      "task": "P2-08"
+    },
+    {
+      "id": "M:CopyButton",
+      "source": "mantine-core",
+      "name": "CopyButton",
+      "url": "https://mantine.dev/core/copy-button/",
+      "task": "P10-03"
+    },
+    {
+      "id": "M:FileButton",
+      "source": "mantine-core",
+      "name": "FileButton",
+      "url": "https://mantine.dev/core/file-button/",
+      "task": "P10-01"
+    },
+    {
+      "id": "M:Toggle",
+      "source": "mantine-core",
+      "name": "Toggle",
+      "url": "https://mantine.dev/core/toggle/",
+      "task": "P2-04"
+    },
+    {
+      "id": "M:UnstyledButton",
+      "source": "mantine-core",
+      "name": "UnstyledButton",
+      "url": "https://mantine.dev/core/unstyled-button/",
+      "task": "P0-01"
+    },
+    {
+      "id": "M:Anchor",
+      "source": "mantine-core",
+      "name": "Anchor",
+      "url": "https://mantine.dev/core/anchor/",
+      "task": "P3-06"
+    },
+    {
+      "id": "M:Breadcrumbs",
+      "source": "mantine-core",
+      "name": "Breadcrumbs",
+      "url": "https://mantine.dev/core/breadcrumbs/",
+      "task": "P6-01"
+    },
+    {
+      "id": "M:Burger",
+      "source": "mantine-core",
+      "name": "Burger",
+      "url": "https://mantine.dev/core/burger/",
+      "task": "P2-09"
+    },
+    {
+      "id": "M:NavLink",
+      "source": "mantine-core",
+      "name": "NavLink",
+      "url": "https://mantine.dev/core/nav-link/",
+      "task": "P6-03"
+    },
+    {
+      "id": "M:Pagination",
+      "source": "mantine-core",
+      "name": "Pagination",
+      "url": "https://mantine.dev/core/pagination/",
+      "task": "P6-02"
+    },
+    {
+      "id": "M:Stepper",
+      "source": "mantine-core",
+      "name": "Stepper",
+      "url": "https://mantine.dev/core/stepper/",
+      "task": "P6-06"
+    },
+    {
+      "id": "M:TableOfContents",
+      "source": "mantine-core",
+      "name": "TableOfContents",
+      "url": "https://mantine.dev/core/table-of-contents/",
+      "task": "P6-11"
+    },
+    {
+      "id": "M:Tabs",
+      "source": "mantine-core",
+      "name": "Tabs",
+      "url": "https://mantine.dev/core/tabs/",
+      "task": "P0-06"
+    },
+    {
+      "id": "M:Tree",
+      "source": "mantine-core",
+      "name": "Tree",
+      "url": "https://mantine.dev/core/tree/",
+      "task": "P8-03"
+    },
+    {
+      "id": "M:Alert",
+      "source": "mantine-core",
+      "name": "Alert",
+      "url": "https://mantine.dev/core/alert/",
+      "task": "P5-05"
+    },
+    {
+      "id": "M:EmptyState",
+      "source": "mantine-core",
+      "name": "EmptyState",
+      "url": "https://mantine.dev/core/empty-state/",
+      "task": "P3-17"
+    },
+    {
+      "id": "M:Loader",
+      "source": "mantine-core",
+      "name": "Loader",
+      "url": "https://mantine.dev/core/loader/",
+      "task": "P5-07"
+    },
+    {
+      "id": "M:Notification",
+      "source": "mantine-core",
+      "name": "Notification",
+      "url": "https://mantine.dev/core/notification/",
+      "task": "P5-06"
+    },
+    {
+      "id": "M:Progress",
+      "source": "mantine-core",
+      "name": "Progress",
+      "url": "https://mantine.dev/core/progress/",
+      "task": "P5-08"
+    },
+    {
+      "id": "M:RingProgress",
+      "source": "mantine-core",
+      "name": "RingProgress",
+      "url": "https://mantine.dev/core/ring-progress/",
+      "task": "P5-08"
+    },
+    {
+      "id": "M:SemiCircleProgress",
+      "source": "mantine-core",
+      "name": "SemiCircleProgress",
+      "url": "https://mantine.dev/core/semi-circle-progress/",
+      "task": "P5-08"
+    },
+    {
+      "id": "M:Skeleton",
+      "source": "mantine-core",
+      "name": "Skeleton",
+      "url": "https://mantine.dev/core/skeleton/",
+      "task": "P5-10"
+    },
+    {
+      "id": "M:ActionBar",
+      "source": "mantine-core",
+      "name": "ActionBar",
+      "url": "https://mantine.dev/core/action-bar/",
+      "task": "P6-10"
+    },
+    {
+      "id": "M:Affix",
+      "source": "mantine-core",
+      "name": "Affix",
+      "url": "https://mantine.dev/core/affix/",
+      "task": "P6-09"
+    },
+    {
+      "id": "M:Dialog",
+      "source": "mantine-core",
+      "name": "Dialog",
+      "url": "https://mantine.dev/core/dialog/",
+      "task": "P5-12"
+    },
+    {
+      "id": "M:Drawer",
+      "source": "mantine-core",
+      "name": "Drawer",
+      "url": "https://mantine.dev/core/drawer/",
+      "task": "P0-08"
+    },
+    {
+      "id": "M:FloatingIndicator",
+      "source": "mantine-core",
+      "name": "FloatingIndicator",
+      "url": "https://mantine.dev/core/floating-indicator/",
+      "task": "P6-13"
+    },
+    {
+      "id": "M:FloatingWindow",
+      "source": "mantine-core",
+      "name": "FloatingWindow",
+      "url": "https://mantine.dev/core/floating-window/",
+      "task": "P5-14"
+    },
+    {
+      "id": "M:HoverCard",
+      "source": "mantine-core",
+      "name": "HoverCard",
+      "url": "https://mantine.dev/core/hover-card/",
+      "task": "P5-04"
+    },
+    {
+      "id": "M:LoadingOverlay",
+      "source": "mantine-core",
+      "name": "LoadingOverlay",
+      "url": "https://mantine.dev/core/loading-overlay/",
+      "task": "P5-11"
+    },
+    {
+      "id": "M:Menu",
+      "source": "mantine-core",
+      "name": "Menu",
+      "url": "https://mantine.dev/core/menu/",
+      "task": "P4-01"
+    },
+    {
+      "id": "M:Menubar",
+      "source": "mantine-core",
+      "name": "Menubar",
+      "url": "https://mantine.dev/core/menubar/",
+      "task": "P4-03"
+    },
+    {
+      "id": "M:Modal",
+      "source": "mantine-core",
+      "name": "Modal",
+      "url": "https://mantine.dev/core/modal/",
+      "task": "P0-07"
+    },
+    {
+      "id": "M:Overlay",
+      "source": "mantine-core",
+      "name": "Overlay",
+      "url": "https://mantine.dev/core/overlay/",
+      "task": "P5-11"
+    },
+    {
+      "id": "M:Popover",
+      "source": "mantine-core",
+      "name": "Popover",
+      "url": "https://mantine.dev/core/popover/",
+      "task": "P0-09"
+    },
+    {
+      "id": "M:Tooltip",
+      "source": "mantine-core",
+      "name": "Tooltip",
+      "url": "https://mantine.dev/core/tooltip/",
+      "task": "P5-03"
+    },
+    {
+      "id": "M:Tour",
+      "source": "mantine-core",
+      "name": "Tour",
+      "url": "https://mantine.dev/core/tour/",
+      "task": "P5-15"
+    },
+    {
+      "id": "M:Accordion",
+      "source": "mantine-core",
+      "name": "Accordion",
+      "url": "https://mantine.dev/core/accordion/",
+      "task": "P0-05"
+    },
+    {
+      "id": "M:Avatar",
+      "source": "mantine-core",
+      "name": "Avatar",
+      "url": "https://mantine.dev/core/avatar/",
+      "task": "P3-13"
+    },
+    {
+      "id": "M:BackgroundImage",
+      "source": "mantine-core",
+      "name": "BackgroundImage",
+      "url": "https://mantine.dev/core/background-image/",
+      "task": "P3-14"
+    },
+    {
+      "id": "M:Badge",
+      "source": "mantine-core",
+      "name": "Badge",
+      "url": "https://mantine.dev/core/badge/",
+      "task": "P3-10"
+    },
+    {
+      "id": "M:Card",
+      "source": "mantine-core",
+      "name": "Card",
+      "url": "https://mantine.dev/core/card/",
+      "task": "P3-11"
+    },
+    {
+      "id": "M:ColorSwatch",
+      "source": "mantine-core",
+      "name": "ColorSwatch",
+      "url": "https://mantine.dev/core/color-swatch/",
+      "task": "P7-06"
+    },
+    {
+      "id": "M:DataList",
+      "source": "mantine-core",
+      "name": "DataList",
+      "url": "https://mantine.dev/core/data-list/",
+      "task": "P3-18"
+    },
+    {
+      "id": "M:Image",
+      "source": "mantine-core",
+      "name": "Image",
+      "url": "https://mantine.dev/core/image/",
+      "task": "P3-14"
+    },
+    {
+      "id": "M:Indicator",
+      "source": "mantine-core",
+      "name": "Indicator",
+      "url": "https://mantine.dev/core/indicator/",
+      "task": "P3-15"
+    },
+    {
+      "id": "M:Kbd",
+      "source": "mantine-core",
+      "name": "Kbd",
+      "url": "https://mantine.dev/core/kbd/",
+      "task": "P3-16"
+    },
+    {
+      "id": "M:NumberFormatter",
+      "source": "mantine-core",
+      "name": "NumberFormatter",
+      "url": "https://mantine.dev/core/number-formatter/",
+      "task": "P3-20"
+    },
+    {
+      "id": "M:OverflowList",
+      "source": "mantine-core",
+      "name": "OverflowList",
+      "url": "https://mantine.dev/core/overflow-list/",
+      "task": "P6-12"
+    },
+    {
+      "id": "M:RollingNumber",
+      "source": "mantine-core",
+      "name": "RollingNumber",
+      "url": "https://mantine.dev/core/rolling-number/",
+      "task": "P6-14"
+    },
+    {
+      "id": "M:Spoiler",
+      "source": "mantine-core",
+      "name": "Spoiler",
+      "url": "https://mantine.dev/core/spoiler/",
+      "task": "P3-21"
+    },
+    {
+      "id": "M:ThemeIcon",
+      "source": "mantine-core",
+      "name": "ThemeIcon",
+      "url": "https://mantine.dev/core/theme-icon/",
+      "task": "P3-15"
+    },
+    {
+      "id": "M:Timeline",
+      "source": "mantine-core",
+      "name": "Timeline",
+      "url": "https://mantine.dev/core/timeline/",
+      "task": "P3-19"
+    },
+    {
+      "id": "M:Blockquote",
+      "source": "mantine-core",
+      "name": "Blockquote",
+      "url": "https://mantine.dev/core/blockquote/",
+      "task": "P3-08"
+    },
+    {
+      "id": "M:Code",
+      "source": "mantine-core",
+      "name": "Code",
+      "url": "https://mantine.dev/core/code/",
+      "task": "P3-09"
+    },
+    {
+      "id": "M:Highlight",
+      "source": "mantine-core",
+      "name": "Highlight",
+      "url": "https://mantine.dev/core/highlight/",
+      "task": "P3-09"
+    },
+    {
+      "id": "M:List",
+      "source": "mantine-core",
+      "name": "List",
+      "url": "https://mantine.dev/core/list/",
+      "task": "P3-07"
+    },
+    {
+      "id": "M:Mark",
+      "source": "mantine-core",
+      "name": "Mark",
+      "url": "https://mantine.dev/core/mark/",
+      "task": "P3-09"
+    },
+    {
+      "id": "M:Table",
+      "source": "mantine-core",
+      "name": "Table",
+      "url": "https://mantine.dev/core/table/",
+      "task": "P8-01"
+    },
+    {
+      "id": "M:Text",
+      "source": "mantine-core",
+      "name": "Text",
+      "url": "https://mantine.dev/core/text/",
+      "task": "P3-05"
+    },
+    {
+      "id": "M:Title",
+      "source": "mantine-core",
+      "name": "Title",
+      "url": "https://mantine.dev/core/title/",
+      "task": "P3-05"
+    },
+    {
+      "id": "M:Typography",
+      "source": "mantine-core",
+      "name": "Typography",
+      "url": "https://mantine.dev/core/typography/",
+      "task": "P3-05"
+    },
+    {
+      "id": "M:Box",
+      "source": "mantine-core",
+      "name": "Box",
+      "url": "https://mantine.dev/core/box/",
+      "task": "P3-01"
+    },
+    {
+      "id": "M:Collapse",
+      "source": "mantine-core",
+      "name": "Collapse",
+      "url": "https://mantine.dev/core/collapse/",
+      "task": "P0-04"
+    },
+    {
+      "id": "M:Divider",
+      "source": "mantine-core",
+      "name": "Divider",
+      "url": "https://mantine.dev/core/divider/",
+      "task": "P3-12"
+    },
+    {
+      "id": "M:FocusTrap",
+      "source": "mantine-core",
+      "name": "FocusTrap",
+      "url": "https://mantine.dev/core/focus-trap/",
+      "task": "P0-11"
+    },
+    {
+      "id": "M:Marquee",
+      "source": "mantine-core",
+      "name": "Marquee",
+      "url": "https://mantine.dev/core/marquee/",
+      "task": "P6-14"
+    },
+    {
+      "id": "M:Paper",
+      "source": "mantine-core",
+      "name": "Paper",
+      "url": "https://mantine.dev/core/paper/",
+      "task": "P3-11"
+    },
+    {
+      "id": "M:Portal",
+      "source": "mantine-core",
+      "name": "Portal",
+      "url": "https://mantine.dev/core/portal/",
+      "task": "P0-11"
+    },
+    {
+      "id": "M:ScrollArea",
+      "source": "mantine-core",
+      "name": "ScrollArea",
+      "url": "https://mantine.dev/core/scroll-area/",
+      "task": "P6-07"
+    },
+    {
+      "id": "M:Scroller",
+      "source": "mantine-core",
+      "name": "Scroller",
+      "url": "https://mantine.dev/core/scroller/",
+      "task": "P6-07"
+    },
+    {
+      "id": "M:Toolbar",
+      "source": "mantine-core",
+      "name": "Toolbar",
+      "url": "https://mantine.dev/core/toolbar/",
+      "task": "P6-10"
+    },
+    {
+      "id": "M:Transition",
+      "source": "mantine-core",
+      "name": "Transition",
+      "url": "https://mantine.dev/core/transition/",
+      "task": "P0-12"
+    },
+    {
+      "id": "M:VisuallyHidden",
+      "source": "mantine-core",
+      "name": "VisuallyHidden",
+      "url": "https://mantine.dev/core/visually-hidden/",
+      "task": "P0-13"
+    },
+    {
+      "id": "D:DatePicker",
+      "source": "mantine-dates",
+      "name": "DatePicker",
+      "url": "https://mantine.dev/dates/date-picker/",
+      "task": "P9-03"
+    },
+    {
+      "id": "D:DatePickerInput",
+      "source": "mantine-dates",
+      "name": "DatePickerInput",
+      "url": "https://mantine.dev/dates/date-picker-input/",
+      "task": "P9-03"
+    },
+    {
+      "id": "D:DateTimePicker",
+      "source": "mantine-dates",
+      "name": "DateTimePicker",
+      "url": "https://mantine.dev/dates/date-time-picker/",
+      "task": "P9-09"
+    },
+    {
+      "id": "D:InlineDateTimePicker",
+      "source": "mantine-dates",
+      "name": "InlineDateTimePicker",
+      "url": "https://mantine.dev/dates/inline-date-time-picker/",
+      "task": "P9-09"
+    },
+    {
+      "id": "D:DateInput",
+      "source": "mantine-dates",
+      "name": "DateInput",
+      "url": "https://mantine.dev/dates/date-input/",
+      "task": "P9-04"
+    },
+    {
+      "id": "D:MonthPicker",
+      "source": "mantine-dates",
+      "name": "MonthPicker",
+      "url": "https://mantine.dev/dates/month-picker/",
+      "task": "P9-05"
+    },
+    {
+      "id": "D:MonthPickerInput",
+      "source": "mantine-dates",
+      "name": "MonthPickerInput",
+      "url": "https://mantine.dev/dates/month-picker-input/",
+      "task": "P9-05"
+    },
+    {
+      "id": "D:YearPicker",
+      "source": "mantine-dates",
+      "name": "YearPicker",
+      "url": "https://mantine.dev/dates/year-picker/",
+      "task": "P9-06"
+    },
+    {
+      "id": "D:YearPickerInput",
+      "source": "mantine-dates",
+      "name": "YearPickerInput",
+      "url": "https://mantine.dev/dates/year-picker-input/",
+      "task": "P9-06"
+    },
+    {
+      "id": "D:TimeInput",
+      "source": "mantine-dates",
+      "name": "TimeInput",
+      "url": "https://mantine.dev/dates/time-input/",
+      "task": "P9-07"
+    },
+    {
+      "id": "D:TimePicker",
+      "source": "mantine-dates",
+      "name": "TimePicker",
+      "url": "https://mantine.dev/dates/time-picker/",
+      "task": "P9-08"
+    },
+    {
+      "id": "D:TimeGrid",
+      "source": "mantine-dates",
+      "name": "TimeGrid",
+      "url": "https://mantine.dev/dates/time-grid/",
+      "task": "P9-08"
+    },
+    {
+      "id": "D:TimeValue",
+      "source": "mantine-dates",
+      "name": "TimeValue",
+      "url": "https://mantine.dev/dates/time-value/",
+      "task": "P9-07"
+    },
+    {
+      "id": "D:MiniCalendar",
+      "source": "mantine-dates",
+      "name": "MiniCalendar",
+      "url": "https://mantine.dev/dates/mini-calendar/",
+      "task": "P9-02"
+    },
+    {
+      "id": "D:Calendar",
+      "source": "mantine-dates",
+      "name": "Calendar",
+      "url": "https://mantine.dev/dates/calendar/",
+      "task": "P9-02"
+    },
+    {
+      "id": "C:AreaChart",
+      "source": "mantine-charts",
+      "name": "AreaChart",
+      "url": "https://mantine.dev/charts/area-chart/",
+      "task": "P11-02"
+    },
+    {
+      "id": "C:BarChart",
+      "source": "mantine-charts",
+      "name": "BarChart",
+      "url": "https://mantine.dev/charts/bar-chart/",
+      "task": "P11-02"
+    },
+    {
+      "id": "C:LineChart",
+      "source": "mantine-charts",
+      "name": "LineChart",
+      "url": "https://mantine.dev/charts/line-chart/",
+      "task": "P11-02"
+    },
+    {
+      "id": "C:CompositeChart",
+      "source": "mantine-charts",
+      "name": "CompositeChart",
+      "url": "https://mantine.dev/charts/composite-chart/",
+      "task": "P11-02"
+    },
+    {
+      "id": "C:CandlestickChart",
+      "source": "mantine-charts",
+      "name": "CandlestickChart",
+      "url": "https://mantine.dev/charts/candlestick-chart/",
+      "task": "P11-04"
+    },
+    {
+      "id": "C:DonutChart",
+      "source": "mantine-charts",
+      "name": "DonutChart",
+      "url": "https://mantine.dev/charts/donut-chart/",
+      "task": "P11-03"
+    },
+    {
+      "id": "C:PieChart",
+      "source": "mantine-charts",
+      "name": "PieChart",
+      "url": "https://mantine.dev/charts/pie-chart/",
+      "task": "P11-03"
+    },
+    {
+      "id": "C:FunnelChart",
+      "source": "mantine-charts",
+      "name": "FunnelChart",
+      "url": "https://mantine.dev/charts/funnel-chart/",
+      "task": "P11-05"
+    },
+    {
+      "id": "C:RadarChart",
+      "source": "mantine-charts",
+      "name": "RadarChart",
+      "url": "https://mantine.dev/charts/radar-chart/",
+      "task": "P11-05"
+    },
+    {
+      "id": "C:ScatterChart",
+      "source": "mantine-charts",
+      "name": "ScatterChart",
+      "url": "https://mantine.dev/charts/scatter-chart/",
+      "task": "P11-04"
+    },
+    {
+      "id": "C:BubbleChart",
+      "source": "mantine-charts",
+      "name": "BubbleChart",
+      "url": "https://mantine.dev/charts/bubble-chart/",
+      "task": "P11-04"
+    },
+    {
+      "id": "C:RadialBarChart",
+      "source": "mantine-charts",
+      "name": "RadialBarChart",
+      "url": "https://mantine.dev/charts/radial-bar-chart/",
+      "task": "P11-03"
+    },
+    {
+      "id": "C:Sparkline",
+      "source": "mantine-charts",
+      "name": "Sparkline",
+      "url": "https://mantine.dev/charts/sparkline/",
+      "task": "P11-05"
+    },
+    {
+      "id": "C:Heatmap",
+      "source": "mantine-charts",
+      "name": "Heatmap",
+      "url": "https://mantine.dev/charts/heatmap/",
+      "task": "P11-06"
+    },
+    {
+      "id": "C:BarsList",
+      "source": "mantine-charts",
+      "name": "BarsList",
+      "url": "https://mantine.dev/charts/bars-list/",
+      "task": "P11-07"
+    },
+    {
+      "id": "C:BulletChart",
+      "source": "mantine-charts",
+      "name": "BulletChart",
+      "url": "https://mantine.dev/charts/bullet-chart/",
+      "task": "P11-07"
+    },
+    {
+      "id": "C:GaugeChart",
+      "source": "mantine-charts",
+      "name": "GaugeChart",
+      "url": "https://mantine.dev/charts/gauge-chart/",
+      "task": "P11-07"
+    },
+    {
+      "id": "C:WaffleChart",
+      "source": "mantine-charts",
+      "name": "WaffleChart",
+      "url": "https://mantine.dev/charts/waffle-chart/",
+      "task": "P11-06"
+    },
+    {
+      "id": "C:Treemap",
+      "source": "mantine-charts",
+      "name": "Treemap",
+      "url": "https://mantine.dev/charts/treemap/",
+      "task": "P11-08"
+    },
+    {
+      "id": "C:SunburstChart",
+      "source": "mantine-charts",
+      "name": "SunburstChart",
+      "url": "https://mantine.dev/charts/sunburst-chart/",
+      "task": "P11-08"
+    },
+    {
+      "id": "C:SankeyChart",
+      "source": "mantine-charts",
+      "name": "SankeyChart",
+      "url": "https://mantine.dev/charts/sankey-chart/",
+      "task": "P11-08"
+    },
+    {
+      "id": "C:MatrixChart",
+      "source": "mantine-charts",
+      "name": "MatrixChart",
+      "url": "https://mantine.dev/charts/matrix-chart/",
+      "task": "P11-06"
+    },
+    {
+      "id": "T:Schedule",
+      "source": "mantine-schedule",
+      "name": "Schedule",
+      "url": "https://mantine.dev/schedule/schedule/",
+      "task": "P12-01"
+    },
+    {
+      "id": "T:DayView",
+      "source": "mantine-schedule",
+      "name": "DayView",
+      "url": "https://mantine.dev/schedule/day-view/",
+      "task": "P12-02"
+    },
+    {
+      "id": "T:MonthView",
+      "source": "mantine-schedule",
+      "name": "MonthView",
+      "url": "https://mantine.dev/schedule/month-view/",
+      "task": "P12-03"
+    },
+    {
+      "id": "T:WeekView",
+      "source": "mantine-schedule",
+      "name": "WeekView",
+      "url": "https://mantine.dev/schedule/week-view/",
+      "task": "P12-02"
+    },
+    {
+      "id": "T:YearView",
+      "source": "mantine-schedule",
+      "name": "YearView",
+      "url": "https://mantine.dev/schedule/year-view/",
+      "task": "P12-03"
+    },
+    {
+      "id": "T:MobileMonthView",
+      "source": "mantine-schedule",
+      "name": "MobileMonthView",
+      "url": "https://mantine.dev/schedule/mobile-month-view/",
+      "task": "P12-03"
+    },
+    {
+      "id": "T:AgendaView",
+      "source": "mantine-schedule",
+      "name": "AgendaView",
+      "url": "https://mantine.dev/schedule/agenda-view/",
+      "task": "P12-04"
+    },
+    {
+      "id": "T:ResourcesDayView",
+      "source": "mantine-schedule",
+      "name": "ResourcesDayView",
+      "url": "https://mantine.dev/schedule/resources-day-view/",
+      "task": "P12-05"
+    },
+    {
+      "id": "T:ResourcesWeekView",
+      "source": "mantine-schedule",
+      "name": "ResourcesWeekView",
+      "url": "https://mantine.dev/schedule/resources-week-view/",
+      "task": "P12-05"
+    },
+    {
+      "id": "T:ResourcesMonthView",
+      "source": "mantine-schedule",
+      "name": "ResourcesMonthView",
+      "url": "https://mantine.dev/schedule/resources-month-view/",
+      "task": "P12-05"
+    },
+    {
+      "id": "T:ResourcesSchedule",
+      "source": "mantine-schedule",
+      "name": "ResourcesSchedule",
+      "url": "https://mantine.dev/schedule/resources-schedule/",
+      "task": "P12-05"
+    },
+    {
+      "id": "T:Recurring events",
+      "source": "mantine-schedule",
+      "name": "Recurring events",
+      "url": "https://mantine.dev/schedule/recurring-events/",
+      "task": "P12-01"
+    },
+    {
+      "id": "T:Events data",
+      "source": "mantine-schedule",
+      "name": "Events data",
+      "url": "https://mantine.dev/schedule/events-data/",
+      "task": "P12-01"
+    },
+    {
+      "id": "H:CodeHighlight",
+      "source": "mantine-code",
+      "name": "CodeHighlight",
+      "url": "https://mantine.dev/code-highlight/code-highlight/",
+      "task": "P10-06"
+    },
+    {
+      "id": "H:JsonViewer",
+      "source": "mantine-code",
+      "name": "JsonViewer",
+      "url": "https://mantine.dev/code-highlight/json-viewer/",
+      "task": "P10-07"
+    },
+    {
+      "id": "X:Notifications system",
+      "source": "mantine-extensions",
+      "name": "Notifications system",
+      "url": "https://mantine.dev/x/notifications/",
+      "task": "P5-06"
+    },
+    {
+      "id": "X:Spotlight",
+      "source": "mantine-extensions",
+      "name": "Spotlight",
+      "url": "https://mantine.dev/x/spotlight/",
+      "task": "P4-10"
+    },
+    {
+      "id": "X:Carousel",
+      "source": "mantine-extensions",
+      "name": "Carousel",
+      "url": "https://mantine.dev/x/carousel/",
+      "task": "P10-04"
+    },
+    {
+      "id": "X:Lightbox",
+      "source": "mantine-extensions",
+      "name": "Lightbox",
+      "url": "https://mantine.dev/x/lightbox/",
+      "task": "P10-05"
+    },
+    {
+      "id": "X:Dropzone",
+      "source": "mantine-extensions",
+      "name": "Dropzone",
+      "url": "https://mantine.dev/x/dropzone/",
+      "task": "P10-02"
+    },
+    {
+      "id": "X:NavigationProgress",
+      "source": "mantine-extensions",
+      "name": "NavigationProgress",
+      "url": "https://mantine.dev/x/nprogress/",
+      "task": "P5-09"
+    },
+    {
+      "id": "X:Modals manager",
+      "source": "mantine-extensions",
+      "name": "Modals manager",
+      "url": "https://mantine.dev/x/modals/",
+      "task": "P5-13"
+    },
+    {
+      "id": "X:Rich text editor",
+      "source": "mantine-extensions",
+      "name": "Rich text editor",
+      "url": "https://mantine.dev/x/tiptap/",
+      "task": "P10-08"
+    },
+    {
+      "id": "S:Accordion",
+      "source": "shadcn-components",
+      "name": "Accordion",
+      "url": "https://ui.shadcn.com/docs/components/base/accordion",
+      "task": "P0-05"
+    },
+    {
+      "id": "S:Alert",
+      "source": "shadcn-components",
+      "name": "Alert",
+      "url": "https://ui.shadcn.com/docs/components/base/alert",
+      "task": "P5-05"
+    },
+    {
+      "id": "S:Alert Dialog",
+      "source": "shadcn-components",
+      "name": "Alert Dialog",
+      "url": "https://ui.shadcn.com/docs/components/base/alert-dialog",
+      "task": "P5-01"
+    },
+    {
+      "id": "S:Aspect Ratio",
+      "source": "shadcn-components",
+      "name": "Aspect Ratio",
+      "url": "https://ui.shadcn.com/docs/components/base/aspect-ratio",
+      "task": "P3-04"
+    },
+    {
+      "id": "S:Attachment",
+      "source": "shadcn-components",
+      "name": "Attachment",
+      "url": "https://ui.shadcn.com/docs/components/base/attachment",
+      "task": "P10-02"
+    },
+    {
+      "id": "S:Avatar",
+      "source": "shadcn-components",
+      "name": "Avatar",
+      "url": "https://ui.shadcn.com/docs/components/base/avatar",
+      "task": "P3-13"
+    },
+    {
+      "id": "S:Badge",
+      "source": "shadcn-components",
+      "name": "Badge",
+      "url": "https://ui.shadcn.com/docs/components/base/badge",
+      "task": "P3-10"
+    },
+    {
+      "id": "S:Breadcrumb",
+      "source": "shadcn-components",
+      "name": "Breadcrumb",
+      "url": "https://ui.shadcn.com/docs/components/base/breadcrumb",
+      "task": "P6-01"
+    },
+    {
+      "id": "S:Bubble",
+      "source": "shadcn-components",
+      "name": "Bubble",
+      "url": "https://ui.shadcn.com/docs/components/base/bubble",
+      "task": "P13-01"
+    },
+    {
+      "id": "S:Button",
+      "source": "shadcn-components",
+      "name": "Button",
+      "url": "https://ui.shadcn.com/docs/components/base/button",
+      "task": "P0-01"
+    },
+    {
+      "id": "S:Button Group",
+      "source": "shadcn-components",
+      "name": "Button Group",
+      "url": "https://ui.shadcn.com/docs/components/base/button-group",
+      "task": "P2-07"
+    },
+    {
+      "id": "S:Calendar",
+      "source": "shadcn-components",
+      "name": "Calendar",
+      "url": "https://ui.shadcn.com/docs/components/base/calendar",
+      "task": "P9-02"
+    },
+    {
+      "id": "S:Card",
+      "source": "shadcn-components",
+      "name": "Card",
+      "url": "https://ui.shadcn.com/docs/components/base/card",
+      "task": "P3-11"
+    },
+    {
+      "id": "S:Carousel",
+      "source": "shadcn-components",
+      "name": "Carousel",
+      "url": "https://ui.shadcn.com/docs/components/base/carousel",
+      "task": "P10-04"
+    },
+    {
+      "id": "S:Chart",
+      "source": "shadcn-components",
+      "name": "Chart",
+      "url": "https://ui.shadcn.com/docs/components/base/chart",
+      "task": "P11-01"
+    },
+    {
+      "id": "S:Checkbox",
+      "source": "shadcn-components",
+      "name": "Checkbox",
+      "url": "https://ui.shadcn.com/docs/components/base/checkbox",
+      "task": "P0-03"
+    },
+    {
+      "id": "S:Code Block",
+      "source": "shadcn-components",
+      "name": "Code Block",
+      "url": "https://ui.shadcn.com/docs/components/base/code-block",
+      "task": "P10-06"
+    },
+    {
+      "id": "S:Collapsible",
+      "source": "shadcn-components",
+      "name": "Collapsible",
+      "url": "https://ui.shadcn.com/docs/components/base/collapsible",
+      "task": "P0-04"
+    },
+    {
+      "id": "S:Combobox",
+      "source": "shadcn-components",
+      "name": "Combobox",
+      "url": "https://ui.shadcn.com/docs/components/base/combobox",
+      "task": "P4-06"
+    },
+    {
+      "id": "S:Command",
+      "source": "shadcn-components",
+      "name": "Command",
+      "url": "https://ui.shadcn.com/docs/components/base/command",
+      "task": "P4-10"
+    },
+    {
+      "id": "S:Context Menu",
+      "source": "shadcn-components",
+      "name": "Context Menu",
+      "url": "https://ui.shadcn.com/docs/components/base/context-menu",
+      "task": "P4-02"
+    },
+    {
+      "id": "S:Data Table",
+      "source": "shadcn-components",
+      "name": "Data Table",
+      "url": "https://ui.shadcn.com/docs/components/base/data-table",
+      "task": "P8-02"
+    },
+    {
+      "id": "S:Date Picker",
+      "source": "shadcn-components",
+      "name": "Date Picker",
+      "url": "https://ui.shadcn.com/docs/components/base/date-picker",
+      "task": "P9-03"
+    },
+    {
+      "id": "S:Dialog",
+      "source": "shadcn-components",
+      "name": "Dialog",
+      "url": "https://ui.shadcn.com/docs/components/base/dialog",
+      "task": "P0-07"
+    },
+    {
+      "id": "S:Direction",
+      "source": "shadcn-components",
+      "name": "Direction",
+      "url": "https://ui.shadcn.com/docs/components/base/direction",
+      "task": "P0-12"
+    },
+    {
+      "id": "S:Drawer",
+      "source": "shadcn-components",
+      "name": "Drawer",
+      "url": "https://ui.shadcn.com/docs/components/base/drawer",
+      "task": "P0-08"
+    },
+    {
+      "id": "S:Dropdown Menu",
+      "source": "shadcn-components",
+      "name": "Dropdown Menu",
+      "url": "https://ui.shadcn.com/docs/components/base/dropdown-menu",
+      "task": "P4-01"
+    },
+    {
+      "id": "S:Empty",
+      "source": "shadcn-components",
+      "name": "Empty",
+      "url": "https://ui.shadcn.com/docs/components/base/empty",
+      "task": "P3-17"
+    },
+    {
+      "id": "S:Field",
+      "source": "shadcn-components",
+      "name": "Field",
+      "url": "https://ui.shadcn.com/docs/components/base/field",
+      "task": "P1-01"
+    },
+    {
+      "id": "S:Hover Card",
+      "source": "shadcn-components",
+      "name": "Hover Card",
+      "url": "https://ui.shadcn.com/docs/components/base/hover-card",
+      "task": "P5-04"
+    },
+    {
+      "id": "S:Input",
+      "source": "shadcn-components",
+      "name": "Input",
+      "url": "https://ui.shadcn.com/docs/components/base/input",
+      "task": "P0-02"
+    },
+    {
+      "id": "S:Input Group",
+      "source": "shadcn-components",
+      "name": "Input Group",
+      "url": "https://ui.shadcn.com/docs/components/base/input-group",
+      "task": "P1-06"
+    },
+    {
+      "id": "S:Input OTP",
+      "source": "shadcn-components",
+      "name": "Input OTP",
+      "url": "https://ui.shadcn.com/docs/components/base/input-otp",
+      "task": "P7-09"
+    },
+    {
+      "id": "S:Item",
+      "source": "shadcn-components",
+      "name": "Item",
+      "url": "https://ui.shadcn.com/docs/components/base/item",
+      "task": "P3-18"
+    },
+    {
+      "id": "S:Kbd",
+      "source": "shadcn-components",
+      "name": "Kbd",
+      "url": "https://ui.shadcn.com/docs/components/base/kbd",
+      "task": "P3-16"
+    },
+    {
+      "id": "S:Label",
+      "source": "shadcn-components",
+      "name": "Label",
+      "url": "https://ui.shadcn.com/docs/components/base/label",
+      "task": "P1-02"
+    },
+    {
+      "id": "S:Marker",
+      "source": "shadcn-components",
+      "name": "Marker",
+      "url": "https://ui.shadcn.com/docs/components/base/marker",
+      "task": "P13-01"
+    },
+    {
+      "id": "S:Menubar",
+      "source": "shadcn-components",
+      "name": "Menubar",
+      "url": "https://ui.shadcn.com/docs/components/base/menubar",
+      "task": "P4-03"
+    },
+    {
+      "id": "S:Message",
+      "source": "shadcn-components",
+      "name": "Message",
+      "url": "https://ui.shadcn.com/docs/components/base/message",
+      "task": "P13-01"
+    },
+    {
+      "id": "S:Message Scroller",
+      "source": "shadcn-components",
+      "name": "Message Scroller",
+      "url": "https://ui.shadcn.com/docs/components/base/message-scroller",
+      "task": "P13-02"
+    },
+    {
+      "id": "S:Native Select",
+      "source": "shadcn-components",
+      "name": "Native Select",
+      "url": "https://ui.shadcn.com/docs/components/base/native-select",
+      "task": "P4-04"
+    },
+    {
+      "id": "S:Navigation Menu",
+      "source": "shadcn-components",
+      "name": "Navigation Menu",
+      "url": "https://ui.shadcn.com/docs/components/base/navigation-menu",
+      "task": "P6-03"
+    },
+    {
+      "id": "S:Pagination",
+      "source": "shadcn-components",
+      "name": "Pagination",
+      "url": "https://ui.shadcn.com/docs/components/base/pagination",
+      "task": "P6-02"
+    },
+    {
+      "id": "S:Popover",
+      "source": "shadcn-components",
+      "name": "Popover",
+      "url": "https://ui.shadcn.com/docs/components/base/popover",
+      "task": "P0-09"
+    },
+    {
+      "id": "S:Progress",
+      "source": "shadcn-components",
+      "name": "Progress",
+      "url": "https://ui.shadcn.com/docs/components/base/progress",
+      "task": "P5-08"
+    },
+    {
+      "id": "S:Questionnaire",
+      "source": "shadcn-components",
+      "name": "Questionnaire",
+      "url": "https://ui.shadcn.com/docs/components/base/questionnaire",
+      "task": "P13-04"
+    },
+    {
+      "id": "S:Radio Group",
+      "source": "shadcn-components",
+      "name": "Radio Group",
+      "url": "https://ui.shadcn.com/docs/components/base/radio-group",
+      "task": "P2-03"
+    },
+    {
+      "id": "S:Resizable",
+      "source": "shadcn-components",
+      "name": "Resizable",
+      "url": "https://ui.shadcn.com/docs/components/base/resizable",
+      "task": "P6-08"
+    },
+    {
+      "id": "S:Scroll Area",
+      "source": "shadcn-components",
+      "name": "Scroll Area",
+      "url": "https://ui.shadcn.com/docs/components/base/scroll-area",
+      "task": "P6-07"
+    },
+    {
+      "id": "S:Select",
+      "source": "shadcn-components",
+      "name": "Select",
+      "url": "https://ui.shadcn.com/docs/components/base/select",
+      "task": "P4-05"
+    },
+    {
+      "id": "S:Separator",
+      "source": "shadcn-components",
+      "name": "Separator",
+      "url": "https://ui.shadcn.com/docs/components/base/separator",
+      "task": "P3-12"
+    },
+    {
+      "id": "S:Sheet",
+      "source": "shadcn-components",
+      "name": "Sheet",
+      "url": "https://ui.shadcn.com/docs/components/base/sheet",
+      "task": "P5-02"
+    },
+    {
+      "id": "S:Sidebar",
+      "source": "shadcn-components",
+      "name": "Sidebar",
+      "url": "https://ui.shadcn.com/docs/components/base/sidebar",
+      "task": "P6-04"
+    },
+    {
+      "id": "S:Skeleton",
+      "source": "shadcn-components",
+      "name": "Skeleton",
+      "url": "https://ui.shadcn.com/docs/components/base/skeleton",
+      "task": "P5-10"
+    },
+    {
+      "id": "S:Slider",
+      "source": "shadcn-components",
+      "name": "Slider",
+      "url": "https://ui.shadcn.com/docs/components/base/slider",
+      "task": "P7-02"
+    },
+    {
+      "id": "S:Spinner",
+      "source": "shadcn-components",
+      "name": "Spinner",
+      "url": "https://ui.shadcn.com/docs/components/base/spinner",
+      "task": "P5-07"
+    },
+    {
+      "id": "S:Switch",
+      "source": "shadcn-components",
+      "name": "Switch",
+      "url": "https://ui.shadcn.com/docs/components/base/switch",
+      "task": "P2-02"
+    },
+    {
+      "id": "S:Table",
+      "source": "shadcn-components",
+      "name": "Table",
+      "url": "https://ui.shadcn.com/docs/components/base/table",
+      "task": "P8-01"
+    },
+    {
+      "id": "S:Tabs",
+      "source": "shadcn-components",
+      "name": "Tabs",
+      "url": "https://ui.shadcn.com/docs/components/base/tabs",
+      "task": "P0-06"
+    },
+    {
+      "id": "S:Textarea",
+      "source": "shadcn-components",
+      "name": "Textarea",
+      "url": "https://ui.shadcn.com/docs/components/base/textarea",
+      "task": "P1-04"
+    },
+    {
+      "id": "S:Toast",
+      "source": "shadcn-components",
+      "name": "Toast",
+      "url": "https://ui.shadcn.com/docs/components/base/toast",
+      "task": "P5-06"
+    },
+    {
+      "id": "S:Toggle",
+      "source": "shadcn-components",
+      "name": "Toggle",
+      "url": "https://ui.shadcn.com/docs/components/base/toggle",
+      "task": "P2-04"
+    },
+    {
+      "id": "S:Toggle Group",
+      "source": "shadcn-components",
+      "name": "Toggle Group",
+      "url": "https://ui.shadcn.com/docs/components/base/toggle-group",
+      "task": "P2-04"
+    },
+    {
+      "id": "S:Tooltip",
+      "source": "shadcn-components",
+      "name": "Tooltip",
+      "url": "https://ui.shadcn.com/docs/components/base/tooltip",
+      "task": "P5-03"
+    },
+    {
+      "id": "S:Trace",
+      "source": "shadcn-components",
+      "name": "Trace",
+      "url": "https://ui.shadcn.com/docs/components/base/trace",
+      "task": "P13-11"
+    },
+    {
+      "id": "S:Typography",
+      "source": "shadcn-components",
+      "name": "Typography",
+      "url": "https://ui.shadcn.com/docs/components/base/typography",
+      "task": "P3-05"
+    },
+    {
+      "id": "A:Chain of Thought",
+      "source": "shadcn-ai",
+      "name": "Chain of Thought",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/chain-of-thought",
+      "task": "P13-09"
+    },
+    {
+      "id": "A:Chat",
+      "source": "shadcn-ai",
+      "name": "Chat",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/chat",
+      "task": "P13-02"
+    },
+    {
+      "id": "A:Checkpoint",
+      "source": "shadcn-ai",
+      "name": "Checkpoint",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/checkpoint",
+      "task": "P13-07"
+    },
+    {
+      "id": "A:Confirmation",
+      "source": "shadcn-ai",
+      "name": "Confirmation",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/confirmation",
+      "task": "P13-07"
+    },
+    {
+      "id": "A:Context",
+      "source": "shadcn-ai",
+      "name": "Context",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/context",
+      "task": "P13-10"
+    },
+    {
+      "id": "A:File Tree",
+      "source": "shadcn-ai",
+      "name": "File Tree",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/file-tree",
+      "task": "P8-03"
+    },
+    {
+      "id": "A:Inline Citation",
+      "source": "shadcn-ai",
+      "name": "Inline Citation",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/inline-citation",
+      "task": "P13-10"
+    },
+    {
+      "id": "A:Message",
+      "source": "shadcn-ai",
+      "name": "Message",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/message",
+      "task": "P13-01"
+    },
+    {
+      "id": "A:Model Selector",
+      "source": "shadcn-ai",
+      "name": "Model Selector",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/model-selector",
+      "task": "P13-05"
+    },
+    {
+      "id": "A:Plan",
+      "source": "shadcn-ai",
+      "name": "Plan",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/plan",
+      "task": "P13-08"
+    },
+    {
+      "id": "A:Prompt Input",
+      "source": "shadcn-ai",
+      "name": "Prompt Input",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/prompt-input",
+      "task": "P13-03"
+    },
+    {
+      "id": "A:Queue",
+      "source": "shadcn-ai",
+      "name": "Queue",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/queue",
+      "task": "P13-08"
+    },
+    {
+      "id": "A:Reasoning",
+      "source": "shadcn-ai",
+      "name": "Reasoning",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/reasoning",
+      "task": "P13-09"
+    },
+    {
+      "id": "A:Sources",
+      "source": "shadcn-ai",
+      "name": "Sources",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/sources",
+      "task": "P13-10"
+    },
+    {
+      "id": "A:Stack Trace",
+      "source": "shadcn-ai",
+      "name": "Stack Trace",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/stack-trace",
+      "task": "P13-11"
+    },
+    {
+      "id": "A:Subagent",
+      "source": "shadcn-ai",
+      "name": "Subagent",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/subagent",
+      "task": "P13-11"
+    },
+    {
+      "id": "A:Suggestion",
+      "source": "shadcn-ai",
+      "name": "Suggestion",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/suggestion",
+      "task": "P13-06"
+    },
+    {
+      "id": "A:Task",
+      "source": "shadcn-ai",
+      "name": "Task",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/task",
+      "task": "P13-08"
+    },
+    {
+      "id": "A:Terminal",
+      "source": "shadcn-ai",
+      "name": "Terminal",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/terminal",
+      "task": "P13-12"
+    },
+    {
+      "id": "A:Test Results",
+      "source": "shadcn-ai",
+      "name": "Test Results",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/test-results",
+      "task": "P13-12"
+    },
+    {
+      "id": "A:Tool",
+      "source": "shadcn-ai",
+      "name": "Tool",
+      "url": "https://ui.shadcn.com/docs/ai-elements/base/tool",
+      "task": "P13-11"
+    }
+  ],
+  "capture_window": "2026-10-23/2026-10-24 Asia/Shanghai"
+}

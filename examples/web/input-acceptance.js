@@ -1,0 +1,86 @@
+async (hostPage) => {
+  const context=await hostPage.context().browser().newContext({viewport:{width:1440,height:1000}});
+  const reports=[],errors=[];
+  const assert=(value,message)=>{if(!value)throw new Error(message);};
+  try {
+    const page=await context.newPage();
+    page.on('pageerror',e=>errors.push(e.message));
+    page.on('console',e=>{if(e.type()==='error')errors.push(e.text());});
+    const tick=()=>page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+    for(const hue of ['blue','green'])for(const scheme of ['light','dark'])for(const hydration of [false,true]) {
+      const mode=`inputs-${hue}-${scheme}-${hydration?'hydrate':'csr'}`;
+      await page.goto(`http://127.0.0.1:8794/${hydration?`fields-hydrate-${hue}-${scheme}.html`:`fields.html?theme=${hue}&scheme=${scheme}`}`);
+      await page.waitForFunction(()=>window.ready===true);
+      const bio=page.locator('.input-bio'),password=page.locator('.input-password'),toggle=page.locator('.sapid-password-toggle');
+      assert(await page.getByRole('textbox',{name:'Biography',exact:true}).count()===1,`${mode}: textarea name`);
+      assert(await bio.evaluate(e=>e.tagName==='TEXTAREA'&&getComputedStyle(e).fieldSizing==='content'),`${mode}: intrinsic textarea sizing`);
+      const height=()=>bio.evaluate(e=>e.getBoundingClientRect().height);
+      const min=await height();
+      await bio.fill('one\ntwo\nthree\nfour'); await tick();
+      assert(await height()>min+30,`${mode}: textarea did not grow`);
+      await bio.fill(Array(20).fill('line').join('\n'));await tick();
+      const cap=await height();
+      assert(await bio.evaluate(e=>e.scrollHeight>e.clientHeight&&Math.abs(e.getBoundingClientRect().height-parseFloat(getComputedStyle(e).maxHeight))<1),`${mode}: textarea max/scroll`);
+      await page.evaluate(()=>window.demo.input_text('short')); await tick();
+      assert(Math.abs(await height()-min)<1,`${mode}: textarea did not shrink`);
+      await page.evaluate(()=>window.demo.input_text('A wrapped sentence with words. '.repeat(100))); await tick();
+      assert(Math.abs(await height()-cap)<1,`${mode}: soft wrapping did not grow to cap`);
+      await bio.evaluate(e=>{window.savedBio=e;e.focus();e.setSelectionRange(2,8,'backward');});
+      await page.evaluate(()=>window.demo.field_state('error',true));
+      assert(await bio.evaluate(e=>e===window.savedBio&&e.selectionStart===2&&e.selectionEnd===8&&e.selectionDirection==='backward'&&e.getAttribute('aria-invalid')==='true'),`${mode}: error reset textarea`);
+      await page.evaluate(()=>window.demo.field_state('error',false));
+      await page.evaluate(()=>window.demo.input_state('reject',true));
+      await bio.fill('rejected text');await tick();
+      assert((await bio.inputValue()).startsWith('A wrapped sentence'),`${mode}: rejected multiline edit persisted`);
+      await toggle.click();await tick();assert(await password.getAttribute('type')==='password',`${mode}: rejected visibility persisted`);
+      await page.evaluate(()=>window.demo.input_state('reject',false));
+      await password.fill('secret🦀value');await tick();
+      await password.evaluate(e=>{
+        window.savedPassword=e;e.focus();e.setSelectionRange(2,8,'backward');
+        const descriptor=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value');
+        window.passwordWrites=0;Object.defineProperty(e,'value',{configurable:true,get(){return descriptor.get.call(this)},set(v){window.passwordWrites++;descriptor.set.call(this,v)}});
+      });
+      await page.evaluate(()=>window.demo.input_state('visible',true));await tick();
+      assert(await password.evaluate(e=>e===window.savedPassword&&e.type==='text'&&e.value==='secret🦀value'&&e.selectionStart===2&&e.selectionEnd===8&&e.selectionDirection==='backward'&&window.passwordWrites===0),`${mode}: revealing replaced editor/value/selection`);
+      await toggle.focus();await page.keyboard.press('Space');await tick();
+      assert(await password.getAttribute('type')==='password'&&await toggle.innerText()==='Show password',`${mode}: keyboard hide/name`);
+      await toggle.click();await tick();assert(await password.getAttribute('type')==='text',`${mode}: pointer reveal`);
+      await password.evaluate(e=>{e.focus();e.dispatchEvent(new CompositionEvent('compositionstart',{bubbles:true,data:''}));e.value='合成draft';e.setSelectionRange(2,4);e.dispatchEvent(new InputEvent('input',{bubbles:true,data:'合成',inputType:'insertCompositionText',isComposing:true}));});await tick();
+      await page.evaluate(()=>window.demo.input_state('visible',false));await tick();
+      assert(await password.evaluate(e=>e===window.savedPassword&&e.value==='合成draft'&&e.selectionStart===2&&e.selectionEnd===4),`${mode}: purpose change lost composing edit`);
+      await password.evaluate(e=>e.dispatchEvent(new CompositionEvent('compositionend',{bubbles:true,data:'合成'})));await tick();
+      const address=page.getByRole('textbox',{name:'Website',exact:true});
+      assert(await address.count()===1,`${mode}: addon changed accessible name`);
+      await address.focus();await page.keyboard.press('Tab');
+      assert(await page.getByRole('button',{name:'Check address',exact:true}).evaluate(e=>e===document.activeElement),`${mode}: section keyboard order`);
+      await address.fill('rejected.site');await tick();assert(await address.inputValue()==='studio.design',`${mode}: group controlled restore`);
+      const cdp=await context.newCDPSession(page);const ax=await cdp.send('Accessibility.getFullAXTree');await cdp.detach();
+      assert(ax.nodes.some(n=>n.role?.value==='textbox'&&n.name?.value==='Biography'&&n.properties?.some(p=>p.name==='multiline'&&p.value.value===true)),`${mode}: multiline AX`);
+      assert(ax.nodes.some(n=>n.role?.value==='button'&&n.name?.value==='Show password'),`${mode}: visibility AX name`);
+      await page.evaluate(()=>window.demo.field_state('disabled',true));
+      for(const control of [bio,password,toggle,address,page.getByRole('button',{name:'Check address',exact:true})])assert(await control.isDisabled(),`${mode}: inherited disabled`);
+      await page.evaluate(()=>window.demo.field_state('disabled',false));
+      await page.evaluate(()=>window.demo.field_state('readonly',true));await bio.focus();await page.keyboard.type('blocked');await tick();
+      assert(await bio.evaluate(e=>e.readOnly)&&await password.evaluate(e=>e.readOnly),`${mode}: readonly`);
+      await page.evaluate(()=>window.demo.field_state('readonly',false));
+      await page.setViewportSize({width:390,height:844});await tick();
+      assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${mode}: mobile overflow`);
+      await page.setViewportSize({width:1440,height:1000});
+      await page.reload();await page.waitForFunction(()=>window.ready===true);
+      await page.locator('.sapid-textarea').scrollIntoViewIfNeeded();
+      await page.screenshot({path:`D:/BuildCache/sapid/inputs-${hue}-${scheme}.png`});
+      await page.evaluate(()=>window.demo.unmount());
+      assert(await page.locator('#app').evaluate(e=>e.childElementCount===0),`${mode}: owner cleanup`);
+      reports.push({suite:mode,status:'passed',checks:'intrinsic growth/shrink/wrap/cap, fields, controlled rejection, visibility identity/UTF-16/IME protocol, pointer/keyboard, AX, disabled/readonly, mobile, cleanup'});
+    }
+    await page.goto('http://127.0.0.1:8794/fields-hydrate-green-dark.html?manual');await page.waitForFunction(()=>window.moduleReady===true);
+    await page.locator('.input-bio').fill('before\nhydration');await page.locator('.input-password').fill('before-secret');
+    await page.locator('.input-bio').evaluate(e=>{window.preBio=e;e.setSelectionRange(1,7,'backward')});
+    await page.locator('.input-password').evaluate(e=>{window.prePassword=e;e.setSelectionRange(2,6,'backward')});
+    await page.evaluate(()=>window.demo.mount_fields(true,'green','dark'));
+    assert(await page.locator('.input-bio').evaluate(e=>e===window.preBio&&e.value==='before\nhydration'&&e.selectionStart===1&&e.selectionEnd===7),'textarea dirty adoption');
+    assert(await page.locator('.input-password').evaluate(e=>e===window.prePassword&&e.value==='before-secret'&&e.selectionStart===2&&e.selectionEnd===6),'password dirty adoption');
+    reports.push({suite:'inputs-dirty-hydration',status:'passed'});
+    assert(errors.length===0,JSON.stringify(errors));return {reports,errors};
+  } finally {await context.close();}
+}
