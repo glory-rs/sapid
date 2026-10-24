@@ -49,11 +49,12 @@ string intentionally quantizes channels to RGBA8. An invalid draft leaves the
 palette at its last valid color. Active composition or readonly/disabled state
 blocks palette changes. Controlled `.open` uses `.on_open_change` proposals.
 
-Native Blitz supports the standalone picker and its real Slider alternatives.
-Its current adapter rejects top layers, so default ColorInput returns the existing
-typed `Unsupported("native top layers")`. Explicit `.show_picker(false)` selects
-the verified hex-editor-only mode; it rejects simultaneous popup configuration.
-There is no automatic host-dependent fallback. The standalone ColorPicker has
+Native Blitz supports the standalone picker, its real Slider alternatives and
+ColorInput's default anchored Popup through the finite Dialog/Popover layer
+facet. Four-theme native tests verify actual anchor geometry, palette changes,
+CPU pixels, retained editor identity and closing. Explicit `.show_picker(false)`
+continues to select the hex-editor-only mode and rejects simultaneous popup
+configuration. The standalone ColorPicker has
 no native form entry; ColorInput submits the real editor value through Field.
 
 Keys are stable ASCII, at most 48 bytes for Picker and 46 for Input, reserving
@@ -84,3 +85,7 @@ The final green/dark hydration screenshot was visually reviewed: 128-pixel
 channels now fit their plane, and the indicator centers on the actual value.
 Browser protocol and AX-tree inspection do not establish OS IME or screen-reader
 announcements.
+
+The native consumer migration passed all seven alerts/color tests in
+`D:/BuildCache/sapid/native-new-layer-consumers-final.log`. It does not extend
+native support to Menu/Tooltip/Listbox, Sheet or ContextPoint layer facets.

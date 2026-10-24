@@ -9,7 +9,9 @@ publish = false
 
 [features]
 default = []
+code = []
 json = ["dep:serde_json"]
+dates = []
 
 [dependencies]
 glory = { path = "../glory/crates/glory", default-features = false }

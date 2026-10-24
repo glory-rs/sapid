@@ -235,11 +235,82 @@ fn native_color_input_preserves_hex_editor_identity_and_error_metadata() {
     assert_eq!(app.stats().nodes, 0);
 }
 #[test]
-fn native_default_color_popup_is_explicitly_unsupported_without_silent_fallback() {
-    let host = WindowApp::new();
-    let error = host.mount(sapid::color_input("popup")).unwrap_err();
-    assert!(matches!(
-        error,
-        glory::ui::Error::Render(glory::render::Error::Unsupported("native top layers"))
-    ));
+fn native_default_color_popup_has_real_anchor_geometry_preserves_editor_and_returns_focus() {
+    for theme in [
+        sapid::Theme::blue_light(),
+        sapid::Theme::blue_dark(),
+        sapid::Theme::green_light(),
+        sapid::Theme::green_dark(),
+    ] {
+        let host = WindowApp::new();
+        host.renderer().set_viewport(800, 700, 1.).unwrap();
+        let app = host.app();
+        let value = app.scope().cage("#ff0000".to_owned());
+        host.mount(
+            sapid::color_input("popup")
+                .theme(theme)
+                .value(value)
+                .on_value_change(move |v| value.revise(|old| *old = v)),
+        )
+        .unwrap();
+        app.settle(16).unwrap();
+        let editor = nodes(app, "sapid-color-editor")[0];
+        let trigger = nodes(app, "sapid-popover-trigger")[0];
+        let identity = host
+            .renderer()
+            .engine_id(editor, glory::html::Part::Main)
+            .unwrap();
+        app.scope().action(Action::Focus(trigger)).unwrap();
+        app.settle(16).unwrap();
+        app.dispatch(trigger, Event::Activate).unwrap();
+        app.settle(16).unwrap();
+        let panel = nodes(app, "sapid-popover")[0];
+        let anchor = bounds(app, trigger);
+        let pop = bounds(app, panel);
+        assert!(pop.width > 200. && pop.height > 150.);
+        assert!(
+            pop.x >= 0.
+                && pop.y >= 0.
+                && pop.x + pop.width <= 800. + 1.
+                && pop.y + pop.height <= 700. + 1.
+        );
+        assert!(pop.y >= anchor.y + anchor.height - 1. || pop.y + pop.height <= anchor.y + 1.);
+        let hue = nodes(app, "sapid-hue-slider")[0];
+        app.dispatch(
+            hue,
+            Event::Range {
+                from: hue,
+                command: RangeCommand::Set(120.),
+            },
+        )
+        .unwrap();
+        app.settle(16).unwrap();
+        assert_ne!(value.get(), "#ff0000");
+        assert_eq!(
+            host.renderer()
+                .engine_id(editor, glory::html::Part::Main)
+                .unwrap(),
+            identity
+        );
+        let mut raster = Raster::new();
+        raster.draw(host.renderer()).unwrap();
+        assert!(raster.pixels().as_chunks::<4>().0.iter().any(|p| p[3] > 0));
+        app.dispatch(nodes(app, "sapid-layer-close")[0], Event::Activate)
+            .unwrap();
+        app.settle(16).unwrap();
+        assert!(
+            app.tree()
+                .node(panel)
+                .unwrap()
+                .descriptor
+                .view()
+                .semantics
+                .as_ref()
+                .unwrap()
+                .hidden
+        );
+        app.clear().unwrap();
+        assert_eq!(app.stats().nodes, 0);
+        assert_eq!(app.stats().queries, 0);
+    }
 }

@@ -23,6 +23,7 @@ struct Registered {
     info: TocEntry,
     node: NodeId,
     ticket: u64,
+    scope: WeakScope,
 }
 #[derive(Clone)]
 struct Viewport {
@@ -49,6 +50,7 @@ struct Index {
     batch: RefCell<Option<Batch>>,
     next: Cell<u64>,
     next_entry: Cell<u64>,
+    measured: Cell<bool>,
     offset: Cell<f64>,
     reveal: RefCell<Option<SemanticId>>,
     queued: Cell<bool>,
@@ -70,6 +72,7 @@ pub fn toc_context(scope: &Scope, key: impl Into<String>) -> Result<TocContext> 
         batch: RefCell::new(None),
         next: Cell::new(0),
         next_entry: Cell::new(0),
+        measured: Cell::new(false),
         offset: Cell::new(0.),
         reveal: RefCell::new(None),
         queued: Cell::new(false),
@@ -89,10 +92,10 @@ pub fn toc_context(scope: &Scope, key: impl Into<String>) -> Result<TocContext> 
     let scope_weak = scope.downgrade();
     scope.effect(move || {
         pulse.get();
-        if let (Some(state), Some(scope)) = (weak.upgrade(), scope_weak.upgrade()) {
-            if let Err(error) = state.refresh() {
-                scope.report_error(error)
-            }
+        if let (Some(state), Some(scope)) = (weak.upgrade(), scope_weak.upgrade())
+            && let Err(error) = state.refresh()
+        {
+            scope.report_error(error)
         }
     });
     Ok(TocContext(state))
@@ -121,6 +124,24 @@ impl TocContext {
         if !self.0.entries.borrow().contains_key(id) {
             return Err(invalid("cannot reveal an unregistered heading"));
         }
+        let viewport = self
+            .0
+            .viewport
+            .borrow()
+            .clone()
+            .ok_or(glory::ui::Error::Gone)?;
+        let scope = viewport.scope.upgrade().ok_or(glory::ui::Error::Gone)?;
+        let heading = self.0.entries.borrow()[id].node;
+        if !scope.contains_node(viewport.node, heading)? {
+            return Err(invalid("heading left its scrolling document"));
+        }
+        let capabilities = scope.capabilities()?;
+        if !capabilities.measure || !capabilities.scroll {
+            return Err(glory::render::Error::Unsupported(
+                "heading reveal requires layout and scrolling",
+            )
+            .into());
+        }
         *self.0.reveal.borrow_mut() = Some(id.clone());
         self.0.refresh()
     }
@@ -139,6 +160,13 @@ impl Index {
             Err(glory::ui::Error::Gone)
         }
     }
+    fn ensure_scope(&self, scope: &Scope) -> Result {
+        self.ensure()?;
+        if scope.id().runtime() != self.owner.runtime() {
+            return Err(glory::render::Error::ForeignRuntime.into());
+        }
+        Ok(())
+    }
     fn ordered(&self) -> Vec<Registered> {
         let mut values = self.entries.borrow().values().cloned().collect::<Vec<_>>();
         values.sort_by_key(|entry| (entry.info.order, entry.ticket));
@@ -146,6 +174,14 @@ impl Index {
     }
     fn changed(&self) -> Result {
         self.cancel();
+        // The construction seed must agree across measureless SSR and an
+        // adopting host before that host can run its first measurement task.
+        if !self.measured.get() {
+            let first = self.ordered().first().map(|entry| entry.info.id.clone());
+            if glory::core::untracked(|| self.active.try_get())? != first {
+                self.active.try_revise(|value| *value = first)?;
+            }
+        }
         self.pulse.try_revise(|_| ())?;
         Ok(())
     }
@@ -218,7 +254,7 @@ impl Index {
             Ok(token) => token,
             Err(error) => {
                 self.queued.set(false);
-                return Err(error);
+                return Err(error.into());
             }
         };
         if self.queued.get() {
@@ -240,6 +276,11 @@ impl Index {
         let Some(scope) = viewport.scope.upgrade() else {
             return Ok(());
         };
+        for entry in &entries {
+            if !scope.contains_node(viewport.node, entry.node)? {
+                return Err(invalid("heading left its scrolling document"));
+            }
+        }
         let capabilities = scope.capabilities()?;
         if !capabilities.measure || !capabilities.scroll {
             let first = entries.first().map(|entry| entry.info.id.clone());
@@ -345,6 +386,7 @@ impl Index {
             .filter_map(|(id, rect)| rect.map(|rect| (id, rect)))
             .collect::<Vec<_>>();
         let active = model::current(&headings, viewport, self.offset.get());
+        self.measured.set(true);
         if self.active.get() != active {
             self.active.try_revise(|value| *value = active)?;
         }
@@ -434,9 +476,16 @@ impl TocHeading {
 }
 impl Widget for TocHeading {
     fn build(&mut self, scope: &Scope) -> Result {
-        self.context.0.ensure()?;
+        self.context.0.ensure_scope(scope)?;
         if !(1..=6).contains(&self.level) {
             return Err(invalid("registered headings require level 1..=6"));
+        }
+        if let Some(viewport) = self.context.0.viewport.borrow().as_ref()
+            && !scope.is_within(viewport.node)?
+        {
+            return Err(invalid(
+                "registered headings must belong to their scrolling document",
+            ));
         }
         let id = composite::id("toc", &self.context.0.key, "heading", &self.key)?;
         {
@@ -510,6 +559,7 @@ impl Widget for TocHeading {
                 },
                 node: reference.get().ok_or(glory::ui::Error::Gone)?,
                 ticket: next,
+                scope: scope.downgrade(),
             },
         );
         self.context.0.changed()?;
@@ -603,7 +653,7 @@ impl TocDocument {
 }
 impl Widget for TocDocument {
     fn build(&mut self, scope: &Scope) -> Result {
-        self.context.0.ensure()?;
+        self.context.0.ensure_scope(scope)?;
         if !self.offset.is_finite() || !(0. ..=1000.).contains(&self.offset) {
             return Err(invalid("heading offset requires 0..=1000 finite pixels"));
         }
@@ -614,6 +664,8 @@ impl Widget for TocDocument {
         }
         let reference = self.common.node_ref.unwrap_or_else(|| scope.cage(None));
         let weak_scope = scope.downgrade();
+        let custom_class = self.common.class.clone();
+        let classes = scope.bond(move || format!("sapid-toc-document {}", custom_class.get()));
         let context = self.context.clone();
         let custom = self.common.style.clone();
         let style = scope.bond(move || {
@@ -630,13 +682,18 @@ impl Widget for TocDocument {
         let weak_resize = scope.downgrade();
         let mut document = crate::scroll_area(format!("toc-{}", self.key))
             .theme(self.common.theme.clone())
-            .class(self.common.class.clone())
+            .class(classes)
             .style(style)
             .node_ref(reference)
             .on_ready(move |_| {
                 if let Some(scope) = weak_scope.upgrade() {
                     let result = (|| -> Result {
                         let node = reference.try_get()?.ok_or(glory::ui::Error::Gone)?;
+                        for entry in ready.0.ordered() {
+                            if entry.scope.upgrade().is_none() || !scope.contains_node(node, entry.node)? {
+                                return Err(invalid("registered headings must belong to their scrolling document"));
+                            }
+                        }
                         *ready.0.viewport.borrow_mut() = Some(Viewport {
                             node,
                             scope: scope.downgrade(),
@@ -675,6 +732,7 @@ impl Widget for TocDocument {
             if let Some(state) = state.upgrade() {
                 state.cancel();
                 state.viewport.borrow_mut().take();
+                state.measured.set(false);
                 let _ = state.active.try_revise(|value| *value = None);
             }
         })?;
@@ -684,7 +742,8 @@ impl Widget for TocDocument {
 
 struct NavRow {
     _owner: Scope,
-    mounted: glory::ui::Mounted,
+    _mounted: glory::ui::Mounted,
+    parent: Option<SemanticId>,
     row: NodeId,
     list: NodeId,
     link: NodeId,
@@ -697,38 +756,99 @@ struct NavState {
     root: NodeId,
     rows: RefCell<BTreeMap<SemanticId, NavRow>>,
     focused: RefCell<Option<SemanticId>>,
+    siblings: RefCell<BTreeMap<Option<SemanticId>, Vec<SemanticId>>>,
+    pending_focus: Cage<Option<SemanticId>>,
     theme: crate::Theme,
     size: crate::Size,
     unstyled: bool,
     current: Lotus<Option<SemanticId>>,
 }
 impl NavState {
+    fn remove_order(&self, id: &SemanticId, parent: &Option<SemanticId>) {
+        let mut all = self.siblings.borrow_mut();
+        if let Some(values) = all.get_mut(parent) {
+            values.retain(|value| value != id);
+            if values.is_empty() {
+                all.remove(parent);
+            }
+        }
+    }
+    fn place(
+        &self,
+        scope: &Scope,
+        id: &SemanticId,
+        parent: Option<SemanticId>,
+        before: Option<&SemanticId>,
+    ) -> Result<bool> {
+        let (old, node, target, next_node) = {
+            let rows = self.rows.borrow();
+            let row = &rows[id];
+            (
+                row.parent.clone(),
+                row.row,
+                parent.as_ref().map(|id| rows[id].list).unwrap_or(self.root),
+                before.map(|id| rows[id].row),
+            )
+        };
+        let unchanged = {
+            let all = self.siblings.borrow();
+            let values = &all[&old];
+            let position = values
+                .iter()
+                .position(|value| value == id)
+                .expect("live row order");
+            old == parent && values.get(position + 1) == before
+        };
+        if unchanged {
+            return Ok(false);
+        }
+        scope.place(node, Some(target), next_node)?;
+        self.remove_order(id, &old);
+        {
+            let mut all = self.siblings.borrow_mut();
+            let values = all.entry(parent.clone()).or_default();
+            let position = before
+                .map(|id| {
+                    values
+                        .iter()
+                        .position(|value| value == id)
+                        .expect("live next row")
+                })
+                .unwrap_or(values.len());
+            values.insert(position, id.clone());
+        }
+        self.rows.borrow_mut().get_mut(id).expect("live row").parent = parent;
+        Ok(true)
+    }
     fn sync(self: &Rc<Self>, entries: Vec<TocEntry>) -> Result {
         let scope = self.weak.upgrade().ok_or(glory::ui::Error::Gone)?;
         let parents = model::parents(&entries);
+        let focus = self.focused.borrow().clone();
         let existing = self.rows.borrow().keys().cloned().collect::<Vec<_>>();
-        let mut retired = Vec::new();
-        let mut removed_focus = None;
-        for id in existing {
-            if !entries.iter().any(|entry| entry.id == id) {
-                if self.focused.borrow().as_ref() == Some(&id) {
-                    removed_focus = Some(id.clone());
-                }
-                if let Some(row) = self.rows.borrow_mut().remove(&id) {
-                    retired.push(row);
-                }
+        // Break only changed parent edges before retiring ancestors; unchanged
+        // subtrees keep their actual order and never leave their live list.
+        for (index, entry) in entries.iter().enumerate() {
+            let parent = parents[index].map(|i| entries[i].id.clone());
+            let old = self
+                .rows
+                .borrow()
+                .get(&entry.id)
+                .map(|row| row.parent.clone());
+            if old
+                .as_ref()
+                .is_some_and(|old| old.is_some() && *old != parent)
+            {
+                self.place(&scope, &entry.id, None, None)?;
             }
         }
-        // Detach rows to the same live list before changing their semantic hierarchy.
-        // This also avoids a transient cycle when heading levels change by remount.
-        let existing_rows = self
-            .rows
-            .borrow()
-            .values()
-            .map(|row| row.row)
-            .collect::<Vec<_>>();
-        for row in existing_rows {
-            scope.place(row, Some(self.root), None)?;
+        let mut retired = Vec::new();
+        for id in existing {
+            if !entries.iter().any(|entry| entry.id == id)
+                && let Some(row) = self.rows.borrow_mut().remove(&id)
+            {
+                self.remove_order(&id, &row.parent);
+                retired.push(row);
+            }
         }
         drop(retired);
         for entry in &entries {
@@ -784,6 +904,23 @@ impl NavState {
                 });
             if self.unstyled {
                 link = link.unstyled();
+            } else {
+                let background = self.theme.accent_soft;
+                let radius = self.theme.radius;
+                link = link.style(owner.bond(move || {
+                    let selected = current.get().is_some();
+                    Style {
+                        background: Some(if selected {
+                            background
+                        } else {
+                            glory::style::Color(0, 0, 0, 0)
+                        }),
+                        font_weight: Some(if selected { 700. } else { 400. }),
+                        radius: Some(radius),
+                        padding: Some(glory::style::Edges::all(4.)),
+                        ..Style::new()
+                    }
+                }));
             }
             let nested = glory::ui::view()
                 .role(Role::List)
@@ -812,20 +949,25 @@ impl NavState {
                 list: list_ref.get().ok_or(glory::ui::Error::Gone)?,
                 link: link_ref.get().ok_or(glory::ui::Error::Gone)?,
                 _owner: owner,
-                mounted,
+                _mounted: mounted,
+                parent: None,
                 label,
                 children,
             };
             self.rows.borrow_mut().insert(entry.id.clone(), row);
+            self.siblings
+                .borrow_mut()
+                .entry(None)
+                .or_default()
+                .push(entry.id.clone());
         }
-        for (index, entry) in entries.iter().enumerate() {
-            let (child, child_list, label, count) = {
+        let mut next = BTreeMap::<Option<SemanticId>, SemanticId>::new();
+        let mut moved = false;
+        for (index, entry) in entries.iter().enumerate().rev() {
+            let (label, count) = {
                 let rows = self.rows.borrow();
                 let row = &rows[&entry.id];
-                let parent = parents[index]
-                    .map(|parent| rows[&entries[parent].id].list)
-                    .unwrap_or(self.root);
-                (row.row, parent, row.label, row.children)
+                (row.label, row.children)
             };
             if label.get() != entry.label {
                 label.try_revise(|value| *value = entry.label.clone())?;
@@ -834,13 +976,20 @@ impl NavState {
             if count.get() != has_children {
                 count.try_revise(|value| *value = has_children)?;
             }
-            scope.place(child, Some(child_list), None)?;
+            let parent = parents[index].map(|i| entries[i].id.clone());
+            moved |= self.place(&scope, &entry.id, parent.clone(), next.get(&parent))?;
+            next.insert(parent, entry.id.clone());
         }
-        if removed_focus.is_some() {
-            self.focused.borrow_mut().take();
-            if let Some(entry) = entries.first() {
-                let node = self.rows.borrow()[&entry.id].link;
-                scope.action(Action::Focus(node))?;
+        if let Some(focus) = focus {
+            if self.rows.borrow().contains_key(&focus) {
+                if moved {
+                    self.pending_focus
+                        .try_revise(|value| *value = Some(focus))?;
+                }
+            } else {
+                self.focused.borrow_mut().take();
+                let target = entries.first().map(|entry| entry.id.clone());
+                self.pending_focus.try_revise(|value| *value = target)?;
             }
         }
         Ok(())
@@ -897,7 +1046,7 @@ impl TableOfContents {
 }
 impl Widget for TableOfContents {
     fn build(&mut self, scope: &Scope) -> Result {
-        self.context.0.ensure()?;
+        self.context.0.ensure_scope(scope)?;
         let id = composite::id("toc", &self.context.0.key, "navigation", &self.key)?;
         let name = self
             .common
@@ -938,6 +1087,8 @@ impl Widget for TableOfContents {
             root: list.get().ok_or(glory::ui::Error::Gone)?,
             rows: RefCell::new(BTreeMap::new()),
             focused: RefCell::new(None),
+            siblings: RefCell::new(BTreeMap::new()),
+            pending_focus: scope.cage(None),
             theme: self.common.theme.clone(),
             size: self.common.size,
             unstyled: self.common.unstyled,
@@ -954,10 +1105,27 @@ impl Widget for TableOfContents {
                 scope.report_error(error)
             }
         });
+        let focus = Rc::downgrade(&state);
+        let weak = scope.downgrade();
+        let pending = state.pending_focus;
+        scope.effect(move || {
+            let Some(key) = pending.get() else { return };
+            if let (Some(state), Some(scope)) = (focus.upgrade(), weak.upgrade()) {
+                let result = (|| -> Result {
+                    pending.try_revise(|value| *value = None)?;
+                    let node = state.rows.borrow().get(&key).map(|row| row.link);
+                    composite::focus_node(&scope, node)
+                })();
+                if let Err(error) = result {
+                    scope.report_error(error);
+                }
+            }
+        });
         let cleanup = Rc::downgrade(&state);
         scope.on_cleanup(move || {
             if let Some(state) = cleanup.upgrade() {
                 let rows = std::mem::take(&mut *state.rows.borrow_mut());
+                state.siblings.borrow_mut().clear();
                 drop(rows);
             }
         })?;

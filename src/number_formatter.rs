@@ -102,40 +102,54 @@ impl NumberFormatter {
 }
 
 #[derive(Clone, Copy)]
-struct Config {
+pub(crate) struct Config {
     locale: NumberLocale,
     format: NumberFormat,
     min: u8,
     max: u8,
     grouping: bool,
 }
+pub(crate) fn config(
+    locale: NumberLocale,
+    format: NumberFormat,
+    min_fraction: Option<u8>,
+    max_fraction: Option<u8>,
+    grouping: bool,
+) -> std::result::Result<Config, glory::render::Error> {
+    let default_min = if matches!(format, NumberFormat::Currency(_)) {
+        2
+    } else {
+        0
+    };
+    let min = min_fraction.unwrap_or(default_min);
+    let default_max = match format {
+        NumberFormat::Decimal => 3,
+        NumberFormat::Percent => 0,
+        NumberFormat::Currency(_) => 2,
+    };
+    let max = max_fraction.unwrap_or(default_max.max(min));
+    if min > max || max > 18 {
+        return Err(glory::render::Error::InvalidProps(
+            "number fractions require 0 <= min <= max <= 18",
+        ));
+    }
+    Ok(Config {
+        locale,
+        format,
+        min,
+        max,
+        grouping,
+    })
+}
 impl Widget for NumberFormatter {
     fn build(&mut self, scope: &Scope) -> Result {
-        let default_min = if matches!(self.format, NumberFormat::Currency(_)) {
-            2
-        } else {
-            0
-        };
-        let min = self.min_fraction.unwrap_or(default_min);
-        let default_max = match self.format {
-            NumberFormat::Decimal => 3,
-            NumberFormat::Percent => 0,
-            NumberFormat::Currency(_) => 2,
-        };
-        let max = self.max_fraction.unwrap_or(default_max.max(min));
-        if min > max || max > 18 {
-            return Err(glory::render::Error::InvalidProps(
-                "number fractions require 0 <= min <= max <= 18",
-            )
-            .into());
-        }
-        let config = Config {
-            locale: self.locale,
-            format: self.format,
-            min,
-            max,
-            grouping: self.grouping,
-        };
+        let config = config(
+            self.locale,
+            self.format,
+            self.min_fraction,
+            self.max_fraction,
+            self.grouping,
+        )?;
         let initial = format_number(self.value.try_get()?, config)?;
         let reference = self.common.node_ref.unwrap_or_else(|| scope.cage(None));
         configure!(
@@ -172,7 +186,7 @@ impl Widget for NumberFormatter {
     }
 }
 
-fn format_number(
+pub(crate) fn format_number(
     value: f64,
     config: Config,
 ) -> std::result::Result<String, glory::render::Error> {

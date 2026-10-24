@@ -106,28 +106,112 @@ fn native_inline_alerts_have_real_layout_controlled_refusal_and_stable_message_n
         assert!(app.tree().is_empty());
     }
 }
+fn focused(app: &App, id: NodeId) -> bool {
+    let out = Rc::new(RefCell::new(None));
+    let saved = out.clone();
+    app.request(Query::Focus(id), move |value| {
+        *saved.borrow_mut() = Some(value.unwrap())
+    })
+    .unwrap();
+    app.pump().unwrap();
+    out.borrow_mut().take().unwrap() == QueryValue::Focus(true)
+}
 #[test]
-fn native_alert_dialog_refuses_unsupported_layer_before_leaving_a_partial_component() {
-    let host = WindowApp::new();
-    let before = host.app().stats();
-    assert!(
+fn native_alert_dialog_uses_safe_focus_controlled_refusal_real_pixels_and_return() {
+    for theme in [
+        sapid::Theme::blue_light(),
+        sapid::Theme::blue_dark(),
+        sapid::Theme::green_light(),
+        sapid::Theme::green_dark(),
+    ] {
+        let host = WindowApp::new();
+        host.renderer().set_viewport(800, 600, 1.).unwrap();
+        let app = host.app();
+        let open = app.scope().cage(false);
+        let outside = app.scope().cage(None);
+        let panel = app.scope().cage(None);
+        let calls = app.scope().cage(0);
         host.mount(
-            sapid::alert_dialog("native-decision")
-                .title("Remove draft?")
-                .description("This action removes the local draft.")
+            glory::ui::view().fill((
+                sapid::button().label("Outside").node_ref(outside),
+                sapid::alert_dialog("native-decision")
+                    .theme(theme)
+                    .title("Remove draft?")
+                    .description("This action removes the local draft.")
+                    .open(open)
+                    .panel_ref(panel)
+                    .on_confirm(move || calls.revise(|v| *v += 1)),
+            )),
         )
-        .is_err()
-    );
-    assert!(host.app().tree().is_empty());
-    assert_eq!(host.app().stats().handlers, before.handlers);
-    assert!(
-        host.mount(sapid::floating_dialog("native-notice").title("Background sync"))
-            .is_err()
-    );
-    assert!(host.app().tree().is_empty());
-    assert_eq!(host.app().stats().handlers, before.handlers);
-    host.mount(sapid::button().label("Recovery")).unwrap();
-    host.app().settle(8).unwrap();
+        .unwrap();
+        app.settle(16).unwrap();
+        app.scope()
+            .action(glory::render::Action::Focus(outside.get().unwrap()))
+            .unwrap();
+        app.settle(16).unwrap();
+        open.revise(|v| *v = true);
+        app.settle(16).unwrap();
+        let panel = panel.get().unwrap();
+        let cancel = find(app, "sapid-layer-close");
+        let confirm = find(app, "sapid-alert-dialog-confirm");
+        assert!(height(app, panel) > 100.);
+        assert!(focused(app, cancel));
+        let engine = host
+            .renderer()
+            .engine_id(panel, glory::html::Part::Main)
+            .unwrap();
+        let mut raster = glory::blitz::Raster::new();
+        raster.draw(host.renderer()).unwrap();
+        assert!(raster.pixels().as_chunks::<4>().0.iter().any(|p| p[3] > 0));
+        app.dispatch(confirm, Event::Activate).unwrap();
+        app.settle(16).unwrap();
+        assert_eq!(calls.get(), 1);
+        assert!(open.get());
+        assert_eq!(
+            host.renderer()
+                .engine_id(panel, glory::html::Part::Main)
+                .unwrap(),
+            engine
+        );
+        open.revise(|v| *v = false);
+        app.settle(16).unwrap();
+        assert!(focused(app, find(app, "sapid-alert-dialog-trigger")));
+        app.clear().unwrap();
+        assert_eq!(app.stats().nodes, 0);
+        assert_eq!(app.stats().queries, 0);
+    }
+}
+#[test]
+fn native_floating_dialog_preserves_background_focus_and_releases_its_owner() {
+    let host = WindowApp::new();
+    let app = host.app();
+    let open = app.scope().cage(false);
+    let outside = app.scope().cage(None);
+    let panel = app.scope().cage(None);
+    host.mount(
+        glory::ui::view().fill((
+            sapid::button().label("Background").node_ref(outside),
+            sapid::floating_dialog("notice")
+                .title("Background sync")
+                .open(open)
+                .panel_ref(panel),
+        )),
+    )
+    .unwrap();
+    app.settle(16).unwrap();
+    app.scope()
+        .action(glory::render::Action::Focus(outside.get().unwrap()))
+        .unwrap();
+    app.settle(16).unwrap();
+    open.revise(|v| *v = true);
+    app.settle(16).unwrap();
+    assert!(height(app, panel.get().unwrap()) > 50.);
+    assert!(focused(app, outside.get().unwrap()));
+    open.revise(|v| *v = false);
+    app.settle(16).unwrap();
+    assert!(focused(app, outside.get().unwrap()));
+    app.clear().unwrap();
+    assert_eq!(app.stats().handlers, 0);
 }
 #[test]
 fn native_skeleton_keeps_explicit_geometry_and_decorative_engine_identity_when_loading_changes()

@@ -552,3 +552,42 @@ fn commit_before_form_submit_normalizes_source_without_consuming_the_form_defaul
     );
     assert_eq!(text(&app, id), "10");
 }
+
+#[test]
+fn boundary_availability_is_not_a_stale_keyboard_gate_for_same_tick_opposite_intents() {
+    for local in [true, false] {
+        let app = App::memory();
+        let source = app.scope().cage(NumberValue::Decimal(d("0")));
+        let r = app.scope().cage(None);
+        let widget = number_input()
+            .default_value(d("0"))
+            .min(Some(d("0")))
+            .max(Some(d("10")))
+            .step(d("0.1"))
+            .node_ref(r);
+        let widget = if local {
+            widget
+        } else {
+            widget
+                .value(source)
+                .on_value_change(move |v| source.revise(|old| *old = v))
+        };
+        app.mount(widget).unwrap();
+        let id = r.get().unwrap();
+        assert!(!spin(&app, id).can_decrease);
+        app.scope()
+            .batch(|| {
+                key(&app, id, RangeCommand::Increase);
+                key(&app, id, RangeCommand::Decrease);
+            })
+            .unwrap();
+        assert_eq!(text(&app, id), "0");
+        app.scope()
+            .batch(|| {
+                key(&app, id, RangeCommand::Decrease);
+                key(&app, id, RangeCommand::Increase);
+            })
+            .unwrap();
+        assert_eq!(text(&app, id), "0.1");
+    }
+}

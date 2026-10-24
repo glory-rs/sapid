@@ -17,7 +17,18 @@ mod button;
 mod checkbox;
 mod checkbox_group;
 mod chip;
+#[cfg(feature = "code")]
+mod code_block;
+#[cfg(feature = "code")]
+mod code_model;
 mod collapsible;
+#[cfg(feature = "code")]
+pub use code_block::{CodeBlock, CodeHighlight, code_block, code_highlight};
+#[cfg(feature = "code")]
+pub use code_model::{
+    CodeDocument, CodeError, CodeLanguage, CodeToken, CodeTokenKind, MAX_CODE_BYTES,
+    MAX_CODE_COMMENT_DEPTH, MAX_CODE_LINES, MAX_CODE_TOKENS, tokenize_code,
+};
 pub mod collection;
 mod color_model;
 mod color_slider;
@@ -25,9 +36,35 @@ mod color_swatch;
 pub mod combobox;
 pub mod command;
 mod composite;
+pub mod data_table;
+pub use data_table::{
+    DataColumn, DataPage, DataPlan, DataRecord, DataRequest, DataSort, DataTable,
+    DataTableError, DataTableQuery, data_table,
+};
+#[cfg(feature = "dates")]
+pub mod dates;
 mod display;
+#[cfg(feature = "dates")]
+pub use dates::*;
+#[cfg(feature = "dates")]
+mod calendar;
+#[cfg(feature = "dates")]
+pub use calendar::{
+    Calendar, MAX_CALENDAR_EXCLUDED_DATES, MAX_CALENDAR_SEARCH_DAYS, calendar, mini_calendar,
+};
 mod document;
 mod field;
+mod floating_indicator;
+mod marquee;
+pub use marquee::{MAX_MARQUEE_TEXT_BYTES, Marquee, MarqueeDirection, marquee};
+mod rolling_number;
+pub use floating_indicator::{
+    FloatingIndicator, FloatingIndicatorContext, FloatingIndicatorTarget, MAX_FLOATING_TARGETS,
+    floating_indicator, floating_indicator_target,
+};
+pub use rolling_number::{
+    MAX_ROLLING_NUMBER_CHARACTERS, MAX_ROLLING_NUMBER_DIGITS, RollingNumber, rolling_number,
+};
 mod form;
 mod form_state;
 mod grid_layout;
@@ -39,6 +76,18 @@ mod input_group;
 mod json_input;
 #[cfg(feature = "json")]
 mod json_model;
+#[cfg(feature = "json")]
+mod json_tree_model;
+#[cfg(feature = "json")]
+mod json_viewer;
+#[cfg(feature = "json")]
+pub use json_tree_model::{
+    JsonTree, JsonViewError, JsonViewLimits, JsonViewNode, MAX_JSON_SEARCH_BYTES,
+    MAX_JSON_VIEW_DEPTH, MAX_JSON_VIEW_KEY_BYTES, MAX_JSON_VIEW_NODES,
+    MAX_JSON_VIEW_PATH_BYTES, parse_json_tree,
+};
+#[cfg(feature = "json")]
+pub use json_viewer::{JsonViewer, json_viewer};
 mod layout;
 mod loading_overlay;
 pub mod menu;
@@ -235,6 +284,25 @@ pub mod prelude {
         MAX_COMMAND_ACTIONS, MAX_COMMAND_GROUPS, MAX_COMMAND_TEXT_BYTES, command,
         command_action, command_group, spotlight,
     };
+    pub use crate::data_table::{
+        DataColumn, DataPage, DataPlan, DataRecord, DataRequest, DataSort, DataTable,
+        DataTableError, DataTableQuery, data_table,
+    };
+    #[cfg(feature = "dates")]
+    pub use crate::dates::*;
+    pub use crate::floating_indicator::{
+        FloatingIndicator, FloatingIndicatorContext, FloatingIndicatorTarget,
+        MAX_FLOATING_TARGETS, floating_indicator, floating_indicator_target,
+    };
+    pub use crate::table::{
+        MAX_TABLE_CELLS, MAX_TABLE_COLUMNS, MAX_TABLE_ROWS, Table, TableCell, TableCellKind,
+        TableRow, TableSection, table, table_body, table_cell, table_foot, table_head,
+        table_header_cell, table_row, table_row_header,
+    };
+    pub use crate::table_of_contents::{
+        MAX_TOC_HEADINGS, TableOfContents, TocContext, TocDocument, TocEntry, TocHeading,
+        table_of_contents, toc_context, toc_document, toc_heading,
+    };
     pub use crate::{
         Accordion, AccordionItem, ActionIcon, Anchor, AnchorAlign, AnchorPlacement,
         AnchorRequest, AnchorSide, AspectRatio, Badge, BadgeVariant, Blockquote, Box,
@@ -290,6 +358,16 @@ pub mod prelude {
         context_menu, dropdown_menu, menu, menu_checkbox, menu_item, menu_radio_group,
         menu_radio_item, menu_submenu, visually_hidden,
     };
+    #[cfg(feature = "dates")]
+    pub use crate::{
+        Calendar, MAX_CALENDAR_EXCLUDED_DATES, MAX_CALENDAR_SEARCH_DAYS, calendar,
+        mini_calendar,
+    };
+    #[cfg(feature = "code")]
+    pub use crate::{
+        CodeBlock, CodeDocument, CodeError, CodeHighlight, CodeLanguage, CodeToken,
+        CodeTokenKind, code_block, code_highlight, tokenize_code,
+    };
     pub use crate::{
         ColorInput, ColorPicker, ColorValidity, MAX_COLOR_PICKER_KEY_BYTES, color_input,
         color_picker,
@@ -308,9 +386,19 @@ pub mod prelude {
         JsonError, JsonErrorKind, JsonFormat, JsonInput, JsonKind, JsonLimits, JsonValidity,
         format_json, json_input, validate_json,
     };
+    #[cfg(feature = "json")]
+    pub use crate::{
+        JsonTree, JsonViewError, JsonViewLimits, JsonViewNode, JsonViewer, json_viewer,
+        parse_json_tree,
+    };
     pub use crate::{
         MAX_BREADCRUMB_ITEMS, MAX_PAGINATION_WINDOW_ITEMS, MAX_STEPPER_STEPS, Step, StepStatus,
         Stepper, step, stepper,
+    };
+    pub use crate::{
+        MAX_MASK_INPUT_BYTES, MAX_MASK_PARTS, MAX_MASK_SLOTS, MAX_PIN_LENGTH, MaskInput,
+        MaskPattern, MaskRejection, MaskedText, PinAlphabet, PinInput, PinRejection, input_otp,
+        mask_input, pin_input,
     };
     pub use crate::{MAX_MENUBAR_ROOTS, Menubar, MenubarMenu, menubar, menubar_menu};
     pub use crate::{
@@ -322,6 +410,7 @@ pub mod prelude {
         Scroller, scroll_area, scroller,
     };
     pub use crate::{MAX_RATING_COUNT, Rating, RatingPrecision, rating};
+    pub use crate::{Marquee, MarqueeDirection, RollingNumber, marquee, rolling_number};
     pub use crate::{
         NavigationFocusable, NavigationMenu, NavigationMenuContext, NavigationMenuLink,
         NavigationMenuPanel, navigation_menu, navigation_menu_link, navigation_menu_panel,
@@ -374,3 +463,27 @@ pub use number_model::{
 };
 mod number_input;
 pub use number_input::{NumberInput, number_input};
+mod mask_input;
+mod mask_model;
+mod pin_input;
+pub use mask_input::{MaskInput, mask_input};
+pub use mask_model::{
+    MAX_MASK_INPUT_BYTES, MAX_MASK_PARTS, MAX_MASK_SLOTS, MaskPattern, MaskRejection,
+    MaskedText,
+};
+mod pin_model;
+pub use pin_input::{PinInput, input_otp, pin_input};
+pub use pin_model::{MAX_PIN_LENGTH, PinAlphabet, PinRejection};
+
+mod table_of_contents;
+pub use table_of_contents::{
+    MAX_TOC_HEADINGS, TableOfContents, TocContext, TocDocument, TocEntry, TocHeading,
+    table_of_contents, toc_context, toc_document, toc_heading,
+};
+
+mod table;
+pub use table::{
+    MAX_TABLE_CELLS, MAX_TABLE_COLUMNS, MAX_TABLE_ROWS, Table, TableCell, TableCellKind,
+    TableRow, TableSection, table, table_body, table_cell, table_foot, table_head,
+    table_header_cell, table_row, table_row_header,
+};

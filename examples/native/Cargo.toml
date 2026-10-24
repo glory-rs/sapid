@@ -7,7 +7,7 @@ publish = false
 [workspace]
 
 [dependencies]
-sapid = { path = "../..", features = ["json"] }
+sapid = { path = "../..", features = ["json", "code", "dates"] }
 glory = { path = "../../../glory/crates/glory", default-features = false, features = ["html", "blitz-accesskit", "blitz-raster"] }
 
 [lints.rust]

@@ -24,13 +24,23 @@ This implementation contains **Button**, **TextField**, **Checkbox**,
 **Overlay** / **LoadingOverlay**, **Notification** / **Toaster**, **Sheet**,
 **NavigationMenu**, **Toolbar** / **ActionBar**, **Autocomplete** / **MultiSelect**,
 **ColorSwatch**, **HueSlider** / **AlphaSlider**, **AngleSlider**, **Rating**,
-**ContextMenu** and **Menubar**. The roadmap records the exact implemented contracts and
+**ContextMenu**, **Menubar**, **Command** / **Spotlight**, **ColorPicker** /
+**ColorInput**, **OverflowList**, **NumberInput**, **PinInput** / **InputOTP**,
+**MaskInput**, **TableOfContents**, **FloatingIndicator**, **Marquee** /
+**RollingNumber** and **Table**. The roadmap records the exact implemented contracts and
 remaining components. Unified Web15 passed all 46 suites (406 reports) with no
 errors. Web16 added TagsInput/PillsInput, Slider, RangeSlider and optional JsonInput;
 all 50 suites (447 reports) passed with no errors. The fixed Web18 snapshot
 passed all 54 suites (489 reports), including dynamic Accordion, ContextMenu,
 Hue/AlphaSlider and AngleSlider. Their component documents record
-exact limits and test scope.
+exact limits and test scope. Web20 passed 60 suites (555 reports), and the fixed
+Web21 replay passed 62 suites (577 reports), including OverflowList and the finite
+Popover placement matrix, with no browser errors. Web23 passed 67 suites (633
+reports), including NumberInput, OTP, TableOfContents, FloatingIndicator and
+cross-App layers. Web25 passed 68 suites (645 reports), including real Table
+semantics/spans and the new shared input protocol, with no errors. Web26 added
+MaskInput (12 reports) and text motion/shared translation (9 reports each),
+including dirty adoption, current geometry, browser AX and classic streams.
 Native limitations remain explicit.
 Optional `features = ["json"]` adds bounded multiline **JsonInput**, validation
 and lossless whitespace formatting. See [JsonInput](docs/json-input.md) for

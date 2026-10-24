@@ -12,6 +12,8 @@ pub mod button_form;
 #[path = "../choice_extras_form.rs"]
 pub mod choice_extras_form;
 pub mod choices_form;
+#[path = "../code_form.rs"]
+pub mod code_form;
 #[path = "../collapse_motion_form.rs"]
 pub mod collapse_motion_form;
 #[path = "../collapse_stream_probe.rs"]
@@ -31,6 +33,8 @@ pub mod display_pages;
 #[path = "../document_form.rs"]
 pub mod document_form;
 pub mod fields_form;
+#[path = "../floating_indicator_form.rs"]
+pub mod floating_indicator_form;
 pub mod form;
 pub mod forms_form;
 #[path = "../graphics_form.rs"]
@@ -76,11 +80,15 @@ pub mod stepper_form;
 pub mod tabs_dynamic_form;
 #[path = "../tags_form.rs"]
 pub mod tags_form;
+#[path = "../text_motion_form.rs"]
+pub mod text_motion_form;
 #[path = "../timeline_form.rs"]
 pub mod timeline_form;
 pub mod toggles_form;
 #[path = "../toolbar_form.rs"]
 pub mod toolbar_form;
+#[path = "../translation_form.rs"]
+pub mod translation_form;
 pub mod typography_form;
 #[path = "../visually_hidden_form.rs"]
 pub mod visually_hidden_form;
@@ -370,6 +378,23 @@ pub mod json_input_form;
 #[path = "../color_picker_form.rs"]
 pub mod color_picker_form;
 
+pub mod calendar_form;
+#[path = "../layer_document_form.rs"]
+pub mod layer_document_form;
+pub mod mask_input_form;
 pub mod number_input_form;
+pub mod pin_input_form;
 #[path = "../popover_placement_form.rs"]
 pub mod popover_placement_form;
+
+#[path = "../table_of_contents_form.rs"]
+pub mod table_of_contents_form;
+
+#[path = "../table_form.rs"]
+pub mod table_form;
+
+#[path = "../data_table_form.rs"]
+pub mod data_table_form;
+
+#[path = "../data_table_server_form.rs"]
+pub mod data_table_server_form;

@@ -92,6 +92,12 @@ typed commit callbacks update the business value before the Form snapshot.
 NumberInput does not consume the ancestor Form submission. DOM `change` alone
 is not a Glory Commit.
 
+Adjustment availability is an AX/button advertisement, not a stale keyboard
+permission: all writable keyboard intents are queued and evaluated in order
+against the confirmed current cursor. From min, Up then Down in one tick returns
+to min; a no-op Down followed by Up still advances once. Disabled/readonly and
+exact-origin checks remain mandatory.
+
 Controlled sources are read-only to the widget. `on_value_change` receives edits
 and step proposals; `on_commit` receives explicit commits and completed steps.
 Applications decide which to accept. A commit-only acceptance also advances the
@@ -137,7 +143,7 @@ These references describe the intended semantics; executable evidence is below.
 
 ## Evidence
 
-- `tests/number_inputs.rs`: 14 passed. Exact and same-tick stepping, complete raw
+- `tests/number_inputs.rs`: 15 passed. Exact and same-tick stepping, complete raw
   lexemes/drafts/empty/commit, controlled refusal and callback order, commit-only
   cursor, bounded source and host edit refusal, invalid-domain recovery, Field
   relations, composition protocol and retirement during a callback.
@@ -150,16 +156,24 @@ These references describe the intended semantics; executable evidence is below.
 - Glory native foundation 2 passed: actual queued keys/IME-modifier isolation,
   unchanged editor, SpinButton AX, optional numeric values/exact text and queued
   numeric actions. `D:/BuildCache/sapid/spin-native.log`.
+- Shared native Enter order regression 1 passed: Input Commit before Form Submit,
+  unchanged textarea/IME behavior. `D:/BuildCache/sapid/number-enter-native.log`.
 - `examples/native/tests/number_input.rs`: 2 passed, covering actual four-theme
   editor geometry, focus, sampled raster colors, identity, exact same-tick steps,
   readonly/disabled recovery, unstyled dimensions, retirement and zero queries.
   `D:/BuildCache/sapid/number-input-native.log`.
 - Sapid lib/NumberInput tests and Web WASM strict Clippy passed. Actual build
   targets were checked with Cargo metadata and are on D.
-- `examples/web/number-input-acceptance.js` prepares 12 browser reports: four
-  themes × CSR/hydration, dirty adoption, composition protocol, budgets/Owner,
-  touch and browser AX. **Awaiting the fixed Web20 actual run; not counted as
-  passing browser evidence yet.** Root Web19 has not been overwritten.
+- Fixed **Web21 actual 12/12 passed**, Chromium 148, errors[], including real
+  Enter clamp followed by normal Form submission and terminal composition.
+  `D:/BuildCache/sapid/number-input-browser-root21.json`.
+- A strengthened same-tick boundary probe then found Up/Down being filtered by
+  old availability metadata; the before-fix result is preserved in
+  `D:/BuildCache/sapid/number-input-web21-cursor-before-fix.json`. The source and
+  new 15th component regression are fixed. The same original 12 browser reports
+  include the stronger Up/Down assertion at the minimum in every theme.
+  **Fixed Web22 actual 12/12 passed**, Chromium 148, errors[];
+  `D:/BuildCache/sapid/number-input-browser-root22.json`.
 
 There is no claim of physical touch-device/OS IME or screen-reader acceptance.
 The native component tests and driver/AX tests exercise the real native adapter;

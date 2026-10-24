@@ -89,7 +89,7 @@ impl Widget for Skeleton {
         }
         let width = composite::validated(scope, &self.width, |value| match value {
             Length::Px(value) | Length::Percent(value) => dimension(*value),
-            Length::Auto => Err(glory::render::Error::InvalidProps(
+            Length::Auto | Length::Ch(_) => Err(glory::render::Error::InvalidProps(
                 "skeleton width must be explicit pixels or percent",
             )
             .into()),

@@ -1,0 +1,51 @@
+async function(page, base='http://127.0.0.1:8794') {
+  const reports=[],errors=[];
+  const fail=message=>{throw Error(message)};
+  const assert=(value,message)=>{if(!value)fail(message)};
+  page.on('pageerror',error=>errors.push(String(error)));
+  const rust="pub fn greet<'a>(name: &'a str) -> String {\n    // Unicode and HTML remain plain code: 😀 <script>\n    let message = format!(\"Hello, {name}!\");\n    message\n}\n";
+  const json="{\n  \"name\": \"Sapid 😀 <script>\",\n  \"ready\": true,\n  \"values\": [1, -2.5e+3, null]\n}\n";
+  const body=()=>page.locator('.code-demo-highlight .sapid-code-source');
+  const turn=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  for(const hue of ['blue','green'])for(const scheme of ['light','dark'])for(const hydrate of [false,true]) {
+    const mode=`code-${hue}-${scheme}-${hydrate?'hydrate':'csr'}`;
+    await page.setViewportSize({width:1100,height:900});
+    await page.goto(`${base}/${hydrate?`code-hydrate-${hue}-${scheme}.html`:`code.html?theme=${hue}&scheme=${scheme}`}`);
+    await page.waitForFunction(()=>window.ready===true);
+    assert(await body().textContent()===rust,`${mode}: source lost whitespace or Unicode`);
+    assert(await page.locator('.code-demo-highlight .sapid-code-gutter').textContent()==='1\n2\n3\n4\n5\n6',`${mode}: line numbers`);
+    assert(await page.locator('.code-demo-plain .sapid-code-gutter').textContent()==='40\n41\n42\n43',`${mode}: start line`);
+    assert(await page.locator('.code-demo-plain .sapid-code-source').textContent()==='  exact spaces\n\tand a tab\n<script>& 😀\n',`${mode}: plain source changed`);
+    assert(await body().locator('code').count()>20,`${mode}: not actual lexical spans`);
+    const colors=await body().locator('code').evaluateAll(items=>new Set(items.map(el=>getComputedStyle(el).color)).size);
+    assert(colors>=3,`${mode}: tokenizer colors missing`);
+    assert(await body().locator('script').count()===0,`${mode}: source interpreted as markup`);
+    const selected=await body().evaluate(element=>{let range=document.createRange();range.selectNodeContents(element);let selection=getSelection();selection.removeAllRanges();selection.addRange(range);return selection.toString()});
+    assert(selected===rust,`${mode}: real source selection changed bytes: ${JSON.stringify(selected)}`);
+    await page.evaluate(()=>getSelection().removeAllRanges());
+    const tokens=await body().locator('code').elementHandles(); const first=tokens[0];
+    await page.getByRole('button',{name:'Show JSON code',exact:true}).click(); await turn();
+    assert(await body().textContent()===json,`${mode}: JSON source update`);
+    assert(await first.evaluate(el=>el===document.querySelector('.code-demo-highlight .sapid-code-source code')),`${mode}: stable position identity lost`);
+    await page.getByRole('button',{name:'Show plain code',exact:true}).click();await turn();
+    assert(await body().locator('code').count()===1,`${mode}: Plain kept stale tokens`);
+    const input=page.getByRole('textbox',{name:'Code draft',exact:true}); await input.fill('Actual code draft');await input.focus();await input.evaluate(el=>el.setSelectionRange(2,7));const editor=await input.elementHandle();
+    await page.evaluate(()=>[...document.querySelectorAll('button')].find(el=>el.textContent==='Show Rust code').click());await turn();
+    assert(await editor.evaluate(el=>el===document.activeElement&&el.value==='Actual code draft'&&el.selectionStart===2&&el.selectionEnd===7),`${mode}: update lost editor identity/focus/selection`);
+    await page.getByRole('button',{name:'Show long code',exact:true}).click();await turn();
+    const overflow=await page.locator('.code-demo-highlight .sapid-code-scroll').evaluate(el=>el.scrollWidth>el.clientWidth+100);assert(overflow,`${mode}: long line has no scrollable geometry`);
+    await page.setViewportSize({width:390,height:900});await turn();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${mode}: mobile overflow`);
+    const session=await page.context().newCDPSession(page); const ax=await session.send('Accessibility.getFullAXTree');await session.detach();
+    assert(await page.locator('.code-demo-highlight .sapid-code-gutter').evaluate(el=>el.inert)&&!ax.nodes.some(n=>!n.ignored&&n.role?.value==='StaticText'&&['1','2','3','4','5','6','40','41','43'].includes(n.name?.value)),`${mode}: inert line gutter leaked into AX`);
+    const unstyled=await page.locator('.code-demo-unstyled .sapid-code-source code').evaluateAll(items=>items.every(el=>!el.style.color&&!el.style.backgroundColor));assert(unstyled,`${mode}: unstyled syntax ink retained`);
+    await page.evaluate(()=>demo.unmount_display());assert(await page.locator('.sapid-code-token').count()===0,`${mode}: Owner left code spans`);
+    reports.push({mode,losslessSource:true,realSelection:true,languageTokens:true,stableTokenIdentity:true,scrollGeometry:true,editorIdentitySelection:true,mobileContained:true,gutterInert:true,ownerCleanup:true});
+  }
+  await page.goto(`${base}/code-hydrate-blue-light.html?manual=1`);await page.waitForFunction(()=>window.moduleReady===true);
+  const root=await body().elementHandle(),input=page.getByRole('textbox',{name:'Code draft',exact:true});await input.fill('Dirty before code adoption');await input.focus();await input.evaluate(el=>el.setSelectionRange(1,6));const editor=await input.elementHandle();
+  await page.evaluate(()=>demo.mount_code(true,'blue','light'));await turn();
+  assert(await root.evaluate(el=>el===document.querySelector('.code-demo-highlight .sapid-code-source')),'code adoption replaced source');
+  assert(await editor.evaluate(el=>el===document.activeElement&&el.value==='Dirty before code adoption'&&el.selectionStart===1&&el.selectionEnd===6),'code adoption lost dirty editor');
+  assert(await body().textContent()===rust,'code adoption source mismatch');await page.evaluate(()=>demo.unmount_display());
+  reports.push({mode:'code-dirty-adoption',sourceIdentity:true,dirtyEditorFocusSelection:true});assert(errors.length===0,`code page errors: ${errors.join(';')}`);return {reports,errors};
+}

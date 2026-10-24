@@ -354,16 +354,34 @@
       "id": "P0-07",
       "phase": "P0",
       "name": "Dialog",
-      "status": "baseline",
+      "status": "done",
       "sources": [
         "M:Modal",
         "S:Dialog"
       ],
-      "work": "已有 Web modal/focus/Escape/outside；仍需原生浮层、滚动锁、组合插槽与跨 App 策略。",
+      "work": "Dialog原生独立top layer布局/命中/paint、Manage焦点/AX、嵌套和非模态关联、滚动隔离、真正Button slots与Document跨App栈均已补齐；Web26矩阵71/675、独立layer12/placement13、原生Layer8/AX1/Sapid消费者7与真fork全验收通过。",
       "baseline_at_snapshot": true,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/overlay.rs",
+          "docs/popover.md",
+          "../glory/crates/web/src/browser/layer_document.rs",
+          "../glory/crates/blitz/src/layers.rs",
+          "../glory/docs/native-top-layers.md"
+        ],
+        "tests": [
+          "examples/web/overlay-acceptance.js",
+          "examples/web/popover-placement-acceptance.js",
+          "examples/web/layer-document-acceptance.js",
+          "../glory/crates/blitz/src/layer_tests.rs (8 passed)",
+          "../glory/crates/blitz/tests/layers.rs",
+          "examples/native/tests/alerts.rs",
+          "examples/native/tests/color_pickers.rs",
+          "D:/BuildCache/sapid/browser-web26-results.json (71 suites, 675 reports, errors [])",
+          "D:/BuildCache/sapid/native-top-layer-final-provenance.log",
+          "D:/BuildCache/sapid/native-layers-final-all.log",
+          "D:/BuildCache/sapid/native-layer-final-clippy.log"
+        ]
       }
     },
     {
@@ -375,7 +393,7 @@
         "M:Drawer",
         "S:Drawer"
       ],
-      "work": "四侧 Drawer、默认 Unmount/KeepMounted、稳定 panel、Modal Layer 焦点循环/返回、Escape/outside 和 Owner 清理已验收；P5-02 补齐有限四侧握柄手势、snap、移动 viewport、滚动隔离和动态 reduced motion。原生 Layer 明确拒绝；跨 App 浮层堆栈仍属 P0-07。",
+      "work": "四侧 Drawer、默认 Unmount/KeepMounted、稳定 panel、Modal Layer 焦点循环/返回、Escape/outside 和 Owner 清理已验收；P5-02 补齐有限四侧握柄手势、snap、移动 viewport、滚动隔离和动态 reduced motion。原生Drawer Edge/Sheet facet仍明确拒绝；Dialog/Popover原生与跨App能力已在P0-07/P0-09单独验收。",
       "baseline_at_snapshot": true,
       "evidence": {
         "implementation": [
@@ -396,17 +414,35 @@
       "id": "P0-09",
       "phase": "P0",
       "name": "Popover",
-      "status": "baseline",
+      "status": "done",
       "sources": [
         "M:Popover",
         "M:ComboboxPopover",
         "S:Popover"
       ],
-      "work": "已有交互式弹层及底部定位；补完整 placement/collision、锚点失效与可组合触发器。",
+      "work": "Popover完整12 placement/flip/shift/gap/padding、锚点失效与恢复、真Button trigger/close slots已完成，Web实际13及跨App12、原生12位置/焦点/paint/AX与ColorInput消费者均通过；默认非模态Manage，Preserve明确不抢焦点。",
       "baseline_at_snapshot": true,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/overlay.rs",
+          "docs/popover.md",
+          "../glory/crates/web/src/browser/layer_document.rs",
+          "../glory/crates/blitz/src/layers.rs",
+          "../glory/docs/native-top-layers.md"
+        ],
+        "tests": [
+          "examples/web/overlay-acceptance.js",
+          "examples/web/popover-placement-acceptance.js",
+          "examples/web/layer-document-acceptance.js",
+          "../glory/crates/blitz/src/layer_tests.rs (8 passed)",
+          "../glory/crates/blitz/tests/layers.rs",
+          "examples/native/tests/alerts.rs",
+          "examples/native/tests/color_pickers.rs",
+          "D:/BuildCache/sapid/browser-web26-results.json (71 suites, 675 reports, errors [])",
+          "D:/BuildCache/sapid/native-top-layer-final-provenance.log",
+          "D:/BuildCache/sapid/native-layers-final-all.log",
+          "D:/BuildCache/sapid/native-layer-final-clippy.log"
+        ]
       }
     },
     {
@@ -440,7 +476,7 @@
         "M:FocusTrap",
         "M:Portal"
       ],
-      "work": "现有宿主浮层已有范围管理；补通用焦点范围、嵌套模态和非模态关系、原生 top layer，明确 Portal 目标和 Owner 归属。",
+      "work": "宿主Layer基础已完成Web跨App与原生真实Dialog/Popover：当前声明1024预算、嵌套/关联scope、焦点返回/隔离和滚动锁已有证据。独立通用FocusScope和Portal目标/Owner API仍待补齐，本项保持partial。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [],
@@ -1882,7 +1918,7 @@
       "sources": [
         "S:Alert Dialog"
       ],
-      "work": "独立AlertDialog角色与描述、明确确认/取消和默认安全Cancel初始焦点、默认禁用outside、受控拒绝/confirm_enabled/回调退休已实现；复用host Modal Layer，四主题Web/SSR真实焦点/AX与native明确拒绝已验收。",
+      "work": "独立AlertDialog角色与描述、明确确认/取消和默认安全Cancel初始焦点、默认禁用outside、受控拒绝/confirm_enabled/回调退休已实现；复用host Modal Layer，四主题Web/SSR真实焦点/AX与原生四主题safe-focus/真实像素/受控确认拒绝/触发器焦点返回已验收。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -1897,7 +1933,8 @@
           "../glory/crates/html/src/patch_tests.rs",
           "../glory/crates/blitz/src/accessibility_alert_tests.rs",
           "examples/native/tests/alerts.rs",
-          "D:/BuildCache/sapid/alerts-browser.json (8 passed, web8, Chromium 148.0.7778.96)"
+          "D:/BuildCache/sapid/alerts-browser.json (8 passed, web8, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/native-new-layer-consumers-final.log (7 passed across alerts/color tests)"
         ]
       }
     },
@@ -2171,7 +2208,7 @@
       "sources": [
         "M:Dialog"
       ],
-      "work": "独立FloatingDialog为具名居中非模态notice，Preserve焦点、不trap Tab、背景可交互、默认无outside关闭，受控/本地及保留草稿策略已实现；Web/SSR真实行为通过，native Layer明确拒绝。",
+      "work": "独立FloatingDialog为具名居中非模态notice，Preserve焦点、不trap Tab、背景可交互、默认无outside关闭，受控/本地及保留草稿策略已实现；Web/SSR真实行为通过，原生Preserve真实布局/背景焦点/Owner清理已验收。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -2183,7 +2220,8 @@
           "tests/overlays.rs (6 passed)",
           "examples/native/tests/alerts.rs",
           "examples/web/alerts-acceptance.js",
-          "D:/BuildCache/sapid/alerts-browser.json (8 passed, web8)"
+          "D:/BuildCache/sapid/alerts-browser.json (8 passed, web8)",
+          "D:/BuildCache/sapid/native-new-layer-consumers-final.log (7 passed across alerts/color tests)"
         ]
       }
     },
@@ -2497,76 +2535,135 @@
       "id": "P6-11",
       "phase": "P6",
       "name": "TableOfContents",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:TableOfContents"
       ],
-      "work": "标题注册、当前节、滚动与嵌套结构，索引仅持有存活标题。",
+      "work": "仅存活256标题的显式注册索引、真实Location当前节链接/嵌套列表、实际Bounds滚动及Owner任务查询合并已完成。9组件+3纯模型、原生四主题geometry/CPU/focus/identity1和私有toc-next实际11项CSR/采用/移动端/dirty/退休全过；SSR与首测前确定性seed一致。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/table_of_contents.rs",
+          "src/toc_model.rs",
+          "docs/table-of-contents.md"
+        ],
+        "tests": [
+          "tests/table_of_contents.rs (9 passed)",
+          "examples/native/tests/table_of_contents.rs",
+          "examples/web/table-of-contents-acceptance.js",
+          "../glory/crates/ui/tests/ancestry.rs",
+          "../glory/crates/render/tests/current.rs",
+          "D:/BuildCache/sapid/toc-browser-root23.json (11 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P6-12",
       "phase": "P6",
       "name": "OverflowList",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:OverflowList"
       ],
-      "work": "测量容纳项、溢出入口和焦点转移，避免全业务数据预排版。",
+      "work": "有界当前128项OverflowList已实现，真实布局测量、可控前缀提案、单Owner/节点移入Popover与移回、焦点交接、重排和dirty采用已补齐。10组件+2纯模型、原生四主题显式inline布局及Web21实际9项验收通过；默认原生Popup继续明确拒绝。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/overflow_list.rs",
+          "docs/overflow-list.md"
+        ],
+        "tests": [
+          "tests/overflow_list.rs (10 passed)",
+          "examples/native/tests/overflow_list.rs",
+          "examples/web/overflow-list-acceptance.js",
+          "D:/BuildCache/sapid/overflow-list-browser-root21.json (9 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P6-13",
       "phase": "P6",
       "name": "FloatingIndicator",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:FloatingIndicator"
       ],
-      "work": "跟随活动项的测量/动画与方向变化，不改变语义焦点。",
+      "work": "有界128当前target的真实Bounds装饰指示器已实现：单任务/两query、当前staged祖先校验、首次采用静态seed、GraphicTransition移动/打断/Reduce、隐藏退休与无焦点改写。5组件+2模型+共享祖先4、原生四主题像素/motion/focus2、私有layer-next实际9项全过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/floating_indicator.rs",
+          "src/floating_model.rs",
+          "docs/floating-indicator.md"
+        ],
+        "tests": [
+          "tests/floating_indicator.rs (5 passed)",
+          "examples/native/tests/floating_indicator.rs",
+          "examples/web/floating-indicator-acceptance.js",
+          "../glory/crates/ui/tests/ancestry.rs",
+          "D:/BuildCache/sapid/floating-indicator-browser-layer-next.json (9 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P6-14",
       "phase": "P6",
       "name": "Marquee / RollingNumber",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Marquee",
         "M:RollingNumber"
       ],
-      "work": "运动展示、停止/暂停、稳定文本替代和 reduced-motion。",
+      "work": "Marquee/RollingNumber已走有限TranslationMotion宿主动画；单静态可访问文本、inert视觉副本、实际测宽/稳定reel、暂停/停止/中断/Reduce，无业务Cage逐帧更新。6组件+NumberFormatter11回归、四theme原生geometry/CPU/focus2、Web26实际组件9与基础9（含Rust经典stream End后动画/退休）全过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/marquee.rs",
+          "src/rolling_number.rs",
+          "docs/text-motion.md",
+          "../glory/crates/render/src/translation.rs",
+          "../glory/crates/blitz/src/translation.rs",
+          "../glory/crates/web/src/browser/translation.rs"
+        ],
+        "tests": [
+          "tests/text_motion.rs (6 passed)",
+          "examples/native/tests/text_motion.rs (2 passed)",
+          "examples/web/text-motion-acceptance.js",
+          "examples/web/translation-acceptance.js",
+          "../glory/crates/render/tests/translation.rs",
+          "../glory/crates/html/src/translation_tests.rs",
+          "../glory/crates/blitz/tests/translation.rs",
+          "../glory/crates/ssr/src/stream/translation_tests.rs",
+          "D:/BuildCache/sapid/text-motion-browser-web26.json (9 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/translation-browser-web26.json (9 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P7-01",
       "phase": "P7",
       "name": "NumberInput",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:NumberInput"
       ],
-      "work": "spinbutton 语义、decimal 模型/步进/范围、空值/中间输入态、locale，不能只依赖 Purpose::Number。",
+      "work": "精确Decimal单源NumberInput已实现：本地化完整草稿/范围/readonly/disabled/步进、真正SpinButton输入、同tick有序键盘、IME回声收口、Enter先Commit再Form Submit。6纯模型、15组件、原生组件2+Spin driver/AX2及Web22实际12项加强边界验收全过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/number_input.rs",
+          "src/number_model.rs",
+          "docs/number-input.md",
+          "../glory/crates/render/src/spinbutton.rs"
+        ],
+        "tests": [
+          "tests/number_inputs.rs (15 passed)",
+          "examples/native/tests/number_input.rs",
+          "../glory/crates/blitz/src/command_tests.rs",
+          "../glory/crates/html/src/patch_tests.rs",
+          "examples/web/number-input-acceptance.js",
+          "D:/BuildCache/sapid/number-input-browser-root22.json (12 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
@@ -2773,31 +2870,59 @@
       "id": "P7-09",
       "phase": "P7",
       "name": "PinInput / InputOTP",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:PinInput",
         "S:Input OTP"
       ],
-      "work": "分段显示、完整粘贴/退格、单次输入模型、自动填充与 IME；不把验证码写日志。",
+      "work": "PinInput/InputOTP单真实Input+紧凑连续glyph cells已实现，单String控制/完整粘贴拒绝/IME/accepted-only完成/Field与密码AX保密均补齐。typed Ch最后u64 Value位及独立OneTimeCode/Numeric hints共享实现；6模型+10组件、原生真实字体/掩码/指针caret/布局和Web23实际12项全过。OS autofill与宽间距cell不作承诺。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/pin_input.rs",
+          "src/pin_model.rs",
+          "docs/pin-input.md",
+          "../glory/crates/render/src/input_assist.rs"
+        ],
+        "tests": [
+          "tests/pin_inputs.rs (10 passed)",
+          "examples/native/tests/pin_input.rs",
+          "../glory/crates/style/tests/ch.rs",
+          "../glory/crates/render/tests/input_assist.rs",
+          "../glory/crates/html/tests/input_assist.rs",
+          "examples/web/pin-input-acceptance.js",
+          "D:/BuildCache/sapid/pin-input-browser-root23.json (12 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P7-10",
       "phase": "P7",
       "name": "MaskInput",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:MaskInput"
       ],
-      "work": "显示与原始值映射、选择/粘贴/删除/组合输入，不在每个按键后粗暴替换文本。",
+      "work": "有限ASCII MaskInput已实现，单真实Input、raw/display UTF16映射、粘贴/字面量删除/同tick草稿、typed InputEdit与SelectText、组合及受控拒绝/超大输入恢复。9模型+9组件+原生2与旧输入36回归、Web26实际12含四themeCSR/采用/物理caret/dirty/IME/touch/退休全过；规范键入实际0次value重写。Unicode掩码与OS IME接受不宣称。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/mask_input.rs",
+          "src/mask_model.rs",
+          "docs/mask-input.md",
+          "../glory/crates/render/src/input_edit.rs",
+          "../glory/crates/render/src/text_selection.rs",
+          "../glory/crates/web/src/browser/input_edit.rs"
+        ],
+        "tests": [
+          "tests/mask_inputs.rs (9 passed)",
+          "src/mask_model.rs (9 passed)",
+          "examples/native/tests/mask_input.rs (2 passed)",
+          "examples/web/mask-input-acceptance.js",
+          "../glory/crates/render/tests/input_edit.rs",
+          "../glory/crates/ui/tests/text_selection.rs",
+          "D:/BuildCache/sapid/mask-input-browser-web26.json (12 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
@@ -2831,31 +2956,55 @@
       "id": "P8-01",
       "phase": "P8",
       "name": "Table",
-      "status": "partial",
+      "status": "done",
       "sources": [
         "M:Table",
         "S:Table"
       ],
-      "work": "Glory 已有 table/row/cell 角色；补表头关联、caption、列/行和 Sapid 组合 API。",
+      "work": "真实Table/caption/行组/th/td组合、显式表头关系及有限行列跨度已完成；3模型+4组件+4共享目标/回滚、HTML差分、原生四主题布局/像素/编辑器身份与跨度2、AX命名1、Web24实际12条CSR/hydration/移动/dirty/stream/退休全过。DataTable业务模型单列后续。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/table.rs",
+          "src/table_model.rs",
+          "docs/table.md",
+          "../glory/crates/render/src/table.rs",
+          "../glory/crates/render/src/document.rs"
+        ],
+        "tests": [
+          "tests/tables.rs (4 passed)",
+          "src/table_model.rs (3 passed)",
+          "examples/native/tests/tables.rs (2 passed)",
+          "examples/web/table-acceptance.js",
+          "../glory/crates/render/tests/table.rs (4 passed)",
+          "../glory/crates/html/src/table_tests.rs",
+          "../glory/crates/blitz/src/accessibility_table_tests.rs",
+          "../glory/crates/ssr/src/stream/table_tests.rs",
+          "D:/BuildCache/sapid/table-browser-root24.json (12 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P8-02",
       "phase": "P8",
       "name": "DataTable",
-      "status": "planned",
+      "status": "partial",
       "sources": [
         "S:Data Table"
       ],
-      "work": "排序/筛选/选择/列显隐/分页，服务端和本地模型分离，再接 Glory 窗口列表。",
+      "work": "已实现有限本地/服务端分页模型与键控窗口行、排序/筛选/选择/列显隐/分页组合；5纯模型、4组件、共享Role表格坐标/排序5、窗口行2与HTML差分1通过。真实Web/原生窗口/AX/跨页受控边界正在验收，尚未完成。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/data_table.rs",
+          "src/data_table_model.rs"
+        ],
+        "tests": [
+          "tests/data_tables.rs (4 passed)",
+          "src/data_table_model.rs (5 passed)",
+          "../glory/crates/ui/tests/table_list.rs (2 passed)",
+          "../glory/crates/html/src/table_tests.rs"
+        ]
       }
     },
     {
@@ -2908,13 +3057,21 @@
       "id": "P9-01",
       "phase": "P9",
       "name": "Date model / DatesProvider",
-      "status": "planned",
+      "status": "done",
       "sources": [],
-      "work": "选择 Rust 日期类型；分开 civil date/local time/instant/timezone，显式 locale/week-start 和解析策略。",
+      "work": "可选dates无依赖公历模型和显式DatesProvider已完成，civil/local/instant/fixed-offset独立类型、严格ISO解析、locale/week-start/参考日期与today/minmax明确传入；7模型测试含完整400年146097日与9999年所有月份边界、负Unix及偏移溢出，严格通过。不推断IANA/DST或OS时钟。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/dates.rs",
+          "docs/dates.md",
+          "Cargo.toml (optional dates feature, no new dependency)"
+        ],
+        "tests": [
+          "src/dates.rs (7 passed)",
+          "D:/BuildCache/sapid/dates-model-rust.log",
+          "D:/BuildCache/sapid/dates-model-clippy.log"
+        ]
       }
     },
     {

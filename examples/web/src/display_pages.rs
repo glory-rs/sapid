@@ -80,8 +80,30 @@ mod browser {
                 Box::new(crate::color_swatch_form::color_swatch_form(theme.clone()))
             } else if family == 21 {
                 Box::new(crate::toolbar_form::toolbar_form(theme.clone()))
+            } else if family == 37 {
+                Box::new(crate::data_table_server_form::data_table_server_form(
+                    theme.clone(),
+                ))
+            } else if family == 35 {
+                Box::new(crate::data_table_form::data_table_form(theme.clone()))
+            } else if family == 31 {
+                Box::new(crate::table_form::table_form(theme.clone()))
+            } else if family == 30 {
+                Box::new(crate::table_of_contents_form::table_of_contents_form(
+                    theme.clone(),
+                ))
+            } else if family == 27 {
+                Box::new(crate::floating_indicator_form::floating_indicator_form(
+                    theme.clone(),
+                ))
             } else if family == 26 {
                 Box::new(crate::overflow_list_form::overflow_list_form(theme.clone()))
+            } else if family == 32 {
+                Box::new(crate::translation_form::translation_form(theme.clone()))
+            } else if family == 33 {
+                Box::new(crate::text_motion_form::text_motion_form(theme.clone()))
+            } else if family == 34 {
+                Box::new(crate::code_form::code_form(theme.clone()))
             } else if family == 18 {
                 Box::new(crate::notifications_form::notifications_form(theme.clone()))
             } else {
@@ -236,12 +258,64 @@ mod browser {
         mount(hydrate, 25, hue, scheme)
     }
     #[wasm_bindgen]
+    pub fn mount_data_table_server(
+        hydrate: bool,
+        hue: String,
+        scheme: String,
+    ) -> Result<(), JsValue> {
+        mount(hydrate, 37, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_data_table(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
+        mount(hydrate, 35, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_table(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
+        mount(hydrate, 31, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_table_of_contents(
+        hydrate: bool,
+        hue: String,
+        scheme: String,
+    ) -> Result<(), JsValue> {
+        mount(hydrate, 30, hue, scheme)
+    }
+    #[wasm_bindgen]
     pub fn mount_overflow_list(
         hydrate: bool,
         hue: String,
         scheme: String,
     ) -> Result<(), JsValue> {
         mount(hydrate, 26, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_floating_indicator(
+        hydrate: bool,
+        hue: String,
+        scheme: String,
+    ) -> Result<(), JsValue> {
+        mount(hydrate, 27, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_translation(
+        hydrate: bool,
+        hue: String,
+        scheme: String,
+    ) -> Result<(), JsValue> {
+        mount(hydrate, 32, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_text_motion(
+        hydrate: bool,
+        hue: String,
+        scheme: String,
+    ) -> Result<(), JsValue> {
+        mount(hydrate, 33, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_code(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
+        mount(hydrate, 34, hue, scheme)
     }
     #[wasm_bindgen]
     pub fn mount_collapse_stream_probe() -> Result<(), JsValue> {

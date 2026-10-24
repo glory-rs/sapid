@@ -112,6 +112,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let popover_placement = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::popover_placement_form::form(scope, theme.clone()).0
             })?;
+            let layer_a = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::layer_document_form::form(scope, "a", theme.clone()).0
+            })?;
+            let layer_b = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::layer_document_form::form(scope, "b", theme.clone()).0
+            })?;
+            let layer_document = include_str!("../../layer-document.html")
+                .replace(
+                    "<div id=\"app-a\"></div>",
+                    &format!("<div id=\"app-a\">{}</div>", layer_a.html),
+                )
+                .replace(
+                    "<div id=\"app-b\"></div>",
+                    &format!("<div id=\"app-b\">{}</div>", layer_b.html),
+                );
+            let layer_document = page(&layer_document, "");
+            std::fs::write(
+                directory.join(format!(
+                    "layer-document-hydrate-{hue_name}-{scheme_name}.html"
+                )),
+                &layer_document,
+            )?;
+            if hue_name == "blue" && scheme_name == "light" {
+                std::fs::write(
+                    directory.join("layer-document-hydrate.html"),
+                    &layer_document,
+                )?;
+            }
             let menubar = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::menubar_form::form(scope, theme.clone()).0
             })?;
@@ -144,6 +172,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let tabs_dynamic = glory::ssr::snapshot(
                 sapid_web_example::tabs_dynamic_form::tabs_dynamic_form(theme.clone()),
             )?;
+            let data_table_server = glory::ssr::snapshot(
+                sapid_web_example::data_table_server_form::data_table_server_form(
+                    theme.clone(),
+                ),
+            )?;
+            let data_table = glory::ssr::snapshot(
+                sapid_web_example::data_table_form::data_table_form(theme.clone()),
+            )?;
+            let table =
+                glory::ssr::snapshot(sapid_web_example::table_form::table_form(theme.clone()))?;
+            let table_of_contents = glory::ssr::snapshot(
+                sapid_web_example::table_of_contents_form::table_of_contents_form(
+                    theme.clone(),
+                ),
+            )?;
+            let text_motion = glory::ssr::snapshot(
+                sapid_web_example::text_motion_form::text_motion_form(theme.clone()),
+            )?;
+            let code =
+                glory::ssr::snapshot(sapid_web_example::code_form::code_form(theme.clone()))?;
+            let translation = glory::ssr::snapshot(
+                sapid_web_example::translation_form::translation_form(theme.clone()),
+            )?;
+            let floating_indicator = glory::ssr::snapshot(
+                sapid_web_example::floating_indicator_form::floating_indicator_form(
+                    theme.clone(),
+                ),
+            )?;
             let overflow_list = glory::ssr::snapshot(
                 sapid_web_example::overflow_list_form::overflow_list_form(theme.clone()),
             )?;
@@ -175,6 +231,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             })?;
             let number_input = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::number_input_form::form(scope, theme.clone()).0
+            })?;
+            let pin_input = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::pin_input_form::form(scope, theme.clone()).0
+            })?;
+            let mask_input = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::mask_input_form::form(scope, theme.clone()).0
+            })?;
+            let calendar = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::calendar_form::form(scope, theme.clone()).0
             })?;
             let rating = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::rating_form::form(scope, theme.clone()).0
@@ -228,6 +293,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     "number-input-hydrate",
                     include_str!("../../number-input.html"),
                     number_input,
+                ),
+                (
+                    "pin-input-hydrate",
+                    include_str!("../../pin-input.html"),
+                    pin_input,
+                ),
+                (
+                    "mask-input-hydrate",
+                    include_str!("../../mask-input.html"),
+                    mask_input,
+                ),
+                (
+                    "calendar-hydrate",
+                    include_str!("../../calendar.html"),
+                    calendar,
                 ),
                 (
                     "json-input-hydrate",
@@ -329,6 +409,38 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     include_str!("../../tabs-dynamic.html"),
                     tabs_dynamic,
                 ),
+                (
+                    "data-table-server-hydrate",
+                    include_str!("../../data-table-server.html"),
+                    data_table_server,
+                ),
+                (
+                    "data-table-hydrate",
+                    include_str!("../../data-table.html"),
+                    data_table,
+                ),
+                ("table-hydrate", include_str!("../../table.html"), table),
+                (
+                    "table-of-contents-hydrate",
+                    include_str!("../../table-of-contents.html"),
+                    table_of_contents,
+                ),
+                (
+                    "floating-indicator-hydrate",
+                    include_str!("../../floating-indicator.html"),
+                    floating_indicator,
+                ),
+                (
+                    "translation-hydrate",
+                    include_str!("../../translation.html"),
+                    translation,
+                ),
+                (
+                    "text-motion-hydrate",
+                    include_str!("../../text-motion.html"),
+                    text_motion,
+                ),
+                ("code-hydrate", include_str!("../../code.html"), code),
                 (
                     "overflow-list-hydrate",
                     include_str!("../../overflow-list.html"),

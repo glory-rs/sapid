@@ -65,3 +65,14 @@ Escape, retained drafts, decorative Skeleton identity and mobile overflow.
 Reports are `D:/BuildCache/sapid/alerts-browser.json`, `alerts-native-final.log`
 and `alert-ax-native.log`. Browser and tree evidence does not establish spoken
 screen-reader output or OS input-method acceptance.
+
+
+Native Dialog/AlertDialog Manage and nonmodal Dialog Preserve are now supported
+by WindowApp's finite top-layer driver. The four-theme AlertDialog consumer
+checks safe initial Cancel focus, actual bounds/CPU pixels, controlled Confirm
+refusal, stable panel identity and the declared trigger's return focus. The
+FloatingDialog consumer checks real layout, unchanged background focus and
+Owner cleanup. `examples/native/tests/alerts.rs` passes all four tests; combined
+with ColorInput consumers, `D:/BuildCache/sapid/native-new-layer-consumers-final.log`
+records seven passing tests. The engine provenance and remaining per-facet
+refusals are documented in `../glory/docs/native-top-layers.md`.

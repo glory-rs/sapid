@@ -41,8 +41,9 @@ Glory 的布局/图像/窗口列表基础不等于 Sapid 已完成 DataTable、T
 points；验收和宿主边界见对应证据。Collapse 与 Collapsible 复用展开模型，动画单独补齐。Mantine 布局 Group
 不是 Glory 的 boxless Group。菜单、Tooltip、Combobox 也不能仅改 Popover 的外观就算完成。
 
-当前浮层交互支持 Web，SSR 输出与 hydration 已验证；Blitz 仍明确拒绝 Layer。跨 App 浮层栈、
-完整弹层定位、滚动锁、移动 visual viewport、动态集合和更完整的主题都属于待补强内容。
+Dialog/Popover 已验收 Web/SSR/hydration、Document 跨 App 栈、完整有限锚点定位与滚动锁，
+并接通原生 WindowApp 的真实 top layer、焦点/AX、布局和像素。Drawer/Sheet、Menu/Tooltip/Listbox
+等其余原生 Layer facet 仍按证据明确拒绝。独立 FocusScope/Portal、完整主题及尚未交付组件继续列为后续工作。
 
 ## 目标边界
 

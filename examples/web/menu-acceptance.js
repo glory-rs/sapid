@@ -67,7 +67,7 @@ async (hostPage, baseURL = 'http://127.0.0.1:8794') => {
     await page.goto(`${baseURL}/menu-stream.html`);await page.waitForFunction(()=>document.querySelector('#menu-stream-root')?.dataset.glyStreamState==='ready');
     assert(await page.locator('#stream-menu-trigger').getAttribute('aria-haspopup')==='menu'&&await page.getByRole('button',{name:'Cleared popup'}).getAttribute('aria-haspopup')===null,'classic stream finite PopupKind Set/Clear');
     assert(await page.locator('[role=menuitemcheckbox]').isChecked()&&await page.locator('[role=menuitemradio]').isChecked()&&!await page.locator('#stream-menu').evaluate(e=>e.hidden)&&await page.locator('#stream-menu').getAttribute('data-gly-layer')==='anchor'&&await page.locator('#stream-menu').getAttribute('data-gly-anchor-side')==='right','classic stream native properties, menu roles, hidden reset and side anchor');
-    assert(await page.evaluate(()=>GloryStream.active()===0&&document.querySelector('#menu-stream-root').firstChild.nodeValue==='gly:v:6'&&JSON.parse(document.querySelector('#menu-stream-data').textContent).records[0].name==='menu'),'classic stream End rekey and resource handoff');
+    assert(await page.evaluate(()=>GloryStream.active()===0&&document.querySelector('#menu-stream-root').firstChild.nodeValue==='gly:v:8'&&JSON.parse(document.querySelector('#menu-stream-data').textContent).records[0].name==='menu'),'classic stream End rekey and resource handoff');
     reports.push({suite:'menu-classic-stream',status:'passed',checks:'real Rust Shell/Patch/End, typed PopupKind Set/Clear, menu check/radio properties, hidden reset, side anchor and finite v3 rekey'});
     assert(errors.length===0,JSON.stringify(errors));return{reports,errors};
   }finally{await context.close();}
