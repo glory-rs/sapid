@@ -166,7 +166,10 @@ impl Hint {
             target: None,
             content: None,
             policy: ContentPolicy::Unmount,
-            placement: LayerPlacement::AnchorStart,
+            placement: LayerPlacement::Anchor(glory::render::AnchorPlacement::new(
+                glory::render::AnchorSide::Bottom,
+                glory::render::AnchorAlign::Start,
+            )),
             open_delay: None,
             close_delay: None,
             target_ref: None,
@@ -394,13 +397,7 @@ impl State {
 
 impl Hint {
     fn build(&mut self, scope: &Scope) -> Result {
-        if !matches!(
-            self.placement,
-            LayerPlacement::AnchorStart
-                | LayerPlacement::AnchorEnd
-                | LayerPlacement::AnchorLeft
-                | LayerPlacement::AnchorRight
-        ) {
+        if !matches!(self.placement, LayerPlacement::Anchor(_)) {
             return Err(glory::render::Error::InvalidProps(
                 "hints require an anchor placement",
             )

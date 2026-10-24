@@ -4,9 +4,9 @@ use crate::composite::{self, Callback, Observers};
 use crate::state::{Control, Dirty, Value};
 use glory::render::{
     Descriptor, Event, EventKind, FormControl, Props, SelectEntry, SelectOption, SelectProps,
-    SemanticId, Semantics, TagSeparators, TagsCommand,
+    SemanticId, Semantics, TagHostRejection, TagSeparators, TagsCommand,
 };
-use glory::style::{Display, Edges, FlexDirection, FlexWrap, Style};
+use glory::style::{Display, Edges, FlexDirection, FlexWrap, Limit, Overflow, Style};
 use glory::ui::{Result, Widget};
 use glory::{Cage, Lotus, Scope};
 use std::rc::Rc;
@@ -33,6 +33,7 @@ pub enum TagRejection {
     TooMany,
     TotalBytes,
     SearchTooLong,
+    PasteTooLong,
     NonCanonical,
 }
 
@@ -65,8 +66,8 @@ impl Settings {
         }
         let mut bytes = 0usize;
         for (index, value) in state.values.iter().enumerate() {
-            if value.trim().is_empty()
-                || value.len() > MAX_TAGS_INPUT_TAG_BYTES
+            if value.len() > MAX_TAGS_INPUT_TAG_BYTES
+                || value.trim().is_empty()
                 || value.contains(['\0', '\r', '\n'])
                 || self.duplicates != TagDuplicatePolicy::Allow
                     && state.values[..index].contains(value)
@@ -306,8 +307,21 @@ impl Controller {
         }
         command.validate()?;
         self.dirty.touch()?;
+        if let TagsCommand::Reject(reason) = command {
+            self.rejected.emit(
+                self.owner,
+                match reason {
+                    TagHostRejection::InputBudget => TagRejection::SearchTooLong,
+                    TagHostRejection::ClipboardBudget => TagRejection::PasteTooLong,
+                },
+            );
+            return Ok(());
+        }
         let mut next = self.current()?;
         let text = match command {
+            TagsCommand::Reject(_) => {
+                unreachable!("handled without reading the source or rejected body")
+            }
             TagsCommand::RemoveLast => {
                 if !next.search.is_empty() {
                     return Ok(());
@@ -433,6 +447,19 @@ impl Widget for TagsInput {
         let reference = self.common.node_ref.unwrap_or_else(|| scope.cage(None));
         let root = scope.create(Descriptor::new(Props::Group))?;
         let content = scope.child_in(root)?;
+        let tags_reference = scope.cage(None);
+        glory::ui::view()
+            .class("sapid-tags-input-values")
+            .style(
+                Style::new()
+                    .display(Display::Flex)
+                    .flex_direction(FlexDirection::Row)
+                    .flex_wrap(FlexWrap::Wrap)
+                    .gap(4.0),
+            )
+            .node_ref(tags_reference)
+            .show_in(&content)?;
+        let tags_scope = scope.child_in(tags_reference.get().ok_or(glory::ui::Error::Gone)?)?;
         let rows = scope.bond(move || {
             accepted.with(|state| {
                 state
@@ -466,7 +493,8 @@ impl Widget for TagsInput {
                     let mut style = Style::new()
                         .display(Display::Flex)
                         .flex_direction(FlexDirection::Row)
-                        .flex_wrap(FlexWrap::Wrap);
+                        .max_width(Limit::Percent(100.0))
+                        .overflow_x(Overflow::Auto);
                     if !plain {
                         style.background = Some(theme.accent_soft);
                         style.color = Some(theme.accent_text);
@@ -494,7 +522,10 @@ impl Widget for TagsInput {
                                     let result = command
                                         .remove(&row.value, row.occurrence)
                                         .and_then(|()| {
-                                            if scope.capabilities()?.focus
+                                            if command.owner.is_alive()
+                                                && command.editable.try_get()?
+                                                && !command.composing.try_get()?
+                                                && scope.capabilities()?.focus
                                                 && let Some(node) = reference.try_get()?
                                             {
                                                 scope.action(glory::render::Action::Focus(
@@ -512,7 +543,8 @@ impl Widget for TagsInput {
                 })
             },
         )
-        .show_in(&content)?;
+        .show_in(&tags_scope)?;
+        content.retain(tags_scope)?;
         let input_metadata = metadata.clone();
         let metadata = scope.bond(move || {
             let mut value = input_metadata.get().map(|value| *value).unwrap_or_default();
@@ -994,6 +1026,11 @@ mod tests {
                 .is_err()
         );
         assert_eq!(app.stats().nodes, 0);
+        assert!(
+            app.mount(tags_input("huge-one-tag").default_value(vec![" ".repeat(1_000_000)]))
+                .is_err()
+        );
+        assert_eq!(app.stats().nodes, 0);
         let state = app.scope().cage(TagsInputState {
             values: vec!["x".repeat(256); 256],
             search: String::new(),
@@ -1042,5 +1079,169 @@ mod tests {
                 && !html.contains("aria-expanded")
         );
         assert!(html.contains("aria-required=\"true\""));
+    }
+    #[test]
+    fn pills_variant_keeps_real_editor_and_proxy_while_changing_only_tag_appearance() {
+        let app = App::memory();
+        app.mount(crate::pills_input("pills").default_value(vec!["free".into()]))
+            .unwrap();
+        assert_eq!(values(&app), ["free"]);
+        assert!(nodes(&app).into_iter().any(|id| {
+            let tree = app.tree();
+            let node = tree.node(id).unwrap().descriptor.view();
+            node.classes
+                .iter()
+                .any(|class| class == "sapid-pill-input-tag")
+                && node.style.radius == Some(999.0)
+        }));
+        edit(&app, "another", false);
+        commit(&app);
+        assert_eq!(values(&app), ["free", "another"]);
+    }
+    #[test]
+    fn all_same_revision_tag_edits_and_commits_in_one_drained_tick_are_processed() {
+        use glory::render::{
+            Capabilities, Input, Mutation, Query, QueryToken, Receipt, Render,
+        };
+        struct Queued {
+            memory: glory::render::memory::Memory,
+            queue: Rc<std::cell::RefCell<Vec<Input>>>,
+        }
+        impl Render for Queued {
+            fn style_profile(&self) -> glory::style::Profile {
+                glory::style::Profile::RECORD
+            }
+            fn capabilities(&self) -> Capabilities {
+                Capabilities::default()
+            }
+            fn apply(
+                &mut self,
+                mutations: &[Mutation],
+            ) -> std::result::Result<Receipt, glory::render::Error> {
+                self.memory.apply(mutations)
+            }
+            fn request(
+                &mut self,
+                query: Query,
+                token: QueryToken,
+            ) -> std::result::Result<(), glory::render::Error> {
+                self.memory.request(query, token)
+            }
+            fn drain(&mut self, inputs: &mut Vec<Input>) {
+                inputs.append(&mut self.queue.borrow_mut());
+                self.memory.drain(inputs);
+            }
+        }
+        let queue = Rc::new(std::cell::RefCell::new(Vec::new()));
+        let host_queue = queue.clone();
+        let app = App::new(move |runtime| Queued {
+            memory: glory::render::memory::Memory::new(runtime),
+            queue: host_queue,
+        });
+        let commits = app.scope().cage(0usize);
+        app.mount(tags_input("queued").on_commit(move |_| commits.revise(|count| *count += 1)))
+            .unwrap();
+        let id = editor(&app);
+        let revision = input(&app).revision;
+        for value in ["A", "B"] {
+            queue.borrow_mut().push(Input::Event {
+                node: id,
+                event: Event::ValueChanged {
+                    value: value.into(),
+                    composing: false,
+                    revision,
+                },
+            });
+            queue.borrow_mut().push(Input::Event {
+                node: id,
+                event: Event::Tags {
+                    from: id,
+                    revision,
+                    command: TagsCommand::Commit {
+                        value: value.into(),
+                    },
+                },
+            });
+        }
+        app.pump().unwrap();
+        assert_eq!(values(&app), ["A", "B"]);
+        assert_eq!(input(&app).value, "");
+        assert_eq!(commits.get(), 2);
+        queue.borrow_mut().push(Input::Event {
+            node: id,
+            event: Event::Tags {
+                from: id,
+                revision,
+                command: TagsCommand::Commit {
+                    value: "old".into(),
+                },
+            },
+        });
+        app.pump().unwrap();
+        assert_eq!(values(&app), ["A", "B"]);
+        assert_eq!(commits.get(), 2);
+    }
+    #[test]
+    fn tag_callback_capture_drops_outside_graph_borrow_and_retired_buttons_do_not_resurrect() {
+        struct Capture(Cage<usize>, Rc<std::cell::Cell<bool>>);
+        impl Drop for Capture {
+            fn drop(&mut self) {
+                self.1.set(self.0.try_get().is_ok());
+            }
+        }
+        let app = App::memory();
+        let released = Rc::new(std::cell::Cell::new(false));
+        let capture = Capture(app.scope().cage(3), released.clone());
+        let mounted = tags_input("owner")
+            .default_value(vec!["A".into()])
+            .on_change(move |_| {
+                let _ = &capture;
+            })
+            .mount(app.scope())
+            .unwrap();
+        app.flush().unwrap();
+        let id = editor(&app);
+        drop(mounted);
+        app.flush().unwrap();
+        assert!(released.get());
+        assert_eq!(app.stats().nodes, 0);
+        assert!(
+            !app.dispatch(
+                id,
+                Event::Tags {
+                    from: id,
+                    revision: 1,
+                    command: TagsCommand::RemoveLast
+                }
+            )
+            .unwrap()
+        );
+        assert_eq!(app.stats().nodes, 0);
+    }
+    #[test]
+    fn host_budget_refusals_have_no_body_do_not_propose_partial_state_and_recover() {
+        let app = App::memory();
+        let rejects = app.scope().cage(Vec::new());
+        let changes = app.scope().cage(0);
+        app.mount(
+            tags_input("host-budget")
+                .default_value(vec!["A".into()])
+                .default_search("draft")
+                .on_change(move |_| changes.revise(|count| *count += 1))
+                .on_reject(move |reason| rejects.revise(|values| values.push(reason))),
+        )
+        .unwrap();
+        command(&app, TagsCommand::Reject(TagHostRejection::ClipboardBudget));
+        command(&app, TagsCommand::Reject(TagHostRejection::InputBudget));
+        assert_eq!(changes.get(), 0);
+        assert_eq!(values(&app), ["A"]);
+        assert_eq!(input(&app).value, "draft");
+        assert_eq!(
+            rejects.get(),
+            [TagRejection::PasteTooLong, TagRejection::SearchTooLong]
+        );
+        commit(&app);
+        assert_eq!(values(&app), ["A", "draft"]);
+        assert_eq!(input(&app).value, "");
     }
 }

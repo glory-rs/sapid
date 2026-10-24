@@ -26,6 +26,15 @@ pub fn textarea() -> Textarea {
     }
 }
 impl Textarea {
+    #[cfg(feature = "json")]
+    pub(crate) fn additional_error(
+        mut self,
+        id: glory::render::SemanticId,
+        message: glory::Lotus<String>,
+    ) -> Self {
+        self.input = self.input.additional_error(id, message);
+        self
+    }
     text_input_methods!();
     pub fn rows(mut self, value: u16) -> Self {
         self.rows = value;

@@ -116,3 +116,10 @@ Unified Web14 passed all 43 suites and 378 reports, errors=[] in
 Toolbar/ActionBar, Sheet, NavigationMenu and the first Auto/MultiSelect matrix.
 The later stable listbox-name audit, MultiSelect bulk commands and mid-settle
 motion-preference switch need their subsequent focused/unified snapshots.
+
+The next full gate passed in `gate-snapshot15.log`: 1163 passed-report sum across
+309 result reports, including repeated targets and doctests. Native linking
+uses one Cargo build job after the first parallel link attempt exhausted MSVC
+memory. The earlier failed attempts remain separate logs. Web15 focused reports
+cover the later component changes; `burger-browser.json` and
+`color-swatch-browser-web15.json` each record nine passing actual scenarios.

@@ -1,3 +1,4 @@
+pub use glory::render::{AnchorAlign, AnchorPlacement, AnchorSide};
 use glory::render::{
     DismissReason, Event, EventKind, FocusMode, Layer, LayerPlacement, NodeId, Role,
     SemanticId, Semantics, TextKind,
@@ -19,12 +20,6 @@ pub enum DrawerSide {
     Top,
     Bottom,
 }
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
-pub enum PopoverAlign {
-    #[default]
-    Start,
-    End,
-}
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum AlertCancelReason {
     Cancel,
@@ -45,6 +40,8 @@ struct Overlay {
     change: Option<Box<dyn FnMut(bool)>>,
     dismiss: Option<Box<dyn FnMut(DismissReason)>>,
     content: Option<Factory>,
+    trigger_content: Option<Factory>,
+    close_content: Option<Factory>,
     policy: ContentPolicy,
     trigger: Option<Cage<Option<NodeId>>>,
     panel: Option<Cage<Option<NodeId>>>,
@@ -84,6 +81,8 @@ impl Overlay {
             change: None,
             dismiss: None,
             content: None,
+            trigger_content: None,
+            close_content: None,
             policy: ContentPolicy::Unmount,
             trigger: None,
             panel: None,
@@ -111,13 +110,13 @@ impl Overlay {
 }
 
 macro_rules! overlay {
-    ($name:ident, $function:ident, $kind:literal, $modal:literal, $placement:ident) => {
+    ($name:ident, $function:ident, $kind:literal, $modal:literal, $placement:expr) => {
         pub struct $name {
             inner: Overlay,
         }
         pub fn $function(key: impl Into<String>) -> $name {
             $name {
-                inner: Overlay::new(key, $kind, $modal, LayerPlacement::$placement),
+                inner: Overlay::new(key, $kind, $modal, $placement),
             }
         }
         impl $name {
@@ -144,6 +143,24 @@ macro_rules! overlay {
             }
             pub fn close_label(mut self, value: impl Into<Lotus<String>>) -> Self {
                 self.inner.close_label = value.into();
+                self
+            }
+            /// Visual children of the real trigger Button. `label` remains its
+            /// accessible name; interactive descendants are rejected by Glory.
+            pub fn trigger_content<W: Widget>(
+                mut self,
+                mut factory: impl FnMut() -> W + 'static,
+            ) -> Self {
+                self.inner.trigger_content = Some(Box::new(move || Box::new(factory())));
+                self
+            }
+            /// Visual children of the real close/cancel Button. `close_label`
+            /// remains its accessible name.
+            pub fn close_content<W: Widget>(
+                mut self,
+                mut factory: impl FnMut() -> W + 'static,
+            ) -> Self {
+                self.inner.close_content = Some(Box::new(move || Box::new(factory())));
                 self
             }
             pub fn show_close(mut self, value: bool) -> Self {
@@ -240,16 +257,28 @@ macro_rules! overlay {
         }
     };
 }
-overlay!(Dialog, dialog, "dialog", true, Center);
-overlay!(Drawer, drawer, "drawer", true, Right);
-overlay!(Popover, popover, "popover", false, AnchorStart);
-overlay!(AlertDialog, alert_dialog, "alert-dialog", true, Center);
+overlay!(Dialog, dialog, "dialog", true, LayerPlacement::Center);
+overlay!(Drawer, drawer, "drawer", true, LayerPlacement::Right);
+overlay!(
+    Popover,
+    popover,
+    "popover",
+    false,
+    LayerPlacement::Anchor(AnchorPlacement::default())
+);
+overlay!(
+    AlertDialog,
+    alert_dialog,
+    "alert-dialog",
+    true,
+    LayerPlacement::Center
+);
 overlay!(
     FloatingDialog,
     floating_dialog,
     "floating-dialog",
     false,
-    Center
+    LayerPlacement::Center
 );
 macro_rules! managed_focus {
     ($($name:ident),+)=>{$(impl $name {
@@ -319,11 +348,8 @@ impl Drawer {
     }
 }
 impl Popover {
-    pub fn align(mut self, align: PopoverAlign) -> Self {
-        self.inner.config.placement = match align {
-            PopoverAlign::Start => LayerPlacement::AnchorStart,
-            PopoverAlign::End => LayerPlacement::AnchorEnd,
-        };
+    pub fn placement(mut self, placement: AnchorPlacement) -> Self {
+        self.inner.config.placement = LayerPlacement::Anchor(placement);
         self
     }
     pub fn modal(mut self, modal: bool) -> Self {
@@ -333,17 +359,14 @@ impl Popover {
 }
 impl Widget for Overlay {
     fn build(&mut self, scope: &Scope) -> Result {
+        if let LayerPlacement::Anchor(placement) = self.config.placement {
+            placement.validate()?;
+        }
         let alert = self.kind == "alert-dialog";
         let floating = self.kind == "floating-dialog";
         if !self.show_trigger
             && (self.title.is_none() && self.common.name.is_none()
-                || matches!(
-                    self.config.placement,
-                    LayerPlacement::AnchorStart
-                        | LayerPlacement::AnchorEnd
-                        | LayerPlacement::AnchorRight
-                        | LayerPlacement::AnchorLeft
-                ))
+                || matches!(self.config.placement, LayerPlacement::Anchor(_)))
         {
             return Err(glory::render::Error::InvalidProps(
                 "a triggerless dialog requires a name/title and non-anchored placement",
@@ -467,6 +490,14 @@ impl Widget for Overlay {
         if let Some(reference) = self.trigger {
             trigger = trigger.node_ref(reference);
         }
+        if self.show_trigger
+            && let Some(mut factory) = self.trigger_content.take()
+        {
+            trigger = trigger
+                .name(self.label.clone())
+                .label("")
+                .fill(glory::ui::component(move |scope| factory().show_in(scope)));
+        }
         if !self.common.unstyled {
             trigger = trigger.style(self.common.theme.control(self.common.size));
         }
@@ -477,10 +508,7 @@ impl Widget for Overlay {
         {
             config.return_focus = Some(trigger_id.clone());
         }
-        if matches!(
-            config.placement,
-            LayerPlacement::AnchorStart | LayerPlacement::AnchorEnd
-        ) {
+        if matches!(config.placement, LayerPlacement::Anchor(_)) {
             config.anchor = Some(trigger_id.clone());
         }
         let label = if self.common.name.is_some() {
@@ -657,6 +685,7 @@ impl Widget for Overlay {
         let show_close = self.show_close;
         let policy = self.policy;
         let mut factory = self.content.take();
+        let mut close_content = self.close_content.take();
         let content_open = source;
         let weak = scope.downgrade();
         panel = panel.fill(glory::ui::component(move |scope| {
@@ -723,6 +752,12 @@ impl Widget for Overlay {
                     });
                 if alert && !unstyled {
                     cancel_button = cancel_button.style(theme.control(size));
+                }
+                if let Some(mut factory) = close_content.take() {
+                    cancel_button = cancel_button
+                        .name(close_label.clone())
+                        .label("")
+                        .fill(glory::ui::component(move |scope| factory().show_in(scope)));
                 }
                 cancel_button.show_in(scope)?;
             }

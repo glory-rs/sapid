@@ -5,6 +5,7 @@ use sapid::{Theme, slider};
 pub struct State {
     pub value: Cage<f64>,
     pub accept: Cage<bool>,
+    pub commit_accept: Cage<bool>,
     pub enabled: Cage<bool>,
     pub readonly: Cage<bool>,
     pub error: Cage<String>,
@@ -12,6 +13,7 @@ pub struct State {
 pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
     let value = scope.cage(25.);
     let accept = scope.cage(true);
+    let commit_accept = scope.cage(false);
     let enabled = scope.cage(true);
     let readonly = scope.cage(false);
     let error = scope.cage(String::new());
@@ -59,7 +61,12 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                         value.revise(|v| *v = next)
                     }
                 })
-                .on_value_commit(move |_| commits.revise(|v| *v += 1))
+                .on_value_commit(move |next| {
+                    commits.revise(|v| *v += 1);
+                    if commit_accept.get_untracked() {
+                        value.revise(|v| *v = next)
+                    }
+                })
                 .on(EventKind::Range, move |_| {
                     ordered.revise(|v| *v &= stage.get_untracked());
                     stage.revise(|v| *v = false)
@@ -103,6 +110,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
         State {
             value,
             accept,
+            commit_accept,
             enabled,
             readonly,
             error,
@@ -160,8 +168,20 @@ mod browser {
             let (app, state) = slot.as_ref().ok_or_else(|| js("unmounted"))?;
             app.app().pump().map_err(js)?;
             state.accept.revise(|v| *v = accept);
+            state.commit_accept.revise(|v| *v = false);
             state.enabled.revise(|v| *v = enabled);
             state.readonly.revise(|v| *v = readonly);
+            app.app().flush().map_err(js)
+        })
+    }
+    #[wasm_bindgen]
+    pub fn slider_commit_policy(enabled: bool) -> Result {
+        SLIDER.with(|slot| {
+            let slot = slot.borrow();
+            let (app, state) = slot.as_ref().ok_or_else(|| js("unmounted"))?;
+            app.app().pump().map_err(js)?;
+            state.accept.revise(|v| *v = !enabled);
+            state.commit_accept.revise(|v| *v = enabled);
             app.app().flush().map_err(js)
         })
     }

@@ -7,6 +7,9 @@ use glory::style::{Display, Edges, FlexDirection, Style};
 use glory::ui::{Result, Widget};
 use glory::{Cage, Lotus, Scope};
 
+#[path = "composite_dynamic.rs"]
+pub(crate) mod dynamic;
+
 /// Panel shells and their relations always exist. This controls the lifetime of
 /// the content inside the shell, independently from its semantic visibility.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
@@ -119,13 +122,13 @@ pub(crate) fn column(gap: f64) -> Style {
 pub(crate) fn validate_keys(keys: &[String]) -> Result {
     let mut seen = HashSet::new();
     for key in keys {
-        SemanticId::new(key)?;
         if key.len() > 64 || !seen.insert(key) {
             return Err(glory::render::Error::InvalidProps(
                 "widget item keys must be unique bounded tokens",
             )
             .into());
         }
+        SemanticId::new(key)?;
     }
     Ok(())
 }
@@ -324,16 +327,24 @@ pub(crate) struct Item {
     pub label: Lotus<String>,
     pub enabled: Lotus<bool>,
     pub factory: Option<Factory>,
+    pub trigger_content: Option<Factory>,
     pub trigger: Option<Cage<Option<NodeId>>>,
     pub panel: Option<Cage<Option<NodeId>>>,
 }
 impl Item {
     pub fn new(key: String) -> Self {
         Self {
-            label: key.clone().into(),
+            // Invalid explicit keys are rejected before mounting; do not
+            // duplicate an unbounded business string for their default label.
+            label: if key.len() <= 64 {
+                key.clone().into()
+            } else {
+                "".into()
+            },
             key,
             enabled: true.into(),
             factory: None,
+            trigger_content: None,
             trigger: None,
             panel: None,
         }

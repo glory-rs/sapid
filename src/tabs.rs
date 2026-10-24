@@ -1,4 +1,4 @@
-use glory::render::{Event, EventKind, FocusMode, Orientation, Role, Semantics};
+use glory::render::{Direction, Event, EventKind, FocusMode, Orientation, Role, Semantics};
 use glory::ui::{Result, Widget};
 use glory::{Lotus, Scope};
 use std::cell::Cell;
@@ -9,6 +9,11 @@ use crate::composite::{
     self, Callback, ContentPolicy, Item, Members, Observers, Panel, item_methods,
 };
 use crate::state::{Control, Dirty, Value};
+
+#[path = "tabs_dynamic.rs"]
+mod dynamic;
+#[path = "composite_focus.rs"]
+mod focus;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum TabActivation {
@@ -27,15 +32,25 @@ pub fn tab(key: impl Into<String>) -> Tab {
 }
 impl Tab {
     item_methods!();
+    /// Rich content inside the semantic Tab; label remains its name.
+    pub fn trigger_content<W: Widget>(
+        mut self,
+        mut factory: impl FnMut() -> W + 'static,
+    ) -> Self {
+        self.inner.trigger_content = Some(Box::new(move || Box::new(factory())));
+        self
+    }
 }
 
 pub struct Tabs {
     common: Common,
     key: String,
     items: Vec<Item>,
+    dynamic: Option<composite::dynamic::Items>,
     value: Value<String>,
     on_change: Option<Box<dyn FnMut(String)>>,
     orientation: Orientation,
+    direction: Direction,
     activation: TabActivation,
     looping: bool,
     policy: ContentPolicy,
@@ -45,9 +60,11 @@ pub fn tabs(key: impl Into<String>) -> Tabs {
         common: Common::default(),
         key: key.into(),
         items: Vec::new(),
+        dynamic: None,
         value: Value::default(),
         on_change: None,
         orientation: Orientation::Horizontal,
+        direction: Direction::Ltr,
         activation: TabActivation::Automatic,
         looping: true,
         policy: ContentPolicy::KeepMounted,
@@ -56,7 +73,26 @@ pub fn tabs(key: impl Into<String>) -> Tabs {
 impl Tabs {
     common_methods!();
     pub fn tab(mut self, tab: Tab) -> Self {
-        self.items.push(tab.inner);
+        if self.items.len() <= 256 {
+            self.items.push(tab.inner);
+        }
+        self
+    }
+    /// Reconcile at most 256 current stable keys. Factories run once for each
+    /// newly admitted key under its short Owner; retained keys keep state.
+    pub fn tabs(
+        mut self,
+        keys: impl Into<Lotus<Vec<String>>>,
+        mut factory: impl FnMut(&str) -> Tab + 'static,
+    ) -> Self {
+        self.dynamic = Some(composite::dynamic::Items {
+            source: keys.into(),
+            factory: Box::new(move |key| factory(key).inner),
+        });
+        self
+    }
+    pub fn direction(mut self, direction: Direction) -> Self {
+        self.direction = direction;
         self
     }
     pub fn value(mut self, value: impl Into<Lotus<String>>) -> Self {
@@ -117,6 +153,14 @@ impl Selection {
 
 impl Widget for Tabs {
     fn build(&mut self, scope: &Scope) -> Result {
+        if let Some(input) = self.dynamic.take() {
+            return dynamic::build(self, scope, input);
+        }
+        if self.items.len() > 256 {
+            return Err(
+                glory::render::Error::InvalidProps("tabs exceed the 256-item budget").into(),
+            );
+        }
         let root_id = composite::id("t", &self.key, "root", "root")?;
         let keys: Rc<Vec<_>> =
             Rc::new(self.items.iter().map(|item| item.key.clone()).collect());
@@ -215,7 +259,7 @@ impl Widget for Tabs {
             let root_enabled = self.common.enabled.clone();
             let mut trigger = glory::ui::button()
                 .class("sapid-tab")
-                .label(item.label)
+                .label(item.label.clone())
                 .node_ref(members.references[index])
                 .enabled(scope.bond(move || root_enabled.get() && enabled.get()))
                 .focus(scope.bond(move || {
@@ -235,6 +279,12 @@ impl Widget for Tabs {
                         ..Default::default()
                     })
                 }));
+            if let Some(mut factory) = item.trigger_content.take() {
+                trigger = trigger
+                    .label("")
+                    .name(item.label)
+                    .fill(glory::ui::component(move |scope| factory().show_in(scope)));
+            }
             if !self.common.unstyled {
                 let theme = self.common.theme.clone();
                 let size = self.common.size;
@@ -308,6 +358,7 @@ impl Widget for Tabs {
             .role(Role::TabList)
             .semantics(composite::metadata(Semantics {
                 navigation: Some(self.orientation),
+                navigation_direction: self.direction,
                 ..Default::default()
             }))
             .style(

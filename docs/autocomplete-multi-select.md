@@ -112,6 +112,12 @@ Evidence:
   `D:/BuildCache/sapid/choice-extras-browser-choice-extras-next.json`. Build and
   SSR logs are `choice-extras-next-build.log` and `choice-extras-next-ssr.log` in
   the same build root. Root Web14 was kept unchanged. The fix is ready for the
-  next unified snapshot. The subsequently added select-all/clear-all capability
-  has focused model evidence; its strengthened real-button browser assertions
-  await the next snapshot before P4-08 final canonical completion.
+  next unified snapshot.
+- Final unified Web15 verification: all 12 actual browser groups pass again,
+  errors `[]`, Chromium 148.0.7778.96,
+  `D:/BuildCache/sapid/choice-extras-browser-web15.json`. This includes the
+  strengthened AX name assertion and real external select-all/clear-all buttons:
+  filtered append retains existing outside-filter selection; unfiltered select-all
+  skips the disabled group; clear-all preserves search and remains a controlled
+  proposal. Successful FormData, tags and selection agree in all four themes,
+  CSR and hydration. P4-07/P4-08 now have complete focused model/actual evidence.

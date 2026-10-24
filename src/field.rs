@@ -25,6 +25,10 @@ pub struct FieldControl {
     pub(crate) unstyled: bool,
 }
 impl FieldControl {
+    pub(crate) fn readonly_state(&self, scope: &Scope, readonly: Lotus<bool>) -> Lotus<bool> {
+        let inherited = self.readonly.clone();
+        scope.bond(move || readonly.get() || inherited.get()).into()
+    }
     pub(crate) fn enabled(&self, scope: &Scope, enabled: Lotus<bool>) -> Lotus<bool> {
         let disabled = self.disabled.clone();
         scope.bond(move || enabled.get() && !disabled.get()).into()

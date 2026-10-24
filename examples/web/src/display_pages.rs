@@ -68,10 +68,20 @@ mod browser {
                 ))
             } else if family == 19 {
                 Box::new(crate::sheet_form::sheet_form(theme.clone()))
+            } else if family == 23 {
+                Box::new(crate::accordion_form::accordion_form(theme.clone()))
+            } else if family == 24 {
+                Box::new(crate::tabs_dynamic_form::tabs_dynamic_form(theme.clone()))
+            } else if family == 25 {
+                Box::new(crate::collapse_motion_form::collapse_motion_form(
+                    theme.clone(),
+                ))
             } else if family == 22 {
                 Box::new(crate::color_swatch_form::color_swatch_form(theme.clone()))
             } else if family == 21 {
                 Box::new(crate::toolbar_form::toolbar_form(theme.clone()))
+            } else if family == 26 {
+                Box::new(crate::overflow_list_form::overflow_list_form(theme.clone()))
             } else if family == 18 {
                 Box::new(crate::notifications_form::notifications_form(theme.clone()))
             } else {
@@ -204,6 +214,46 @@ mod browser {
     #[wasm_bindgen]
     pub fn mount_sheet(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 19, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_accordion(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
+        mount(hydrate, 23, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_tabs_dynamic(
+        hydrate: bool,
+        hue: String,
+        scheme: String,
+    ) -> Result<(), JsValue> {
+        mount(hydrate, 24, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_collapse_motion(
+        hydrate: bool,
+        hue: String,
+        scheme: String,
+    ) -> Result<(), JsValue> {
+        mount(hydrate, 25, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_overflow_list(
+        hydrate: bool,
+        hue: String,
+        scheme: String,
+    ) -> Result<(), JsValue> {
+        mount(hydrate, 26, hue, scheme)
+    }
+    #[wasm_bindgen]
+    pub fn mount_collapse_stream_probe() -> Result<(), JsValue> {
+        let root = web_sys::window()
+            .and_then(|window| window.document())
+            .and_then(|document| document.get_element_by_id("collapse-stream-root"))
+            .ok_or_else(|| js("missing collapse stream root"))?;
+        let app =
+            glory::web::hydrate(root, crate::collapse_stream_probe::collapse_stream_probe())
+                .map_err(js)?;
+        APP.with(|slot| *slot.borrow_mut() = Some(app));
+        Ok(())
     }
     #[wasm_bindgen]
     pub fn mount_sheet_stream_probe() -> Result<(), JsValue> {

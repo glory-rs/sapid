@@ -556,7 +556,10 @@ impl Widget for Select {
         let layer = Layer {
             modal: false,
             focus: LayerFocus::Preserve,
-            placement: LayerPlacement::AnchorStart,
+            placement: LayerPlacement::Anchor(glory::render::AnchorPlacement::new(
+                glory::render::AnchorSide::Bottom,
+                glory::render::AnchorAlign::Start,
+            )),
             anchor: Some(trigger_id),
             initial_focus: None,
             return_focus: None,

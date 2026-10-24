@@ -297,3 +297,82 @@ fn ssr_exports_a_custom_slider_with_explicit_snapshot_metadata_and_no_separator_
     assert!(!html.contains("role=\"separator\""));
     assert!(!html.contains("type=\"range\""));
 }
+
+#[test]
+fn rejected_cursor_cannot_be_confirmed_by_later_external_writes_of_the_same_number() {
+    let app = App::memory();
+    let value = app.scope().cage(25.);
+    let requested = app.scope().cage(0.);
+    let reference = app.scope().cage(None);
+    app.mount(
+        slider("cursor")
+            .value(value)
+            .node_ref(reference)
+            .on_value_change(move |v| requested.revise(|old| *old = v)),
+    )
+    .unwrap();
+    let id = reference.get().unwrap();
+    key(&app, id, RangeCommand::Increase);
+    assert_eq!(requested.get(), 26.);
+    value.revise(|v| *v = 26.);
+    key(&app, id, RangeCommand::Increase);
+    assert_eq!(requested.get(), 26.);
+    assert_eq!(range(&app, id).range.value, 26.);
+}
+#[test]
+fn accepted_cursor_is_invalidated_even_by_same_value_external_writes_before_the_next_event() {
+    let app = App::memory();
+    let value = app.scope().cage(25.);
+    let requested = app.scope().cage(0.);
+    let reference = app.scope().cage(None);
+    app.mount(
+        slider("cursor")
+            .value(value)
+            .node_ref(reference)
+            .on_value_change(move |v| {
+                requested.revise(|old| *old = v);
+                value.revise(|old| *old = v)
+            }),
+    )
+    .unwrap();
+    let id = reference.get().unwrap();
+    app.scope()
+        .batch(|| {
+            key(&app, id, RangeCommand::Increase);
+            value.revise(|v| *v = 26.);
+            key(&app, id, RangeCommand::Increase)
+        })
+        .unwrap();
+    assert_eq!(requested.get(), 26.);
+    assert_eq!(value.get(), 26.);
+}
+
+#[test]
+fn commit_callback_acceptance_and_same_value_rewrites_accumulate_keyboard_intents() {
+    for change_accepts in [false, true] {
+        let app = App::memory();
+        let value = app.scope().cage(25.);
+        let reference = app.scope().cage(None);
+        app.mount(
+            slider("commit-cursor")
+                .value(value)
+                .node_ref(reference)
+                .on_value_change(move |next| {
+                    if change_accepts {
+                        value.revise(|old| *old = next)
+                    }
+                })
+                .on_value_commit(move |next| value.revise(|old| *old = next)),
+        )
+        .unwrap();
+        let id = reference.get().unwrap();
+        app.scope()
+            .batch(|| {
+                key(&app, id, RangeCommand::Increase);
+                key(&app, id, RangeCommand::Increase)
+            })
+            .unwrap();
+        assert_eq!(value.get(), 27.);
+        assert_eq!(range(&app, id).range.value, 27.);
+    }
+}

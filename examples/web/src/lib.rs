@@ -1,3 +1,5 @@
+#[path = "../accordion_form.rs"]
+pub mod accordion_form;
 #[path = "../actions_form.rs"]
 pub mod actions_form;
 pub mod affix_form;
@@ -10,11 +12,19 @@ pub mod button_form;
 #[path = "../choice_extras_form.rs"]
 pub mod choice_extras_form;
 pub mod choices_form;
+#[path = "../collapse_motion_form.rs"]
+pub mod collapse_motion_form;
+#[path = "../collapse_stream_probe.rs"]
+pub mod collapse_stream_probe;
 #[path = "../color_swatch_form.rs"]
 pub mod color_swatch_form;
 #[path = "../combobox_form.rs"]
 pub mod combobox_form;
+#[path = "../command_form.rs"]
+pub mod command_form;
 pub mod composite_form;
+#[path = "../context_menu_form.rs"]
+pub mod context_menu_form;
 #[path = "../display_form.rs"]
 pub mod display_form;
 pub mod display_pages;
@@ -35,6 +45,8 @@ pub mod layout_form;
 #[path = "../loading_overlay_form.rs"]
 pub mod loading_overlay_form;
 pub mod menu_form;
+#[path = "../menubar_form.rs"]
+pub mod menubar_form;
 #[path = "../modals_form.rs"]
 pub mod modals_form;
 pub mod native_select_form;
@@ -43,6 +55,8 @@ pub mod navigation_form;
 pub mod navigation_progress_form;
 #[path = "../notifications_form.rs"]
 pub mod notifications_form;
+#[path = "../overflow_list_form.rs"]
+pub mod overflow_list_form;
 pub mod overlay_form;
 #[path = "../progress_form.rs"]
 pub mod progress_form;
@@ -58,6 +72,10 @@ pub mod splitter_form;
 #[path = "../spoiler_form.rs"]
 pub mod spoiler_form;
 pub mod stepper_form;
+#[path = "../tabs_dynamic_form.rs"]
+pub mod tabs_dynamic_form;
+#[path = "../tags_form.rs"]
+pub mod tags_form;
 #[path = "../timeline_form.rs"]
 pub mod timeline_form;
 pub mod toggles_form;
@@ -339,3 +357,19 @@ mod browser {
 pub mod navigation_menu_form;
 
 pub mod slider_form;
+
+pub mod angle_slider_form;
+pub mod range_slider_form;
+pub mod rating_form;
+
+#[path = "../color_sliders_form.rs"]
+pub mod color_sliders_form;
+#[path = "../json_input_form.rs"]
+pub mod json_input_form;
+
+#[path = "../color_picker_form.rs"]
+pub mod color_picker_form;
+
+pub mod number_input_form;
+#[path = "../popover_placement_form.rs"]
+pub mod popover_placement_form;

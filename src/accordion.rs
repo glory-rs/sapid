@@ -1,4 +1,4 @@
-use glory::render::{Event, EventKind, Orientation, Role, Semantics};
+use glory::render::{Direction, Event, EventKind, Orientation, Role, Semantics};
 use glory::ui::{Result, Widget};
 use glory::{Lotus, Scope};
 use std::collections::HashSet;
@@ -10,6 +10,9 @@ use crate::composite::{
 };
 use crate::state::Value;
 
+#[path = "accordion_dynamic.rs"]
+mod dynamic;
+
 pub struct AccordionItem {
     inner: Item,
 }
@@ -20,12 +23,21 @@ pub fn accordion_item(key: impl Into<String>) -> AccordionItem {
 }
 impl AccordionItem {
     item_methods!();
+    /// Rich content inside the semantic Button; label remains its name.
+    pub fn trigger_content<W: Widget>(
+        mut self,
+        mut factory: impl FnMut() -> W + 'static,
+    ) -> Self {
+        self.inner.trigger_content = Some(Box::new(move || Box::new(factory())));
+        self
+    }
 }
 
 pub struct Accordion {
     common: Common,
     key: String,
     items: Vec<Item>,
+    dynamic: Option<composite::dynamic::Items>,
     open: Value<Vec<String>>,
     on_change: Option<Box<dyn FnMut(Vec<String>)>>,
     multiple: bool,
@@ -34,12 +46,14 @@ pub struct Accordion {
     heading: u8,
     regions: bool,
     policy: ContentPolicy,
+    direction: Direction,
 }
 pub fn accordion(key: impl Into<String>) -> Accordion {
     Accordion {
         common: Common::default(),
         key: key.into(),
         items: Vec::new(),
+        dynamic: None,
         open: Value::default(),
         on_change: None,
         multiple: false,
@@ -48,12 +62,31 @@ pub fn accordion(key: impl Into<String>) -> Accordion {
         heading: 3,
         regions: false,
         policy: ContentPolicy::Unmount,
+        direction: Direction::Ltr,
     }
 }
 impl Accordion {
     common_methods!();
     pub fn item(mut self, item: AccordionItem) -> Self {
-        self.items.push(item.inner);
+        if self.items.len() <= 256 {
+            self.items.push(item.inner);
+        }
+        self
+    }
+    /// A bounded keyed sequence; factories run once per newly mounted key.
+    pub fn items(
+        mut self,
+        keys: impl Into<Lotus<Vec<String>>>,
+        mut factory: impl FnMut(&str) -> AccordionItem + 'static,
+    ) -> Self {
+        self.dynamic = Some(composite::dynamic::Items {
+            source: keys.into(),
+            factory: Box::new(move |key| factory(key).inner),
+        });
+        self
+    }
+    pub fn direction(mut self, direction: Direction) -> Self {
+        self.direction = direction;
         self
     }
     pub fn open(mut self, value: impl Into<Lotus<Vec<String>>>) -> Self {
@@ -61,7 +94,7 @@ impl Accordion {
         self
     }
     pub fn default_open(mut self, keys: impl IntoIterator<Item = impl Into<String>>) -> Self {
-        self.open.default = keys.into_iter().map(Into::into).collect();
+        self.open.default = keys.into_iter().take(257).map(Into::into).collect();
         self
     }
     pub fn on_open_change(mut self, callback: impl FnMut(Vec<String>) + 'static) -> Self {
@@ -100,6 +133,12 @@ fn valid_open(
     multiple: bool,
     collapsible: bool,
 ) -> Result {
+    if value.len() > 256 {
+        return Err(glory::render::Error::InvalidProps(
+            "accordion open keys exceed the 256-item budget",
+        )
+        .into());
+    }
     let unique: HashSet<_> = value.iter().collect();
     if unique.len() != value.len()
         || value.iter().any(|key| !known.contains(key))
@@ -113,6 +152,15 @@ fn valid_open(
 
 impl Widget for Accordion {
     fn build(&mut self, scope: &Scope) -> Result {
+        if let Some(input) = self.dynamic.take() {
+            return dynamic::build(self, scope, input);
+        }
+        if self.items.len() > 256 {
+            return Err(glory::render::Error::InvalidProps(
+                "accordion exceeds the 256-item budget",
+            )
+            .into());
+        }
         let root_id = composite::id("a", &self.key, "root", "root")?;
         let keys: Vec<_> = self.items.iter().map(|item| item.key.clone()).collect();
         composite::validate_keys(&keys)?;
@@ -158,7 +206,7 @@ impl Widget for Accordion {
             let current = item.key.clone();
             let mut trigger = glory::ui::button()
                 .class("sapid-accordion-trigger")
-                .label(item.label)
+                .label(item.label.clone())
                 .node_ref(members.references[index])
                 .enabled(scope.bond(move || root_enabled.get() && enabled.get()))
                 .semantics(scope.bond(move || {
@@ -173,6 +221,12 @@ impl Widget for Accordion {
                         ..Default::default()
                     })
                 }));
+            if let Some(mut factory) = item.trigger_content.take() {
+                trigger = trigger
+                    .label("")
+                    .name(item.label)
+                    .fill(glory::ui::component(move |scope| factory().show_in(scope)));
+            }
             if !self.common.unstyled {
                 trigger = trigger.style(self.common.theme.control(self.common.size));
             }
@@ -239,6 +293,7 @@ impl Widget for Accordion {
         .semantics(composite::metadata(Semantics {
             id: Some(root_id),
             navigation: Some(Orientation::Vertical),
+            navigation_direction: self.direction,
             ..Default::default()
         }))
         .fill(children);

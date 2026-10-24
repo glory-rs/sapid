@@ -1,0 +1,80 @@
+async (hostPage) => {
+  const context = await hostPage.context().browser().newContext({ viewport: { width: 1440, height: 1100 } });
+  const reports = [], errors = [];
+  const assert = (value, message) => { if (!value) throw new Error(message); };
+  const base = process.env.SAPID_ACCORDION_BASE || 'http://127.0.0.1:8794';
+  try {
+    const page = await context.newPage();
+    const turn = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    page.on('pageerror', error => errors.push(error.message));
+    page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+    for (const hue of ['blue', 'green']) for (const scheme of ['light', 'dark']) for (const hydrate of [false, true]) {
+      const mode = `accordion-${hue}-${scheme}-${hydrate ? 'hydrate' : 'csr'}`;
+      await page.goto(`${base}/${hydrate ? `accordion-hydrate-${hue}-${scheme}.html` : `accordion.html?theme=${hue}&scheme=${scheme}`}`);
+      await page.waitForFunction(() => window.ready === true);
+      const root = page.locator('.controlled-dynamic-accordion'), local = page.locator('.local-dynamic-accordion');
+      const control = name => page.getByRole('button', { name, exact: true });
+      let prefix = 'Section ';
+      const section = key => root.getByRole('button', { name: prefix + key, exact: true });
+      const status = async () => {
+        const value = (await page.locator('.dynamic-accordion-status').textContent()).match(/Proposals: (\d+); factories: (\d+); order: (.*)/);
+        return { proposals: +value[1], factories: +value[2], order: value[3] };
+      };
+      const waitExpanded = async (key, value) => { await page.waitForFunction(({ name, value }) => [...document.querySelectorAll('.controlled-dynamic-accordion .sapid-accordion-trigger')].find(element => element.getAttribute('aria-label') === name)?.getAttribute('aria-expanded') === String(value), { name: prefix + key, value }); };
+      assert((await status()).factories === 3, `${mode}: initial factory cardinality`);
+      assert(await section('alpha').getAttribute('aria-expanded') === 'true' && await section('beta').isDisabled(), `${mode}: initial accepted/disabled state`);
+      assert((await section('alpha').textContent()).includes('Details: '), `${mode}: rich trigger slot absent`);
+      await section('alpha').evaluate(element => window.savedDynamicParts = [element, document.getElementById(element.getAttribute('aria-controls')), document.querySelector('.dynamic-editor-alpha'), element.querySelector('.dynamic-rich-summary')]);
+      await root.locator('.dynamic-editor-alpha').fill('Retained α draft'); await turn();
+      const cdp = await context.newCDPSession(page), ax = await cdp.send('Accessibility.getFullAXTree');
+      const axButton = ax.nodes.find(node => !node.ignored && node.role?.value === 'button' && node.name?.value === 'Section alpha' && node.properties?.some(property => property.name === 'expanded' && property.value.value === true));
+      assert(axButton && ax.nodes.some(node => !node.ignored && node.role?.value === 'region' && node.name?.value === 'Section alpha'), `${mode}: real Chrome named Button/Region relations`);
+      await cdp.detach();
+      await section('gamma').click(); await turn();
+      assert((await status()).proposals === 1 && (await status()).order === 'typed generic', `${mode}: callback ordering`);
+      await waitExpanded('alpha', true); await waitExpanded('gamma', false);
+      await control('Toggle proposal acceptance').click(); await turn(); await section('gamma').click(); await turn(); await waitExpanded('gamma', true);
+      assert((await status()).proposals === 2, `${mode}: controlled acceptance`);
+      await control('Rotate members').click(); await turn();
+      assert(JSON.stringify(await root.locator('.sapid-accordion-trigger').evaluateAll(elements => elements.map(element => element.getAttribute('aria-label')))) === JSON.stringify(['Section gamma', 'Section alpha', 'Section beta']), `${mode}: logical/DOM order`);
+      assert(await section('alpha').evaluate(element => element === window.savedDynamicParts[0] && document.getElementById(element.getAttribute('aria-controls')) === window.savedDynamicParts[1] && document.querySelector('.dynamic-editor-alpha') === window.savedDynamicParts[2]), `${mode}: reorder replaced surviving identities`);
+      assert(await root.locator('.dynamic-editor-alpha').inputValue() === 'Retained α draft' && (await status()).factories === 3, `${mode}: reorder recreated factory/editor`);
+      await section('gamma').press('ArrowDown'); await turn(); assert(await section('alpha').evaluate(element => element === document.activeElement), `${mode}: navigation ignored current order`);
+      await section('alpha').press('ArrowDown'); await turn(); assert(await section('gamma').evaluate(element => element === document.activeElement), `${mode}: disabled member not skipped`);
+      assert((await status()).proposals === 2, `${mode}: focus navigation opened content`);
+      await control('Toggle language').click(); await turn(); prefix = '章节 '; await section('alpha').waitFor();
+      assert(await section('alpha').evaluate(element => element.querySelector('.dynamic-rich-summary') === window.savedDynamicParts[3] && element.querySelector('.dynamic-rich-summary').textContent === '章节 alpha'), `${mode}: localized source replaced rich text identity`);
+      await control('Toggle beta enabled').click(); await turn(); await section('alpha').press('ArrowDown'); await turn();
+      assert(await section('beta').evaluate(element => element === document.activeElement), `${mode}: newly enabled member not traversed`);
+      await section('alpha').click(); await turn(); await waitExpanded('alpha', true);
+      assert((await status()).proposals === 3, `${mode}: accepted selection callback`);
+      await control('Toggle root enabled').click(); await turn(); assert(await root.locator('.sapid-accordion-trigger:disabled').count() === 3, `${mode}: root enabled AND`);
+      await section('gamma').evaluate(element => element.click()); await turn();
+      await control('Open gamma from source').click(); await turn(); await waitExpanded('gamma', true);
+      assert((await status()).proposals === 3, `${mode}: disabled activation or external source emitted proposal`);
+      await control('Toggle root enabled').click(); await turn();
+      await section('alpha').click(); await turn(); await waitExpanded('alpha', true);
+      await root.locator('.dynamic-editor-alpha').focus(); await turn();
+      await control('Remove alpha').evaluate(element => element.click()); await turn();
+      await page.waitForFunction(() => !window.savedDynamicParts[0].isConnected && !window.savedDynamicParts[2].isConnected);
+      assert(await section('gamma').evaluate(element => element === document.activeElement), `${mode}: focused member retirement did not hand off focus`);
+      assert(await section('gamma').getAttribute('aria-expanded') === 'false', `${mode}: controlled absent intent silently selected another key`);
+      assert(await local.getByRole('button', { name: 'Local gamma', exact: true }).getAttribute('aria-expanded') === 'true', `${mode}: required local removal did not repair`);
+      await control('Add alpha').click(); await turn(); await waitExpanded('alpha', true);
+      assert(await section('alpha').evaluate(element => element !== window.savedDynamicParts[0]), `${mode}: retired key reused its identity`);
+      assert(await root.locator('.dynamic-editor-alpha').inputValue() === 'Initial draft' && (await status()).factories === 4 && (await status()).proposals === 4, `${mode}: reinsert retained retired state or emitted proposal`);
+      await control('Empty members').click(); await turn(); assert(await root.locator('.sapid-accordion-trigger').count() === 0 && await local.locator('.sapid-accordion-trigger').count() === 0, `${mode}: empty collection retained members`);
+      await control('Restore members').click(); await turn(); await waitExpanded('alpha', true);
+      assert((await status()).factories === 7 && (await status()).proposals === 4, `${mode}: empty/reinsert retained factory history or emitted selection`);
+      const localInput = local.locator('.local-dynamic-editor-alpha'); await localInput.evaluate(element => window.savedLocalDynamicInput = element);
+      await local.getByRole('button', { name: 'Local gamma', exact: true }).click(); await turn();
+      assert(await page.evaluate(() => !window.savedLocalDynamicInput.isConnected), `${mode}: Unmount content owner not retired`);
+      await page.setViewportSize({ width: 390, height: 844 }); assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${mode}: mobile overflow`); await page.setViewportSize({ width: 1440, height: 1100 });
+      if (hydrate) await page.screenshot({ path: `D:/BuildCache/sapid/${mode}.png`, fullPage: true });
+      await page.evaluate(() => window.demo.unmount_display());
+      assert(await page.locator('#app').evaluate(element => element.childNodes.length === 0), `${mode}: Owner cleanup`);
+      reports.push({ suite: mode, status: 'passed', checks: 'keyed insert/remove/reorder/empty with stable surviving editor/panel/trigger, once-per-admission factories and new identity on reinsertion, rich localized trigger and Chrome AX Button/Region, current ordered keyboard/disabled traversal, controlled refusal/absence and local repair, focused removal handoff, silent program sources, enabled AND, KeepMounted/Unmount owners, themes/mobile/hydration/cleanup', ax: { role: axButton.role.value, name: axButton.name.value, properties: axButton.properties } });
+    }
+    assert(errors.length === 0, JSON.stringify(errors)); return { reports, errors };
+  } finally { await context.close(); }
+}

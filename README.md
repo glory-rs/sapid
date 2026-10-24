@@ -22,13 +22,19 @@ This implementation contains **Button**, **TextField**, **Checkbox**,
 **ScrollArea** / **Scroller**, **Splitter**, **Affix**, **Select**,
 **Spinner** / **Loader**, **NavigationProgress**, **ModalsManager**, **Combobox**,
 **Overlay** / **LoadingOverlay**, **Notification** / **Toaster**, **Sheet**,
-**NavigationMenu**, and **Toolbar** / **ActionBar**. The roadmap records the exact implemented
-contracts and remaining components. Unified Web11 passed all 36 suites (309
-reports); Combobox and LoadingOverlay have actual focused Web12 reports.
-Notifications passed Web13, and Sheet, NavigationMenu and Toolbar passed Web14
-focused matrices. Unified Web14 then passed all 43 suites (378 reports) with no
-errors. Their component documents record exact limits and test scope.
+**NavigationMenu**, **Toolbar** / **ActionBar**, **Autocomplete** / **MultiSelect**,
+**ColorSwatch**, **HueSlider** / **AlphaSlider**, **AngleSlider**, **Rating**,
+**ContextMenu** and **Menubar**. The roadmap records the exact implemented contracts and
+remaining components. Unified Web15 passed all 46 suites (406 reports) with no
+errors. Web16 added TagsInput/PillsInput, Slider, RangeSlider and optional JsonInput;
+all 50 suites (447 reports) passed with no errors. The fixed Web18 snapshot
+passed all 54 suites (489 reports), including dynamic Accordion, ContextMenu,
+Hue/AlphaSlider and AngleSlider. Their component documents record
+exact limits and test scope.
 Native limitations remain explicit.
+Optional `features = ["json"]` adds bounded multiline **JsonInput**, validation
+and lossless whitespace formatting. See [JsonInput](docs/json-input.md) for
+controlled drafts, error relations and byte/depth/output budgets.
 It targets the current semantic Glory checkout in the sibling `../glory`
 directory. Publishing and a standalone versioned Glory dependency are pending.
 
@@ -429,7 +435,9 @@ layers are cleaned up on closure or App teardown; pre-existing inert attributes
 are preserved. Focus actions remain intents, with native events reporting the
 actual outcome. Composition and repeated Escape keys do not dismiss layers.
 
-Drawer supports Left/Right/Top/Bottom viewport edges. Popover supports
+Drawer supports Left/Right/Top/Bottom viewport edges and optional finite Sheet
+snap points with captured pointer/touch grips, viewport cancellation and reduced
+motion. See [Drawer evidence](docs/drawer.md) and [Sheet](docs/sheet.md). Popover supports
 `PopoverAlign::{Start, End}`, prefers below its trigger, flips above when there
 is room and clamps to the viewport. Scroll/resize placement work coalesces at
 the host read boundary. `.class/.style/.theme/.size/.unstyled` configure the

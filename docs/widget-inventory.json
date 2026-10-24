@@ -270,48 +270,84 @@
       "id": "P0-04",
       "phase": "P0",
       "name": "Collapsible",
-      "status": "baseline",
+      "status": "done",
       "sources": [
         "M:Collapse",
         "S:Collapsible"
       ],
-      "work": "已有展开和内容策略；补独立触发器/内容插槽与可选高度过渡。",
+      "work": "Collapsible有限intrinsic height动画、反向/内容增长、匹配revision完成后的Unmount、KeepMounted、Clear/0/Reduce和能力不足即时完成已补齐。4组件/共享render5+2/HTML2/SSR+stream/native2与Chromium148实际12场景全过；v5采用仅全树成功后重置counter并保dirty编辑器。Blitz可选motion facet明确拒绝，普通基线保留。",
       "baseline_at_snapshot": true,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/collapsible.rs",
+          "docs/collapsible.md",
+          "../glory/crates/render/src/collapse.rs",
+          "../glory/crates/web/src/browser/collapse.rs"
+        ],
+        "tests": [
+          "tests/collapse_motion.rs (4 passed)",
+          "../glory/crates/render/tests/collapse.rs (5 passed)",
+          "../glory/crates/html/src/collapse_tests.rs (2 passed)",
+          "../glory/crates/blitz/tests/collapse.rs (2 passed)",
+          "examples/web/collapse-motion-acceptance.js",
+          "D:/BuildCache/sapid/collapse-motion-browser-command-next.json (12 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P0-05",
       "phase": "P0",
       "name": "Accordion",
-      "status": "baseline",
+      "status": "done",
       "sources": [
         "M:Accordion",
         "S:Accordion"
       ],
-      "work": "已有单/多开和方向键；共享集合升级后增加动态成员与更多组合插槽。",
+      "work": "有界动态 items(key source, factory) 与独立 rich trigger_content 插槽已实现。每个当前 key 短 Owner 工厂一次、重排保留编辑/触发器/panel 身份、移除重插新身份、受控 absent 意图与本地选择修复、当前顺序导航和实际聚焦成员移除交接已验收。此项不包含另行跟踪的 Collapsible 高度 motion。",
       "baseline_at_snapshot": true,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/accordion.rs",
+          "src/collection.rs",
+          "src/composite.rs",
+          "docs/accordion.md"
+        ],
+        "tests": [
+          "tests/composite_dynamic.rs (8 passed)",
+          "tests/composites.rs (18 passed)",
+          "D:/BuildCache/sapid/composite-dynamic-rust.log",
+          "D:/BuildCache/sapid/composite-dynamic-clippy.log",
+          "examples/native/tests/accordion_dynamic.rs (1 passed, four themes)",
+          "D:/BuildCache/sapid/accordion-dynamic-native.log",
+          "examples/web/accordion-dynamic-acceptance.js",
+          "D:/BuildCache/sapid/accordion-dynamic-browser-root17.json (8 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P0-06",
       "phase": "P0",
       "name": "Tabs",
-      "status": "baseline",
+      "status": "done",
       "sources": [
         "M:Tabs",
         "S:Tabs"
       ],
-      "work": "已有自动/手动激活与 roving focus；补动态成员、方向和国际化。",
+      "work": "动态稳定key成员与短Owner、复用trigger/panel工厂、受控缺失选择保留及本地修复、LTR/RTL roving和自动/手动激活已补齐。10模型及旧30回归、四主题原生真实几何/身份/焦点与Chromium148实际9项通过；受拒绝Focus不会吞掉后续用户激活。",
       "baseline_at_snapshot": true,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/tabs.rs",
+          "src/tabs_dynamic.rs",
+          "docs/tabs.md"
+        ],
+        "tests": [
+          "tests/tabs_dynamic.rs (10 passed)",
+          "examples/native/tests/tabs_dynamic.rs (1 passed, four themes)",
+          "examples/web/tabs-dynamic-acceptance.js",
+          "D:/BuildCache/sapid/tabs-dynamic-native.log",
+          "D:/BuildCache/sapid/tabs-dynamic-browser-menubar-next.json (9 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
@@ -334,16 +370,26 @@
       "id": "P0-08",
       "phase": "P0",
       "name": "Drawer",
-      "status": "baseline",
+      "status": "done",
       "sources": [
         "M:Drawer",
         "S:Drawer"
       ],
-      "work": "已有四侧贴边 Web 浮层；P5 补手势、snap points、移动 viewport 和滚动协调。",
+      "work": "四侧 Drawer、默认 Unmount/KeepMounted、稳定 panel、Modal Layer 焦点循环/返回、Escape/outside 和 Owner 清理已验收；P5-02 补齐有限四侧握柄手势、snap、移动 viewport、滚动隔离和动态 reduced motion。原生 Layer 明确拒绝；跨 App 浮层堆栈仍属 P0-07。",
       "baseline_at_snapshot": true,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/overlay.rs",
+          "src/sheet.rs",
+          "docs/drawer.md",
+          "docs/sheet.md"
+        ],
+        "tests": [
+          "examples/web/drawer-acceptance.js",
+          "examples/web/sheet-acceptance.js",
+          "D:/BuildCache/sapid/drawer-browser.json (8 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/sheet-browser.json (9 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
@@ -966,21 +1012,24 @@
       "id": "P2-09",
       "phase": "P2",
       "name": "Burger",
-      "status": "partial",
+      "status": "done",
       "sources": [
         "M:Burger"
       ],
-      "work": "Burger已有具名展开控制、本地/受控状态、拒绝恢复、controls/expanded和稳定身份，Web/原生已验证；pressed与bar动画仍待补齐。",
+      "work": "Burger真实六命令三bar矢量路径，expanded/pressed与受控或本地布尔同源；有限GraphicTransition支持打断、动态Reduce/Clear、隐藏/退休取消，不写每帧Cage。四主题native像素/受控拒绝及Web15九项真实键鼠/AX/动画/classic通过，不宣称OS偏好或屏幕阅读器公告。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
           "src/actions.rs",
-          "docs/action-components.md"
+          "docs/burger.md"
         ],
         "tests": [
-          "tests/actions.rs",
-          "D:/BuildCache/sapid/display-browser.json",
-          "examples/native/tests/display.rs"
+          "tests/actions.rs (14 passed)",
+          "examples/native/tests/burger.rs (2 passed, four themes)",
+          "examples/web/burger-acceptance.js",
+          "D:/BuildCache/sapid/burger-browser.json (9 passed, Chromium 148.0.7778.96, Web15)",
+          "D:/BuildCache/sapid/graphic-transition-hidden-native.log",
+          "D:/BuildCache/sapid/gate-snapshot15.log"
         ]
       }
     },
@@ -1596,31 +1645,56 @@
       "id": "P4-02",
       "phase": "P4",
       "name": "ContextMenu",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "S:Context Menu"
       ],
-      "work": "右键/键盘菜单键、坐标锚点，触屏另设明确策略。",
+      "work": "真实 ContextMenu region、鼠标/键盘有限 viewport point、最近嵌套区域与编辑器 Native/Override 策略、复用 Menu 模型/子菜单/受控开关、实际焦点恢复与双向 Tab 退出已实现。禁用/IME native followup 一致性、Owner 退休、SSR/stream 与根 Web17 实际14项通过；原生新 facet 明确拒绝，触屏长按保留 native 策略。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/menu.rs",
+          "../glory/crates/web/src/browser/context_menu.rs",
+          "docs/context-menu.md"
+        ],
+        "tests": [
+          "tests/context_menu.rs (4 passed)",
+          "tests/menu.rs (7 passed)",
+          "../glory/crates/render/tests/context_menu.rs (2 passed)",
+          "../glory/crates/html/src/context_menu_tests.rs (1 passed)",
+          "../glory/crates/blitz/tests/context_menu.rs (1 passed)",
+          "../glory/crates/ssr/src/stream/menu_tests.rs",
+          "examples/web/context-menu-acceptance.js",
+          "D:/BuildCache/sapid/context-menu-browser-root17.json (14 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P4-03",
       "phase": "P4",
       "name": "Menubar",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Menubar",
         "S:Menubar"
       ],
-      "work": "横向根导航、嵌套菜单及焦点恢复，复用 Menu 模型。",
+      "work": "真正Menubar/MenuItemAction根语义、互斥受控根菜单、水平/RTL/typeahead和嵌套菜单/Tab边界已实现。4组件/2render/1HTML oracle/1stream/1原生明确拒绝与实际Chromium148原始10组全过；自定义name回归已修。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/menubar.rs",
+          "src/menu.rs",
+          "docs/menubar.md",
+          "../glory/crates/render/src/semantics.rs"
+        ],
+        "tests": [
+          "src/menubar_tests.rs (4 passed)",
+          "../glory/crates/render/tests/menubar.rs (2 passed)",
+          "../glory/crates/html/src/menubar_tests.rs (1 passed)",
+          "../glory/crates/blitz/tests/menubar.rs (1 passed)",
+          "examples/web/menubar-acceptance.js",
+          "D:/BuildCache/sapid/menubar-browser-menubar-final-rating-next.json (10 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
@@ -1727,11 +1801,11 @@
       "id": "P4-08",
       "phase": "P4",
       "name": "MultiSelect",
-      "status": "partial",
+      "status": "done",
       "sources": [
         "M:MultiSelect"
       ],
-      "work": "真实Multiple Input、独立受控搜索与known-key Vec、动态tags/移除、IME保护、multiple成功值proxy和有界选项已通过模型/四主题browser；路线图所列全选/清空命令继续补齐后再关闭。",
+      "work": "真实 Multiple Input、独立受控搜索与 known-key Vec、动态 tags/移除、IME 保护、multiple 成功值 proxy 和有界选项已实现。弱 Owner handle 支持当前过滤且 enabled 选项的原子全选及清空；受控拒绝、只读/组合输入/退休拒绝与四主题实际浏览器已验收。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -1740,9 +1814,10 @@
           "docs/autocomplete-multi-select.md"
         ],
         "tests": [
-          "src/combobox_advanced_tests.rs (22 passed shared Auto/Multi tests)",
+          "src/combobox_advanced_tests.rs (25 passed shared Auto/Multi tests)",
           "examples/web/choice-extras-acceptance.js",
-          "D:/BuildCache/sapid/choice-extras-browser-choice-extras-next.json (12 passed, Chromium 148.0.7778.96)"
+          "D:/BuildCache/sapid/choice-extras-browser-web15.json (12 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/browser-web15-results.json (46 suites, 406 reports, errors=0)"
         ]
       }
     },
@@ -1750,32 +1825,53 @@
       "id": "P4-09",
       "phase": "P4",
       "name": "TagsInput / PillsInput",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:TagsInput",
         "M:PillsInput"
       ],
-      "work": "自由标签、重复策略、分隔/粘贴/删除，保留组合输入。",
+      "work": "自由 TagsInput/PillsInput 的原子受控 state、重复策略、有界分隔/粘贴/删除、IME 保护、真实成功值 proxy 与退休清理已实现；模型/共享协议、原生明确拒绝 facet 与 Web16 实际 14 项通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/tags_input.rs",
+          "src/pills_input.rs",
+          "docs/tags-input.md"
+        ],
+        "tests": [
+          "src/tags_input.rs (12 passed)",
+          "../glory/crates/blitz/tests/tags.rs",
+          "examples/web/tags-acceptance.js",
+          "D:/BuildCache/sapid/tags-browser-tags-next.json (14 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/tags-browser-web16.json (14 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P4-10",
       "phase": "P4",
       "name": "Command / Spotlight",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "S:Command",
         "X:Spotlight"
       ],
-      "work": "搜索分组动作、快捷键入口、空态/异步结果及取消；命令动作由应用提供。",
+      "work": "Command/Spotlight真正Dialog+editable Input+有界Listbox/分组已实现，显式Owner Palette快捷键、受控搜索/打开、戳记结果或Owner resource异步加载取消、IME/禁用/空错误状态和256项Reveal均补齐。11模型、共享Palette/SSRstream/原生明确拒绝证据及Web20实际14项全过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/command.rs",
+          "docs/command.md",
+          "../glory/crates/render/src/keyboard.rs"
+        ],
+        "tests": [
+          "src/command_tests.rs (11 passed)",
+          "../glory/crates/render/tests/palette.rs",
+          "../glory/crates/blitz/tests/palette.rs",
+          "../glory/crates/ssr/src/stream/command_tests.rs",
+          "examples/web/command-acceptance.js",
+          "D:/BuildCache/sapid/command-browser-root20.json (14 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
@@ -2477,72 +2573,116 @@
       "id": "P7-02",
       "phase": "P7",
       "name": "Slider",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Slider",
         "S:Slider"
       ],
-      "work": "range/slider 角色、值域、方向键/Page/Home/End、pointer capture 和 Field。",
+      "work": "真实 Slider 语义、键盘等价、受控 cursor（含 commit-only 同 tick 接受）、捕获指针/触屏、RTL/纵向、Field 和有界 geometry query 已实现；11 模型/2 原生与 Web16 四主题实际 10 项通过。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/slider.rs",
+          "docs/slider.md"
+        ],
+        "tests": [
+          "tests/sliders.rs (11 passed)",
+          "examples/native/tests/slider.rs (2 passed)",
+          "D:/BuildCache/sapid/sliders-cursor-rust.log",
+          "D:/BuildCache/sapid/sliders-native.log",
+          "examples/web/slider-acceptance.js",
+          "D:/BuildCache/sapid/slider-browser-root15.json (10 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/slider-browser-web16.json (10 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P7-03",
       "phase": "P7",
       "name": "RangeSlider",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:RangeSlider"
       ],
-      "work": "多个具名滑块、顺序/最小间距、焦点与交换策略。",
+      "work": "双具名真实 Slider thumb、固定 Lower/Upper 身份和 Tab 顺序、Clamp/min_gap、闭区间 readonly、单次 geometry query 和受控 commit-only 已实现；10 Rust/2 原生与 Web16 四主题实际 10 项通过。交换策略明确固定为 Clamp，拒绝越过相邻 thumb。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/range_slider.rs",
+          "docs/range-slider.md"
+        ],
+        "tests": [
+          "tests/range_sliders.rs",
+          "examples/native/tests/range_slider.rs",
+          "examples/web/range-slider-acceptance.js",
+          "D:/BuildCache/sapid/range-slider-browser-web16.json (10 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P7-04",
       "phase": "P7",
       "name": "AngleSlider",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:AngleSlider"
       ],
-      "work": "角度环绕、二维指针到数值、可访问的键盘等价操作。",
+      "work": "复用有界 Slider query/cursor 的真正二维 atan2 AngleSlider、0/360 同位置数值端点与超端点环绕、中心保持、顺时针指针及圆外捕获已实现。8组件/3 mapping/2四主题原生真实几何及旋转像素与 Web18 实际10项通过；标准水平 Slider 键盘 L/R、Page/Home/End 提供等价操作。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/angle_slider.rs",
+          "src/slider_mapping.rs",
+          "src/slider.rs",
+          "docs/angle-slider.md"
+        ],
+        "tests": [
+          "tests/angle_sliders.rs (8 passed)",
+          "src/slider_mapping.rs (3 passed)",
+          "examples/native/tests/angle_slider.rs (2 passed, four themes)",
+          "D:/BuildCache/sapid/angle-geometry-native.log",
+          "examples/web/angle-slider-acceptance.js",
+          "D:/BuildCache/sapid/angle-slider-browser-root18.json (10 passed, Chromium 148.0.7778.96)",
+          "tests/slider_geometry.rs (3 passed)",
+          "examples/native/tests/slider_geometry.rs (1 passed, five sizes)"
+        ]
       }
     },
     {
       "id": "P7-05",
       "phase": "P7",
       "name": "Rating",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:Rating"
       ],
-      "work": "离散/半星值、单选语义与只读展示。",
+      "work": "Whole/Half离散Rating、真正RadioGroup/Check radio、clear数值0、受控拒绝/Field/数值成功值和被动display_only已实现。11组件+2模型+3原生+Chromium148实际10项通过；原生交互Radio保持明确Unsupported，display_only有四主题真实半星像素证据。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/rating.rs",
+          "src/rating_model.rs",
+          "src/radio.rs",
+          "docs/rating.md"
+        ],
+        "tests": [
+          "tests/ratings.rs (11 passed)",
+          "examples/native/tests/rating.rs (3 passed)",
+          "examples/web/rating-acceptance.js",
+          "D:/BuildCache/sapid/rating-native.log",
+          "D:/BuildCache/sapid/rating-browser.json (10 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P7-06",
       "phase": "P7",
       "name": "ColorSwatch",
-      "status": "partial",
+      "status": "done",
       "sources": [
         "M:ColorSwatch"
       ],
-      "work": "有限RGBA preview、灰白透明棋盘、可选真实Button/pressed勾选、受控来源静默和名称/大小预算已实现；模型5项与四主题原生alpha像素/命中/engine identity1项通过，Web fixture实际验收待下一构建。",
+      "work": "有限RGBA preview和真实透明棋盘、可选真实Button/pressed勾选、受控来源静默、颜色文本替代与预算已实现。模型5项、四主题原生alpha像素/命中/identity1项、Web15四主题CSR/hydration/keyboard/AX/touch9项通过。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -2552,7 +2692,10 @@
         "tests": [
           "tests/color_swatch.rs (5 passed)",
           "examples/native/tests/color_swatch.rs (1 passed, four themes)",
-          "D:/BuildCache/sapid/color-swatch-native.log"
+          "D:/BuildCache/sapid/color-swatch-native.log",
+          "examples/web/color-swatch-acceptance.js",
+          "D:/BuildCache/sapid/color-swatch-browser-web15.json (9 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/gate-snapshot15.log"
         ]
       }
     },
@@ -2560,32 +2703,70 @@
       "id": "P7-07",
       "phase": "P7",
       "name": "HueSlider / AlphaSlider",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:HueSlider",
         "M:AlphaSlider"
       ],
-      "work": "共享 Slider，颜色域和 alpha 保持精度。",
+      "work": "Hue/Alpha f64 数值域、真实 Slider 交互/Field、有限采样色带与真实透明棋盘、HSV/hex 纯模型已实现。6模型/7组件/1四主题原生像素通过；unstyled 默认宽高缺失已修，Web18 加强实际尺寸/不重叠断言后10项全过，并保留显式 Auto/custom 样式。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/color_slider.rs",
+          "src/color_model.rs",
+          "src/slider.rs",
+          "docs/color-sliders.md"
+        ],
+        "tests": [
+          "src/color_model.rs (6 passed)",
+          "tests/color_sliders.rs (7 passed)",
+          "D:/BuildCache/sapid/color-model-tests.log",
+          "D:/BuildCache/sapid/color-slider-tests.log",
+          "examples/native/tests/color_sliders.rs (1 passed, four themes)",
+          "D:/BuildCache/sapid/color-sliders-native.log",
+          "examples/web/color-sliders-acceptance.js",
+          "D:/BuildCache/sapid/color-sliders-browser-web17.json (10 passed, Chromium 148.0.7778.96)",
+          "tests/slider_geometry.rs (3 passed)",
+          "examples/native/tests/slider_geometry.rs (1 passed, five sizes)",
+          "D:/BuildCache/sapid/angle-geometry-native.log",
+          "D:/BuildCache/sapid/color-sliders-unstyled-web17-before-fix.log (regression reproduced before fix)",
+          "D:/BuildCache/sapid/color-sliders-browser-web18.json (10 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {
       "id": "P7-08",
       "phase": "P7",
       "name": "ColorPicker / ColorInput",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:ColorPicker",
         "M:ColorInput"
       ],
-      "work": "二维饱和/亮度、色彩空间转换、输入解析和键盘替代，复用浮层。",
+      "work": "ColorPicker/ColorInput与共享DragCapture、二维饱和/亮度及真正Slider键盘替代、精确HSV/hex解析/Field/Popover已实现。11组件/3原生/Web19实际11项通过；目检发现的小plane通道宽度/indicator居中已修，加强原生真实bounds与同源command-next实际11项全部通过。默认原生浮层仍明确Unsupported，Picker与显式hex-only已验证。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/color_picker.rs",
+          "src/color_pad.rs",
+          "src/color_input.rs",
+          "docs/color-picker.md",
+          "../glory/crates/render/src/drag.rs"
+        ],
+        "tests": [
+          "tests/color_pickers.rs (11 passed)",
+          "examples/native/tests/color_pickers.rs (3 passed before geometry strengthening)",
+          "D:/BuildCache/sapid/color-picker-native.log",
+          "examples/web/color-picker-acceptance.js",
+          "D:/BuildCache/sapid/color-picker-browser-web19.json (11 passed, before geometry strengthening)",
+          "../glory/crates/render/tests/drag_capture.rs (2 passed)",
+          "../glory/crates/html/src/drag_capture_tests.rs (1 passed)",
+          "D:/BuildCache/sapid/drag-capture-native.log",
+          "D:/BuildCache/sapid/drag-capture-stream.log",
+          "D:/BuildCache/sapid/color-picker-geometry-native20.log (3 passed, strengthened actual geometry)",
+          "D:/BuildCache/sapid/color-picker-browser-geometry20.json (11 passed, Chromium 148.0.7778.96)",
+          "D:/BuildCache/sapid/drag-capture-stream-command-next.log (missing support fixture generated before final browser replay)"
+        ]
       }
     },
     {
@@ -2623,15 +2804,27 @@
       "id": "P7-11",
       "phase": "P7",
       "name": "JsonInput",
-      "status": "planned",
+      "status": "done",
       "sources": [
         "M:JsonInput"
       ],
-      "work": "文本草稿、解析错误、格式化与预算；解析器可选，不进入默认组件依赖。",
+      "work": "可选 json feature 的真实多行 JsonInput、受控草稿/格式化提案、Field 错误关系与 IME、字节/深度/输出预算已实现；格式化保留重复 key、顺序和精确数字 lexeme。7 组件/4 模型/1 四主题原生与 Web16 实际 9 项通过；默认依赖图无 JSON/serde。",
       "baseline_at_snapshot": false,
       "evidence": {
-        "implementation": [],
-        "tests": []
+        "implementation": [
+          "src/json_input.rs",
+          "src/json_model.rs",
+          "docs/json-input.md"
+        ],
+        "tests": [
+          "tests/json_input.rs (7 passed)",
+          "tests/json_model.rs (4 passed)",
+          "D:/BuildCache/sapid/json-tests.log",
+          "examples/native/tests/json_input.rs (1 passed, four themes)",
+          "D:/BuildCache/sapid/json-native.log",
+          "examples/web/json-input-acceptance.js",
+          "D:/BuildCache/sapid/json-browser-web16.json (9 passed, Chromium 148.0.7778.96)"
+        ]
       }
     },
     {

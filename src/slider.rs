@@ -1,5 +1,7 @@
 //! One finite numeric range, with application-owned controlled values.
 use crate::appearance::Common;
+#[path = "slider_mapping.rs"]
+mod mapping;
 use crate::composite::{self, Callback, Observers};
 use crate::field::{FieldControl, control_metadata};
 use crate::state::{Control, Value};
@@ -10,6 +12,7 @@ use glory::render::{
 use glory::style::{Edges, Length, Position, Style};
 use glory::ui::{Result, WeakScope, Widget};
 use glory::{Cage, Lotus, Scope};
+use mapping::Mapping;
 use std::{
     cell::{Cell, RefCell},
     rc::Rc,
@@ -22,10 +25,14 @@ struct Snapshot {
     range: SliderValue,
     enabled: bool,
     readonly: bool,
+    mapping: Mapping,
 }
 impl Snapshot {
     fn validate(&self) -> Result {
+        self.range.range.validate()?;
         self.range.validate()?;
+        self.mapping
+            .validate(self.range.range, self.range.step, self.range.page_step)?;
         if [self.range.range.min, self.range.range.max]
             .into_iter()
             .any(|v| v.abs() > 1e12)
@@ -47,6 +54,7 @@ impl Snapshot {
             && self.range.page_step == other.range.page_step
             && self.enabled == other.enabled
             && self.readonly == other.readonly
+            && self.mapping == other.mapping
     }
     fn snap(&self, value: f64) -> f64 {
         let range = self.range.range;
@@ -63,21 +71,18 @@ impl Snapshot {
             upper
         }
     }
-    fn point(&self, rect: Rect, x: f64, y: f64) -> Result<f64> {
-        let (point, start, extent) = if self.range.axis == Orientation::Horizontal {
-            (x, rect.x, rect.width)
-        } else {
-            (y, rect.y, rect.height)
-        };
-        if extent <= 0.0 {
-            return Err(invalid("slider needs positive measurable bounds"));
-        }
-        let mut fraction = ((point - start) / extent).clamp(0.0, 1.0);
-        if self.range.axis == Orientation::Vertical || self.range.direction == Direction::Rtl {
-            fraction = 1.0 - fraction
-        }
-        let range = self.range.range;
-        Ok(self.snap(range.min + (range.max - range.min) * fraction))
+    fn point(&self, rect: Rect, x: f64, y: f64) -> Result<Option<f64>> {
+        Ok(self
+            .mapping
+            .point(
+                rect,
+                x,
+                y,
+                self.range.axis,
+                self.range.direction,
+                self.range.range,
+            )?
+            .map(|value| self.snap(value)))
     }
 }
 #[derive(Clone, Copy)]
@@ -102,10 +107,12 @@ struct Controller {
     range_events: Observers,
     drag_events: Observers,
     expected: Cell<Option<f64>>,
+    confirmed: Cell<Option<(f64, Option<u64>)>>,
     drag: RefCell<Option<Drag>>,
     active: Cell<Option<u64>>,
     pending: Cell<Option<QueryToken>>,
     next: Cell<u64>,
+    last_point: Cell<Option<f64>>,
 }
 impl Controller {
     fn ensure(&self) -> Result {
@@ -122,6 +129,7 @@ impl Controller {
     }
     fn cancel(&self) {
         self.active.set(None);
+        self.last_point.set(None);
         self.drag.borrow_mut().take();
         let token = self.pending.take();
         if let Some(token) = token
@@ -146,11 +154,37 @@ impl Controller {
         if !state.enabled || state.readonly {
             return Ok(());
         }
-        let value = state.snap(value);
+        RangeCommand::Set(value).validate(state.range.range)?;
+        let before = self.source_stamp()?;
         self.expected.set(Some(value));
+        self.confirmed.set(None);
         self.control.accept(&value)?;
         self.changed.emit(self.owner, value);
+        self.confirm_acceptance(value, before)
+    }
+    fn confirm_acceptance(&self, value: f64, before: (f64, Option<u64>)) -> Result {
+        if self.ensure().is_ok() && self.expected.get() == Some(value) {
+            let after = self.source_stamp()?;
+            // A past rejected request must never become a cursor merely
+            // because a later external write happens to contain that number.
+            if after.0 == value && before != after {
+                self.confirmed.set(Some(after));
+            }
+        }
         Ok(())
+    }
+    fn commit(&self, value: f64) -> Result {
+        let before = self.source_stamp()?;
+        self.committed.emit(self.owner, value);
+        self.confirm_acceptance(value, before)
+    }
+    fn source_stamp(&self) -> Result<(f64, Option<u64>)> {
+        let value = self.control.source.try_get()?;
+        let version = match self.control.source {
+            Lotus::Cage(source) => Some(source.try_version()?),
+            _ => None,
+        };
+        Ok((value, version))
     }
     fn key(&self, command: RangeCommand) -> Result {
         self.ensure()?;
@@ -162,27 +196,29 @@ impl Controller {
         command.validate(state.range.range)?;
         let current = if self.local {
             self.control.source.try_get()?
-        } else if let Some(expected) = self.expected.get()
-            && self.control.source.try_with(|value| *value == expected)?
+        } else if let Some(confirmed) = self.confirmed.get()
+            && self.source_stamp()? == confirmed
         {
-            expected
+            confirmed.0
         } else {
             state.range.range.value
         };
         let range = state.range.range;
-        let value = match command {
-            RangeCommand::Decrease => current - state.range.step,
-            RangeCommand::Increase => current + state.range.step,
-            RangeCommand::PageDecrease => current - state.range.page_step,
-            RangeCommand::PageIncrease => current + state.range.page_step,
-            RangeCommand::Minimum => range.min,
-            RangeCommand::Maximum => range.max,
-            RangeCommand::Set(value) => value,
+        let value = state.mapping.key(
+            current,
+            command,
+            range,
+            state.range.step,
+            state.range.page_step,
+        );
+        let value = if state.mapping.retains_increment(command) {
+            value
+        } else {
+            state.snap(value)
         };
-        let value = state.snap(value);
         if value != current {
             self.propose(value)?;
-            self.committed.emit(self.owner, value)
+            self.commit(value)?
         }
         Ok(())
     }
@@ -201,12 +237,16 @@ impl Controller {
             self.cancel();
             return Ok(());
         }
-        let value = state.point(rect, point.0, point.1)?;
+        let mapped = state.point(rect, point.0, point.1)?;
+        if let Some(value) = mapped {
+            self.last_point.set(Some(value));
+        }
         let current = if self.local {
             self.control.source.try_get()?
         } else {
             state.range.range.value
         };
+        let value = mapped.or(self.last_point.get()).unwrap_or(current);
         if value != current {
             self.propose(value)?
         }
@@ -214,7 +254,7 @@ impl Controller {
             return Ok(());
         }
         if phase == DragPhase::Drop {
-            self.committed.emit(self.owner, value)
+            self.commit(value)?
         }
         if self.active.get() == Some(ticket)
             && let Some(from) = self.reference.try_get()?
@@ -356,6 +396,10 @@ pub struct Slider {
     inherit_size: bool,
     changed: Option<Box<dyn FnMut(f64)>>,
     committed: Option<Box<dyn FnMut(f64)>>,
+    track_content: Option<Box<dyn Widget>>,
+    thumb_color: Option<Lotus<glory::style::Color>>,
+    mapping: Mapping,
+    default_text: bool,
 }
 pub fn slider(key: impl Into<String>) -> Slider {
     Slider {
@@ -377,9 +421,29 @@ pub fn slider(key: impl Into<String>) -> Slider {
         inherit_size: true,
         changed: None,
         committed: None,
+        track_content: None,
+        thumb_color: None,
+        mapping: Mapping::Linear,
+        default_text: false,
     }
 }
 impl Slider {
+    pub(crate) fn angular(mut self) -> Self {
+        self.mapping = Mapping::Angle;
+        self.default_text = true;
+        self.min = 0.0.into();
+        self.max = 360.0.into();
+        self.page = Some(15.0.into());
+        self
+    }
+    pub(crate) fn track_content(mut self, value: impl Widget + 'static) -> Self {
+        self.track_content = Some(Box::new(value));
+        self
+    }
+    pub(crate) fn thumb_color(mut self, value: impl Into<Lotus<glory::style::Color>>) -> Self {
+        self.thumb_color = Some(value.into());
+        self
+    }
     pub fn theme(mut self, value: crate::Theme) -> Self {
         self.common.theme = value;
         self.inherit_theme = false;
@@ -448,6 +512,7 @@ impl Slider {
     }
     pub fn value_text(mut self, value: impl Into<Lotus<Option<String>>>) -> Self {
         self.text = value.into();
+        self.default_text = false;
         self
     }
     pub fn orientation(mut self, value: Orientation) -> Self {
@@ -485,7 +550,17 @@ impl Slider {
 }
 impl Widget for Slider {
     fn build(&mut self, scope: &Scope) -> Result {
-        let mut id = composite::id("slider", &self.key, "control", "root")?;
+        let mapping = self.mapping;
+        let mut id = composite::id(
+            if mapping == Mapping::Angle {
+                "angle-slider"
+            } else {
+                "slider"
+            },
+            &self.key,
+            "control",
+            "root",
+        )?;
         if let Some(field) = &self.field {
             id = field.id.clone();
             if self.inherit_theme {
@@ -517,7 +592,14 @@ impl Widget for Slider {
                     .is_none_or(|metadata| metadata.labelled_by.is_none())
             })?
         {
-            self.common.name = Some("Value".into())
+            self.common.name = Some(
+                if mapping == Mapping::Angle {
+                    "Angle"
+                } else {
+                    "Value"
+                }
+                .into(),
+            )
         }
         let source = control.source.clone();
         let min = self.min.clone();
@@ -528,6 +610,7 @@ impl Widget for Slider {
         let field_metadata = metadata.clone();
         let axis = self.axis;
         let direction = self.direction;
+        let default_text = self.default_text;
         let read = move || -> Result<Snapshot> {
             let step = step.try_get()?;
             let page = page
@@ -546,6 +629,7 @@ impl Widget for Slider {
                     page_step: page,
                     value_text: None,
                 },
+                mapping,
                 enabled: enabled.try_get()?,
                 readonly: field_metadata.try_with(|metadata| {
                     metadata.as_ref().is_some_and(|metadata| metadata.readonly)
@@ -561,6 +645,10 @@ impl Widget for Slider {
                 }
                 Ok::<_, glory::ui::Error>(text.clone())
             })??;
+            if default_text && snapshot.range.value_text.is_none() {
+                snapshot.range.value_text =
+                    Some(format!("{} degrees", snapshot.range.range.value));
+            }
             Ok(snapshot)
         };
         let accepted = scope.cage(read()?);
@@ -590,10 +678,12 @@ impl Widget for Slider {
             range_events,
             drag_events,
             expected: Cell::new(None),
+            confirmed: Cell::new(None),
             drag: RefCell::new(None),
             active: Cell::new(None),
             pending: Cell::new(None),
             next: Cell::new(0),
+            last_point: Cell::new(None),
         });
         let cleanup = Rc::downgrade(&controller);
         scope.on_cleanup(move || {
@@ -615,6 +705,7 @@ impl Widget for Slider {
                     }
                     state.accepted.try_revise(|value| *value = next)?;
                     state.expected.set(None);
+                    state.confirmed.set(None);
                 }
                 Ok(())
             })();
@@ -633,11 +724,35 @@ impl Widget for Slider {
         let horizontal = axis == Orientation::Horizontal;
         let base = Style::new()
             .position(Position::Relative)
-            .width(Length::Px(if horizontal { 240.0 } else { size }))
-            .height(Length::Px(if horizontal { size } else { 240.0 }));
-        let (classes, styles) = self.common.appearance(scope, "sapid-slider", base);
+            .width(Length::Px(if mapping == Mapping::Angle {
+                size * 3. + 12.
+            } else if horizontal {
+                240.0
+            } else {
+                size
+            }))
+            .height(Length::Px(if mapping == Mapping::Angle {
+                size * 3. + 12.
+            } else if horizontal {
+                size
+            } else {
+                240.0
+            }));
+        let default_width = base.width;
+        let default_height = base.height;
+        let (classes, styles) = self.common.appearance(
+            scope,
+            if mapping == Mapping::Angle {
+                "sapid-angle-slider"
+            } else {
+                "sapid-slider"
+            },
+            base,
+        );
         let geometry = scope.bond(move || {
             let mut style = styles.get();
+            style.width = style.width.or(default_width);
+            style.height = style.height.or(default_height);
             style.position = Some(Position::Relative);
             style.padding = Some(Edges::all(0.0));
             style.border_width = Some(Edges::all(0.0));
@@ -708,10 +823,24 @@ impl Widget for Slider {
         }
         root.show_in(scope)?;
         let parent = scope.child_in(reference.try_get()?.ok_or(glory::ui::Error::Gone)?)?;
+        if mapping == Mapping::Angle {
+            draw_angle(
+                scope,
+                &parent,
+                accepted,
+                self.common.theme.clone(),
+                self.thumb_color.clone(),
+                self.common.unstyled,
+            )?;
+            scope.retain(parent)?;
+            return Ok(());
+        }
         let track_color = self.common.theme.border;
         let fill_color = self.common.theme.accent;
         let thumb_color = self.common.theme.surface;
         let unstyled = self.common.unstyled;
+        let custom_track = self.track_content.is_some();
+        let preview = self.thumb_color.clone();
         let line = move |filled: bool| {
             let state = accepted.get();
             let mut fraction = state.range.range.fraction().unwrap_or(0.0) * 100.0;
@@ -737,19 +866,25 @@ impl Widget for Slider {
                 style.width = Some(Length::Px(4.0));
             }
             if !unstyled {
-                style.background = Some(if filled { fill_color } else { track_color });
+                if filled || !custom_track {
+                    style.background = Some(if filled { fill_color } else { track_color });
+                }
                 style.radius = Some(2.0);
             }
             style
         };
-        glory::ui::view()
+        let track = glory::ui::view()
             .class("sapid-slider-track")
-            .style(scope.bond(move || line(false)))
-            .show_in(&parent)?;
-        glory::ui::view()
-            .class("sapid-slider-fill")
-            .style(scope.bond(move || line(true)))
-            .show_in(&parent)?;
+            .style(scope.bond(move || line(false)));
+        if let Some(content) = self.track_content.take() {
+            track.fill(content).show_in(&parent)?;
+        } else {
+            track.show_in(&parent)?;
+            glory::ui::view()
+                .class("sapid-slider-fill")
+                .style(scope.bond(move || line(true)))
+                .show_in(&parent)?;
+        }
         let thumb = size * 0.5;
         glory::ui::view()
             .class("sapid-slider-thumb")
@@ -782,8 +917,10 @@ impl Widget for Slider {
                         left: 0.0,
                     });
                 }
+                if !unstyled || preview.is_some() {
+                    style.background = Some(preview.as_ref().map_or(thumb_color, Lotus::get));
+                }
                 if !unstyled {
-                    style.background = Some(thumb_color);
                     style.border_color = Some(fill_color);
                     style.border_style = Some(glory::style::BorderStyle::Solid);
                     style.border_width = Some(Edges::all(2.0));
@@ -795,4 +932,118 @@ impl Widget for Slider {
         scope.retain(parent)?;
         Ok(())
     }
+}
+
+fn circle(x: f64, y: f64, r: f64) -> Vec<glory::render::PathCommand> {
+    use glory::render::{GraphicPoint as P, PathCommand as C};
+    let k = r * 0.552_284_749_830_793_6;
+    vec![
+        C::Move(P::new(x + r, y)),
+        C::Cubic {
+            first: P::new(x + r, y + k),
+            second: P::new(x + k, y + r),
+            end: P::new(x, y + r),
+        },
+        C::Cubic {
+            first: P::new(x - k, y + r),
+            second: P::new(x - r, y + k),
+            end: P::new(x - r, y),
+        },
+        C::Cubic {
+            first: P::new(x - r, y - k),
+            second: P::new(x - k, y - r),
+            end: P::new(x, y - r),
+        },
+        C::Cubic {
+            first: P::new(x + k, y - r),
+            second: P::new(x + r, y - k),
+            end: P::new(x + r, y),
+        },
+        C::Close,
+    ]
+}
+fn draw_angle(
+    scope: &Scope,
+    parent: &Scope,
+    state: Cage<Snapshot>,
+    theme: crate::Theme,
+    preview: Option<Lotus<glory::style::Color>>,
+    unstyled: bool,
+) -> Result {
+    use glory::render::{GraphicPoint, GraphicProps, GraphicStroke, PathCommand};
+    let accent = if unstyled {
+        theme.foreground
+    } else {
+        theme.accent
+    };
+    let ring = if unstyled {
+        theme.foreground
+    } else {
+        theme.border
+    };
+    let style = Style::new()
+        .position(Position::Absolute)
+        .left(Length::Px(0.))
+        .top(Length::Px(0.))
+        .width(Length::Percent(100.))
+        .height(Length::Percent(100.));
+    glory::ui::graphic()
+        .class("sapid-angle-slider-ring")
+        .style(style.clone())
+        .drawing(GraphicProps {
+            width: 100.,
+            height: 100.,
+            commands: circle(50., 50., 40.),
+            stroke: Some(GraphicStroke {
+                color: ring,
+                width: 2.,
+                cap: Default::default(),
+            }),
+            ..Default::default()
+        })
+        .show_in(parent)?;
+    glory::ui::graphic()
+        .class("sapid-angle-slider-hand")
+        .style(style.clone())
+        .drawing(scope.bond(move || {
+            let radians = state.with(|s| s.range.range.value.to_radians());
+            GraphicProps {
+                width: 100.,
+                height: 100.,
+                commands: vec![
+                    PathCommand::Move(GraphicPoint::new(50., 50.)),
+                    PathCommand::Line(GraphicPoint::new(
+                        50. + 40. * radians.sin(),
+                        50. - 40. * radians.cos(),
+                    )),
+                ],
+                stroke: Some(GraphicStroke {
+                    color: accent,
+                    width: 2.,
+                    cap: glory::render::StrokeCap::Round,
+                }),
+                ..Default::default()
+            }
+        }))
+        .show_in(parent)?;
+    glory::ui::graphic()
+        .class("sapid-angle-slider-thumb")
+        .style(style)
+        .drawing(scope.bond(move || {
+            let radians = state.with(|s| s.range.range.value.to_radians());
+            GraphicProps {
+                width: 100.,
+                height: 100.,
+                commands: circle(50. + 40. * radians.sin(), 50. - 40. * radians.cos(), 5.),
+                fill: Some(preview.as_ref().map_or(theme.surface, Lotus::get)),
+                stroke: Some(GraphicStroke {
+                    color: accent,
+                    width: 2.,
+                    cap: Default::default(),
+                }),
+                ..Default::default()
+            }
+        }))
+        .show_in(parent)?;
+    Ok(())
 }

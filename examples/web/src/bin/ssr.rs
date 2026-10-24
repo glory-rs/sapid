@@ -103,6 +103,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let choice_extras = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::choice_extras_form::form(scope, theme.clone()).0
             })?;
+            let tags = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::tags_form::form(scope, theme.clone()).0
+            })?;
+            let command = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::command_form::form(scope, theme.clone()).0
+            })?;
+            let popover_placement = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::popover_placement_form::form(scope, theme.clone()).0
+            })?;
+            let menubar = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::menubar_form::form(scope, theme.clone()).0
+            })?;
+            let context_menu = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::context_menu_form::form(scope, theme.clone()).0
+            })?;
             let progress = glory::ssr::snapshot(
                 sapid_web_example::progress_form::progress_form(theme.clone()),
             )?;
@@ -123,6 +138,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let toolbar = glory::ssr::snapshot(sapid_web_example::toolbar_form::toolbar_form(
                 theme.clone(),
             ))?;
+            let accordion = glory::ssr::snapshot(
+                sapid_web_example::accordion_form::accordion_form(theme.clone()),
+            )?;
+            let tabs_dynamic = glory::ssr::snapshot(
+                sapid_web_example::tabs_dynamic_form::tabs_dynamic_form(theme.clone()),
+            )?;
+            let overflow_list = glory::ssr::snapshot(
+                sapid_web_example::overflow_list_form::overflow_list_form(theme.clone()),
+            )?;
+            let collapse_motion = glory::ssr::snapshot(
+                sapid_web_example::collapse_motion_form::collapse_motion_form(theme.clone()),
+            )?;
             let color_swatch = glory::ssr::snapshot(
                 sapid_web_example::color_swatch_form::color_swatch_form(theme.clone()),
             )?;
@@ -137,8 +164,29 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let navigation_menu = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::navigation_menu_form::form(scope, theme.clone()).0
             })?;
+            let range_slider = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::range_slider_form::form(scope, theme.clone()).0
+            })?;
             let slider = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::slider_form::form(scope, theme.clone()).0
+            })?;
+            let angle_slider = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::angle_slider_form::form(scope, theme.clone()).0
+            })?;
+            let number_input = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::number_input_form::form(scope, theme.clone()).0
+            })?;
+            let rating = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::rating_form::form(scope, theme.clone()).0
+            })?;
+            let json_input = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::json_input_form::form(scope, theme.clone()).0
+            })?;
+            let color_picker = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::color_picker_form::form(scope, theme.clone()).0
+            })?;
+            let color_sliders = glory::ssr::snapshot_with(|scope| {
+                sapid_web_example::color_sliders_form::form(scope, theme.clone()).0
             })?;
             let affix = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::affix_form::form(scope, theme.clone()).0
@@ -158,14 +206,66 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let initial_template = include_str!("../../overlays.html")
                 .replace("demo.mount_overlays(", "demo.mount_overlays_initial(");
             for (stem, template, snapshot) in [
+                (
+                    "color-picker-hydrate",
+                    include_str!("../../color-picker.html"),
+                    color_picker,
+                ),
                 ("affix-hydrate", include_str!("../../affix.html"), affix),
+                (
+                    "color-sliders-hydrate",
+                    include_str!("../../color-sliders.html"),
+                    color_sliders,
+                ),
                 ("slider-hydrate", include_str!("../../slider.html"), slider),
+                (
+                    "angle-slider-hydrate",
+                    include_str!("../../angle-slider.html"),
+                    angle_slider,
+                ),
+                ("rating-hydrate", include_str!("../../rating.html"), rating),
+                (
+                    "number-input-hydrate",
+                    include_str!("../../number-input.html"),
+                    number_input,
+                ),
+                (
+                    "json-input-hydrate",
+                    include_str!("../../json-input.html"),
+                    json_input,
+                ),
+                (
+                    "range-slider-hydrate",
+                    include_str!("../../range-slider.html"),
+                    range_slider,
+                ),
                 (
                     "navigation-menu-hydrate",
                     include_str!("../../navigation-menu.html"),
                     navigation_menu,
                 ),
                 ("select-hydrate", include_str!("../../select.html"), select),
+                ("tags-hydrate", include_str!("../../tags.html"), tags),
+                (
+                    "popover-placement-hydrate",
+                    include_str!("../../popover-placement.html"),
+                    popover_placement,
+                ),
+                (
+                    "command-hydrate",
+                    include_str!("../../command.html"),
+                    command,
+                ),
+                (
+                    "menubar-hydrate",
+                    include_str!("../../menubar.html"),
+                    menubar,
+                ),
+                (
+                    "context-menu-hydrate",
+                    include_str!("../../context-menu.html"),
+                    context_menu,
+                ),
                 (
                     "choice-extras-hydrate",
                     include_str!("../../choice-extras.html"),
@@ -218,6 +318,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     "toolbar-hydrate",
                     include_str!("../../toolbar.html"),
                     toolbar,
+                ),
+                (
+                    "accordion-hydrate",
+                    include_str!("../../accordion.html"),
+                    accordion,
+                ),
+                (
+                    "tabs-dynamic-hydrate",
+                    include_str!("../../tabs-dynamic.html"),
+                    tabs_dynamic,
+                ),
+                (
+                    "overflow-list-hydrate",
+                    include_str!("../../overflow-list.html"),
+                    overflow_list,
+                ),
+                (
+                    "collapse-motion-hydrate",
+                    include_str!("../../collapse-motion.html"),
+                    collapse_motion,
                 ),
                 (
                     "color-swatch-hydrate",

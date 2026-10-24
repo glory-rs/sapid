@@ -73,13 +73,14 @@ query watermark, and a classic-stream config/revision patch followed by End.
 The complete render/UI/HTML/SSR full-feature suite and strict Clippy pass in
 `D:/BuildCache/sapid/sheet-protocol.log` and `sheet-protocol-clippy.log`.
 Component/native evidence is `sheet-rust.log` and `sheet-native.log`; production
-WASM strict Clippy is `sheet-web-clippy.log`. Browser acceptance passes nine actual scenarios against unified Web14 on Chromium
+WASM strict Clippy is `sheet-web-clippy.log`. Browser acceptance passes nine actual scenarios against unified Web15 on Chromium
 148.0.7778.96, with no errors: `D:/BuildCache/sapid/sheet-browser.json`. Each of the
 eight four-theme CSR/hydration scenarios checks all four physical edges, captured
 mouse drags and real Chromium touch input, controlled snap/close refusal, editor
 identity, content wheel isolation, program revision cancellation, viewport resize
 and visualViewport zoom, Window blur/inert cancellation, live reduced motion and
-real intermediate settling geometry. The ninth executes classic stream End then
+real intermediate settling geometry, including switching Reduce while a settle
+transition is in flight and checking its immediate accepted endpoint. The ninth executes classic stream End then
 real WASM adoption with stable identity and finite physical extent.
 
 `sheet-open-ax.json` separately records four real Chrome AX snapshots: the Dialog

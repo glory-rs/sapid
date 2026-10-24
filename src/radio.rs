@@ -17,6 +17,7 @@ use crate::composite::{self, Callback};
 use crate::state::{Control, Dirty, Value};
 
 pub const MAX_RADIO_GROUP_ITEMS: usize = 1024;
+type RadioVisual = Box<dyn FnOnce(glory::ui::Check) -> Box<dyn Widget>>;
 
 /// A named value belonging to exactly one RadioGroup; its owner is the mounted
 /// native control. Selection is always controlled by the group's single value.
@@ -24,15 +25,30 @@ pub struct Radio {
     key: String,
     common: Common,
     label: Lotus<String>,
+    visual: Option<RadioVisual>,
+    form_value: Option<String>,
 }
 pub fn radio(value: impl Into<String>) -> Radio {
     Radio {
         key: value.into(),
         common: Common::default(),
         label: "".into(),
+        visual: None,
+        form_value: None,
     }
 }
 impl Radio {
+    pub(crate) fn form_value(mut self, value: String) -> Self {
+        self.form_value = Some(value);
+        self
+    }
+    pub(crate) fn visual(
+        mut self,
+        value: impl FnOnce(glory::ui::Check) -> Box<dyn Widget> + 'static,
+    ) -> Self {
+        self.visual = Some(Box::new(value));
+        self
+    }
     pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
         self.common.enabled = value.into();
         self
@@ -87,6 +103,7 @@ pub struct RadioGroup {
     direction: Direction,
     typeahead: Option<TypeaheadConfig>,
     on_change: Option<Box<dyn FnMut(String)>>,
+    member_gap: f64,
 }
 pub fn radio_group(key: impl Into<String>) -> RadioGroup {
     RadioGroup {
@@ -105,10 +122,15 @@ pub fn radio_group(key: impl Into<String>) -> RadioGroup {
         direction: Direction::Ltr,
         typeahead: None,
         on_change: None,
+        member_gap: 8.,
     }
 }
 impl RadioGroup {
     common_methods!();
+    pub(crate) fn member_gap(mut self, value: f64) -> Self {
+        self.member_gap = value;
+        self
+    }
     pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
         self.label = value.into();
         self
@@ -249,7 +271,7 @@ impl Selection {
 }
 
 struct RegisteredRadio {
-    control: Option<glory::ui::Check>,
+    control: Option<Box<dyn Widget>>,
     collection: Collection,
     key: String,
     enabled: Lotus<bool>,
@@ -283,6 +305,8 @@ impl Widget for RadioGroup {
     fn build(&mut self, scope: &Scope) -> Result {
         if self.items.is_empty()
             || self.items.len() > MAX_RADIO_GROUP_ITEMS
+            || !self.member_gap.is_finite()
+            || !(0. ..=1024.).contains(&self.member_gap)
             || self.common.focus != FocusMode::Auto
             || self
                 .items
@@ -368,6 +392,7 @@ impl Widget for RadioGroup {
             let native_name = native_name.clone();
             let states = metadata.clone();
             let key = item.key.clone();
+            let form_value = item.form_value.take().unwrap_or_else(|| key.clone());
             let flag = item.common.enabled.clone();
             let root = enabled.clone();
             let member_enabled: Lotus<bool> =
@@ -403,7 +428,7 @@ impl Widget for RadioGroup {
                     check_group: Some(native_name.clone()),
                     form_control: Some(FormControl {
                         name: native_name.as_str().into(),
-                        value: Some(key.clone()),
+                        value: Some(form_value.clone()),
                     }),
                     navigation_item: true,
                     required: metadata.as_ref().is_some_and(|metadata| metadata.required),
@@ -413,8 +438,12 @@ impl Widget for RadioGroup {
                 })
             }));
             members.push(std::mem::take(&mut item.common.handlers));
+            let control = match item.visual.take() {
+                Some(wrap) => wrap(check),
+                None => Box::new(check),
+            };
             children.push(Box::new(RegisteredRadio {
-                control: Some(check),
+                control: Some(control),
                 collection: collection.clone(),
                 key: member_key,
                 enabled: member_enabled,
@@ -470,7 +499,7 @@ impl Widget for RadioGroup {
                         } else {
                             glory::style::FlexDirection::Column
                         })
-                        .gap(8.0),
+                        .gap(self.member_gap),
                 )
                 .fill(children),
         );

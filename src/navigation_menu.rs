@@ -526,14 +526,32 @@ impl Root {
                 focus: LayerFocus::Preserve,
                 placement: if entry.parent.is_none() {
                     if self.direction == Direction::Rtl {
-                        LayerPlacement::AnchorEnd
+                        LayerPlacement::Anchor(glory::render::AnchorPlacement::new(
+                            glory::render::AnchorSide::Bottom,
+                            glory::render::AnchorAlign::End,
+                        ))
                     } else {
-                        LayerPlacement::AnchorStart
+                        LayerPlacement::Anchor(glory::render::AnchorPlacement::new(
+                            glory::render::AnchorSide::Bottom,
+                            glory::render::AnchorAlign::Start,
+                        ))
                     }
                 } else if self.direction == Direction::Rtl {
-                    LayerPlacement::AnchorLeft
+                    LayerPlacement::Anchor(
+                        glory::render::AnchorPlacement::new(
+                            glory::render::AnchorSide::Left,
+                            glory::render::AnchorAlign::Start,
+                        )
+                        .gap(4.0),
+                    )
                 } else {
-                    LayerPlacement::AnchorRight
+                    LayerPlacement::Anchor(
+                        glory::render::AnchorPlacement::new(
+                            glory::render::AnchorSide::Right,
+                            glory::render::AnchorAlign::Start,
+                        )
+                        .gap(4.0),
+                    )
                 },
                 anchor: Some(entry.trigger_id.clone()),
                 ..Default::default()

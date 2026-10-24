@@ -6,6 +6,9 @@ use crate::appearance::{Common, common_methods, configure, observe};
 use crate::composite::{self, ContentPolicy, Factory, Panel};
 use crate::state::Value;
 
+#[path = "collapsible_motion.rs"]
+mod motion;
+
 pub struct Collapsible {
     common: Common,
     key: String,
@@ -13,9 +16,12 @@ pub struct Collapsible {
     open: Value<bool>,
     on_change: Option<Box<dyn FnMut(bool)>>,
     content: Option<Factory>,
+    trigger_content: Option<Factory>,
     policy: ContentPolicy,
     trigger: Option<Cage<Option<NodeId>>>,
     panel: Option<Cage<Option<NodeId>>>,
+    height_duration: Option<Lotus<u16>>,
+    animated: Lotus<bool>,
 }
 pub fn collapsible(key: impl Into<String>) -> Collapsible {
     Collapsible {
@@ -25,9 +31,12 @@ pub fn collapsible(key: impl Into<String>) -> Collapsible {
         open: Value::default(),
         on_change: None,
         content: None,
+        trigger_content: None,
         policy: ContentPolicy::Unmount,
         trigger: None,
         panel: None,
+        height_duration: None,
+        animated: true.into(),
     }
 }
 impl Collapsible {
@@ -52,6 +61,13 @@ impl Collapsible {
         self.content = Some(Box::new(move || Box::new(factory())));
         self
     }
+    pub fn trigger_content<W: Widget>(
+        mut self,
+        mut factory: impl FnMut() -> W + 'static,
+    ) -> Self {
+        self.trigger_content = Some(Box::new(move || Box::new(factory())));
+        self
+    }
     pub fn content_policy(mut self, policy: ContentPolicy) -> Self {
         self.policy = policy;
         self
@@ -64,6 +80,19 @@ impl Collapsible {
         self.panel = Some(reference);
         self
     }
+    /// Opt into finite intrinsic-height motion. Zero settles immediately;
+    /// native adapters explicitly reject this optional presentation facet.
+    pub fn height_transition(mut self, millis: impl Into<Lotus<u16>>) -> Self {
+        self.height_duration = Some(millis.into());
+        self
+    }
+    /// Toggle an opted-in height transition; false explicitly settles its
+    /// current target and releases closing Unmount content at host completion.
+    pub fn animated(mut self, animated: impl Into<Lotus<bool>>) -> Self {
+        self.height_duration.get_or_insert_with(|| 180.into());
+        self.animated = animated.into();
+        self
+    }
 }
 impl Widget for Collapsible {
     fn build(&mut self, scope: &Scope) -> Result {
@@ -71,9 +100,25 @@ impl Widget for Collapsible {
         let trigger_id = composite::id("c", &self.key, "trigger", "root")?;
         let panel_id = composite::id("c", &self.key, "panel", "root")?;
         let control = std::mem::take(&mut self.open).mount(scope);
-        let panel_open = control.source.clone();
+        let motion = self
+            .height_duration
+            .take()
+            .map(|duration| {
+                motion::State::new(
+                    scope,
+                    control.source.clone(),
+                    duration,
+                    self.animated.clone(),
+                    self.policy,
+                )
+            })
+            .transpose()?;
+        let panel_open: Lotus<bool> = motion.map_or_else(
+            || control.source.clone(),
+            |motion| motion.config.map(|config| config.open).into(),
+        );
         let trigger_ref = self.trigger.unwrap_or_else(|| scope.cage(None));
-        let open = control.source.clone();
+        let open = panel_open.clone();
         let id = trigger_id.clone();
         let target = panel_id.clone();
         let mut trigger = glory::ui::button()
@@ -92,6 +137,12 @@ impl Widget for Collapsible {
         if !self.common.unstyled {
             trigger = trigger.style(self.common.theme.control(self.common.size));
         }
+        if let Some(mut factory) = self.trigger_content.take() {
+            trigger = trigger
+                .label("")
+                .name(self.label.clone())
+                .fill(glory::ui::component(move |scope| factory().show_in(scope)));
+        }
         let mut on_change = self.on_change.take();
         let mut observers = self
             .common
@@ -100,10 +151,11 @@ impl Widget for Collapsible {
             .unwrap_or_default();
         let weak = scope.downgrade();
         let owner = scope.id();
+        let accepted_open = panel_open.clone();
         trigger = trigger.on(EventKind::Activate, move |event| {
             let Some(scope) = weak.upgrade() else { return };
             let result = (|| -> Result {
-                let next = !control.source.try_get()?;
+                let next = !accepted_open.try_get()?;
                 control.accept(&next)?;
                 if let Some(callback) = &mut on_change {
                     callback(next);
@@ -115,25 +167,37 @@ impl Widget for Collapsible {
                 scope.report_error(error);
             }
         });
-        let panel = Panel {
-            id: panel_id,
-            label: trigger_id,
-            role: None,
-            open: panel_open,
-            trigger: trigger_ref,
-            restore: None,
-            reference: self.panel,
-            factory: self.content.take(),
-            policy: self.policy,
-            class: "sapid-collapsible-panel",
-            unstyled: self.common.unstyled,
+        let panel: Box<dyn Widget> = if let Some(state) = motion {
+            Box::new(motion::Panel {
+                id: panel_id,
+                label: trigger_id,
+                state,
+                trigger: trigger_ref,
+                reference: self.panel,
+                factory: self.content.take(),
+                unstyled: self.common.unstyled,
+            })
+        } else {
+            Box::new(Panel {
+                id: panel_id,
+                label: trigger_id,
+                role: None,
+                open: panel_open,
+                trigger: trigger_ref,
+                restore: None,
+                reference: self.panel,
+                factory: self.content.take(),
+                policy: self.policy,
+                class: "sapid-collapsible-panel",
+                unstyled: self.common.unstyled,
+            })
         };
         let mut root = configure!(
             self.common,
             glory::ui::view(),
             scope,
             "sapid-collapsible",
-            composite::column(8.0)
+            composite::column(if motion.is_some() { 0.0 } else { 8.0 })
         )
         .semantics(composite::metadata(Semantics {
             id: Some(root_id),

@@ -3,7 +3,7 @@ $ErrorActionPreference = 'Stop'
 $taskRoot = Split-Path -Parent $PSScriptRoot
 $taskBuild = 'D:/BuildCache/sapid'
 $saved = @{}
-foreach ($name in @('CARGO_HOME', 'CARGO_TARGET_DIR', 'CARGO_BUILD_JOBS', 'TEMP', 'TMP', 'PYTHONPYCACHEPREFIX', 'GLORY_DOCUMENT_STREAM_FIXTURE', 'GLORY_MENU_STREAM_FIXTURE', 'GLORY_HINTS_STREAM_FIXTURE', 'GLORY_SELECT_STREAM_FIXTURE', 'GLORY_GRAPHICS_STREAM_FIXTURE', 'GLORY_PROGRESS_STREAM_FIXTURE', 'GLORY_SPINNER_STREAM_FIXTURE', 'GLORY_CHOICE_STREAM_FIXTURE', 'GLORY_INERT_STREAM_FIXTURE', 'GLORY_SHEET_STREAM_FIXTURE', 'GLORY_GRAPHIC_TRANSITION_STREAM_FIXTURE')) {
+foreach ($name in @('CARGO_HOME', 'CARGO_TARGET_DIR', 'CARGO_BUILD_JOBS', 'TEMP', 'TMP', 'PYTHONPYCACHEPREFIX', 'GLORY_DOCUMENT_STREAM_FIXTURE', 'GLORY_MENU_STREAM_FIXTURE', 'GLORY_HINTS_STREAM_FIXTURE', 'GLORY_SELECT_STREAM_FIXTURE', 'GLORY_GRAPHICS_STREAM_FIXTURE', 'GLORY_PROGRESS_STREAM_FIXTURE', 'GLORY_SPINNER_STREAM_FIXTURE', 'GLORY_CHOICE_STREAM_FIXTURE', 'GLORY_INERT_STREAM_FIXTURE', 'GLORY_SHEET_STREAM_FIXTURE', 'GLORY_GRAPHIC_TRANSITION_STREAM_FIXTURE', 'GLORY_DRAG_CAPTURE_STREAM_FIXTURE', 'GLORY_COLLAPSE_STREAM_FIXTURE', 'GLORY_COMMAND_STREAM_FIXTURE', 'GLORY_ANCHOR_STREAM_FIXTURE')) {
     $saved[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
 }
 function Invoke-Cargo {
@@ -31,7 +31,9 @@ try {
     Confirm-Target 'Cargo.toml'
     Invoke-Cargo -Arguments @('fmt', '--all', '--', '--check')
     Invoke-Cargo -Arguments @('test', '--locked')
+    Invoke-Cargo -Arguments @('test', '--locked', '--features', 'json', '--test', 'json_input', '--test', 'json_model')
     Invoke-Cargo -Arguments @('clippy', '--locked', '--all-targets', '--', '-D', 'warnings')
+    Invoke-Cargo -Arguments @('clippy', '--locked', '--all-features', '--all-targets', '--', '-D', 'warnings')
     Confirm-Target '../glory/Cargo.toml'
     Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-style', '-p', 'glory-core', '-p', 'glory-render', '-p', 'glory-ui', '-p', 'glory-html', '-p', 'glory-ssr', '--all-features')
     Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-style', '-p', 'glory-core', '-p', 'glory-render', '-p', 'glory-ui', '-p', 'glory-html', '-p', 'glory-ssr', '--all-features', '--all-targets', '--', '-D', 'warnings')
@@ -44,7 +46,7 @@ try {
         $env:TMP = $env:TEMP
         New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
         Confirm-Target '../glory/Cargo.toml'
-        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-blitz', '--features', 'accesskit,raster', '--lib', '--test', 'layers', '--test', 'style_profile', '--test', 'check_modes', '--test', 'links', '--test', 'shadow', '--test', 'flex_wrap', '--test', 'inline_flex', '--test', 'grid', '--test', 'menu', '--test', 'hints', '--test', 'image_events', '--test', 'object_fit', '--test', 'graphic', '--test', 'graphic_transition', '--test', 'select', '--test', 'scroll', '--test', 'choice', '--test', 'sheet', '--test', 'positioning', '--', '--test-threads=1')
+        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-blitz', '--features', 'accesskit,raster', '--lib', '--test', 'layers', '--test', 'style_profile', '--test', 'check_modes', '--test', 'links', '--test', 'shadow', '--test', 'flex_wrap', '--test', 'inline_flex', '--test', 'grid', '--test', 'menu', '--test', 'hints', '--test', 'image_events', '--test', 'object_fit', '--test', 'graphic', '--test', 'graphic_transition', '--test', 'select', '--test', 'scroll', '--test', 'choice', '--test', 'tags', '--test', 'context_menu', '--test', 'menubar', '--test', 'collapse', '--test', 'palette', '--test', 'sheet', '--test', 'positioning', '--', '--test-threads=1')
         Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-blitz', '--features', 'accesskit,raster', '--all-targets', '--', '-D', 'warnings')
         Confirm-Target 'examples/native/Cargo.toml'
         Invoke-Cargo -Arguments @('fmt', '--manifest-path', 'examples/native/Cargo.toml', '--', '--check')
@@ -69,7 +71,7 @@ try {
         Copy-Item -LiteralPath examples/web/composites.html -Destination "$taskBuild/web/composites.html"
         Copy-Item -LiteralPath examples/web/overlays.html -Destination "$taskBuild/web/overlays.html"
         Copy-Item -LiteralPath examples/web/fields.html -Destination "$taskBuild/web/fields.html"
-        foreach($page in @('choices','forms','display','actions','document','toggles','layout','typography','timeline','spoiler','navigation','grid','menu','stepper','visually-hidden','avatar','shell','hints','image','buttons','scroll-area','alerts','graphics','native-select','progress','modals','notifications','toolbar','color-swatch','sheet','choice-extras','combobox','loading-overlay','select','spinner','navigation-progress','splitter','affix','navigation-menu','slider')) {Copy-Item -LiteralPath "examples/web/$page.html" -Destination "$taskBuild/web/$page.html"}
+        foreach($page in @('choices','forms','display','actions','document','toggles','layout','typography','timeline','spoiler','navigation','grid','menu','context-menu','menubar','command','stepper','visually-hidden','avatar','shell','hints','image','buttons','scroll-area','alerts','graphics','native-select','progress','modals','notifications','toolbar','accordion','tabs-dynamic','collapse-motion','overflow-list','color-swatch','color-sliders','color-picker','sheet','choice-extras','tags','json-input','combobox','loading-overlay','select','spinner','navigation-progress','splitter','affix','navigation-menu','slider','range-slider','angle-slider','rating','number-input','popover-placement')) {Copy-Item -LiteralPath "examples/web/$page.html" -Destination "$taskBuild/web/$page.html"}
         Copy-Item -LiteralPath ../glory/crates/web/src/stream.js -Destination "$taskBuild/web/glory-stream.js"
         New-Item -ItemType Directory -Force -Path "$taskBuild/web/assets" | Out-Null
         Copy-Item -Path examples/web/assets/* -Destination "$taskBuild/web/assets"
@@ -77,6 +79,14 @@ try {
         Copy-Item -LiteralPath examples/web/showcase.js -Destination "$taskBuild/web/showcase.js"
         Copy-Item -LiteralPath styles/sapid.css -Destination "$taskBuild/web/sapid.css"
         Invoke-Cargo -Arguments @('run', '--locked', '--manifest-path', $manifest, '--bin', 'ssr', '--', "$taskBuild/web")
+        $env:GLORY_ANCHOR_STREAM_FIXTURE = "$taskBuild/web/anchor-stream.html"
+        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'finite_anchor_policy_fields_survive_classic_patch_and_versioned_start_end')
+        $env:GLORY_COMMAND_STREAM_FIXTURE = "$taskBuild/web/command-stream.html"
+        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'command_dialog_editor_grouped_options_and_pending_states_survive_classic_stream_end')
+        $env:GLORY_COLLAPSE_STREAM_FIXTURE = "$taskBuild/web/collapse-stream.html"
+        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'finite_collapse_config_revision_and_classic_end_use_the_current_html_format')
+        $env:GLORY_DRAG_CAPTURE_STREAM_FIXTURE = "$taskBuild/web/drag-capture-stream.html"
+        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'press_capture_policy_survives_semantic_patch_and_classic_end')
         $env:GLORY_MENU_STREAM_FIXTURE = "$taskBuild/web/menu-stream.html"
         Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'menu_stream_retains_intrinsic_roles_and_lowers_popup_layer_and_controlled_properties')
         $env:GLORY_DOCUMENT_STREAM_FIXTURE = "$taskBuild/web/document-stream.html"
@@ -109,3 +119,6 @@ finally {
         [Environment]::SetEnvironmentVariable($name, $saved[$name], 'Process')
     }
 }
+
+
+

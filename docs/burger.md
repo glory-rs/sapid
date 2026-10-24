@@ -38,12 +38,24 @@ unstyled, observers, stable references and lifetime behavior. Shared render
 The HTML full-shape oracle includes compatible transitions, invalid duration and
 clear/reset. The classic-stream test checks path/config content patch through End.
 
-`D:/BuildCache/sapid/graphic-transition-native.log` records two real raster tests:
+`D:/BuildCache/sapid/graphic-transition-hidden-native.log` records three real raster tests:
 intermediate line geometry, interrupted sampling, equal/Keep writes, final frame
 and idle clock behavior, live Reduce, engine identity, ancestor clipping and
-premultiplied group-opacity pixels, hidden cancellation and disposal. Native
-component four-theme pixel checks are in `examples/native/tests/burger.rs`.
+premultiplied group-opacity pixels, hidden cancellation and disposal. Showing and
+changing a previously hidden target in one turn paints its accepted endpoint,
+including enabling transitions at that same boundary. Native component
+four-theme pixel and default Reduce/controlled refusal tests in
+`examples/native/tests/burger.rs` both pass in `gate-snapshot15.log`.
 `graphic-transition-interruption-prototype.json` records Chromium 148.0.7778.96
 actual CSS d interpolation, continuous reversal and immediate mid-flight Reduce.
-The complete component browser report remains pending unified Web15 and
-`examples/web/burger-acceptance.js`; the prototype is not a substitute for it.
+`D:/BuildCache/sapid/burger-browser.json` records nine passing actual scenarios
+against unified Web15 on Chromium 148.0.7778.96, with no errors. Eight four-theme
+CSR/hydration scenarios check real intermediate/reversed/interrupted geometry,
+mid-flight Reduce and explicit no-motion cancellation, actual Chrome AX name /
+pressed / expanded, controlled refusal, disabled/source silence, stable
+Button/SVG/path identities, mobile overflow and in-flight Owner retirement.
+The ninth checks a compatible classic-stream content/config patch, SVG namespace
+and End cleanup. It does not claim WASM adoption for that standalone primitive
+stream. Four `burger-{hue}-{scheme}-hydrate.png` screenshots record the final
+fixture; the green/dark image was visually inspected. These checks do not
+establish spoken screen-reader or automatic native OS preference acceptance.

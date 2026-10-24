@@ -296,6 +296,8 @@ pub struct Menu {
     delay: Option<Delay>,
     trigger: Option<Cage<Option<NodeId>>>,
     dropdown: bool,
+    context: Option<ContextConfig>,
+    bar: Option<bar::BarItem>,
 }
 pub fn menu(key: impl Into<String>) -> Menu {
     Menu {
@@ -314,10 +316,34 @@ pub fn menu(key: impl Into<String>) -> Menu {
         delay: None,
         trigger: None,
         dropdown: false,
+        context: None,
+        bar: None,
     }
 }
 pub struct DropdownMenu {
     inner: Menu,
+}
+struct ContextConfig {
+    target: Box<dyn Widget>,
+    name: Lotus<String>,
+    policy: glory::render::ContextEditPolicy,
+    reference: Option<Cage<Option<NodeId>>>,
+}
+pub struct ContextMenu {
+    inner: Menu,
+    target: Option<Box<dyn Widget>>,
+    target_name: Lotus<String>,
+    policy: glory::render::ContextEditPolicy,
+    reference: Option<Cage<Option<NodeId>>>,
+}
+pub fn context_menu(key: impl Into<String>) -> ContextMenu {
+    ContextMenu {
+        inner: menu(key),
+        target: None,
+        target_name: "Context menu area".into(),
+        policy: Default::default(),
+        reference: None,
+    }
 }
 pub fn dropdown_menu(key: impl Into<String>) -> DropdownMenu {
     DropdownMenu {
@@ -419,6 +445,48 @@ impl DropdownMenu {
         radio_group(group: MenuRadioGroup); submenu(submenu: MenuSubmenu); separator(key: impl Into<String>);
         return_focus(id: SemanticId); direction(direction: Direction); loop_focus(looping: bool); typeahead(config: TypeaheadConfig);
         trigger_ref(reference: Cage<Option<NodeId>>); node_ref(reference: Cage<Option<NodeId>>); class(value: impl Into<Lotus<String>>);
+        name(value: impl Into<Lotus<String>>); style(value: impl Into<Lotus<glory::style::Style>>); enabled(value: impl Into<Lotus<bool>>);
+        theme(value: crate::Theme); size(value: crate::Size)
+    }
+    pub fn unstyled(mut self) -> Self {
+        self.inner = self.inner.unstyled();
+        self
+    }
+    pub fn hover_delay_with<F: Fn() -> Fut + 'static, Fut: Future<Output = ()> + 'static>(
+        mut self,
+        factory: F,
+    ) -> Self {
+        self.inner = self.inner.hover_delay_with(factory);
+        self
+    }
+    pub fn on(mut self, kind: EventKind, callback: impl FnMut(Event) + 'static) -> Self {
+        self.inner = self.inner.on(kind, callback);
+        self
+    }
+}
+impl ContextMenu {
+    pub fn target(mut self, widget: impl Widget + 'static) -> Self {
+        self.target = Some(Box::new(widget));
+        self
+    }
+    pub fn target_name(mut self, name: impl Into<Lotus<String>>) -> Self {
+        self.target_name = name.into();
+        self
+    }
+    pub fn target_ref(mut self, reference: Cage<Option<NodeId>>) -> Self {
+        self.reference = Some(reference);
+        self
+    }
+    pub fn editor_policy(mut self, policy: glory::render::ContextEditPolicy) -> Self {
+        self.policy = policy;
+        self
+    }
+    dropdown_methods! {
+        label(value: impl Into<Lotus<String>>); open(value: impl Into<Lotus<bool>>);
+        on_open_change(callback: impl FnMut(bool) + 'static); item(item: impl Into<MenuEntry>); items(items: impl IntoIterator<Item = MenuItem>);
+        radio_group(group: MenuRadioGroup); submenu(submenu: MenuSubmenu); separator(key: impl Into<String>);
+        direction(direction: Direction); loop_focus(looping: bool); typeahead(config: TypeaheadConfig);
+        node_ref(reference: Cage<Option<NodeId>>); class(value: impl Into<Lotus<String>>);
         name(value: impl Into<Lotus<String>>); style(value: impl Into<Lotus<glory::style::Style>>); enabled(value: impl Into<Lotus<bool>>);
         theme(value: crate::Theme); size(value: crate::Size)
     }
@@ -545,6 +613,7 @@ struct Child {
     state: Rc<MenuState>,
 }
 struct MenuState {
+    bar: Option<(String, Weak<bar::BarState>)>,
     open: Control<bool>,
     changed: Callback<bool>,
     visible: Lotus<bool>,
@@ -663,15 +732,32 @@ impl MenuState {
         self.cancel_pending();
         match command {
             MenuCommand::First | MenuCommand::Last => {
+                if let Some((key, bar)) = &self.bar
+                    && let Some(bar) = bar.upgrade()
+                {
+                    return bar.open_from_trigger(scope, key, command == MenuCommand::Last);
+                }
                 self.request(true)?;
                 if self.owner.is_alive() {
                     self.boundary(scope, command == MenuCommand::Last)?;
                 }
             }
             MenuCommand::Open if self.visible.try_get()? => {
-                self.open_child(scope, from, true)?
+                if !self.children().iter().any(|(trigger, _)| *trigger == from)
+                    && let Some((key, bar)) = &self.bar
+                    && let Some(bar) = bar.upgrade()
+                {
+                    bar.move_from_menu(scope, key, true)?;
+                } else {
+                    self.open_child(scope, from, true)?;
+                }
             }
             MenuCommand::Close if self.visible.try_get()? => {
+                if let Some((key, bar)) = &self.bar
+                    && let Some(bar) = bar.upgrade()
+                {
+                    return bar.move_from_menu(scope, key, false);
+                }
                 self.request(false)?;
                 if self.parent.upgrade().is_some() && self.owner.is_alive() {
                     composite::focus(scope, self.trigger)?;
@@ -756,6 +842,7 @@ impl MenuState {
 }
 
 struct Level {
+    bar: Option<(String, Weak<bar::BarState>)>,
     key: String,
     path: Vec<String>,
     common: Common,
@@ -764,8 +851,8 @@ struct Level {
     changed: Option<Box<dyn FnMut(bool)>>,
     entries: Vec<MenuEntry>,
     anchor: SemanticId,
-    return_focus: SemanticId,
-    placement: LayerPlacement,
+    return_focus: Option<SemanticId>,
+    placement: Lotus<LayerPlacement>,
     parent: Weak<MenuState>,
     root: Weak<MenuState>,
     parent_visible: Lotus<bool>,
@@ -800,6 +887,7 @@ impl Level {
         let search = Typeahead::new(self.typeahead)?;
         let pending = OwnerDelay::new(scope)?;
         let state = Rc::new_cyclic(|this| MenuState {
+            bar: self.bar,
             open: control,
             changed: Callback::new(self.changed.take()),
             visible: visible.clone(),
@@ -830,16 +918,20 @@ impl Level {
         })?;
         let open = visible.clone();
         let direction = self.direction;
+        let placement = self.placement;
         let config = Layer {
             sheet: None,
             modal: false,
             escape: true,
             outside: true,
             focus: glory::render::LayerFocus::Manage,
-            placement: self.placement,
+            placement: LayerPlacement::Anchor(glory::render::AnchorPlacement::new(
+                glory::render::AnchorSide::Bottom,
+                glory::render::AnchorAlign::Start,
+            )),
             anchor: Some(self.anchor),
             initial_focus: None,
-            return_focus: Some(self.return_focus),
+            return_focus: self.return_focus,
         };
         let stable_id = panel_id.clone();
         let mut panel_widget = configure!(
@@ -853,9 +945,11 @@ impl Level {
         .node_ref(panel)
         .focus(FocusMode::Programmatic)
         .semantics(scope.bond(move || {
+            let mut config = config.clone();
+            config.placement = placement.get();
             composite::metadata(Semantics {
                 id: Some(stable_id.clone()),
-                layer: Some(config.clone()),
+                layer: Some(config),
                 hidden: !open.get(),
                 navigation: Some(Orientation::Vertical),
                 navigation_direction: direction,
@@ -957,6 +1051,7 @@ impl Level {
                         })
                         .into();
                     let child = Level {
+                        bar: None,
                         key: self.key.clone(),
                         path: path.clone(),
                         common: Common {
@@ -970,12 +1065,25 @@ impl Level {
                         changed: submenu.changed,
                         entries: submenu.entries,
                         anchor: trigger_id.clone(),
-                        return_focus: trigger_id.clone(),
-                        placement: if direction == Direction::Rtl {
-                            LayerPlacement::AnchorLeft
+                        return_focus: Some(trigger_id.clone()),
+                        placement: (if direction == Direction::Rtl {
+                            LayerPlacement::Anchor(
+                                glory::render::AnchorPlacement::new(
+                                    glory::render::AnchorSide::Left,
+                                    glory::render::AnchorAlign::Start,
+                                )
+                                .gap(4.0),
+                            )
                         } else {
-                            LayerPlacement::AnchorRight
-                        },
+                            LayerPlacement::Anchor(
+                                glory::render::AnchorPlacement::new(
+                                    glory::render::AnchorSide::Right,
+                                    glory::render::AnchorAlign::Start,
+                                )
+                                .gap(4.0),
+                            )
+                        })
+                        .into(),
                         parent: Rc::downgrade(&state),
                         root: state.root.clone(),
                         parent_visible: child_visible,
@@ -1605,18 +1713,46 @@ impl Widget for Menu {
         validate(&self.key, &self.entries, &mut Vec::new(), &mut 0)?;
         Typeahead::new(self.typeahead)?;
         let trigger_id = id(&self.key, &[], "trigger")?;
+        let context = self.context.take();
+        let point = scope.cage(glory::render::ContextPoint::default());
+        let placement: Lotus<LayerPlacement> = if context.is_some() {
+            scope
+                .bond(move || LayerPlacement::ContextPoint(point.get()))
+                .into()
+        } else {
+            LayerPlacement::Anchor(glory::render::AnchorPlacement::new(
+                glory::render::AnchorSide::Bottom,
+                glory::render::AnchorAlign::Start,
+            ))
+            .into()
+        };
         let anchor = if self.dropdown {
             trigger_id.clone()
+        } else if context.is_some() {
+            id(&self.key, &[], "context")?
         } else {
             self.anchor
                 .clone()
                 .ok_or_else(|| invalid("standalone Menu requires an explicit anchor"))?
         };
-        let return_focus = self.return_focus.clone().unwrap_or_else(|| anchor.clone());
+        let return_focus = if context.is_some() {
+            None
+        } else {
+            Some(self.return_focus.clone().unwrap_or_else(|| anchor.clone()))
+        };
+        let context_anchor = anchor.clone();
         let trigger = self.trigger.unwrap_or_else(|| scope.cage(None));
         let enabled = self.common.enabled.clone();
         let label = self.label.clone();
         let mut common = std::mem::take(&mut self.common);
+        let mut context_observers = if context.is_some() {
+            common
+                .handlers
+                .remove(&EventKind::ContextMenu)
+                .unwrap_or_default()
+        } else {
+            Vec::new()
+        };
         let mut trigger_observers = if self.dropdown {
             common
                 .handlers
@@ -1641,7 +1777,11 @@ impl Widget for Menu {
         let theme = common.theme.clone();
         let size = common.size;
         let unstyled = common.unstyled;
+        let bar = self.bar.take();
         let state = Level {
+            bar: bar
+                .as_ref()
+                .map(|config| (config.key.clone(), config.state.clone())),
             key: self.key.clone(),
             path: Vec::new(),
             common,
@@ -1651,7 +1791,7 @@ impl Widget for Menu {
             entries: std::mem::take(&mut self.entries),
             anchor,
             return_focus,
-            placement: LayerPlacement::AnchorStart,
+            placement,
             parent: Weak::new(),
             root: Weak::new(),
             parent_visible: true.into(),
@@ -1663,6 +1803,57 @@ impl Widget for Menu {
             trigger,
         }
         .build(scope)?;
+        if let Some(context) = context {
+            let policy = context.policy;
+            let shared = enabled.clone();
+            let weak = scope.downgrade();
+            let controller = state.clone();
+            let node = context.reference.unwrap_or_else(|| scope.cage(None));
+            let target = glory::ui::view()
+                .role(Role::Group)
+                .name(context.name)
+                .focus(FocusMode::TabStop)
+                .node_ref(node)
+                .semantics(scope.bond(move || {
+                    composite::metadata(Semantics {
+                        id: Some(context_anchor.clone()),
+                        context_menu: Some(policy),
+                        disabled: !shared.get(),
+                        ..Default::default()
+                    })
+                }))
+                .on(EventKind::ContextMenu, move |event| {
+                    let Some(scope) = weak.upgrade() else { return };
+                    let Event::ContextMenu {
+                        point: requested, ..
+                    } = event
+                    else {
+                        return;
+                    };
+                    let result = (|| -> Result {
+                        if !controller.enabled.try_get()? {
+                            return Ok(());
+                        }
+                        controller.request(true)?;
+                        if controller.owner.is_alive() && controller.open.source.try_get()? {
+                            point.try_revise(|value| *value = requested)?;
+                        }
+                        Ok(())
+                    })();
+                    if let Err(error) = result {
+                        scope.report_error(error);
+                        return;
+                    }
+                    observe(&mut context_observers, instance, event);
+                })
+                .mount(scope)?;
+            let content = target
+                .scope()
+                .child_in(node.get().ok_or(glory::ui::Error::Gone)?)?;
+            context.target.show_in(&content)?;
+            target.scope().retain(content)?;
+            scope.retain(target)?;
+        }
         if self.dropdown {
             let panel_id = id(&self.key, &[], "panel")?;
             let open = state.visible.clone();
@@ -1670,14 +1861,24 @@ impl Widget for Menu {
             let weak = scope.downgrade();
             let command = state.clone();
             let key_scope = scope.downgrade();
+            let bar_action = bar
+                .as_ref()
+                .map(|config| (config.key.clone(), config.state.clone()));
+            let bar_owner = bar.as_ref().map(|config| config.owner.clone());
+            let is_bar = bar.is_some();
+            let focus = bar
+                .as_ref()
+                .map(|config| config.focus.clone())
+                .unwrap_or_else(|| FocusMode::Auto.into());
             let mut button = glory::ui::button()
                 .class(format!(
                     "sapid-menu-trigger {}{}",
                     theme.class(),
                     if unstyled { " sapid-unstyled" } else { "" }
                 ))
-                .label(label)
-                .enabled(enabled)
+                .label(label.clone())
+                .enabled(enabled.clone())
+                .focus(focus)
                 .node_ref(trigger)
                 .semantics(scope.bond(move || {
                     composite::metadata(Semantics {
@@ -1685,12 +1886,25 @@ impl Widget for Menu {
                         popup: Some(PopupKind::Menu),
                         expanded: Some(open.get()),
                         controls: Some(panel_id.clone()),
+                        menubar_item: is_bar,
+                        navigation_item: is_bar,
+                        menu_item: bar_owner.clone().map(|owner| MenuItemSemantics {
+                            kind: MenuItemKind::Action,
+                            owner,
+                        }),
                         ..Default::default()
                     })
                 }))
                 .on(EventKind::Activate, move |event| {
                     let Some(scope) = weak.upgrade() else { return };
-                    if let Err(error) = source.request(!source.open.source.get()) {
+                    let result = if let Some((key, bar)) = &bar_action
+                        && let Some(bar) = bar.upgrade()
+                    {
+                        bar.toggle(key).map(|_| ())
+                    } else {
+                        source.request(!source.open.source.get())
+                    };
+                    if let Err(error) = result {
                         scope.report_error(error);
                         return;
                     }
@@ -1712,6 +1926,11 @@ impl Widget for Menu {
                 button = button.style(theme.control(size));
             }
             button.show_in(scope)?;
+            if let Some(config) = bar
+                && let Some(bar) = config.state.upgrade()
+            {
+                bar.register(scope, &config.key, trigger, enabled, label, state.clone())?;
+            }
         }
         Ok(())
     }
@@ -1721,3 +1940,21 @@ impl Widget for DropdownMenu {
         self.inner.build(scope)
     }
 }
+impl Widget for ContextMenu {
+    fn build(&mut self, scope: &Scope) -> Result {
+        let target = self
+            .target
+            .take()
+            .ok_or_else(|| invalid("context menu requires a target widget"))?;
+        self.inner.context = Some(ContextConfig {
+            target,
+            name: self.target_name.clone(),
+            policy: self.policy,
+            reference: self.reference,
+        });
+        self.inner.build(scope)
+    }
+}
+#[path = "menubar.rs"]
+mod bar;
+pub use bar::{MAX_MENUBAR_ROOTS, Menubar, MenubarMenu, menubar, menubar_menu};

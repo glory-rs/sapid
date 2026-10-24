@@ -17,6 +17,7 @@ pub struct TextField {
     required: Lotus<bool>,
     readonly: Lotus<bool>,
     invalid: Lotus<bool>,
+    extra_error: Option<(glory::render::SemanticId, Lotus<String>)>,
 }
 
 pub fn text_field() -> TextField {
@@ -31,10 +32,19 @@ pub fn text_field() -> TextField {
         required: false.into(),
         readonly: false.into(),
         invalid: false.into(),
+        extra_error: None,
     }
 }
 
 impl TextField {
+    pub(crate) fn additional_error(
+        mut self,
+        id: glory::render::SemanticId,
+        message: Lotus<String>,
+    ) -> Self {
+        self.extra_error = Some((id, message));
+        self
+    }
     common_methods!();
     pub fn field(mut self, field: crate::FieldControl) -> Self {
         self.common.theme = field.theme.clone();
@@ -113,6 +123,21 @@ impl Widget for TextField {
             self.readonly.clone(),
             self.invalid.clone(),
         );
+        let metadata = if let Some((id, message)) = self.extra_error.take() {
+            scope
+                .bond(move || {
+                    let mut state = metadata.get().unwrap_or_default();
+                    let error = message.with(|value| !value.is_empty());
+                    state.invalid |= error;
+                    if error && state.error_message.is_none() {
+                        state.error_message = Some(id.clone())
+                    }
+                    crate::composite::metadata(*state)
+                })
+                .into()
+        } else {
+            metadata
+        };
         if metadata.is_reactive()
             || enabled.is_reactive()
             || !enabled.try_get()?

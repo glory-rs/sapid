@@ -7,8 +7,13 @@ license = "MIT OR Apache-2.0"
 description = "Composable semantic widgets for Glory"
 publish = false
 
+[features]
+default = []
+json = ["dep:serde_json"]
+
 [dependencies]
 glory = { path = "../glory/crates/glory", default-features = false }
+serde_json = { version = "=1.0.154", features = ["raw_value"], optional = true }
 
 [dev-dependencies]
 glory = { path = "../glory/crates/glory", default-features = false, features = ["ssr"] }

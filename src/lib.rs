@@ -19,8 +19,11 @@ mod checkbox_group;
 mod chip;
 mod collapsible;
 pub mod collection;
+mod color_model;
+mod color_slider;
 mod color_swatch;
 pub mod combobox;
+pub mod command;
 mod composite;
 mod display;
 mod document;
@@ -32,6 +35,10 @@ pub mod hint;
 mod image;
 mod indicator;
 mod input_group;
+#[cfg(feature = "json")]
+mod json_input;
+#[cfg(feature = "json")]
+mod json_model;
 mod layout;
 mod loading_overlay;
 pub mod menu;
@@ -43,7 +50,12 @@ mod navigation;
 mod navigation_progress;
 mod notifications;
 mod number_formatter;
+mod overflow_list;
 mod overlay;
+pub use overflow_list::{
+    MAX_OVERFLOW_ITEMS, MAX_OVERFLOW_QUERIES, OverflowHandle, OverflowItem, OverflowList,
+    overflow_item, overflow_list,
+};
 mod sheet;
 pub use sheet::{DrawerSnap, DrawerSnaps};
 mod password_input;
@@ -101,6 +113,11 @@ pub use collection::{
 pub use color_swatch::{ColorSwatch, color_swatch};
 pub use combobox::MAX_MULTI_SELECT_VALUES;
 pub use combobox::{Combobox, ComboboxFilter, MAX_COMBOBOX_SEARCH_BYTES, combobox};
+pub use command::{
+    Command, CommandAction, CommandGroup, CommandHandle, CommandResponse, CommandResults,
+    MAX_COMMAND_ACTIONS, MAX_COMMAND_GROUPS, MAX_COMMAND_TEXT_BYTES, command, command_action,
+    command_group, spotlight,
+};
 pub use composite::ContentPolicy;
 pub use display::{
     Badge, BadgeVariant, Card, EmptyState, Paper, Pill, ShadowSize, badge, card, empty_state,
@@ -127,16 +144,24 @@ pub use indicator::{Indicator, IndicatorPosition, indicator};
 pub use input_group::{
     InputAddon, InputGroup, InputSection, input_addon, input_group, input_section,
 };
+#[cfg(feature = "json")]
+pub use json_input::{JsonInput, json_input};
+#[cfg(feature = "json")]
+pub use json_model::{
+    JsonError, JsonErrorKind, JsonFormat, JsonKind, JsonLimits, JsonValidity, MAX_JSON_BYTES,
+    MAX_JSON_DEPTH, format_json, validate_json,
+};
 pub use layout::{
     Box, Center, Container, Flex, Group, Space, Stack, box_, center, container, flex, group,
     space, stack,
 };
 pub use loading_overlay::{LoadingOverlay, Overlay, loading_overlay, overlay};
 pub use menu::{
-    DropdownMenu, Menu, MenuEntry, MenuItem, MenuRadioGroup, MenuRadioItem, MenuSubmenu,
-    dropdown_menu, menu, menu_checkbox, menu_item, menu_radio_group, menu_radio_item,
-    menu_submenu,
+    ContextMenu, DropdownMenu, Menu, MenuEntry, MenuItem, MenuRadioGroup, MenuRadioItem,
+    MenuSubmenu, context_menu, dropdown_menu, menu, menu_checkbox, menu_item, menu_radio_group,
+    menu_radio_item, menu_submenu,
 };
+pub use menu::{MAX_MENUBAR_ROOTS, Menubar, MenubarMenu, menubar, menubar_menu};
 pub use mixed_checkbox::{CheckState, MixedCheckbox, mixed_checkbox};
 pub use modals::{
     MAX_PENDING_MODALS, ModalOutcome, ModalRequest, ModalToken, ModalsHandle, ModalsManager,
@@ -161,8 +186,9 @@ pub use number_formatter::{
     Currency, NumberFormat, NumberFormatter, NumberLocale, number_formatter,
 };
 pub use overlay::{
-    AlertCancelReason, AlertDialog, Dialog, Drawer, DrawerSide, FloatingDialog, Popover,
-    PopoverAlign, alert_dialog, dialog, drawer, floating_dialog, popover,
+    AlertCancelReason, AlertDialog, AnchorAlign, AnchorPlacement, AnchorSide, Dialog, Drawer,
+    DrawerSide, FloatingDialog, Popover, alert_dialog, dialog, drawer, floating_dialog,
+    popover,
 };
 pub use password_input::{PasswordInput, password_input};
 pub use pills_input::{PillsInput, pills_input};
@@ -204,42 +230,52 @@ pub use typography::{
 pub use visually_hidden::{MAX_VISUALLY_HIDDEN_BYTES, VisuallyHidden, visually_hidden};
 
 pub mod prelude {
+    pub use crate::command::{
+        Command, CommandAction, CommandGroup, CommandHandle, CommandResponse, CommandResults,
+        MAX_COMMAND_ACTIONS, MAX_COMMAND_GROUPS, MAX_COMMAND_TEXT_BYTES, command,
+        command_action, command_group, spotlight,
+    };
     pub use crate::{
-        Accordion, AccordionItem, ActionIcon, Anchor, AnchorRequest, AspectRatio, Badge,
-        BadgeVariant, Blockquote, Box, BreadcrumbItem, Breadcrumbs, Burger, Button,
-        ButtonGroup, ButtonVariant, Card, Center, CheckState, Checkbox, CheckboxGroup,
-        CheckboxItem, Chip, ChipGroup, ChipItem, ChipMode, CloseButton, Code, Collapsible,
-        Collection, CollectionLimits, CollectionMember, ColorScheme, Container, ContentPolicy,
-        ControlValue, Currency, DataList, DataListItem, Description, Dialog, Drawer,
-        DrawerSide, EmptyState, Field, FieldControl, FieldError, FieldOptions, Fieldset, Flex,
-        Form, FormButton, FormEntry, FormError, FormField, FormFieldState, FormLimits,
-        FormState, FormStatus, Grid, GridItem, Group, Highlight, Hue, InputAddon, InputGroup,
-        InputSection, Item, Kbd, KbdKey, KbdPlatform, Label, Mark, MixedCheckbox, MountedItem,
-        NavLink, NumberFormat, NumberFormatter, NumberLocale, PageItem, Pagination, Paper,
-        PasswordInput, Pill, Popover, PopoverAlign, Radio, RadioGroup, RovingFocus, Segment,
-        SegmentedControl, Separator, ShadowSize, SimpleGrid, Size, Space, Spoiler, Stack,
-        SubmissionLimits, SubmitStatus, SubmitToken, Switch, Tab, TabActivation, Tabs, Text,
-        TextField, TextList, TextListItem, TextVariant, Textarea, Theme, Timeline,
-        TimelineItem, TimelineProgress, Title, Toggle, ToggleGroup, ToggleItem, ToggleMode,
-        Typeahead, TypeaheadConfig, Typography, TypographyContext, ValidationErrors,
-        ValidationFuture, accordion, accordion_item, action_icon, anchor, aspect_ratio, badge,
-        blockquote, box_, breadcrumb_item, breadcrumbs, burger, button, button_group, card,
-        center, checkbox, checkbox_group, checkbox_item, chip, chip_group, chip_item,
-        close_button, code, collapsible, container, data_list, data_list_item, description,
-        dialog, drawer, empty_state, field, field_description, field_error, fieldset, flex,
-        form, grid, grid_item, group, highlight, input_addon, input_group, input_section, item,
-        kbd, label, mark, mixed_checkbox, nav_link, number_formatter, pagination,
-        pagination_window, paper, password_input, pill, popover, radio, radio_group,
-        reset_button, segment, segmented_control, separator, simple_grid, space, spoiler,
-        stack, submit_button, switch, tab, tabs, text, text_field, text_list, text_list_item,
-        textarea, timeline, timeline_item, title, toggle, toggle_group, toggle_item,
-        typography,
+        Accordion, AccordionItem, ActionIcon, Anchor, AnchorAlign, AnchorPlacement,
+        AnchorRequest, AnchorSide, AspectRatio, Badge, BadgeVariant, Blockquote, Box,
+        BreadcrumbItem, Breadcrumbs, Burger, Button, ButtonGroup, ButtonVariant, Card, Center,
+        CheckState, Checkbox, CheckboxGroup, CheckboxItem, Chip, ChipGroup, ChipItem, ChipMode,
+        CloseButton, Code, Collapsible, Collection, CollectionLimits, CollectionMember,
+        ColorScheme, Container, ContentPolicy, ControlValue, Currency, DataList, DataListItem,
+        Description, Dialog, Drawer, DrawerSide, EmptyState, Field, FieldControl, FieldError,
+        FieldOptions, Fieldset, Flex, Form, FormButton, FormEntry, FormError, FormField,
+        FormFieldState, FormLimits, FormState, FormStatus, Grid, GridItem, Group, Highlight,
+        Hue, InputAddon, InputGroup, InputSection, Item, Kbd, KbdKey, KbdPlatform, Label, Mark,
+        MixedCheckbox, MountedItem, NavLink, NumberFormat, NumberFormatter, NumberLocale,
+        PageItem, Pagination, Paper, PasswordInput, Pill, Popover, Radio, RadioGroup,
+        RovingFocus, Segment, SegmentedControl, Separator, ShadowSize, SimpleGrid, Size, Space,
+        Spoiler, Stack, SubmissionLimits, SubmitStatus, SubmitToken, Switch, Tab,
+        TabActivation, Tabs, Text, TextField, TextList, TextListItem, TextVariant, Textarea,
+        Theme, Timeline, TimelineItem, TimelineProgress, Title, Toggle, ToggleGroup,
+        ToggleItem, ToggleMode, Typeahead, TypeaheadConfig, Typography, TypographyContext,
+        ValidationErrors, ValidationFuture, accordion, accordion_item, action_icon, anchor,
+        aspect_ratio, badge, blockquote, box_, breadcrumb_item, breadcrumbs, burger, button,
+        button_group, card, center, checkbox, checkbox_group, checkbox_item, chip, chip_group,
+        chip_item, close_button, code, collapsible, container, data_list, data_list_item,
+        description, dialog, drawer, empty_state, field, field_description, field_error,
+        fieldset, flex, form, grid, grid_item, group, highlight, input_addon, input_group,
+        input_section, item, kbd, label, mark, mixed_checkbox, nav_link, number_formatter,
+        pagination, pagination_window, paper, password_input, pill, popover, radio,
+        radio_group, reset_button, segment, segmented_control, separator, simple_grid, space,
+        spoiler, stack, submit_button, switch, tab, tabs, text, text_field, text_list,
+        text_list_item, textarea, timeline, timeline_item, title, toggle, toggle_group,
+        toggle_item, typography,
     };
     pub use crate::{ActionBar, Toolbar, ToolbarGroup, action_bar, toolbar, toolbar_group};
     pub use crate::{
         Affix, AffixContainer, AffixContext, AffixHorizontal, AffixOffset, AffixVertical,
         affix, affix_container,
     };
+    pub use crate::{
+        AlphaSlider, ColorError, Hsva, HueSlider, alpha_slider, format_hex_color, hue_slider,
+        parse_hex_color,
+    };
+    pub use crate::{AngleSlider, angle_slider};
     pub use crate::{
         AppShell, ShellContext, ShellLayout, ShellMode, Sidebar, SidebarContext, SidebarHandle,
         app_shell, sidebar,
@@ -249,10 +285,14 @@ pub mod prelude {
         autocomplete_option, multi_select,
     };
     pub use crate::{
-        Avatar, AvatarGroup, AvatarShape, DropdownMenu, Menu, MenuEntry, MenuItem,
+        Avatar, AvatarGroup, AvatarShape, ContextMenu, DropdownMenu, Menu, MenuEntry, MenuItem,
         MenuRadioGroup, MenuRadioItem, MenuSubmenu, VisuallyHidden, avatar, avatar_group,
-        dropdown_menu, menu, menu_checkbox, menu_item, menu_radio_group, menu_radio_item,
-        menu_submenu, visually_hidden,
+        context_menu, dropdown_menu, menu, menu_checkbox, menu_item, menu_radio_group,
+        menu_radio_item, menu_submenu, visually_hidden,
+    };
+    pub use crate::{
+        ColorInput, ColorPicker, ColorValidity, MAX_COLOR_PICKER_KEY_BYTES, color_input,
+        color_picker,
     };
     pub use crate::{ColorSwatch, color_swatch};
     pub use crate::{
@@ -260,9 +300,19 @@ pub mod prelude {
         loading_overlay, overlay,
     };
     pub use crate::{
+        Decimal, MAX_NUMBER_INPUT_BYTES, NumberError, NumberInput, NumberParse, NumberValue,
+        number_input, parse_number,
+    };
+    #[cfg(feature = "json")]
+    pub use crate::{
+        JsonError, JsonErrorKind, JsonFormat, JsonInput, JsonKind, JsonLimits, JsonValidity,
+        format_json, json_input, validate_json,
+    };
+    pub use crate::{
         MAX_BREADCRUMB_ITEMS, MAX_PAGINATION_WINDOW_ITEMS, MAX_STEPPER_STEPS, Step, StepStatus,
         Stepper, step, stepper,
     };
+    pub use crate::{MAX_MENUBAR_ROOTS, Menubar, MenubarMenu, menubar, menubar_menu};
     pub use crate::{
         MAX_PENDING_MODALS, ModalOutcome, ModalRequest, ModalToken, ModalsHandle,
         ModalsManager, Select, confirmation_request, modal_request, modals_manager, select,
@@ -271,6 +321,7 @@ pub mod prelude {
         MAX_PENDING_SCROLL_INTENTS, ScrollArea, ScrollContext, ScrollHandle, Scrollbars,
         Scroller, scroll_area, scroller,
     };
+    pub use crate::{MAX_RATING_COUNT, Rating, RatingPrecision, rating};
     pub use crate::{
         NavigationFocusable, NavigationMenu, NavigationMenuContext, NavigationMenuLink,
         NavigationMenuPanel, navigation_menu, navigation_menu_link, navigation_menu_panel,
@@ -284,6 +335,11 @@ pub mod prelude {
         NotificationToken, NotificationsHandle, Toaster, notification, notification_request,
         notifications, toaster,
     };
+    pub use crate::{
+        PillsInput, TagDuplicatePolicy, TagRejection, TagsInput, TagsInputState, pills_input,
+        tags_input,
+    };
+    pub use crate::{RangeCollision, RangeSlider, RangeThumb, range_slider};
     pub use crate::{Slider, slider};
     pub use crate::{Splitter, splitter};
 }
@@ -293,3 +349,28 @@ pub use navigation_menu::*;
 
 pub mod slider;
 pub use slider::{Slider, slider};
+
+pub mod range_slider;
+pub use range_slider::{RangeCollision, RangeSlider, RangeThumb, range_slider};
+
+pub use color_model::{ColorError, Hsva, format_hex_color, parse_hex_color};
+pub use color_slider::{
+    AlphaSlider, HueSlider, MAX_COLOR_SLIDER_KEY_BYTES, alpha_slider, hue_slider,
+};
+
+pub mod angle_slider;
+pub use angle_slider::{AngleSlider, angle_slider};
+pub mod rating;
+pub use rating::{MAX_RATING_COUNT, Rating, RatingPrecision, rating};
+
+pub mod color_picker;
+pub use color_picker::{ColorPicker, MAX_COLOR_PICKER_KEY_BYTES, color_picker};
+pub mod color_input;
+pub use color_input::{ColorInput, ColorValidity, color_input};
+
+mod number_model;
+pub use number_model::{
+    Decimal, MAX_NUMBER_INPUT_BYTES, NumberError, NumberParse, NumberValue, parse_number,
+};
+mod number_input;
+pub use number_input::{NumberInput, number_input};

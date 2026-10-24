@@ -1,6 +1,9 @@
 use glory::render::{DismissReason, Event, LayerPlacement, NodeId, Semantics};
 use glory::ui::App;
-use sapid::{ContentPolicy, DrawerSide, PopoverAlign, dialog, drawer, popover};
+use sapid::{
+    AnchorAlign, AnchorPlacement, AnchorSide, ContentPolicy, DrawerSide, dialog, drawer,
+    popover,
+};
 use std::cell::RefCell;
 use std::rc::Rc;
 
@@ -86,6 +89,87 @@ fn controlled_rejection_and_external_state_changes_are_silent() {
     assert_eq!(*calls.borrow(), [false]);
 }
 #[test]
+fn popover_slots_keep_intrinsic_buttons_accessible_names_controlled_refusal_and_owner_cleanup()
+{
+    use glory::render::Props;
+    let app = App::memory();
+    let state = app.scope().cage(true);
+    let capture = Rc::new(());
+    let slot = capture.clone();
+    app.mount(
+        popover("slots")
+            .label("Details")
+            .close_label("Dismiss details")
+            .open(state)
+            .trigger_content(move || {
+                let _ = &slot;
+                glory::ui::text().content("Custom trigger")
+            })
+            .close_content(|| glory::ui::text().content("Custom close")),
+    )
+    .unwrap();
+    for (class, name) in [
+        ("sapid-popover-trigger", "Details"),
+        ("sapid-layer-close", "Dismiss details"),
+    ] {
+        let id = nodes(&app, class)[0];
+        let tree = app.tree();
+        let d = tree.node(id).unwrap().descriptor.view();
+        assert!(matches!(d.props, Props::Button(_)));
+        assert_eq!(d.name.as_deref(), Some(name));
+    }
+    let close = nodes(&app, "sapid-layer-close")[0];
+    app.dispatch(close, Event::Activate).unwrap();
+    assert!(!metadata(&app, nodes(&app, "sapid-popover")[0]).hidden);
+    assert!(state.get());
+    app.clear().unwrap();
+    assert_eq!(Rc::strong_count(&capture), 1);
+}
+
+#[test]
+fn button_slots_reject_interactive_descendants_through_transparent_groups() {
+    for close in [false, true] {
+        let app = App::memory();
+        let p = popover("invalid-slot");
+        let p = if close {
+            p.close_content(|| glory::ui::group().fill(glory::ui::input()))
+        } else {
+            p.trigger_content(|| glory::ui::group().fill(glory::ui::button()))
+        };
+        assert!(app.mount(p).is_err());
+    }
+}
+
+#[test]
+fn popover_anchor_loss_is_verified_by_the_shared_model_before_request_callbacks() {
+    let app = App::memory();
+    let calls = Rc::new(RefCell::new(Vec::new()));
+    let out = calls.clone();
+    app.mount(
+        popover("anchor-loss")
+            .default_open(true)
+            .on_dismiss(move |reason| out.borrow_mut().push(reason)),
+    )
+    .unwrap();
+    let panel = nodes(&app, "sapid-popover")[0];
+    let trigger = nodes(&app, "sapid-popover-trigger")[0];
+    app.dispatch(panel, Event::Dismiss(DismissReason::AnchorLost))
+        .unwrap();
+    assert!(calls.borrow().is_empty());
+    app.scope()
+        .patch(
+            trigger,
+            glory::render::Patch::Style(glory::render::Change::Set(Box::new(
+                glory::style::Style::new().display(glory::style::Display::None),
+            ))),
+        )
+        .unwrap();
+    app.dispatch(panel, Event::Dismiss(DismissReason::AnchorLost))
+        .unwrap();
+    assert_eq!(*calls.borrow(), [DismissReason::AnchorLost]);
+    assert!(metadata(&app, panel).hidden);
+}
+#[test]
 fn drawer_edges_popover_alignment_and_dismiss_policy_use_typed_metadata() {
     for side in [
         DrawerSide::Left,
@@ -119,13 +203,21 @@ fn drawer_edges_popover_alignment_and_dismiss_policy_use_typed_metadata() {
         );
     }
     let app = App::memory();
-    app.mount(popover("align").align(PopoverAlign::End))
-        .unwrap();
+    app.mount(
+        popover("align").placement(AnchorPlacement::new(AnchorSide::Bottom, AnchorAlign::End)),
+    )
+    .unwrap();
     let l = metadata(&app, nodes(&app, "sapid-popover")[0])
         .layer
         .unwrap();
     assert!(!l.modal);
-    assert_eq!(l.placement, LayerPlacement::AnchorEnd);
+    assert_eq!(
+        l.placement,
+        LayerPlacement::Anchor(glory::render::AnchorPlacement::new(
+            glory::render::AnchorSide::Bottom,
+            glory::render::AnchorAlign::End
+        ))
+    );
     assert!(l.anchor.is_some());
 }
 #[test]

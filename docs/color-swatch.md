@@ -33,4 +33,9 @@ inline/image/graphic/boxless Group 子内容的公共规则，不插入 View 包
 `examples/native/tests/color_swatch.rs` 一项验证真实 checker/alpha CPU pixels、
 零 alpha 显示灰白棋盘、PointerEvents::None 让命中返回 Button、更新后的相同
 engine identity 与清理。日志 `D:/BuildCache/sapid/color-swatch-native.log`。
-Web fixture 与 `color-swatch-acceptance.js` 已准备，实际浏览器证据待下一构建。
+固定 Web15 的 Chromium **148.0.7778.96** 在
+`color-swatch-acceptance.js` 实际 **9/9**，errors=[]。四主题 CSR/hydration
+覆盖真实 Space/Enter、受控拒绝、RGBA path、Chrome AX 名称/pressed、disabled、
+同 Button/Graphic 身份、手机宽度与 Owner 清理；另有实际触屏 tap。
+报告 `D:/BuildCache/sapid/color-swatch-browser-web15.json`，green-dark hydration
+截图已目视检查。完整门禁见 `gate-snapshot15.log`。

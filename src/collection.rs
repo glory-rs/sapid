@@ -41,6 +41,7 @@ struct Entry {
     reference: Cage<Option<NodeId>>,
     enabled: Lotus<bool>,
     label: Lotus<String>,
+    position: Option<Lotus<usize>>,
 }
 struct Registry {
     entries: Vec<Entry>,
@@ -109,18 +110,56 @@ impl Collection {
         enabled: impl Into<Lotus<bool>>,
         label: impl Into<Lotus<String>>,
     ) -> Result<CollectionMember> {
-        let key = key.into();
-        SemanticId::new(&key)?;
+        self.register_inner(
+            scope,
+            key.into(),
+            reference,
+            enabled.into(),
+            label.into(),
+            None,
+        )
+    }
+
+    /// Explicit keyed-row order. A reordered row keeps its registration and
+    /// Owner while keyboard traversal observes its current logical position.
+    pub fn register_ordered(
+        &self,
+        scope: &Scope,
+        key: impl Into<String>,
+        reference: Cage<Option<NodeId>>,
+        enabled: impl Into<Lotus<bool>>,
+        label: impl Into<Lotus<String>>,
+        position: impl Into<Lotus<usize>>,
+    ) -> Result<CollectionMember> {
+        self.register_inner(
+            scope,
+            key.into(),
+            reference,
+            enabled.into(),
+            label.into(),
+            Some(position.into()),
+        )
+    }
+
+    fn register_inner(
+        &self,
+        scope: &Scope,
+        key: String,
+        reference: Cage<Option<NodeId>>,
+        enabled: Lotus<bool>,
+        label: Lotus<String>,
+        position: Option<Lotus<usize>>,
+    ) -> Result<CollectionMember> {
         if key.len() > 64 {
             return Err(invalid("collection keys exceed 64 bytes"));
         }
+        SemanticId::new(&key)?;
         if !self.owner.is_alive() || !scope.id().is_alive() {
             return Err(glory::ui::Error::Gone);
         }
         if self.owner.runtime() != scope.id().runtime() {
             return Err(glory::render::Error::ForeignRuntime.into());
         }
-        let label = label.into();
         label.try_with(|label| {
             if label.len() > self.limits.label_bytes {
                 Err(invalid("collection label exceeds its byte budget"))
@@ -137,7 +176,6 @@ impl Collection {
         {
             return Err(glory::render::Error::ForeignRuntime.into());
         }
-        let enabled = enabled.into();
         let member = {
             let mut registry = self.registry.borrow_mut();
             if registry.closed {
@@ -165,6 +203,7 @@ impl Collection {
                 reference,
                 enabled,
                 label,
+                position,
             });
             member
         };
@@ -216,25 +255,40 @@ impl Collection {
         Ok(registry.entries.clone())
     }
     pub fn mounted(&self) -> Result<Vec<MountedItem>> {
-        self.entries()?
+        let mut items = self
+            .entries()?
             .into_iter()
-            .filter_map(|entry| match entry.reference.try_get() {
+            .enumerate()
+            .filter_map(|(registered, entry)| match entry.reference.try_get() {
                 Ok(Some(node)) => Some(
                     entry
                         .enabled
                         .try_get()
-                        .map(|enabled| MountedItem {
-                            member: entry.member,
-                            key: entry.key,
-                            node,
-                            enabled,
+                        .and_then(|enabled| {
+                            Ok((
+                                entry
+                                    .position
+                                    .as_ref()
+                                    .map(Lotus::try_get)
+                                    .transpose()?
+                                    .unwrap_or(registered),
+                                registered,
+                                MountedItem {
+                                    member: entry.member,
+                                    key: entry.key,
+                                    node,
+                                    enabled,
+                                },
+                            ))
                         })
                         .map_err(Into::into),
                 ),
                 Ok(None) => None,
                 Err(error) => Some(Err(error.into())),
             })
-            .collect()
+            .collect::<Result<Vec<_>>>()?;
+        items.sort_by_key(|(position, registered, _)| (*position, *registered));
+        Ok(items.into_iter().map(|(_, _, item)| item).collect())
     }
     pub fn registered_len(&self) -> Result<usize> {
         self.pulse.try_get()?;
