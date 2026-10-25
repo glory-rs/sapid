@@ -15,6 +15,7 @@ struct Running {
     state: State,
     window: web_sys::Window,
     pop: Closure<dyn FnMut(web_sys::PopStateEvent)>,
+    palette_scroll: std::cell::Cell<Option<i32>>,
 }
 impl Drop for Running {
     fn drop(&mut self) {
@@ -166,6 +167,27 @@ fn publish(state: State, mut page: Page, store: ThemeStore) -> Result<(), String
     state.page.revise(|v| *v = page);
     Ok(())
 }
+pub(super) fn palette_navigate(href: &str) -> Result<(), String> {
+    let scroll = window()?
+        .document()
+        .and_then(|document| document.query_selector(".site-palettes").ok().flatten())
+        .map(|palettes| palettes.scroll_left());
+    let revision = APP.with(|slot| {
+        slot.borrow()
+            .as_ref()
+            .map(|running| running.state.page.with(|page| page.revision))
+    });
+    navigate(href)?;
+    APP.with(|slot| {
+        if let Some(running) = slot.borrow().as_ref() {
+            let changed = Some(running.state.page.with(|page| page.revision)) != revision;
+            running
+                .palette_scroll
+                .set(if changed { scroll } else { None });
+        }
+    });
+    Ok(())
+}
 pub(super) fn navigate(href: &str) -> Result<(), String> {
     let window = window()?;
     let url = web_sys::Url::new_with_base(href, &window.location().href().map_err(error)?)
@@ -236,13 +258,25 @@ pub(super) fn present(page: &Page, source: Cage<Page>) -> Result<(), String> {
         .map_err(error)?;
     html.set_attribute("data-sapid-scheme", page.theme.scheme.name())
         .map_err(error)?;
-    if page.scroll.is_some() || !page.route.fragment.is_empty() {
+    let palette_scroll = APP.with(|slot| {
+        slot.borrow()
+            .as_ref()
+            .and_then(|running| running.palette_scroll.take())
+    });
+    if page.scroll.is_some() || !page.route.fragment.is_empty() || palette_scroll.is_some() {
         let revision = page.revision;
         let fragment = page.route.fragment.clone();
         let position = page.scroll;
         let callback_window = window.clone();
         let callback = Closure::once_into_js(move || {
             if source.try_get().is_ok_and(|p| p.revision == revision) {
+                if let Some(x) = palette_scroll
+                    && let Some(palettes) = callback_window
+                        .document()
+                        .and_then(|d| d.query_selector(".site-palettes").ok().flatten())
+                {
+                    palettes.set_scroll_left(x);
+                }
                 if !fragment.is_empty()
                     && let Some(element) = callback_window
                         .document()
@@ -360,6 +394,7 @@ pub fn mount_showcase(
             state,
             window,
             pop,
+            palette_scroll: std::cell::Cell::new(None),
         })
     });
     Ok(())

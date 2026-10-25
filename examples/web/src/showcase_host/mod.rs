@@ -9,6 +9,21 @@ pub fn request(request: sapid::AnchorRequest) {
         let _ = error;
     }
 }
+pub fn palette_request(request: sapid::AnchorRequest) {
+    #[cfg(target_arch = "wasm32")]
+    let result = browser::palette_navigate(&request.href);
+    #[cfg(not(target_arch = "wasm32"))]
+    let result = {
+        let _ = request;
+        Ok::<(), String>(())
+    };
+    if let Err(error) = result {
+        #[cfg(target_arch = "wasm32")]
+        browser::report(error);
+        #[cfg(not(target_arch = "wasm32"))]
+        let _ = error;
+    }
+}
 pub fn navigate(url: &str) -> Result<(), String> {
     #[cfg(target_arch = "wasm32")]
     {

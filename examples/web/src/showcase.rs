@@ -314,12 +314,8 @@ fn palette_choices(
     let theme = theme.clone();
     let selected = selected.to_owned();
     widget(move |scope| {
-        let selected_name = theme.name.clone();
-        let choices = scope.bond(move || {
-            let mut items = catalog.get();
-            items.sort_by_key(|r| r.id != selected_name);
-            items
-        });
+        // Saved order is independent of selection; never promote the active palette.
+        let choices = scope.bond(move || catalog.get());
         let custom_theme = theme.clone();
         let custom_selected = selected.clone();
         view()
@@ -359,25 +355,26 @@ fn palette_choices(
     })
 }
 fn palette_link(name: &str, choice: &Theme, selected: &str, active: bool) -> sapid::Anchor {
-    link(
-        "",
-        route(selected, choice),
-        if active {
+    sapid::anchor()
+        .unstyled()
+        .label("")
+        .href(route(selected, choice))
+        .class(if active {
             "site-palette is-active"
         } else {
             "site-palette"
-        },
-    )
-    .style(Style {
-        background: Some(choice.accent),
-        ..Style::new()
-    })
-    .name(format!("Use {name} palette"))
-    .current(if active {
-        Some(Current::Location)
-    } else {
-        None
-    })
+        })
+        .on_navigate(crate::showcase_host::palette_request)
+        .style(Style {
+            background: Some(choice.accent),
+            ..Style::new()
+        })
+        .name(format!("Use {name} palette"))
+        .current(if active {
+            Some(Current::Location)
+        } else {
+            None
+        })
 }
 fn saved_actions(
     theme: Theme,
