@@ -102,6 +102,8 @@ jobs:
             if (-not $ready) { throw 'Showcase preview did not start' }
             node scripts/showcase-browser.cjs
             if ($LASTEXITCODE -ne 0) { throw 'Showcase browser acceptance failed' }
+            node scripts/palette-order-browser.cjs
+            if ($LASTEXITCODE -ne 0) { throw 'Palette order browser acceptance failed' }
           } finally { Stop-Process -Id $server.Id -ErrorAction SilentlyContinue }
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:

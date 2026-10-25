@@ -109,6 +109,8 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'showcase browser acceptance failed' }
         & node scripts/theme-studio-browser.cjs
         if ($LASTEXITCODE -ne 0) { throw 'theme studio browser acceptance failed' }
+        & node scripts/palette-order-browser.cjs
+        if ($LASTEXITCODE -ne 0) { throw 'palette order browser acceptance failed' }
         & "$PSScriptRoot/check-theme-export.ps1"
         & node scripts/showcase-navigation-browser.cjs
         if ($LASTEXITCODE -ne 0) { throw 'showcase navigation acceptance failed' }
