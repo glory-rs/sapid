@@ -247,7 +247,7 @@ fn header(
                             ),
                             link(
                                 "GitHub",
-                                "https://github.com/glory-rs/sapid",
+                                "https://github.com/sapid-ui/sapid",
                                 "site-topnav-link",
                             ),
                         )),

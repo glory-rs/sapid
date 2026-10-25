@@ -1,0 +1,112 @@
+name: Deploy Sapid showcase to Cloudflare Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: sapid-pages-production
+  cancel-in-progress: false
+env:
+  BUILD_ROOT: D:/BuildCache/sapid-pages-ci
+  CARGO_HOME: D:/BuildCache/sapid-pages-ci/cargo
+  CARGO_TARGET_DIR: D:/BuildCache/sapid-pages-ci/target
+  RUSTUP_HOME: D:/BuildCache/sapid-pages-ci/rustup
+  TEMP: D:/BuildCache/sapid-pages-ci/tmp
+  TMP: D:/BuildCache/sapid-pages-ci/tmp
+  CARGO_INCREMENTAL: '0'
+  CARGO_BUILD_JOBS: '2'
+  npm_config_cache: D:/BuildCache/sapid-pages-ci/npm
+  PLAYWRIGHT_BROWSERS_PATH: D:/BuildCache/sapid-pages-ci/browsers
+  WRANGLER_SEND_METRICS: 'false'
+jobs:
+  deploy:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: sapid
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          path: sapid
+          persist-credentials: false
+      - name: Read Glory revision
+        id: dependency
+        run: |
+          $dependency = (Get-Content deploy/dependencies.json -Raw | ConvertFrom-Json).glory
+          if ($dependency.revision -notmatch '^[a-f0-9]{40}$') { throw 'Invalid Glory revision' }
+          "repository=$($dependency.repository)" >> $env:GITHUB_OUTPUT
+          "revision=$($dependency.revision)" >> $env:GITHUB_OUTPUT
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: ${{ steps.dependency.outputs.repository }}
+          ref: ${{ steps.dependency.outputs.revision }}
+          path: glory
+          persist-credentials: false
+      - name: Prepare D drive
+        run: |
+          New-Item -ItemType Directory -Force $env:BUILD_ROOT,$env:CARGO_HOME,$env:CARGO_TARGET_DIR,$env:RUSTUP_HOME,$env:TEMP,D:/BuildCache/sapid/tmp | Out-Null
+          "$env:CARGO_HOME/bin" >> $env:GITHUB_PATH
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: |
+            D:/BuildCache/sapid-pages-ci/cargo
+            D:/BuildCache/sapid-pages-ci/rustup
+            D:/BuildCache/sapid-pages-ci/target
+            D:/BuildCache/sapid-pages-ci/tools
+          key: sapid-pages-${{ runner.os }}-1.98.0-0.2.129-${{ hashFiles('sapid/Cargo.lock', 'sapid/examples/web/Cargo.lock', 'sapid/deploy/dependencies.json') }}
+      - name: Install pinned Rust and wasm-bindgen
+        run: |
+          rustup toolchain install 1.98.0 --profile minimal --component clippy,rustfmt --target wasm32-unknown-unknown
+          if ($LASTEXITCODE -ne 0) { throw 'Rust installation failed' }
+          rustup default 1.98.0
+          if ($LASTEXITCODE -ne 0) { throw 'Rust selection failed' }
+          $package = 'wasm-bindgen-0.2.129-x86_64-pc-windows-msvc'
+          $tools = "$env:BUILD_ROOT/tools"
+          if (-not (Test-Path "$tools/$package/wasm-bindgen.exe")) {
+            New-Item -ItemType Directory -Force $tools | Out-Null
+            Invoke-WebRequest "https://github.com/wasm-bindgen/wasm-bindgen/releases/download/0.2.129/$package.tar.gz" -OutFile "$tools/$package.tar.gz"
+            tar -xzf "$tools/$package.tar.gz" -C $tools
+            if ($LASTEXITCODE -ne 0) { throw 'wasm-bindgen extraction failed' }
+          }
+          "$tools/$package" >> $env:GITHUB_PATH
+      - name: Validate library and shared adapters
+        run: ./scripts/check.ps1 -BuildRoot $env:BUILD_ROOT
+      - name: Validate and build production showcase
+        run: ./scripts/check-showcase.ps1 -Release -BuildRoot $env:BUILD_ROOT -Bindgen wasm-bindgen
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Browser acceptance of actual release assets
+        run: |
+          npm install --prefix "$env:BUILD_ROOT/browser-tools" --no-package-lock --no-audit --no-fund playwright@1.60.0
+          if ($LASTEXITCODE -ne 0) { throw 'Playwright installation failed' }
+          & "$env:BUILD_ROOT/browser-tools/node_modules/.bin/playwright.cmd" install chromium
+          if ($LASTEXITCODE -ne 0) { throw 'Chromium installation failed' }
+          $env:SAPID_PLAYWRIGHT = "$env:BUILD_ROOT/browser-tools/node_modules/playwright"
+          $env:SAPID_SHOWCASE_BASE = 'http://127.0.0.1:8795'
+          $server = Start-Process python -ArgumentList @('-m','http.server','8795','--bind','127.0.0.1','--directory',"$env:BUILD_ROOT/showcase") -WindowStyle Hidden -PassThru
+          try {
+            $ready = $false
+            for ($attempt=0; $attempt -lt 30; $attempt++) {
+              try { Invoke-WebRequest "$env:SAPID_SHOWCASE_BASE/showcase.html" | Out-Null; $ready=$true; break }
+              catch { Start-Sleep -Seconds 1 }
+            }
+            if (-not $ready) { throw 'Showcase preview did not start' }
+            node scripts/showcase-browser.cjs
+            if ($LASTEXITCODE -ne 0) { throw 'Showcase browser acceptance failed' }
+          } finally { Stop-Process -Id $server.Id -ErrorAction SilentlyContinue }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: sapid-showcase-dist
+          path: D:/BuildCache/sapid-pages-ci/showcase
+          if-no-files-found: error
+          retention-days: 7
+      - name: Deploy to Cloudflare Pages
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: ./scripts/deploy-pages.ps1 -Directory "$env:BUILD_ROOT/showcase"

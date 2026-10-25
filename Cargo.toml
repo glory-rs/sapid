@@ -5,6 +5,8 @@ edition = "2024"
 rust-version = "1.94"
 license = "MIT OR Apache-2.0"
 description = "Composable semantic widgets for Glory"
+homepage = "https://sapid.taidge.org"
+repository = "https://github.com/sapid-ui/sapid"
 publish = false
 
 [features]

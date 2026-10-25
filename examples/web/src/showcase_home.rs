@@ -284,7 +284,7 @@ pub fn home(theme: Theme) -> impl Widget {
         )),
         view().class("site-footer").fill((
             copy("", "Sapid · Made with Glory and handwritten Rust."),
-            sapid::anchor().unstyled().href("https://github.com/glory-rs/sapid").label("Explore the source ↗"),
+            sapid::anchor().unstyled().href("https://github.com/sapid-ui/sapid").label("Explore the source ↗"),
         )),
     ))
 }

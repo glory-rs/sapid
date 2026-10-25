@@ -1,5 +1,11 @@
 # Sapid
 
+[Showcase](https://sapid.taidge.org/) · [GitHub repository](https://github.com/sapid-ui/sapid)
+
+Pushes to `main` validate and publish the showcase through Cloudflare Pages.
+See [deployment configuration](deploy/README.md) for the pinned Glory revision,
+required Actions secrets, release build and custom-domain setup.
+
 Composable widgets for Glory, written with Rust builders and the public
 `Cage` / `Bond` / `Lotus` reactive model. Applications select their host; Sapid
 does not install a browser runtime, stylesheet, font loader, or native engine.

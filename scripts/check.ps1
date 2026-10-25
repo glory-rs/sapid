@@ -1,7 +1,8 @@
-param([switch]$Web, [switch]$Native, [switch]$Serve, [string]$Bindgen = 'wasm-bindgen')
+param([switch]$Web, [switch]$Native, [switch]$Serve, [string]$Bindgen = 'wasm-bindgen', [string]$BuildRoot = 'D:/BuildCache/sapid')
 $ErrorActionPreference = 'Stop'
 $taskRoot = Split-Path -Parent $PSScriptRoot
-$taskBuild = 'D:/BuildCache/sapid'
+$taskBuild = [IO.Path]::GetFullPath($BuildRoot)
+if ($taskBuild -notmatch '^D:\\BuildCache\\[^\\]+') { throw 'BuildRoot must be inside D:/BuildCache' }
 $saved = @{}
 foreach ($name in @('CARGO_PROFILE_DEV_DEBUG', 'CARGO_PROFILE_TEST_DEBUG', 'CARGO_INCREMENTAL', 'CARGO_HOME', 'CARGO_TARGET_DIR', 'CARGO_BUILD_JOBS', 'TEMP', 'TMP', 'PYTHONPYCACHEPREFIX', 'GLORY_DOCUMENT_STREAM_FIXTURE', 'GLORY_MENU_STREAM_FIXTURE', 'GLORY_HINTS_STREAM_FIXTURE', 'GLORY_SELECT_STREAM_FIXTURE', 'GLORY_GRAPHICS_STREAM_FIXTURE', 'GLORY_PROGRESS_STREAM_FIXTURE', 'GLORY_SPINNER_STREAM_FIXTURE', 'GLORY_CHOICE_STREAM_FIXTURE', 'GLORY_INERT_STREAM_FIXTURE', 'GLORY_SHEET_STREAM_FIXTURE', 'GLORY_GRAPHIC_TRANSITION_STREAM_FIXTURE', 'GLORY_DRAG_CAPTURE_STREAM_FIXTURE', 'GLORY_COLLAPSE_STREAM_FIXTURE', 'GLORY_COMMAND_STREAM_FIXTURE', 'GLORY_ANCHOR_STREAM_FIXTURE', 'GLORY_TABLE_STREAM_FIXTURE', 'GLORY_DATA_TABLE_STREAM_FIXTURE', 'GLORY_TRANSLATION_STREAM_FIXTURE', 'GLORY_FOCUS_SCOPE_STREAM_FIXTURE', 'GLORY_ENVIRONMENT_STREAM_FIXTURE', 'GLORY_RICH_EDITOR_STREAM_FIXTURE', 'GLORY_FILES_STREAM_FIXTURE')) {
     $saved[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
@@ -21,7 +22,8 @@ function Confirm-Target([string]$manifest) {
 }
 Push-Location $taskRoot
 try {
-    $env:CARGO_HOME = 'D:/BuildCache/glory-semantic-ui/cargo'
+    if (-not $env:CARGO_HOME) { $env:CARGO_HOME = 'D:/BuildCache/glory-semantic-ui/cargo' }
+    if ([IO.Path]::GetFullPath($env:CARGO_HOME) -notmatch '^D:\\BuildCache\\[^\\]+') { throw 'CARGO_HOME must be on D drive' }
     $env:CARGO_TARGET_DIR = "$taskBuild/target"
     $env:TEMP = "$taskBuild/tmp"
     $env:TMP = $env:TEMP

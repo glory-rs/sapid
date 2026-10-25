@@ -1,13 +1,17 @@
 param(
     [switch]$Serve,
     [switch]$Browser,
+    [switch]$Release,
+    [string]$BuildRoot = 'D:/BuildCache/sapid',
     [string]$Bindgen = 'D:/BuildCache/codmin-glory/tools/bin/wasm-bindgen.exe'
 )
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$showcaseBuild = 'D:/BuildCache/sapid/showcase'
-$showcaseTarget = 'D:/BuildCache/sapid/target'
+$BuildRoot = [IO.Path]::GetFullPath($BuildRoot)
+if ($BuildRoot -notmatch '^D:\\BuildCache\\[^\\]+') { throw 'BuildRoot must be inside D:/BuildCache' }
+$showcaseBuild = "$BuildRoot/showcase"
+$showcaseTarget = "$BuildRoot/target"
 $savedEnvironment = @{}
 $environmentNames = @('CARGO_HOME','CARGO_TARGET_DIR','CARGO_BUILD_JOBS','CARGO_PROFILE_DEV_DEBUG','CARGO_PROFILE_TEST_DEBUG','CARGO_INCREMENTAL','TEMP','TMP','PYTHONPYCACHEPREFIX','SAPID_SHOWCASE_BASE','SAPID_PLAYWRIGHT')
 foreach ($name in $environmentNames) { $savedEnvironment[$name] = [Environment]::GetEnvironmentVariable($name, 'Process') }
@@ -18,15 +22,16 @@ function Invoke-ShowcaseCargo {
 }
 Push-Location $projectRoot
 try {
-    $env:CARGO_HOME = 'D:/BuildCache/glory-semantic-ui/cargo'
+    if (-not $env:CARGO_HOME) { $env:CARGO_HOME = 'D:/BuildCache/glory-semantic-ui/cargo' }
+    if ([IO.Path]::GetFullPath($env:CARGO_HOME) -notmatch '^D:\\BuildCache\\[^\\]+') { throw 'CARGO_HOME must be on D drive' }
     $env:CARGO_TARGET_DIR = $showcaseTarget
     $env:CARGO_BUILD_JOBS = '1'
     $env:CARGO_PROFILE_DEV_DEBUG = '0'
     $env:CARGO_PROFILE_TEST_DEBUG = '0'
     $env:CARGO_INCREMENTAL = '0'
-    $env:TEMP = 'D:/BuildCache/sapid/tmp'
+    $env:TEMP = "$BuildRoot/tmp"
     $env:TMP = $env:TEMP
-    $env:PYTHONPYCACHEPREFIX = 'D:/BuildCache/sapid/pycache'
+    $env:PYTHONPYCACHEPREFIX = "$BuildRoot/pycache"
     New-Item -ItemType Directory -Force -Path $showcaseBuild,$env:TEMP | Out-Null
     $metadata = & cargo metadata --locked --manifest-path examples/web/Cargo.toml --no-deps --format-version 1 | ConvertFrom-Json
     if ($LASTEXITCODE -ne 0) { throw 'showcase metadata failed' }
@@ -41,8 +46,11 @@ try {
     Invoke-ShowcaseCargo -Arguments @('clippy','--locked','--manifest-path','examples/web/Cargo.toml','--all-targets','--','-D','warnings')
     Invoke-ShowcaseCargo -Arguments @('clippy','--locked','--manifest-path','examples/web/Cargo.toml','--lib','--target','wasm32-unknown-unknown','--','-D','warnings')
     if ((& $Bindgen --version).Trim() -ne 'wasm-bindgen 0.2.129') { throw 'showcase requires wasm-bindgen-cli 0.2.129' }
-    Invoke-ShowcaseCargo -Arguments @('build','--locked','--manifest-path','examples/web/Cargo.toml','--lib','--target','wasm32-unknown-unknown')
-    & $Bindgen "$showcaseTarget/wasm32-unknown-unknown/debug/sapid_web_example.wasm" --target web --out-dir $showcaseBuild
+    $profileName = if ($Release) { 'release' } else { 'debug' }
+    $buildArguments = @('build','--locked','--manifest-path','examples/web/Cargo.toml','--lib','--target','wasm32-unknown-unknown')
+    if ($Release) { $buildArguments += '--release' }
+    Invoke-ShowcaseCargo -Arguments $buildArguments
+    & $Bindgen "$showcaseTarget/wasm32-unknown-unknown/$profileName/sapid_web_example.wasm" --target web --out-dir $showcaseBuild
     if ($LASTEXITCODE -ne 0) { throw 'showcase wasm-bindgen failed' }
     Copy-Item -LiteralPath examples/web/site.css -Destination "$showcaseBuild/site.css"
     Copy-Item -LiteralPath styles/sapid.css -Destination "$showcaseBuild/sapid.css"
@@ -66,7 +74,12 @@ try {
         New-Item -ItemType Directory -Force -Path (Split-Path -Parent $destination) | Out-Null
         Copy-Item -LiteralPath "$showcaseBuild/$assetName" -Destination $destination
     }
-    Invoke-ShowcaseCargo -Arguments @('run','--locked','--manifest-path','examples/web/Cargo.toml','--bin','showcase_ssr','--',$showcaseBuild,$assetDirectory)
+    $generateArguments = @('run','--locked','--manifest-path','examples/web/Cargo.toml','--bin','showcase_ssr')
+    if ($Release) { $generateArguments += '--release' }
+    Invoke-ShowcaseCargo -Arguments ($generateArguments + @('--',$showcaseBuild,$assetDirectory))
+    if (Test-Path -LiteralPath deploy/_headers) { Copy-Item -LiteralPath deploy/_headers -Destination "$showcaseBuild/_headers" }
+    $oversized = @(Get-ChildItem -LiteralPath $showcaseBuild -Recurse -File | Where-Object Length -GT (25 * 1024 * 1024))
+    if ($Release -and $oversized.Count) { throw "Cloudflare Pages assets exceed 25 MiB: $($oversized.Name -join ', ')" }
     $buildFiles = Get-ChildItem -LiteralPath $showcaseBuild -File -Recurse | Where-Object Name -ne 'asset-hashes.json'
     $assetHashes = @($buildFiles | Sort-Object FullName | ForEach-Object { @{ path=[IO.Path]::GetRelativePath($showcaseBuild,$_.FullName);sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash;bytes=$_.Length } })
     $assetHashes | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath "$showcaseBuild/asset-hashes.json"
