@@ -20,6 +20,7 @@ env:
   npm_config_cache: D:/BuildCache/sapid-pages-ci/npm
   PLAYWRIGHT_BROWSERS_PATH: D:/BuildCache/sapid-pages-ci/browsers
   WRANGLER_SEND_METRICS: 'false'
+  PYTHONUTF8: '1'
 jobs:
   deploy:
     runs-on: windows-latest

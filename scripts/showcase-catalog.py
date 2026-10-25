@@ -279,7 +279,7 @@ def fixture_source(module):
 
 def formatted(text):
     result = subprocess.run(["rustfmt", "--edition", "2024", "--emit", "stdout"],
-                            input=text, text=True, capture_output=True, check=True)
+                            input=text, text=True, encoding="utf-8", capture_output=True, check=True)
     return result.stdout.replace("\r\n", "\n")
 
 
