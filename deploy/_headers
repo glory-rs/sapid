@@ -1,7 +1,8 @@
+# Use Pages' default revalidation for HTML and unversioned assets.
+# Global Cache-Control values would merge with the immutable rule below.
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Cache-Control: public, max-age=0, must-revalidate
 
 /assets-*
   Cache-Control: public, max-age=31536000, immutable
