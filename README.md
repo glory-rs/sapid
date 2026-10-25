@@ -628,3 +628,9 @@ compilable Rust definitions, or reopen a saved theme for editing. The palette
 contains 34 semantic color roles, ten shades and eight series colors; optional
 array overrides use `[Option<Color>; 10]` / `[Option<Color>; 8]`. See
 [theme definitions and audit](docs/theme-definitions.md#theme-studio-and-color-audit).
+
+
+The public showcase uses Rust client routing with shareable URLs and browser
+back/forward support. Theme Studio fills the viewport and retains one unsaved
+workspace while browsing or changing the site's palette/scheme. Saved preview
+payloads from the earlier schema are backed up and upgraded on load.

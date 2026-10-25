@@ -7,7 +7,6 @@ html,body{margin:0;min-width:0;min-height:100%;width:100%}#app{min-height:100dvh
 .sapid-site a{color:inherit;text-decoration:none}
 .sapid-site button,.sapid-site input{font:inherit}
 .sapid-site button,.sapid-site a,.sapid-site input{scroll-margin-top:124px}
-.sapid-site :focus-visible{outline:3px solid var(--site-ring);outline-offset:3px}
 .sapid-site ::selection{background:var(--site-accent-soft);color:var(--site-fg)}
 .sapid-site [data-gly-kind=text]{max-width:100%}
 .sapid-site .site-header{height:60px;border-bottom:1px solid var(--site-border);background:var(--site-bg);position:sticky;top:0;z-index:40}
@@ -143,13 +142,16 @@ html,body{margin:0;min-width:0;min-height:100%;width:100%}#app{min-height:100dvh
 .sapid-site .site-doc-main>p{font-size:14px;line-height:1.85;color:var(--site-muted);margin-bottom:18px}
 .sapid-site .site-preview{border:1px solid var(--site-border);background:var(--site-card);border-radius:7px;overflow:hidden;min-width:0;margin-bottom:22px}
 .sapid-site .site-demo{padding:35px;min-height:130px;min-width:0;max-width:100%;overflow-x:auto}
-.sapid-site .site-demo-extra{display:flex;flex-wrap:wrap;gap:13px;align-items:center;margin-top:18px}
+.sapid-site .site-doc-code{border:1px solid var(--site-border);border-radius:7px;background:var(--site-soft);overflow:hidden;min-width:0;margin:0 0 24px}
+.sapid-site .site-doc-code>.sapid-code-highlight,.sapid-site .site-doc-code>.sapid-code-block{border:0!important;border-radius:0!important;max-width:100%}
 .sapid-site .site-code{border-top:1px solid var(--site-border);background:var(--site-soft);font-size:12px;min-width:0;overflow-x:auto}
 .sapid-site .site-code-header{display:flex;align-items:center;gap:15px;padding:10px 16px;border-bottom:1px solid var(--site-border);background:var(--site-soft);font-size:10px;font-weight:650;color:var(--site-muted)}
 .sapid-site .site-code pre{margin:0;padding:18px;tab-size:4;font:12px/1.8 "Cascadia Code",Consolas,monospace;white-space:pre;overflow-x:auto}
 .sapid-site .site-code code{font-family:"Cascadia Code",Consolas,monospace}
-.sapid-site .site-doc-note,.sapid-site .site-support{border:1px solid var(--site-border);border-radius:6px;background:var(--site-soft);padding:17px 20px;color:var(--site-muted);font-size:12px;line-height:1.85;margin:20px 0;overflow-wrap:anywhere}
-.sapid-site .site-support h3{font-size:14px;color:var(--site-fg);margin-bottom:9px}
+.sapid-site .site-doc-note{color:var(--site-muted);font-size:14px;line-height:1.85;margin:0 0 20px;overflow-wrap:anywhere}
+.sapid-site .site-support{margin:20px 0;color:var(--site-muted);font-size:12px;line-height:1.85;overflow-wrap:anywhere}
+.sapid-site .site-support .site-doc-note{font-size:13px;margin-bottom:16px}
+.sapid-site .site-support-row+.site-doc-note{margin-top:16px}
 .sapid-site .site-toc{position:sticky;top:84px;align-self:start;border-left:1px solid var(--site-border);padding:4px 0 4px 17px;margin-top:42px;color:var(--site-muted);font-size:11px}
 .sapid-site .site-toc-link{display:block;line-height:1.6;padding:5px 0;font-size:11px}
 .sapid-site .site-toc .is-active{color:var(--site-accent)}
@@ -289,6 +291,7 @@ html,body{margin:0;padding:0}
 
 /* Documentation uses a real Rust-owned expand/collapse control. */
 .sapid-site .site-code-body{max-height:250px;overflow:hidden;position:relative}
+.sapid-site .site-code:not(.is-expanded) .site-code-body:after{content:"";position:absolute;left:0;right:0;bottom:0;height:64px;background:linear-gradient(to bottom,transparent,var(--site-soft));pointer-events:none}
 .sapid-site .site-code.is-expanded .site-code-body{max-height:none;overflow:visible}
 .sapid-site .site-code-body>.sapid-code-highlight,.sapid-site .site-code-body>.sapid-code-block{border:0!important;border-radius:0!important;max-width:100%}
 .sapid-site .site-code-toggle{display:flex;align-items:center;justify-content:center;width:100%;height:36px;min-height:36px;padding:0 14px;border:0;border-top:1px solid var(--site-border);background:var(--site-card);color:var(--site-muted);font-size:11px;font-weight:600;cursor:pointer}
@@ -340,7 +343,6 @@ html,body{margin:0;padding:0}
 .sapid-site .studio-color-label{font:12px/1.3 ui-monospace,monospace;overflow-wrap:anywhere}
 .sapid-site .studio-color-dot{width:28px;height:28px;border:1px solid var(--site-border);border-radius:6px;cursor:pointer}
 .sapid-site .studio-color-row input:not([type=checkbox]){min-width:0!important;width:100%!important;font:12px ui-monospace,monospace!important;padding:6px!important}
-.sapid-site .studio-color-row.is-invalid input{outline:2px solid var(--sp-danger)}
 .sapid-site .studio-inherited{font-size:9px;color:var(--site-muted)}
 .sapid-site .studio-color-row .sapid-checkbox{margin:0}
 .sapid-site .studio-inspecting{font:12px ui-monospace,monospace;color:var(--site-muted);margin-bottom:16px}

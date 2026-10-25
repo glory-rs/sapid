@@ -44,6 +44,15 @@ pub struct EditorState {
     pub checked: Cage<bool>,
 }
 impl EditorState {
+    pub fn forget_saved(self, id: &str) {
+        if self.draft.with(|d| d.record.id == id) {
+            self.draft.revise(|d| d.record.id.clear());
+            self.edit_key.revise(String::clear);
+            self.status.revise(|v| {
+                *v = "Saved preview removed. These colors remain as an unsaved draft.".into()
+            });
+        }
+    }
     pub fn new(scope: &Scope, initial: ThemeRecord, scheme: ColorScheme) -> Self {
         let accent = initial.base.accent;
         Self {
@@ -149,19 +158,17 @@ pub fn editor(theme: Theme, state: EditorState, return_to: String) -> impl Widge
                     }
                 }),
         ));
-        let remove = when(draft.with(|d| !d.record.id.is_empty()), {
-            let id = draft.with(|d| d.record.id.clone());
+        let saved = scope.bond(move || draft.with(|d| !d.record.id.is_empty()));
+        let remove = when(saved, {
             let theme = theme.clone();
             move || {
-                let id = id.clone();
                 sapid::button()
                     .theme(theme.clone())
                     .label("Remove saved preview")
                     .on_press(move || {
+                        let id = draft.with(|d| d.record.id.clone());
                         let result = host::remove(&id).and_then(|()| {
-                            draft.revise(|d|d.record.id.clear());
-                            state.edit_key.revise(String::clear);
-                            status.revise(|v|*v="Saved preview removed. These colors remain as an unsaved draft.".into());
+                            state.forget_saved(&id);
                             host::navigate("showcase.html?widget=theme-studio")
                         });
                         if let Err(error) = result {

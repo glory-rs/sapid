@@ -383,6 +383,8 @@ fn saved_actions(
     theme: Theme,
     selection: String,
     catalog: Cage<Vec<ThemeRecord>>,
+    notice: Cage<String>,
+    editor: crate::theme_studio::EditorState,
 ) -> impl Widget {
     widget(move |scope| {
         let name = theme.name.clone();
@@ -401,6 +403,8 @@ fn saved_actions(
             |r| r.id.clone(),
             move |r, _| {
                 let record = r.get();
+                let id = record.id.clone();
+                let fallback = route(&selection, &crate::themes::select("blue", theme.scheme));
                 let href = format!(
                     "{}&edit={}&return_to={}",
                     route("theme-studio", &theme),
@@ -419,6 +423,21 @@ fn saved_actions(
                         .label("Copy theme code")
                         .source(record.code()),
                     link("Edit theme", href, "site-inline-link"),
+                    sapid::button()
+                        .theme(theme.clone())
+                        .size(sapid::Size::Small)
+                        .variant(sapid::ButtonVariant::Danger)
+                        .label("Delete theme")
+                        .on_press(move || {
+                            let result =
+                                crate::theme_studio::host::remove(&id).and_then(|()| {
+                                    editor.forget_saved(&id);
+                                    crate::showcase_host::navigate(&fallback)
+                                });
+                            if let Err(error) = result {
+                                notice.revise(|value| *value = error);
+                            }
+                        }),
                 ))
             },
         )
@@ -473,13 +492,15 @@ fn source(entry: &'static Entry, theme: Theme, full: bool) -> impl Widget {
 }
 
 fn support(entry: &'static Entry, theme: &Theme) -> impl Widget {
-    view().class("site-support").fill((
+    view().fill((
         section_title("support", "Host support"),
-        text().class("site-doc-note").content("Choose the host that fits your application. Availability is recorded for each widget and its supported variants."),
-        view().class("site-support-row").fill((text().content("Web"), text().content(entry.web))),
-        view().class("site-support-row").fill((text().content("Native"), text().content(entry.native))),
-        text().class("site-doc-note").content(entry.native_note),
-        link("Browse all widgets →", route("P0-01", theme), "site-inline-link"),
+        view().class("site-support").fill((
+            text().class("site-doc-note").content("Choose the host that fits your application. Availability is recorded for each widget and its supported variants."),
+            view().class("site-support-row").fill((text().content("Web"), text().content(entry.web))),
+            view().class("site-support-row").fill((text().content("Native"), text().content(entry.native))),
+            text().class("site-doc-note").content(entry.native_note),
+            link("Browse all widgets →", route("P0-01", theme), "site-inline-link"),
+        )),
     ))
 }
 
@@ -525,7 +546,7 @@ fn documentation(entry: &'static Entry, theme: Theme, tab: Cage<u8>) -> impl Wid
                     view().semantics(Some(Box::new(Semantics { id: Some(SemanticId::new("example-source").expect("static id")), ..Default::default() }))).fill(source(entry, demo_theme.clone(), false)),
                     section_title("composition", "Compose your interface"),
                     text().class("site-doc-note").content("Use Cage, Bond and Lotus for reactive values. Compose these builders with other Sapid widgets and keep application data in your own model."),
-                    view().class("site-demo-extra").fill(
+                    view().class("site-doc-code").fill(
                         sapid::code_highlight().theme(demo_theme.clone()).language(sapid::CodeLanguage::Rust).source("use glory::prelude::*;\nuse sapid::*;\n\n// Widgets are ordinary Rust builders.\n// Your application chooses Web, SSR or a native host."),
                     ),
                     support(entry, &demo_theme),
@@ -627,7 +648,7 @@ pub fn site_with_state(
                     catalog,
                 ),
                 text().class("site-host-notice").content(notice),
-                saved_actions(theme.clone(), selection.clone(), catalog),
+                saved_actions(theme.clone(), selection.clone(), catalog, notice, editor),
                 if selection.is_empty() || selection == "theme-studio" {
                     let theme = theme.clone();
                     Box::new(when(menu, move || {

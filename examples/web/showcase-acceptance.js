@@ -186,7 +186,7 @@ async (hostPage) => {
       await m.getByRole('button',{name:'Open navigation',exact:true}).waitFor();
       assert(new URL(m.url()).searchParams.get('widget') === 'P0-02', 'mobile chooses real docs route');
       assert(await m.evaluate(() => innerWidth === 360 && document.documentElement.clientWidth === 360 && document.body.scrollWidth <= 361), 'mobile document contains its content');
-      assert(await m.locator('.site-doc-note').evaluateAll(notes => notes.length > 0 && notes.every(note => getComputedStyle(note).display === 'block' && note.getClientRects().length === 1)), 'mobile descriptions have contiguous readable block backgrounds');
+      assert(await m.locator('.site-doc-note').evaluateAll(notes => notes.length > 0 && notes.every(note => getComputedStyle(note).display === 'block' && note.getClientRects().length === 1)), 'mobile descriptions remain contiguous readable blocks');
       await shot(m, 'mobile-docs');
       await go(m, 'showcase.html?theme=green&scheme=dark');
       await m.getByRole('button',{name:'Open navigation',exact:true}).tap();

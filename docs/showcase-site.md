@@ -8,7 +8,9 @@
 这是独立的 Glory + Sapid Rust 应用。页面、导航、搜索结果、主题入口、标签页、
 代码展开和控件示例均由 Rust Widget 构造。`showcase.html` 只提供样式链接、
 挂载容器和 WASM 启动；没有 React、iframe 或 JavaScript UI 模板。
-链接导航会加载对应页面；主题通过 URL 保留当前widget并重新挂载。
+站内链接通过 Sapid Anchor 的语义导航请求交给 Rust 路由，使用 History API 更新 URL。
+指南、搜索结果、配色和明暗切换不再重载文档或重新初始化 WASM；浏览器前进/后退与页内锚点仍然有效。
+主题仍是 widget 的挂载配置，因此主题切换会重建相应视图；一个应用级调色工作区保留草稿、编辑层、颜色检查器和预览值。
 
 ## 站点标识
 
@@ -118,7 +120,7 @@ Button 页的 Variant、Size、Disabled、Loading 控件驱动实际同一个 Bu
 - 149 项目录：[生成器](../scripts/showcase-catalog.py)读取 canonical inventory 和能力账本，
   `--check` 检测目录漂移；[生成结果](../examples/web/src/showcase_catalog.rs)保留真实支持范围。
 - 页面样式：[site.css](../examples/web/site.css)，只由此展示站加载。
-- Web 挂载与 SSR：[showcase_host.rs](../examples/web/src/showcase_host.rs)、
+- Web 挂载与 SSR：[showcase_host](../examples/web/src/showcase_host/mod.rs)、
   [showcase_ssr.rs](../examples/web/src/bin/showcase_ssr.rs)。
 - Rust 验收：[showcase_site.rs](../examples/web/tests/showcase_site.rs)与示例模块内测试。
 - 浏览器验收：[showcase-acceptance.js](../examples/web/showcase-acceptance.js)、
@@ -198,3 +200,45 @@ Glory 闭包入口为 `widget(...) -> WidgetFn<_>`，不保留 `component` 兼�
 快速主题传递门禁对 149 个已编译示例分别使用绿色深色与任意命名的自定义亮色主题，共 298 次挂载，没有残留其他主题类。
 浏览器实际复制出的 Rust ThemeDefinition 已在 D 盘独立项目编译，并断言生成色阶与模式覆盖的值。
 详细日志、当前资产哈希与截图见 [本轮验收](theme-definitions.md#2026-10-25-theme-studio-verification)。
+
+
+## 2026-10-25 无刷新导航与窗口布局
+
+Theme Studio 去掉固定最大宽度，随实际浏览器视口铺满并响应缩放。手动查看用户页面时不再设置固定测试视口；布局测试均使用独立的无头浏览器。
+
+Rust 路由模型位于 `showcase_navigation/mod.rs`，浏览器历史适配位于 `showcase_host/browser.rs`。
+站内入口仍是有真实 href 的语义链接，普通点击局部更新，Ctrl/Cmd/Shift 等修饰点击保留浏览器原生行为。
+历史条目只保存路由和滚动坐标；旧视图与其 Owner 正常释放，没有缓存所有访问过的页面。
+
+应用仅保留一个调色工作区，浏览指南或切换站点主题不会丢失未保存的编辑和预览值。
+显式打开另一个已保存主题会加载那个主题；文档自身刷新仍会丢弃未保存草稿。
+保存后的工作区保留预览 ID，因此再次修改和保存会更新同一项；删除预览后，当前颜色保留为未保存草稿。
+当前自定义主题的顶部操作栏提供 `Delete theme`，仅删除选中的本地主题，保留其他已保存主题。
+删除后仍停留在当前页面、保留明暗模式并切回内置蓝色；若编辑器正在编辑该主题，则保留颜色并清除保存 ID。
+
+旧的 version 1 配色若仅缺新增的 backdrop 字段，将从内置 Palette 数据补齐并升级到 version 2。
+原始字符串先完整保存在 `sapid.theme-studio.v1.backup`，不会覆盖已有备份；其他未知或损坏的数据仍拒绝并保留。
+存储键沿用 `sapid.theme-studio.v1`，以便发现已有预览。
+
+专项浏览器测试 `scripts/showcase-navigation-browser.cjs` 检查主文档请求次数和全局对象身份，
+确认站内切换没有整页重载，另覆盖草稿/预览保留、历史、修饰点击、SSR 接管、320–2200px 布局和旧数据迁移/重复保存。
+
+最终使用 D 盘源码快照、独立 target 和 8796 端口完成整轮验收，避免其他构建改写公共展示目录：
+182 项原有浏览器检查、14 项调色流程和 7 项导航检查全部通过，包含不改变路由时删除已保存预览。
+Host/wasm32 严格 Clippy、19 项 Web 测试、20 个 SSR 页面和复制出的 Rust 配色定义编译均通过。
+完整日志位于 `D:/BuildCache/sapid/navigation-isolated-gate.log`，浏览器报告和宽屏截图位于
+`D:/BuildCache/sapid/navigation-isolated/artifacts/`。
+已将验证过的 `assets-5b032c659fde0a1b8dda` 资产与 22 个 HTML 文件发布到 8795 展示目录，
+核对公开 HTTP 返回的 WASM 与验收产物 SHA256 相同；发布记录为 `D:/BuildCache/sapid/showcase/navigation-release.json`。
+
+顶部删除入口新增后重新完成 182 项原有浏览器检查、14 项调色检查和 8 项导航检查，均无错误。
+新增流程在独立浏览器存储中验证：删除当前主题、保留其他主题、保留页面/明暗模式/草稿、刷新后仍已删除，且删除本身不请求主文档。
+Host/wasm32 严格 Clippy、19 项 Web 测试及导出 Rust 定义编译通过，日志为 `D:/BuildCache/sapid/delete-theme-showcase-gate.log`。
+本次部署资产为 `assets-e874752a7bc318917329`，已通过 8795 HTTP 核对 WASM 内容。
+仓库要求的 `scripts/check.ps1` 全部通过，完整日志为 `D:/BuildCache/sapid/delete-theme-library-gate.log`。
+
+展示站输入焦点外框的来源是 `site.css` 的通配 `:focus-visible` 规则：3px outline 加 3px offset
+覆盖了 widget 已有的无外框规则。已删除该规则和调色页无效输入额外的 outline；输入继续使用主题细边框颜色表示焦点和错误。
+蓝/绿 × 亮/暗的 20 个页面完成 308 次输入聚焦检查，无页面错误；包含搜索键盘焦点及无效色值。
+报告为 `D:/BuildCache/sapid/input-focus-browser.json`，截图为 `D:/BuildCache/sapid/input-focus-fixed.png`。
+CSS 资产 `assets-7a3f7e3005cb55775b16` 已发布到 8795；本次仅更新 CSS 并复用已验证的 WASM。

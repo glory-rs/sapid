@@ -184,7 +184,10 @@ pub(super) fn navigate(href: &str) -> Result<(), String> {
         && page.theme == previous.theme
         && page.initial == previous.initial
     {
-        return Ok(());
+        if state.catalog.with(|list| list == &store.themes) && page.notice == previous.notice {
+            return Ok(());
+        }
+        return publish(state, page, store);
     }
     let history = window.history().map_err(error)?;
     history

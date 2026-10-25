@@ -107,7 +107,7 @@ The host module only handles browser storage, stylesheet installation and naviga
   the sample's controlled values. Four resolved contrast observations are shown;
   they assume opaque backgrounds and are not an accessibility certification.
 - Save up to eight previews in this browser's local storage under
-  `sapid.theme-studio.v1`. Data is versioned and bounded to 128 KiB; malformed data
+  `sapid.theme-studio.v1`. The payload is version 2 and bounded to 128 KiB; malformed data
   is reported and preserved. Saved themes are available in the top-right palette
   picker. The selected theme gets Copy theme code and Edit theme actions. Remove
   an existing preview from its editor to reclaim a slot.
@@ -138,3 +138,17 @@ only possible cause.
 Design references: [Mantine colors generator](https://mantine.dev/colors-generator/),
 [Oklab's original matrices and explanation](https://bottosson.github.io/posts/oklab/),
 and [WCAG text contrast](https://www.w3.org/TR/WCAG22/#contrast-minimum).
+
+
+The payload version 1 preview schema without `backdrop` is upgraded explicitly at
+storage admission, using preset Palette data for only the missing new role. The
+original bytes are preserved under `sapid.theme-studio.v1.backup` before writing
+version 2. Unknown fields, unrelated missing roles and malformed data still fail
+validation without replacement. This migration does not synthesize colors in the
+theme resolver.
+
+Client routing keeps one application-owned editor workspace across guide visits
+and site theme changes. It preserves incomplete hex input, selected layer, color
+inspector state and sample values; it does not keep a cache of visited views.
+Saved preview IDs remain attached to that workspace, so repeated saves update an
+existing preview. An explicit document reload resets unsaved workspace state.
