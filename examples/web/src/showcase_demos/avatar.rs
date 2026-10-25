@@ -14,9 +14,10 @@ mod fixture {
             let name = scope.cage("Ada Lovelace".to_string());
             let fallback = scope.cage("AL".to_string());
             sapid::stack()
+                .theme(theme.clone())
                 .gap(16.0)
                 .fill((
-                    sapid::group().gap(12.0).fill((
+                    sapid::group().theme(theme.clone()).gap(12.0).fill((
                         avatar(name)
                             .fallback(fallback)
                             .theme(theme.clone())

@@ -77,7 +77,7 @@ mod fixture {
                             })
                     }),
                 sapid::select("long")
-                    .theme(theme)
+                    .theme(theme.clone())
                     .label("Jump to number")
                     .placeholder("Choose a number")
                     .options((0..80).map(|index| {
@@ -89,7 +89,9 @@ mod fixture {
                 button().label("After choices"),
             ));
         (
-            sapid::form("custom-select-form").fill(content),
+            sapid::form("custom-select-form")
+                .theme(theme.clone())
+                .fill(content),
             State {
                 value,
                 open,

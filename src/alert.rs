@@ -4,7 +4,7 @@ use crate::appearance::Common;
 use crate::composite::{self, Callback};
 use crate::state::Value;
 use glory::render::{Role, Semantics, TextKind};
-use glory::style::{BorderStyle, Color, Edges, Length, Style};
+use glory::style::{BorderStyle, Edges, Length, Style};
 use glory::ui::{Children, IntoChildren, Result, Widget};
 use glory::{Lotus, Scope};
 
@@ -176,17 +176,8 @@ impl Widget for Alert {
         let theme = &self.common.theme;
         let (background, color) = match self.severity {
             AlertSeverity::Info => (theme.accent_soft, theme.accent_text),
-            AlertSeverity::Success => {
-                let palette = crate::Theme::new(crate::Hue::Green, theme.scheme);
-                (palette.accent_soft, palette.accent_text)
-            }
-            AlertSeverity::Warning => {
-                if theme.scheme == crate::ColorScheme::Light {
-                    (Color(255, 249, 219, 255), Color(102, 77, 3, 255))
-                } else {
-                    (Color(56, 43, 13, 255), Color(255, 224, 102, 255))
-                }
-            }
+            AlertSeverity::Success => (theme.success_soft, theme.success),
+            AlertSeverity::Warning => (theme.warning_soft, theme.warning),
             AlertSeverity::Danger => (theme.danger_soft, theme.danger),
         };
         let mut base = composite::column(8.0)

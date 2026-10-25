@@ -44,6 +44,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
     });
     (
         sapid::form("pin-demo")
+            .theme(theme.clone())
             .on_submit(move |_| submits.revise(|n| *n += 1))
             .fill(
                 glory::ui::view().class("pin-input-demo").fill((
@@ -79,7 +80,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                         .default_value("000000")
                         .enabled(false),
                     pin_input()
-                        .theme(theme)
+                        .theme(theme.clone())
                         .name("Plain public code")
                         .class("plain-pin")
                         .length(4)
@@ -123,12 +124,8 @@ mod browser {
             .and_then(|w| w.document())
             .and_then(|d| d.get_element_by_id("app"))
             .ok_or_else(|| js("missing PIN root"))?;
-        let theme = Theme::new(
-            if hue == "green" {
-                sapid::Hue::Green
-            } else {
-                sapid::Hue::Blue
-            },
+        let theme = crate::themes::select(
+            if hue == "green" { "green" } else { "blue" },
             if scheme == "dark" {
                 sapid::ColorScheme::Dark
             } else {

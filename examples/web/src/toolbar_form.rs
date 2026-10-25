@@ -7,6 +7,7 @@ pub fn toolbar_form(theme: Theme) -> impl Widget {
         let accept = scope.cage(false);
         let requests = scope.cage(0usize);
         sapid::stack()
+            .theme(theme.clone())
             .gap(16.)
             .class("toolbar-fixture")
             .fill((
@@ -60,7 +61,7 @@ pub fn toolbar_form(theme: Theme) -> impl Widget {
                             .button(button().label("Archive selected"))
                             .button(button().label("Delete selected")),
                     ),
-                sapid::group().fill((
+                sapid::group().theme(theme.clone()).fill((
                     button()
                         .theme(theme.clone())
                         .label("Toggle copy enabled")

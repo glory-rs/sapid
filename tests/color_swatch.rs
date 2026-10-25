@@ -165,6 +165,7 @@ fn four_themes_unstyled_round_shape_and_owner_cleanup_keep_preview_geometry() {
         Theme::green_light(),
         Theme::green_dark(),
     ] {
+        let expected = theme.checker_light;
         let app = App::memory();
         let mounted = app
             .scope()
@@ -181,7 +182,7 @@ fn four_themes_unstyled_round_shape_and_owner_cleanup_keep_preview_geometry() {
         let descriptor = tree.node(root).unwrap().descriptor.view();
         assert_eq!(descriptor.style.width, Some(Length::Px(40.)));
         assert_eq!(descriptor.style.radius, Some(20.));
-        assert_eq!(descriptor.style.background, Some(Color(255, 255, 255, 255)));
+        assert_eq!(descriptor.style.background, Some(expected));
         assert!(descriptor.style.border_color.is_none());
         drop(tree);
         drop(mounted);

@@ -196,7 +196,7 @@
       "evidence": {
         "implementation": [
           "src/button.rs",
-          "src/theme.rs",
+          "src/theme/mod.rs",
           "docs/button.md"
         ],
         "tests": [
@@ -519,7 +519,7 @@
         "implementation": [
           "src/theme_tokens.rs",
           "src/environment.rs",
-          "src/theme.rs",
+          "src/theme/mod.rs",
           "src/typography.rs",
           "docs/environment.md"
         ],

@@ -16,9 +16,10 @@ mod fixture {
             let enabled = scope.cage(true);
             let requested = scope.cage(false);
             sapid::stack()
+                .theme(theme.clone())
                 .gap(16.)
                 .fill((
-                    sapid::group().fill((
+                    sapid::group().theme(theme.clone()).fill((
                         sapid::color_swatch(Color(255, 0, 0, 128))
                             .theme(theme.clone())
                             .name("Half transparent red")
@@ -38,7 +39,7 @@ mod fixture {
                             .side(40.)
                             .round(true),
                     )),
-                    sapid::group().fill((
+                    sapid::group().theme(theme.clone()).fill((
                         sapid::color_swatch(color)
                             .theme(theme.clone())
                             .class("controlled-swatch")
@@ -58,7 +59,7 @@ mod fixture {
                     glory::ui::text()
                         .class("swatch-proposal")
                         .content(scope.bond(move || format!("Requested: {}", requested.get()))),
-                    sapid::group().fill((
+                    sapid::group().theme(theme.clone()).fill((
                         sapid::button()
                             .theme(theme.clone())
                             .label("Accept swatch selection")

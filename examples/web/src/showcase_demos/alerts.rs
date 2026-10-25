@@ -20,6 +20,7 @@ mod fixture {
             let local_theme = theme.clone();
             let controlled_theme = theme.clone();
             sapid::stack()
+                .theme(theme.clone())
                 .class("alerts-fixture")
                 .gap(16.0)
                 .fill((
@@ -111,7 +112,7 @@ mod fixture {
                                 .name("Floating note")
                                 .default_value("Retained floating note")
                         }),
-                    sapid::group().fill((
+                    sapid::group().theme(theme.clone()).fill((
                         sapid::skeleton()
                             .theme(theme.clone())
                             .name("Loading profile")
@@ -128,7 +129,7 @@ mod fixture {
                     text()
                         .class("alerts-log")
                         .content(scope.bond(move || log.get().replace(';', "; "))),
-                    sapid::group().fill((
+                    sapid::group().theme(theme.clone()).fill((
                         sapid::button()
                             .theme(theme.clone())
                             .label("Toggle skeleton loading")

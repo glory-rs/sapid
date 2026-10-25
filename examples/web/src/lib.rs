@@ -83,16 +83,16 @@ mod browser {
         let root = web_sys::window()
             .and_then(|w| w.document())
             .and_then(|d| d.document_element());
-        sapid::Theme::new(
+        crate::themes::select(
             if root
                 .as_ref()
                 .and_then(|e| e.get_attribute("data-hue"))
                 .as_deref()
                 == Some("green")
             {
-                sapid::Hue::Green
+                "green"
             } else {
-                sapid::Hue::Blue
+                "blue"
             },
             if root
                 .as_ref()
@@ -189,12 +189,8 @@ mod browser {
             .and_then(|w| w.document())
             .and_then(|d| d.get_element_by_id("app"))
             .ok_or_else(|| js("missing root"))?;
-        let theme = sapid::Theme::new(
-            if hue == "green" {
-                sapid::Hue::Green
-            } else {
-                sapid::Hue::Blue
-            },
+        let theme = crate::themes::select(
+            if hue == "green" { "green" } else { "blue" },
             if scheme == "dark" {
                 sapid::ColorScheme::Dark
             } else {
@@ -406,3 +402,9 @@ pub mod rich_editor_form;
 pub mod model_suggestions_form;
 
 pub mod showcase_demos;
+
+pub mod themes;
+
+pub mod theme_studio;
+
+pub mod showcase_navigation;

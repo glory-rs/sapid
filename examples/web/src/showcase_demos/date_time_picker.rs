@@ -130,6 +130,7 @@ mod fixture {
                     .theme(theme.clone())
                     .content("DateTimePicker / InlineDateTimePicker"),
                 sapid::form("date-time-form")
+                    .theme(theme.clone())
                     .on_submit(move |_| {
                         submits.revise(|n| *n += 1);
                         submitted.revise(|s| {
@@ -179,7 +180,7 @@ mod fixture {
                 .size(Size::ExtraSmall)
                 .default_value(Some(dt("2024-02-29T13:05"))),
                 text_field()
-                    .theme(theme)
+                    .theme(theme.clone())
                     .name("Unrelated date time draft")
                     .class("date-time-unrelated")
                     .default_value("Stable date time draft"),

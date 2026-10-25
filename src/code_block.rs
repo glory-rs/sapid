@@ -194,11 +194,7 @@ methods!(CodeHighlight);
 fn color(theme: &crate::Theme, kind: CodeTokenKind) -> Option<Color> {
     match kind {
         CodeTokenKind::Keyword => Some(theme.accent_text),
-        CodeTokenKind::String => Some(if theme.scheme == crate::ColorScheme::Dark {
-            crate::theme::GREEN[3]
-        } else {
-            crate::theme::GREEN[9]
-        }),
+        CodeTokenKind::String => Some(theme.syntax_string),
         CodeTokenKind::Comment => Some(theme.muted),
         CodeTokenKind::Number => Some(theme.danger),
         _ => None,

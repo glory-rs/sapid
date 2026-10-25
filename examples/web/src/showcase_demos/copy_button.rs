@@ -18,6 +18,7 @@ mod fixture {
             let calls = scope.cage(0usize);
             let inner = theme.clone();
             sapid::stack()
+                .theme(theme.clone())
                 .gap(12.)
                 .fill((
                     glory::ui::when(visible, move || {

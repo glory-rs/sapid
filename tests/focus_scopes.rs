@@ -91,19 +91,21 @@ fn explicit_policy_overrides_remain_reactive_without_writing_the_controlled_sour
 
 #[test]
 fn scope_fixture_four_themes_has_stable_ssr_shape_and_no_input_capability_claim() {
-    for hue in [sapid::Hue::Blue, sapid::Hue::Green] {
-        for scheme in [sapid::ColorScheme::Light, sapid::ColorScheme::Dark] {
-            let theme = sapid::Theme::new(hue, scheme);
-            let first = glory::ssr::snapshot(fixture::focus_scope_form(theme.clone()))
-                .unwrap()
-                .html;
-            let second = glory::ssr::snapshot(fixture::focus_scope_form(theme))
-                .unwrap()
-                .html;
-            assert_eq!(first, second);
-            assert!(first.contains("data-gly-focus-scope=\"false\""));
-            assert!(first.contains("data-gly-focus-loop=\"true\""));
-            assert!(!first.contains("aria-modal") && !first.contains("popover="));
-        }
+    for theme in [
+        sapid::Theme::blue_light(),
+        sapid::Theme::blue_dark(),
+        sapid::Theme::green_light(),
+        sapid::Theme::green_dark(),
+    ] {
+        let first = glory::ssr::snapshot(fixture::focus_scope_form(theme.clone()))
+            .unwrap()
+            .html;
+        let second = glory::ssr::snapshot(fixture::focus_scope_form(theme))
+            .unwrap()
+            .html;
+        assert_eq!(first, second);
+        assert!(first.contains("data-gly-focus-scope=\"false\""));
+        assert!(first.contains("data-gly-focus-loop=\"true\""));
+        assert!(!first.contains("aria-modal") && !first.contains("popover="));
     }
 }

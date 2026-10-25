@@ -7,9 +7,10 @@ pub fn image_form(theme: Theme) -> impl Widget {
         let status = scope.cage("Loading".to_string());
         let fallback_status = scope.cage("Loading fallback".to_string());
         sapid::stack()
+            .theme(theme.clone())
             .gap(16.0)
             .fill((
-                sapid::group().gap(16.0).fill((
+                sapid::group().theme(theme.clone()).gap(16.0).fill((
                     image(source)
                         .alt("Color pattern")
                         .theme(theme.clone())
@@ -40,7 +41,7 @@ pub fn image_form(theme: Theme) -> impl Widget {
                 text()
                     .class("image-fallback-status")
                     .content(fallback_status),
-                sapid::group().gap(12.0).fill((
+                sapid::group().theme(theme.clone()).gap(12.0).fill((
                     avatar("Ada Lovelace")
                         .fallback("AL")
                         .source(source)
@@ -75,7 +76,7 @@ pub fn image_form(theme: Theme) -> impl Widget {
                                     .revise(|value| *value = "Background action pressed".into())
                             }),
                     )),
-                sapid::group().gap(8.0).fill((
+                sapid::group().theme(theme.clone()).gap(8.0).fill((
                     button()
                         .theme(theme.clone())
                         .label("Break image")
@@ -89,7 +90,7 @@ pub fn image_form(theme: Theme) -> impl Widget {
                             source.revise(|value| *value = "assets/image-pattern.png".into())
                         }),
                 )),
-                sapid::group().gap(8.0).fill((
+                sapid::group().theme(theme.clone()).gap(8.0).fill((
                     button()
                         .theme(theme.clone())
                         .label("Delayed A")

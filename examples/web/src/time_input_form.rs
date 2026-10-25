@@ -78,6 +78,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .theme(theme.clone())
                 .content("TimeInput / TimeValue"),
             sapid::form("time-form")
+                .theme(theme.clone())
                 .on_submit(move |_| {
                     submits.revise(|n| *n += 1);
                     submitted.revise(|s| {
@@ -127,7 +128,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .class("time-unstyled")
                 .default_value(Some(t("10:00"))),
             text_field()
-                .theme(theme)
+                .theme(theme.clone())
                 .name("Unrelated time draft")
                 .class("time-draft")
                 .default_value("Stable time draft"),
@@ -162,12 +163,8 @@ mod browser {
             .and_then(|w| w.document())
             .and_then(|d| d.get_element_by_id("app"))
             .ok_or_else(|| js("missing time root"))?;
-        let theme = Theme::new(
-            if hue == "green" {
-                Hue::Green
-            } else {
-                Hue::Blue
-            },
+        let theme = crate::themes::select(
+            if hue == "green" { "green" } else { "blue" },
             if scheme == "dark" {
                 ColorScheme::Dark
             } else {

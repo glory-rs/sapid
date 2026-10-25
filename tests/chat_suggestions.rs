@@ -141,3 +141,29 @@ fn bounded_intake_duplicate_keys_and_payload_limits_reject_before_rendering() {
     );
     assert!(app.tree().roots().is_empty());
 }
+
+#[test]
+fn group_theme_reaches_item_styles_and_nested_css_classes() {
+    let mut colors = sapid::BLUE.base;
+    colors.accent = glory::style::Color(81, 36, 130, 255);
+    let theme =
+        sapid::Theme::from_palette("custom-night", sapid::ColorScheme::Dark, colors).unwrap();
+    let app = App::memory();
+    app.mount(
+        suggestion_group("themed")
+            .theme(theme.clone())
+            .suggestion(suggestion("first").label("Themed action")),
+    )
+    .unwrap();
+    let id = button(&app, "Themed action");
+    let tree = app.tree();
+    let descriptor = tree.node(id).unwrap().descriptor.view();
+    assert_eq!(descriptor.style.background, Some(colors.accent));
+    assert!(descriptor.classes.iter().any(|c| c == &theme.class()));
+    assert!(
+        !descriptor
+            .classes
+            .iter()
+            .any(|c| c == "sapid-theme-blue-light")
+    );
+}

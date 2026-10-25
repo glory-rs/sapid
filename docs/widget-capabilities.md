@@ -172,7 +172,7 @@ explicit even when another variant of the same family is available.
 Implementation:
 
 - `src/button.rs`
-- `src/theme.rs`
+- `src/theme/mod.rs`
 - `docs/button.md`
 
 Tests:
@@ -409,7 +409,7 @@ Implementation:
 
 - `src/theme_tokens.rs`
 - `src/environment.rs`
-- `src/theme.rs`
+- `src/theme/mod.rs`
 - `src/typography.rs`
 - `docs/environment.md`
 

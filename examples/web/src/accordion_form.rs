@@ -170,6 +170,7 @@ pub fn accordion_form(theme: Theme) -> impl Widget {
                     .on_press(move || open.revise(|keys| *keys = vec!["gamma".to_owned()])),
             ));
         sapid::stack()
+            .theme(theme.clone())
             .gap(16.)
             .class("accordion-dynamic-fixture")
             .fill((

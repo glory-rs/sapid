@@ -7,6 +7,7 @@ pub fn spoiler_form(theme: sapid::Theme) -> impl Widget {
         let proposals = scope.cage(0_u32);
         let status = scope.bond(move || format!("Expansion proposals: {}", proposals.get()));
         sapid::stack()
+            .theme(theme.clone())
             .class("spoiler-fixture")
             .gap(18.0)
             .fill((

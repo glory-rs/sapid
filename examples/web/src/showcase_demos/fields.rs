@@ -100,7 +100,7 @@ mod fixture {
                                         .value("studio.design"),
                                 )
                                 .end(
-                                    sapid::input_section().fill(
+                                    sapid::input_section().theme(theme.clone()).fill(
                                         button()
                                             .theme(theme.clone())
                                             .variant(sapid::ButtonVariant::Secondary)

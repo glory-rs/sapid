@@ -191,6 +191,7 @@ fn surface(color: Color) -> Style {
     }
 }
 struct Trail {
+    checker: [Color; 2],
     channel: Channel,
     color: Lotus<Color>,
     direction: Direction,
@@ -220,9 +221,9 @@ impl Widget for Trail {
                         .class("sapid-alpha-checker-cell")
                         .style(
                             surface(if (row + column) % 2 == 0 {
-                                Color(192, 192, 192, 255)
+                                self.checker[0]
                             } else {
-                                Color(255, 255, 255, 255)
+                                self.checker[1]
                             })
                             .position(Position::Absolute)
                             .left(Length::Percent(column as f64 * 6.25))
@@ -325,6 +326,10 @@ impl Widget for ColorSlider {
         .readonly(self.readonly.clone())
         .invalid(self.invalid.clone())
         .track_content(Trail {
+            checker: [
+                self.common.theme.checker_dark,
+                self.common.theme.checker_light,
+            ],
             channel,
             color: self.color.clone(),
             direction: self.direction,

@@ -7,7 +7,7 @@ use glory::render::{
     DismissReason, Event, EventKind, FocusMode, Layer, LayerFocus, LayerPlacement, NodeId,
     PointerPhase, PopupKind, Role, SemanticId, Semantics,
 };
-use glory::style::{BoxShadow, Color, Edges, Length, Shadow, Style};
+use glory::style::{BoxShadow, Edges, Length, Shadow, Style};
 use glory::ui::{Result, Widget};
 use glory::{Cage, Lotus, Scope};
 
@@ -650,7 +650,7 @@ fn hint_style(common: &Common, kind: Kind) -> Style {
             y: 4.0,
             blur: 12.0,
             spread: 0.0,
-            color: Color(0, 0, 0, 40),
+            color: common.theme.shadow,
         }));
     style.background = Some(common.theme.surface);
     style.color = Some(common.theme.foreground);

@@ -47,17 +47,8 @@ pub struct ChartTheme {
 }
 impl ChartTheme {
     pub fn from_theme(theme: &crate::Theme) -> Self {
-        let colors = if theme.scheme == crate::ColorScheme::Dark {
-            [
-                0x74c0fc, 0xff8787, 0x8ce99a, 0xe599f7, 0xffd43b, 0x66d9e8, 0xb197fc, 0xf783ac,
-            ]
-        } else {
-            [
-                0x1971c2, 0xc92a2a, 0x2b8a3e, 0x9c36b5, 0xe67700, 0x0b7285, 0x5f3dc4, 0x862e9c,
-            ]
-        };
         Self {
-            series: colors.map(|v| Color((v >> 16) as u8, (v >> 8) as u8, v as u8, 255)),
+            series: theme.series,
             grid: theme.border,
         }
     }

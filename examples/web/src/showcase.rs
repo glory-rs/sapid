@@ -1,23 +1,16 @@
 //! The documentation website is a Glory application, including its navigation.
 use glory::prelude::*;
 use glory::render::{Current, Role, SemanticId, Semantics, TextKind};
-use sapid::{ColorScheme, Hue, Theme};
+use sapid::{ColorScheme, Theme};
 
 use crate::showcase_catalog::{ENTRIES, Entry, find};
+use crate::theme_studio::model::ThemeRecord;
 
 pub fn route(id: &str, theme: &Theme) -> String {
     format!(
         "showcase.html?widget={id}&theme={}&scheme={}",
-        if theme.hue == Hue::Green {
-            "green"
-        } else {
-            "blue"
-        },
-        if theme.scheme == ColorScheme::Dark {
-            "dark"
-        } else {
-            "light"
-        },
+        theme.name,
+        theme.scheme.name(),
     )
 }
 
@@ -26,11 +19,18 @@ fn label(entry: &Entry) -> &'static str {
 }
 
 fn link(label: impl Into<String>, href: impl Into<String>, class: &str) -> sapid::Anchor {
-    sapid::anchor()
+    let href = href.into();
+    let internal = href.starts_with("showcase.html?");
+    let anchor = sapid::anchor()
         .unstyled()
         .label(label.into())
-        .href(href.into())
-        .class(class.to_owned())
+        .href(href)
+        .class(class.to_owned());
+    if internal {
+        anchor.on_navigate(crate::showcase_host::request)
+    } else {
+        anchor
+    }
 }
 
 fn section_title(id: &str, value: &str) -> impl Widget {
@@ -184,8 +184,9 @@ fn search_results(query: Cage<String>, theme: Theme) -> impl Widget {
 fn header(
     query: Cage<String>,
     menu: Cage<bool>,
-    selected: &'static str,
+    selected: String,
     theme: Theme,
+    catalog: Cage<Vec<ThemeRecord>>,
 ) -> impl Widget {
     let mut opposite = theme.clone();
     opposite.scheme = if theme.scheme == ColorScheme::Dark {
@@ -209,13 +210,28 @@ fn header(
             }
         });
         let search_theme = theme.clone();
+        let toggle_name = theme.name.clone();
+        let opposite_mode = opposite.scheme;
+        let toggle_supported = scope.bond(move || {
+            catalog.with(|list| {
+                list.iter()
+                    .find(|r| r.id == toggle_name)
+                    .is_none_or(|r| r.supports(opposite_mode))
+            })
+        });
+        let toggle_route = route(&selected, &opposite);
+        let toggle_unsupported = scope.bond(move || !toggle_supported.get());
+
         view()
             .role(Role::Banner)
             .class("site-header")
             .fill(
                 view().class("site-header-inner").fill((
                     view().class("site-brand-wrap").fill((
-                        text().class("site-logo").content("s"),
+                        image()
+                            .source("assets/sapid-logo.svg")
+                            .decorative()
+                            .class("site-logo"),
                         link("Sapid", route("", &theme), "site-brand"),
                     )),
                     view()
@@ -225,8 +241,8 @@ fn header(
                         .fill((
                             link("Widgets", route("P0-01", &theme), "site-topnav-link"),
                             link(
-                                "Get started",
-                                format!("{}#get-started", route("", &theme)),
+                                "Theme studio",
+                                route("theme-studio", &theme),
                                 "site-topnav-link",
                             ),
                             link(
@@ -256,16 +272,27 @@ fn header(
                                 search_results(query, search_theme.clone())
                             }),
                         )),
-                        link(
-                            if theme.scheme == ColorScheme::Dark {
-                                "☀"
-                            } else {
-                                "☾"
-                            },
-                            route(selected, &opposite),
-                            "site-theme-toggle",
-                        )
-                        .name(theme_label),
+                        palette_choices(&theme, &selected, catalog),
+                        when(toggle_supported, move || {
+                            link(
+                                if opposite_mode == ColorScheme::Light {
+                                    "☀"
+                                } else {
+                                    "☾"
+                                },
+                                toggle_route.clone(),
+                                "site-theme-toggle",
+                            )
+                            .name(theme_label)
+                        }),
+                        when(toggle_unsupported, || {
+                            sapid::button()
+                                .unstyled()
+                                .class("site-theme-toggle")
+                                .label("◐")
+                                .name("Alternate mode is not supported")
+                                .enabled(false)
+                        }),
                         sapid::button()
                             .unstyled()
                             .class("site-menu-toggle")
@@ -279,29 +306,124 @@ fn header(
     })
 }
 
-fn subnav(theme: &Theme) -> impl Widget {
-    view()
-        .class("site-subnav")
-        .fill(view().class("site-subnav-inner").fill((
-            link(
-                "Get started",
-                format!("{}#get-started", route("", theme)),
-                "site-subnav-link",
-            ),
-            link(
-                "Theming & styles",
-                route("P0-12", theme),
-                "site-subnav-link",
-            ),
-            link(
-                "Widgets",
-                route("P0-01", theme),
-                "site-subnav-link is-active",
-            ),
-            link("Dates", route("P9-01", theme), "site-subnav-link"),
-            link("Charts", route("P11-01", theme), "site-subnav-link"),
-            link("Chat", route("P13-01", theme), "site-subnav-link"),
-        )))
+fn palette_choices(
+    theme: &Theme,
+    selected: &str,
+    catalog: Cage<Vec<ThemeRecord>>,
+) -> impl Widget {
+    let theme = theme.clone();
+    let selected = selected.to_owned();
+    widget(move |scope| {
+        let selected_name = theme.name.clone();
+        let choices = scope.bond(move || {
+            let mut items = catalog.get();
+            items.sort_by_key(|r| r.id != selected_name);
+            items
+        });
+        let custom_theme = theme.clone();
+        let custom_selected = selected.clone();
+        view()
+            .class("site-palettes")
+            .name("Color palette")
+            .fill((
+                group().fill(
+                    ["blue", "green"]
+                        .into_iter()
+                        .map(|name| {
+                            let choice = crate::themes::select(name, theme.scheme);
+                            palette_link(name, &choice, &selected, name == theme.name)
+                        })
+                        .collect::<Vec<_>>(),
+                ),
+                each(
+                    choices,
+                    |r| r.id.clone(),
+                    move |record, _| {
+                        let r = record.get();
+                        let mode = if r.supports(custom_theme.scheme) {
+                            custom_theme.scheme
+                        } else {
+                            r.default_scheme
+                        };
+                        let choice = r.theme(mode).expect("validated saved theme");
+                        palette_link(
+                            &r.title,
+                            &choice,
+                            &custom_selected,
+                            r.id == custom_theme.name,
+                        )
+                    },
+                ),
+            ))
+            .show_in(scope)
+    })
+}
+fn palette_link(name: &str, choice: &Theme, selected: &str, active: bool) -> sapid::Anchor {
+    link(
+        "",
+        route(selected, choice),
+        if active {
+            "site-palette is-active"
+        } else {
+            "site-palette"
+        },
+    )
+    .style(Style {
+        background: Some(choice.accent),
+        ..Style::new()
+    })
+    .name(format!("Use {name} palette"))
+    .current(if active {
+        Some(Current::Location)
+    } else {
+        None
+    })
+}
+fn saved_actions(
+    theme: Theme,
+    selection: String,
+    catalog: Cage<Vec<ThemeRecord>>,
+) -> impl Widget {
+    widget(move |scope| {
+        let name = theme.name.clone();
+        let active = scope.bond(move || {
+            catalog.with(|list| {
+                list.iter()
+                    .filter(|r| r.id == name)
+                    .cloned()
+                    .collect::<Vec<_>>()
+            })
+        });
+        let theme = theme.clone();
+        let selection = selection.clone();
+        each(
+            active,
+            |r| r.id.clone(),
+            move |r, _| {
+                let record = r.get();
+                let href = format!(
+                    "{}&edit={}&return_to={}",
+                    route("theme-studio", &theme),
+                    record.id,
+                    if find(&selection).is_some() {
+                        &selection
+                    } else {
+                        "P0-01"
+                    }
+                );
+                view().class("site-saved-actions").fill((
+                    text().content(format!("{} · Saved locally", record.title)),
+                    sapid::copy_button()
+                        .theme(theme.clone())
+                        .size(sapid::Size::Small)
+                        .label("Copy theme code")
+                        .source(record.code()),
+                    link("Edit theme", href, "site-inline-link"),
+                ))
+            },
+        )
+        .show_in(scope)
+    })
 }
 
 fn source(entry: &'static Entry, theme: Theme, full: bool) -> impl Widget {
@@ -421,6 +543,20 @@ fn documentation(entry: &'static Entry, theme: Theme, tab: Cage<u8>) -> impl Wid
 
 pub fn site(theme: Theme, selection: String) -> impl Widget {
     widget(move |scope| {
+        let page = crate::showcase_navigation::Page::builtin(theme.clone(), selection.clone());
+        let state = crate::showcase_navigation::State::new(scope, page, Vec::new(), false);
+        crate::showcase_navigation::app(state).show_in(scope)
+    })
+}
+pub fn site_with_state(
+    theme: Theme,
+    selection: String,
+    catalog: Cage<Vec<ThemeRecord>>,
+    return_to: String,
+    notice: Cage<String>,
+    editor: crate::theme_studio::EditorState,
+) -> impl Widget {
+    widget(move |scope| {
         let query = scope.cage(String::new());
         let menu = scope.cage(false);
         let tab = scope.cage(0u8);
@@ -430,14 +566,22 @@ pub fn site(theme: Theme, selection: String) -> impl Widget {
         } else {
             "site-light"
         };
+        let theme_class = theme.class();
         let class = scope.bond(move || {
             format!(
-                "sapid-site {root_scheme}{}",
+                "sapid-site {root_scheme} {}{}",
+                theme_class,
                 if menu.get() { " menu-open" } else { "" }
             )
         });
         let selected = find(&selection);
-        let content: Box<dyn Widget> = if selection.is_empty() {
+        let content: Box<dyn Widget> = if selection == "theme-studio" {
+            Box::new(crate::theme_studio::editor(
+                theme.clone(),
+                editor,
+                return_to.clone(),
+            ))
+        } else if selection.is_empty() {
             Box::new(crate::showcase_home::home(theme.clone()))
         } else if let Some(entry) = selected {
             Box::new(view().class("site-doc-layout").fill((
@@ -474,11 +618,17 @@ pub fn site(theme: Theme, selection: String) -> impl Widget {
                 header(
                     query,
                     menu,
-                    selected.map_or("", |entry| entry.id),
+                    if selection == "theme-studio" {
+                        "theme-studio".to_owned()
+                    } else {
+                        selected.map_or("", |entry| entry.id).to_owned()
+                    },
                     theme.clone(),
+                    catalog,
                 ),
-                subnav(&theme),
-                if selection.is_empty() {
+                text().class("site-host-notice").content(notice),
+                saved_actions(theme.clone(), selection.clone(), catalog),
+                if selection.is_empty() || selection == "theme-studio" {
                     let theme = theme.clone();
                     Box::new(when(menu, move || {
                         view()
@@ -488,8 +638,8 @@ pub fn site(theme: Theme, selection: String) -> impl Widget {
                             .fill((
                                 link("Widgets", route("P0-01", &theme), "site-nav-link"),
                                 link(
-                                    "Get started",
-                                    format!("{}#get-started", route("", &theme)),
+                                    "Theme studio",
+                                    route("theme-studio", &theme),
                                     "site-nav-link",
                                 ),
                                 link("Charts", route("P11-01", &theme), "site-nav-link"),

@@ -409,7 +409,9 @@ pub use tags_input::{
 };
 pub use text_field::{TextField, text_field};
 pub use textarea::{Textarea, textarea};
-pub use theme::{ColorScheme, Hue, Size, Theme};
+pub use theme::{
+    BLUE, ColorScheme, GREEN, Palette, PaletteOverrides, Size, Theme, ThemeDefinition,
+};
 pub use theme_icon::{Icon, ThemeIcon, ThemeIconVariant, theme_icon};
 pub use timeline::{
     MAX_TIMELINE_ITEMS, Timeline, TimelineItem, TimelineProgress, timeline, timeline_item,
@@ -529,34 +531,34 @@ pub mod prelude {
     };
     pub use crate::{
         Accordion, AccordionItem, ActionIcon, Anchor, AnchorAlign, AnchorPlacement,
-        AnchorRequest, AnchorSide, AspectRatio, Badge, BadgeVariant, Blockquote, Box,
+        AnchorRequest, AnchorSide, AspectRatio, BLUE, Badge, BadgeVariant, Blockquote, Box,
         BreadcrumbItem, Breadcrumbs, Burger, Button, ButtonGroup, ButtonVariant, Card, Center,
         CheckState, Checkbox, CheckboxGroup, CheckboxItem, Chip, ChipGroup, ChipItem, ChipMode,
         CloseButton, Code, Collapsible, Collection, CollectionLimits, CollectionMember,
         ColorScheme, Container, ContentPolicy, ControlValue, Currency, DataList, DataListItem,
         Description, Dialog, Drawer, DrawerSide, EmptyState, Field, FieldControl, FieldError,
         FieldOptions, Fieldset, Flex, Form, FormButton, FormEntry, FormError, FormField,
-        FormFieldState, FormLimits, FormState, FormStatus, Grid, GridItem, Group, Highlight,
-        Hue, InputAddon, InputGroup, InputSection, Item, Kbd, KbdKey, KbdPlatform, Label, Mark,
-        MixedCheckbox, MountedItem, NavLink, NumberFormat, NumberFormatter, NumberLocale,
-        PageItem, Pagination, Paper, PasswordInput, Pill, Popover, Radio, RadioGroup,
-        RovingFocus, Segment, SegmentedControl, Separator, ShadowSize, SimpleGrid, Size, Space,
-        Spoiler, Stack, SubmissionLimits, SubmitStatus, SubmitToken, Switch, Tab,
-        TabActivation, Tabs, Text, TextField, TextList, TextListItem, TextVariant, Textarea,
-        Theme, Timeline, TimelineItem, TimelineProgress, Title, Toggle, ToggleGroup,
-        ToggleItem, ToggleMode, Typeahead, TypeaheadConfig, Typography, TypographyContext,
-        ValidationErrors, ValidationFuture, accordion, accordion_item, action_icon, anchor,
-        aspect_ratio, badge, blockquote, box_, breadcrumb_item, breadcrumbs, burger, button,
-        button_group, card, center, checkbox, checkbox_group, checkbox_item, chip, chip_group,
-        chip_item, close_button, code, collapsible, container, data_list, data_list_item,
-        description, dialog, drawer, empty_state, field, field_description, field_error,
-        fieldset, flex, form, grid, grid_item, group, highlight, input_addon, input_group,
-        input_section, item, kbd, label, mark, mixed_checkbox, nav_link, number_formatter,
-        pagination, pagination_window, paper, password_input, pill, popover, radio,
-        radio_group, reset_button, segment, segmented_control, separator, simple_grid, space,
-        spoiler, stack, submit_button, switch, tab, tabs, text, text_field, text_list,
-        text_list_item, textarea, timeline, timeline_item, title, toggle, toggle_group,
-        toggle_item, typography,
+        FormFieldState, FormLimits, FormState, FormStatus, GREEN, Grid, GridItem, Group,
+        Highlight, InputAddon, InputGroup, InputSection, Item, Kbd, KbdKey, KbdPlatform, Label,
+        Mark, MixedCheckbox, MountedItem, NavLink, NumberFormat, NumberFormatter, NumberLocale,
+        PageItem, Pagination, Palette, PaletteOverrides, Paper, PasswordInput, Pill, Popover,
+        Radio, RadioGroup, RovingFocus, Segment, SegmentedControl, Separator, ShadowSize,
+        SimpleGrid, Size, Space, Spoiler, Stack, SubmissionLimits, SubmitStatus, SubmitToken,
+        Switch, Tab, TabActivation, Tabs, Text, TextField, TextList, TextListItem, TextVariant,
+        Textarea, Theme, ThemeDefinition, Timeline, TimelineItem, TimelineProgress, Title,
+        Toggle, ToggleGroup, ToggleItem, ToggleMode, Typeahead, TypeaheadConfig, Typography,
+        TypographyContext, ValidationErrors, ValidationFuture, accordion, accordion_item,
+        action_icon, anchor, aspect_ratio, badge, blockquote, box_, breadcrumb_item,
+        breadcrumbs, burger, button, button_group, card, center, checkbox, checkbox_group,
+        checkbox_item, chip, chip_group, chip_item, close_button, code, collapsible, container,
+        data_list, data_list_item, description, dialog, drawer, empty_state, field,
+        field_description, field_error, fieldset, flex, form, grid, grid_item, group,
+        highlight, input_addon, input_group, input_section, item, kbd, label, mark,
+        mixed_checkbox, nav_link, number_formatter, pagination, pagination_window, paper,
+        password_input, pill, popover, radio, radio_group, reset_button, segment,
+        segmented_control, separator, simple_grid, space, spoiler, stack, submit_button,
+        switch, tab, tabs, text, text_field, text_list, text_list_item, textarea, timeline,
+        timeline_item, title, toggle, toggle_group, toggle_item, typography,
     };
     pub use crate::{ActionBar, Toolbar, ToolbarGroup, action_bar, toolbar, toolbar_group};
     pub use crate::{

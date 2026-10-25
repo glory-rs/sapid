@@ -140,3 +140,103 @@ fn every_displayed_source_builds_its_preview_and_fits_the_highlighter() {
         assert_eq!(app.runtime_stats().tasks, 0, "{} tasks", entry.id);
     }
 }
+
+#[test]
+fn studio_builds_real_role_inputs_mode_controls_and_retires_all_state() {
+    for theme in [Theme::blue_light(), Theme::green_dark()] {
+        let app = App::memory();
+        app.mount(showcase::site(theme, "theme-studio".into()))
+            .unwrap();
+        let all = nodes(&app);
+        let input = all
+            .iter()
+            .find(|id| {
+                app.tree()
+                    .node(**id)
+                    .unwrap()
+                    .descriptor
+                    .view()
+                    .name
+                    .as_deref()
+                    == Some("Base canvas")
+            })
+            .unwrap();
+        assert!(matches!(
+            app.tree().node(*input).unwrap().descriptor.view().props,
+            Props::Input(_)
+        ));
+        let tab = all
+            .iter()
+            .find(|id| {
+                app.tree()
+                    .node(**id)
+                    .unwrap()
+                    .descriptor
+                    .view()
+                    .name
+                    .as_deref()
+                    == Some("Edit Dark colors")
+            })
+            .unwrap();
+        app.dispatch(*tab, Event::Activate).unwrap();
+        app.flush().unwrap();
+        assert!(nodes(&app).iter().any(|id| {
+            app.tree()
+                .node(*id)
+                .unwrap()
+                .descriptor
+                .view()
+                .name
+                .as_deref()
+                == Some("Dark canvas")
+        }));
+        app.clear().unwrap();
+        assert_eq!(app.stats().nodes, 0);
+        assert_eq!(app.stats().handlers, 0);
+        assert_eq!(app.runtime_stats().tasks, 0);
+    }
+}
+
+#[test]
+fn route_changes_preserve_one_editor_workspace_without_retaining_old_views() {
+    use sapid_web_example::showcase_navigation::{Page, State, app as route_app};
+    use sapid_web_example::theme_studio::model::{Layer, Target};
+    let app = App::memory();
+    let state = State::new(
+        app.scope(),
+        Page::builtin(Theme::blue_dark(), "theme-studio".into()),
+        Vec::new(),
+        false,
+    );
+    app.mount(route_app(state)).unwrap();
+    state.editor.draft.revise(|d| {
+        d.record.title = "Kept draft".into();
+        d.set_text(Layer::Base, Target::Role(0), "#1".into());
+    });
+    state.editor.layer.revise(|v| *v = Layer::Dark);
+    let mut next = Page::builtin(Theme::green_light(), "P0-01".into());
+    next.revision = 1;
+    state.page.revise(|v| *v = next);
+    app.flush().unwrap();
+    let mut next = Page::builtin(Theme::green_dark(), "theme-studio".into());
+    next.revision = 2;
+    state.page.revise(|v| *v = next);
+    app.flush().unwrap();
+    assert_eq!(
+        state.editor.draft.with(|d| d.record.title.clone()),
+        "Kept draft"
+    );
+    assert_eq!(
+        state
+            .editor
+            .draft
+            .with(|d| d.text(Layer::Base, Target::Role(0))),
+        "#1"
+    );
+    assert_eq!(state.editor.layer.get(), Layer::Dark);
+    app.clear().unwrap();
+    assert_eq!(app.stats().nodes, 0);
+    assert_eq!(app.stats().handlers, 0);
+    drop(app);
+    assert!(state.editor.draft.try_get().is_err());
+}

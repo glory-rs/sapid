@@ -89,6 +89,7 @@ mod fixture {
             });
         (
             sapid::form("number-demo")
+                .theme(theme.clone())
                 .on_submit(move |_| submits.revise(|n| *n += 1))
                 .fill(
                     glory::ui::view().class("number-input-demo").fill((
@@ -118,7 +119,7 @@ mod fixture {
                             .default_value(d("2.5"))
                             .unstyled(),
                         number_input()
-                            .theme(theme)
+                            .theme(theme.clone())
                             .name("Fine decimal")
                             .class("fine-number-input")
                             .default_value(d("0.000000000000000001"))

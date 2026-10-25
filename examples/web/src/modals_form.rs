@@ -38,12 +38,13 @@ pub fn modals_form(theme: Theme) -> impl Widget {
             ));
         }
         sapid::stack()
+            .theme(theme.clone())
             .gap(16.)
             .fill((
                 modals_manager("demo")
                     .theme(theme.clone())
                     .on_ready(move |handle| ready.borrow_mut().handle = Some(handle)),
-                sapid::group().fill(controls),
+                sapid::group().theme(theme.clone()).fill(controls),
                 glory::ui::text()
                     .class("modals-pending")
                     .content(scope.bond(move || format!("Pending: {}", count.get()))),
@@ -137,6 +138,7 @@ fn managed_content(control: Rc<RefCell<Control>>, theme: Theme) -> impl Widget {
         let cancel = control.clone();
         let weak_cancel = scope.downgrade();
         sapid::stack()
+            .theme(theme.clone())
             .gap(12.)
             .fill((
                 sapid::text_field()

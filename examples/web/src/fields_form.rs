@@ -92,7 +92,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                                     .value("studio.design"),
                             )
                             .end(
-                                sapid::input_section().fill(
+                                sapid::input_section().theme(theme.clone()).fill(
                                     button()
                                         .theme(theme.clone())
                                         .variant(sapid::ButtonVariant::Secondary)

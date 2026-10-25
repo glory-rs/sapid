@@ -90,6 +90,7 @@ mod fixture {
                     .theme(theme.clone())
                     .content("MonthPicker / YearPicker"),
                 sapid::form("period-form")
+                    .theme(theme.clone())
                     .on_submit(move |_| submits.revise(|n| *n += 1))
                     .fill((
                         primary,
@@ -110,7 +111,7 @@ mod fixture {
                                     y.revise(|old| *old = v)
                                 }
                             }),
-                        submit_button().label("Save periods"),
+                        submit_button().theme(theme.clone()).label("Save periods"),
                     )),
                 sapid::text()
                     .theme(theme.clone())
@@ -146,7 +147,7 @@ mod fixture {
                     .theme(theme.clone())
                     .class("year-min"),
                 text_field()
-                    .theme(theme)
+                    .theme(theme.clone())
                     .name("Unrelated period draft")
                     .class("period-draft")
                     .default_value("Stable period draft"),

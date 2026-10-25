@@ -103,6 +103,7 @@ mod fixture {
             glory::ui::view().class("date-input-demo").fill((
                 sapid::title(1).theme(theme.clone()).content("DateInput"),
                 sapid::form("date-input-form")
+                    .theme(theme.clone())
                     .on_submit(move |_| {
                         submits.revise(|n| *n += 1);
                         submitted.revise(|v| {

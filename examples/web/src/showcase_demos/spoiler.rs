@@ -16,6 +16,7 @@ mod fixture {
             let status =
                 scope.bond(move || format!("Expansion proposals: {}", proposals.get()));
             sapid::stack()
+                .theme(theme.clone())
                 .class("spoiler-fixture")
                 .gap(18.0)
                 .fill((

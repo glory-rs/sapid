@@ -96,6 +96,7 @@ mod fixture {
                     .theme(theme.clone())
                     .content("TimePicker / TimeGrid"),
                 sapid::form("appointment-form")
+                    .theme(theme.clone())
                     .on_submit(move |_| {
                         submits.revise(|n| *n += 1);
                         submitted.revise(|s| {
@@ -154,7 +155,7 @@ mod fixture {
                     .spec(spec)
                     .direction(glory::render::Direction::Rtl),
                 text_field()
-                    .theme(theme)
+                    .theme(theme.clone())
                     .name("Unrelated segmented draft")
                     .class("time-picker-draft")
                     .default_value("Stable segmented draft"),

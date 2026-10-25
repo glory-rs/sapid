@@ -49,3 +49,10 @@
 - Source panels include the exact `showcase_demos` modules compiled for previews.
   Update sources/generator together and run showcase-catalog.py --check. Every
   copied module must include its helpers and export `demo(theme) -> impl Widget`.
+
+- ThemeDefinition owns a complete base Palette and optional sparse PaletteOverrides
+  for Light/Dark. Default mode is implicitly supported without an override; a
+  non-default mode requires Some (including an explicitly empty override). Never
+  synthesize colors in Theme::new or silently fall back from an unsupported mode.
+  Ship BLUE/GREEN definitions, each supporting both modes. Keep preset CSS synced
+  with Theme::stylesheet via `cargo run --example palette_css`; no widget CSS injection.

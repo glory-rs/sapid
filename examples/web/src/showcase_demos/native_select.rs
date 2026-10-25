@@ -78,7 +78,7 @@ mod fixture {
                         }
                     }),
                 native_select("empty")
-                    .theme(theme)
+                    .theme(theme.clone())
                     .label("Optional empty choice")
                     .form_name("empty")
                     .placeholder("Nothing selected")
@@ -89,7 +89,9 @@ mod fixture {
                 button().label("After select"),
             ));
         (
-            sapid::form("native-select-form").fill(content),
+            sapid::form("native-select-form")
+                .theme(theme.clone())
+                .fill(content),
             State {
                 selected,
                 many,

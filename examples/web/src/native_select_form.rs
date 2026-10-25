@@ -67,7 +67,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                     }
                 }),
             native_select("empty")
-                .theme(theme)
+                .theme(theme.clone())
                 .label("Optional empty choice")
                 .form_name("empty")
                 .placeholder("Nothing selected")
@@ -77,7 +77,9 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
             button().label("After select"),
         ));
     (
-        sapid::form("native-select-form").fill(content),
+        sapid::form("native-select-form")
+            .theme(theme.clone())
+            .fill(content),
         State {
             selected,
             many,
@@ -104,12 +106,8 @@ mod browser {
             .and_then(|w| w.document())
             .and_then(|d| d.get_element_by_id("app"))
             .ok_or_else(|| js("missing native select root"))?;
-        let theme = Theme::new(
-            if hue == "green" {
-                sapid::Hue::Green
-            } else {
-                sapid::Hue::Blue
-            },
+        let theme = crate::themes::select(
+            if hue == "green" { "green" } else { "blue" },
             if scheme == "dark" {
                 sapid::ColorScheme::Dark
             } else {

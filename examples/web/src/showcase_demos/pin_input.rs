@@ -52,6 +52,7 @@ mod fixture {
         });
         (
             sapid::form("pin-demo")
+                .theme(theme.clone())
                 .on_submit(move |_| submits.revise(|n| *n += 1))
                 .fill(
                     glory::ui::view().class("pin-input-demo").fill((
@@ -87,7 +88,7 @@ mod fixture {
                             .default_value("000000")
                             .enabled(false),
                         pin_input()
-                            .theme(theme)
+                            .theme(theme.clone())
                             .name("Plain public code")
                             .class("plain-pin")
                             .length(4)

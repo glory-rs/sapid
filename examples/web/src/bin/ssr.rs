@@ -15,12 +15,12 @@ fn page(template: &str, html: &str) -> String {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let directory =
         std::path::PathBuf::from(std::env::args().nth(1).ok_or("output directory")?);
-    for (hue_name, hue) in [("blue", sapid::Hue::Blue), ("green", sapid::Hue::Green)] {
+    for hue_name in ["blue", "green"] {
         for (scheme_name, scheme) in [
             ("light", sapid::ColorScheme::Light),
             ("dark", sapid::ColorScheme::Dark),
         ] {
-            let theme = sapid::Theme::new(hue, scheme);
+            let theme = sapid_web_example::themes::select(hue_name, scheme);
             let fields = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::fields_form::form(scope, theme.clone()).0
             })?;

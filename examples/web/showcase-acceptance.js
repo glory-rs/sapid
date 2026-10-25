@@ -14,6 +14,9 @@ async (hostPage) => {
     await page.waitForFunction(() => window.ready === true);
     await page.locator('.sapid-site').waitFor();
     assert(await page.locator('iframe').count() === 0, `${name}: no iframe UI`);
+    assert(await page.locator('.site-subnav').count() === 0, `${name}: secondary row removed`);
+    assert(await page.locator('.site-header-tools > .site-palettes + .site-theme-toggle').count() === 1, `${name}: palettes directly precede scheme toggle`);
+
   };
   const shot = (page, name) => page.screenshot({path:`D:/BuildCache/sapid/showcase-${name}.png`,fullPage:true});
   try {
@@ -31,7 +34,7 @@ async (hostPage) => {
       const id = new URL(route.href, base).searchParams.get('widget');
       const anchor = p.locator(`.site-nav-link[href="${route.href}"]`);
       await anchor.click();
-      await p.waitForFunction(() => window.ready === true);
+      await p.waitForFunction(id=>document.documentElement.getAttribute('data-sapid-widget')===id,id);
       await p.locator('h1.site-title').waitFor();
       assert(new URL(p.url()).searchParams.get('widget') === id, `${id}: actual route navigation`);
       assert(await p.locator('.site-demo .site-example').count() === 1, `${id}: real embedded Glory widget`);
@@ -108,6 +111,31 @@ async (hostPage) => {
     await shot(p, 'textfield-dark');
     reports.push({suite:'showcase-theme-and-controlled-text',status:'passed'});
 
+    for (const name of ['blue','green']) for (const scheme of ['light','dark']) {
+      await go(p, `showcase.html?widget=P0-01&scheme=${scheme}&theme=${name === 'blue' ? 'green' : 'blue'}`);
+      await p.getByRole('link',{name:`Use ${name} palette`,exact:true}).click();
+      await p.locator(`.sapid-site.sapid-theme-${name}-${scheme}`).waitFor();
+      const query = new URL(p.url()).searchParams;
+      assert(query.get('widget') === 'P0-01' && query.get('theme') === name && query.get('scheme') === scheme, 'palette choice preserves guide and light/dark scheme');
+      assert(await p.getByRole('link',{name:`Use ${name} palette`,exact:true}).getAttribute('aria-current') === 'location', 'selected palette is exposed as current');
+      const swatch = await p.getByRole('link',{name:`Use ${name} palette`,exact:true}).evaluate(e => ({text:e.textContent.trim(),color:getComputedStyle(e).backgroundColor,outline:getComputedStyle(e).outlineColor}));
+      assert(swatch.text === '' && swatch.color === (name === 'blue' ? 'rgb(25, 113, 194)' : 'rgb(35, 112, 50)'), 'palette is represented by its actual color, without a text label');
+
+      const frame = await p.locator('.sapid-site').evaluate(e=>({background:getComputedStyle(e).backgroundColor,text:getComputedStyle(e).color}));
+      assert(frame.background === (scheme === 'dark' ? 'rgb(20, 21, 23)' : 'rgb(248, 249, 250)'), 'page canvas comes from resolved palette data');
+      assert(frame.text === (scheme === 'dark' ? 'rgb(222, 226, 230)' : 'rgb(33, 37, 41)'), 'page text comes from resolved palette data');
+      const actual = await p.locator('.site-nav-link.is-active').evaluate(e=>getComputedStyle(e).color);
+      const accent = name === 'blue' ? (scheme === 'dark' ? 'rgb(116, 192, 252)' : 'rgb(24, 100, 171)') : (scheme === 'dark' ? 'rgb(140, 233, 154)' : 'rgb(35, 112, 50)');
+      assert(actual === accent, `${name}-${scheme}: website follows palette tokens (${actual})`);
+      const filled = p.locator('.site-demo').getByRole('button',{name:'Filled button',exact:true});
+      assert(await filled.evaluate(e=>getComputedStyle(e).backgroundColor) === (name === 'blue' ? 'rgb(25, 113, 194)' : 'rgb(35, 112, 50)'), 'preview follows the same palette');
+      await p.getByRole('link',{name:`Switch to ${scheme === 'dark' ? 'light' : 'dark'} theme`,exact:true}).click();
+      await p.locator(`.sapid-site.sapid-theme-${name}-${scheme === 'dark' ? 'light' : 'dark'}`).waitFor();
+      assert(new URL(p.url()).searchParams.get('theme') === name, 'scheme choice preserves palette');
+      reports.push({suite:`showcase-palette-${name}-${scheme}`,status:'passed'});
+    }
+
+
     await go(p, 'showcase.html?widget=P0-03');
     const check = p.getByRole('checkbox',{name:'I agree to the terms and conditions',exact:true});
     await check.check(); assert(await check.isChecked(), 'real checkbox toggles');
@@ -135,6 +163,20 @@ async (hostPage) => {
     try {
       const m = await mobile.newPage(); setup(m);
       await go(m, 'showcase.html?widget=P0-01');
+      for (const width of [320,360,390]) {
+        await m.setViewportSize({width,height:800});
+        const header = await m.locator('.site-header').evaluate(e => {
+          const targets=[...e.querySelectorAll('.site-palette,.site-theme-toggle,.site-menu-toggle')].map(x=>{const r=x.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width,height:r.height}});
+          return {targets,overflow:document.body.scrollWidth>innerWidth+1};
+        });
+        assert(header.targets.length === 4 && !header.overflow && header.targets.every(r=>r.width>=22 && r.height>=22 && r.left>=0 && r.right<=width && r.top>=0 && r.bottom<=60), `${width}px: all four header controls visible without overflow`);
+        assert(header.targets.slice(1).every((r,i)=>r.left>=header.targets[i].right), `${width}px: controls do not overlap`);
+      }
+      await m.setViewportSize({width:360,height:800});
+      await m.getByRole('link',{name:'Use green palette',exact:true}).tap();
+      await m.locator('.sapid-site.sapid-theme-green-light').waitFor();
+      assert(new URL(m.url()).searchParams.get('widget') === 'P0-01', 'mobile swatch preserves guide');
+
       await m.getByRole('button',{name:'Open navigation',exact:true}).tap();
       await m.getByRole('button',{name:'Close navigation',exact:true}).waitFor();
       assert(await m.locator('.sapid-site.menu-open .site-sidebar').isVisible(), 'mobile Rust menu opens');
@@ -146,12 +188,20 @@ async (hostPage) => {
       assert(await m.evaluate(() => innerWidth === 360 && document.documentElement.clientWidth === 360 && document.body.scrollWidth <= 361), 'mobile document contains its content');
       assert(await m.locator('.site-doc-note').evaluateAll(notes => notes.length > 0 && notes.every(note => getComputedStyle(note).display === 'block' && note.getClientRects().length === 1)), 'mobile descriptions have contiguous readable block backgrounds');
       await shot(m, 'mobile-docs');
+      await go(m, 'showcase.html?theme=green&scheme=dark');
+      await m.getByRole('button',{name:'Open navigation',exact:true}).tap();
+      const menuTop = await m.locator('.site-mobile-nav').evaluate(e=>e.getBoundingClientRect().top);
+      const headerBottom = await m.locator('.site-header').evaluate(e=>e.getBoundingClientRect().bottom);
+      assert(Math.abs(menuTop-headerBottom)<=1, 'home mobile menu starts directly below the single header row');
+      await shot(m, 'mobile-home-navigation');
+
     } finally { await mobile.close(); }
     reports.push({suite:'showcase-mobile-navigation',status:'passed'});
 
     await go(p, 'showcase.html?widget=does-not-exist');
     await p.getByRole('heading',{name:'Widget not found',exact:true}).waitFor();
     await p.getByRole('link',{name:'Sapid',exact:true}).click();
+    await p.waitForFunction(()=>document.documentElement.getAttribute('data-sapid-widget')==='');
     await p.getByRole('main').waitFor();
     assert(!new URL(p.url()).searchParams.get('widget'), 'friendly 404 can return home');
     reports.push({suite:'showcase-friendly-404',status:'passed'});

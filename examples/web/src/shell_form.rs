@@ -23,6 +23,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
     let layout = ShellLayout::new(scope, 1024.0, 768.0).expect("finite shell layout");
     let nav_theme = theme.clone();
     let main_theme = theme.clone();
+    let footer_theme = theme.clone();
     let shell = app_shell("demo")
         .theme(theme)
         .class("shell-demo")
@@ -106,11 +107,11 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .style(Style::new().padding(Edges::all(20.0)))
                 .fill((
                     sapid::title(1).theme(main_theme.clone()).content("Workspace"),
-                    sapid::text().content("The same navigation tree moves between its desktop dock and the host-owned mobile drawer."),
+                    sapid::text().theme(main_theme.clone()).content("The same navigation tree moves between its desktop dock and the host-owned mobile drawer."),
                     glory::ui::input().name("Main note").value("Main content stays mounted"),
                 ))
         })
-        .footer(|_| sapid::text().content("Sapid application footer"))
+        .footer(move |_| sapid::text().theme(footer_theme.clone()).content("Sapid application footer"))
         .on_width_change(move |_| {
             width_stage.revise(|value| *value = true);
             widths.revise(|value| *value += 1);
@@ -149,12 +150,8 @@ mod browser {
             .and_then(|window| window.document())
             .and_then(|document| document.get_element_by_id("app"))
             .ok_or_else(|| js("missing shell root"))?;
-        let theme = Theme::new(
-            if hue == "green" {
-                sapid::Hue::Green
-            } else {
-                sapid::Hue::Blue
-            },
+        let theme = crate::themes::select(
+            if hue == "green" { "green" } else { "blue" },
             if scheme == "dark" {
                 sapid::ColorScheme::Dark
             } else {

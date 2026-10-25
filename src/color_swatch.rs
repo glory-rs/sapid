@@ -113,7 +113,7 @@ fn square(commands: &mut Vec<Path>, x: f64, y: f64, side: f64) {
         Path::Close,
     ]);
 }
-fn checker() -> GraphicProps {
+fn checker(color: Color) -> GraphicProps {
     let mut commands = Vec::with_capacity(40);
     for y in 0..4 {
         for x in 0..4 {
@@ -126,7 +126,7 @@ fn checker() -> GraphicProps {
         width: 16.,
         height: 16.,
         commands,
-        fill: Some(Color(192, 192, 192, 255)),
+        fill: Some(color),
         ..Default::default()
     }
 }
@@ -141,13 +141,15 @@ fn full(color: Color) -> GraphicProps {
         ..Default::default()
     }
 }
-fn mark(color: Color) -> GraphicProps {
+fn mark(color: Color, backdrop: Color, light_mark: Color, dark_mark: Color) -> GraphicProps {
     let Color(r, g, b, a) = color;
-    let opaque =
-        |v: u8| ((u32::from(v) * u32::from(a) + 255 * (255 - u32::from(a))) / 255) as u8;
-    let light =
-        u32::from(opaque(r)) * 299 + u32::from(opaque(g)) * 587 + u32::from(opaque(b)) * 114
-            >= 128_000;
+    let opaque = |v: u8, b: u8| {
+        ((u32::from(v) * u32::from(a) + u32::from(b) * (255 - u32::from(a))) / 255) as u8
+    };
+    let light = u32::from(opaque(r, backdrop.0)) * 299
+        + u32::from(opaque(g, backdrop.1)) * 587
+        + u32::from(opaque(b, backdrop.2)) * 114
+        >= 128_000;
     GraphicProps {
         width: 16.,
         height: 16.,
@@ -157,11 +159,7 @@ fn mark(color: Color) -> GraphicProps {
             Path::Line(Point::new(13., 4.5)),
         ],
         stroke: Some(GraphicStroke {
-            color: if light {
-                Color(0, 0, 0, 255)
-            } else {
-                Color(255, 255, 255, 255)
-            },
+            color: if light { light_mark } else { dark_mark },
             width: 2.,
             cap: StrokeCap::Round,
         }),
@@ -229,7 +227,7 @@ impl Widget for ColorSwatch {
             .border_width(Edges::all(1.))
             .border_style(BorderStyle::Solid)
             .border_color(self.common.theme.border);
-        base.background = Some(Color(255, 255, 255, 255));
+        base.background = Some(self.common.theme.checker_light);
         base.shrink = Some(0.);
         // Structural geometry remains in unstyled mode; the preview is the content.
         let mut structural = Style::new()
@@ -240,7 +238,7 @@ impl Widget for ColorSwatch {
             .padding(Edges::all(0.))
             .overflow_x(Overflow::Hidden)
             .overflow_y(Overflow::Hidden);
-        structural.background = Some(Color(255, 255, 255, 255));
+        structural.background = Some(self.common.theme.checker_light);
         if self.round {
             structural.radius = Some(side / 2.)
         }
@@ -255,6 +253,9 @@ impl Widget for ColorSwatch {
             .width(Length::Percent(100.))
             .height(Length::Percent(100.))
             .pointer_events(glory::style::PointerEvents::None);
+        let backdrop = self.common.theme.checker_light;
+        let light_mark = self.common.theme.swatch_mark_light;
+        let dark_mark = self.common.theme.swatch_mark_dark;
         let color = self.color.clone();
         let foreground = glory::ui::graphic()
             .drawing(scope.bond(move || full(color.get())))
@@ -266,7 +267,7 @@ impl Widget for ColorSwatch {
             .style(layer.clone())
             .drawing(scope.bond(move || {
                 if checked.as_ref().is_some_and(|source| source.get()) {
-                    mark(check.get())
+                    mark(check.get(), backdrop, light_mark, dark_mark)
                 } else {
                     GraphicProps {
                         width: 16.,
@@ -276,7 +277,7 @@ impl Widget for ColorSwatch {
                 }
             }));
         let background = glory::ui::graphic()
-            .drawing(checker())
+            .drawing(checker(self.common.theme.checker_dark))
             .class("sapid-color-swatch-checker")
             .style(layer);
         let owner = scope.id();

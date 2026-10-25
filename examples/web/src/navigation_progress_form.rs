@@ -74,6 +74,7 @@ pub fn navigation_progress_form(theme: Theme) -> impl Widget {
             );
         }
         sapid::stack()
+            .theme(theme.clone())
             .gap(16.)
             .fill((
                 navigation_progress()
@@ -82,6 +83,7 @@ pub fn navigation_progress_form(theme: Theme) -> impl Widget {
                     .name("Route loading")
                     .on_ready(move |handle| ready.borrow_mut().handle = Some(handle)),
                 sapid::group()
+                    .theme(theme.clone())
                     .wrap(glory::style::FlexWrap::Wrap)
                     .fill(controls),
                 glory::ui::text()

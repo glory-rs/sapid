@@ -34,6 +34,7 @@ pub fn tree_choices_form(theme: sapid::Theme, columns: bool) -> impl Widget {
         let expanded = scope.cage(BTreeSet::from(["source".into()]));
         let opening_theme = theme.clone();
         sapid::form("path-demo")
+            .theme(theme.clone())
             .fill(
                 col()
                     .style(

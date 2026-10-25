@@ -88,49 +88,73 @@ pub fn responsive_form(theme: Theme) -> impl Widget {
                         ))
                         .unwrap();
                     sapid::stack().theme(theme.clone()).fill((
-                        sapid::text().class("responsive-tier").content(label),
+                        sapid::text()
+                            .theme(theme.clone())
+                            .class("responsive-tier")
+                            .content(label),
                         sapid::center()
+                            .theme(theme.clone())
                             .class("responsive-center")
                             .height(Length::Px(90.))
                             .style(center)
                             .fill(
                                 sapid::box_()
+                                    .theme(theme.clone())
                                     .class("responsive-center-child")
                                     .width(Length::Px(30.))
                                     .height(Length::Px(20.)),
                             ),
                         sapid::container()
+                            .theme(theme.clone())
                             .class("responsive-container")
                             .max_width(glory::style::Limit::Px(360.))
                             .style(container)
-                            .fill(sapid::text().content("Container")),
-                        sapid::space().class("responsive-space").style(space),
+                            .fill(sapid::text().theme(theme.clone()).content("Container")),
+                        sapid::space()
+                            .theme(theme.clone())
+                            .class("responsive-space")
+                            .style(space),
                         sapid::grid("responsive-grid")
+                            .theme(theme.clone())
                             .class("responsive-grid")
                             .columns(2)
                             .style(gaps)
                             .items((0..4).map(|index| {
                                 sapid::grid_item(format!("item{index}"))
-                                    .fill(sapid::text().content(format!("Grid {index}")))
+                                    .theme(theme.clone())
+                                    .fill(
+                                        sapid::text()
+                                            .theme(theme.clone())
+                                            .content(format!("Grid {index}")),
+                                    )
                             })),
                         sapid::simple_grid("responsive-simple")
+                            .theme(theme.clone())
                             .class("responsive-simple")
                             .columns(2)
                             .style(gap2)
                             .items((0..4).map(|index| {
                                 sapid::grid_item(format!("item{index}"))
-                                    .fill(sapid::text().content(format!("Simple {index}")))
+                                    .theme(theme.clone())
+                                    .fill(
+                                        sapid::text()
+                                            .theme(theme.clone())
+                                            .content(format!("Simple {index}")),
+                                    )
                             })),
                     ))
                 }
             });
         sapid::stack()
+            .theme(theme.clone())
             .fill((
-                sapid::group().fill((
+                sapid::group().theme(theme.clone()).fill((
                     sapid::button()
+                        .theme(theme.clone())
                         .label("Narrow container")
                         .on_press(move || width.revise(|value| *value = 500.)),
                     sapid::button()
+                        .theme(theme.clone())
                         .label("Wide container")
                         .on_press(move || width.revise(|value| *value = 1000.)),
                 )),

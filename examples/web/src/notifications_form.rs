@@ -55,9 +55,10 @@ pub fn notifications_form(theme: Theme) -> impl Widget {
             ));
         }
         sapid::stack()
+            .theme(theme.clone())
             .gap(16.)
             .fill((
-                sapid::group().fill(controls),
+                sapid::group().theme(theme.clone()).fill(controls),
                 sapid::text_field()
                     .theme(theme.clone())
                     .name("Outside notification editor")
@@ -70,6 +71,7 @@ pub fn notifications_form(theme: Theme) -> impl Widget {
                     .class("notifications-actions")
                     .content(scope.bond(move || format!("Actions: {}", actions.get()))),
                 sapid::affix("notifications-fixture")
+                    .theme(theme.clone())
                     .style(Style::new().width(Length::Px(320.)))
                     .fill(
                         sapid::toaster("demo")

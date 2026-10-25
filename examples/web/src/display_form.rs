@@ -14,7 +14,7 @@ pub fn display_form(theme: Theme) -> impl Widget {
             .title("Display widgets")
             .description("Passive tags and surfaces; actions remain native controls.")
             .header(
-                sapid::group().fill((
+                sapid::group().theme(theme.clone()).fill((
                     badge().theme(theme.clone()).content("Soft <tag>"),
                     badge()
                         .theme(theme.clone())
@@ -62,7 +62,7 @@ pub fn display_form(theme: Theme) -> impl Widget {
                     .content("Disabled tag")
                     .removable("Remove disabled tag")
                     .enabled(false),
-                sapid::stack().gap(4.0).fill((
+                sapid::stack().theme(theme.clone()).gap(4.0).fill((
                     sapid::number_formatter()
                         .theme(theme.clone())
                         .class("number-us")

@@ -1,7 +1,7 @@
 //! Passive display widgets and a separately named removable Pill action.
 use glory::render::{EventKind, NodeId, Semantics, TextKind};
 use glory::style::{
-    Align, BorderStyle, BoxShadow, Color, Display, Edges, FlexDirection, Length, Shadow, Style,
+    Align, BorderStyle, BoxShadow, Display, Edges, FlexDirection, Length, Shadow, Style,
 };
 use glory::ui::{Children, IntoChildren, Result, Widget};
 use glory::{Cage, Lotus, Scope};
@@ -67,23 +67,18 @@ pub enum ShadowSize {
 }
 impl ShadowSize {
     fn value(self, theme: &crate::Theme) -> BoxShadow {
-        let (y, blur, spread, alpha) = match self {
+        let (y, blur, spread, color) = match self {
             Self::None => return BoxShadow::None,
-            Self::Small => (1.0, 3.0, 0.0, 26),
-            Self::Medium => (4.0, 12.0, -2.0, 31),
-            Self::Large => (8.0, 24.0, -4.0, 35),
-        };
-        let alpha = if theme.scheme == crate::ColorScheme::Dark {
-            alpha * 2
-        } else {
-            alpha
+            Self::Small => (1., 3., 0., theme.shadow_small),
+            Self::Medium => (4., 12., -2., theme.shadow_medium),
+            Self::Large => (8., 24., -4., theme.shadow_large),
         };
         BoxShadow::Outset(Shadow {
             x: 0.0,
             y,
             blur,
             spread,
-            color: Color(0, 0, 0, alpha),
+            color,
         })
     }
 }

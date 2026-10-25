@@ -43,6 +43,7 @@ pub fn loading_overlay_form(theme: Theme) -> impl Widget {
         let inside_theme = theme.clone();
         let global_theme = theme.clone();
         sapid::stack()
+            .theme(theme.clone())
             .gap(20.)
             .fill((
                 loading_overlay(loading)
@@ -52,7 +53,7 @@ pub fn loading_overlay_form(theme: Theme) -> impl Widget {
                     .class("loading-region")
                     .style(Style::new().width(Length::Px(280.)))
                     .fill(
-                        sapid::stack().gap(12.).fill((
+                        sapid::stack().theme(theme.clone()).gap(12.).fill((
                             text_field()
                                 .theme(theme.clone())
                                 .name("Region editor")

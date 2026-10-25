@@ -15,6 +15,7 @@ mod fixture {
             let accept = scope.cage(false);
             let requests = scope.cage(0usize);
             sapid::stack()
+                .theme(theme.clone())
                 .gap(16.)
                 .class("toolbar-fixture")
                 .fill((
@@ -68,7 +69,7 @@ mod fixture {
                                 .button(button().label("Archive selected"))
                                 .button(button().label("Delete selected")),
                         ),
-                    sapid::group().fill((
+                    sapid::group().theme(theme.clone()).fill((
                         button()
                             .theme(theme.clone())
                             .label("Toggle copy enabled")

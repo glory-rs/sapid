@@ -85,34 +85,45 @@ mod fixture {
                             .class("environment-second"),
                     ));
                 let duration = context.transition_duration(250).unwrap();
-                sapid::stack().gap(context.spacing(Size::Medium)).fill((
-                    sapid::title(2)
-                        .theme(theme.clone())
-                        .content("Environment tokens")
-                        .class("environment-heading"),
-                    row,
-                    sapid::text_field()
-                        .theme(theme.clone())
-                        .name("Environment draft")
-                        .default_value("Draft 🙂")
-                        .style(Style::new().width(Length::Px(260.))),
-                    sapid::radio_group("environment-navigation")
-                        .theme(theme)
-                        .label("Explicit RTL navigation")
-                        .default_value("first")
-                        .orientation(Orientation::Horizontal)
-                        .direction(context.direction)
-                        .items([
-                            sapid::radio("first").label("أول"),
-                            sapid::radio("second").label("ثاني"),
-                            sapid::radio("third").label("ثالث"),
-                        ]),
-                    nested,
-                    sapid::collapsible("environment-motion")
-                        .height_transition(duration as u16)
-                        .default_open(true)
-                        .content(|| sapid::text().content("Reduced motion content")),
-                ))
+                sapid::stack()
+                    .theme(theme.clone())
+                    .gap(context.spacing(Size::Medium))
+                    .fill((
+                        sapid::title(2)
+                            .theme(theme.clone())
+                            .content("Environment tokens")
+                            .class("environment-heading"),
+                        row,
+                        sapid::text_field()
+                            .theme(theme.clone())
+                            .name("Environment draft")
+                            .default_value("Draft 🙂")
+                            .style(Style::new().width(Length::Px(260.))),
+                        sapid::radio_group("environment-navigation")
+                            .theme(theme.clone())
+                            .label("Explicit RTL navigation")
+                            .default_value("first")
+                            .orientation(Orientation::Horizontal)
+                            .direction(context.direction)
+                            .items([
+                                sapid::radio("first").label("أول"),
+                                sapid::radio("second").label("ثاني"),
+                                sapid::radio("third").label("ثالث"),
+                            ]),
+                        nested,
+                        sapid::collapsible("environment-motion")
+                            .theme(theme.clone())
+                            .height_transition(duration as u16)
+                            .default_open(true)
+                            .content({
+                                let theme = theme.clone();
+                                move || {
+                                    sapid::text()
+                                        .theme(theme.clone())
+                                        .content("Reduced motion content")
+                                }
+                            }),
+                    ))
             })
     }
 }

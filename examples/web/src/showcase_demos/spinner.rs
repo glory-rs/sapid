@@ -13,9 +13,10 @@ mod fixture {
             let visible = scope.cage(true);
             let animated = scope.cage(true);
             sapid::stack()
+                .theme(theme.clone())
                 .gap(20.)
                 .fill((
-                    sapid::group().gap(24.).fill((
+                    sapid::group().theme(theme.clone()).gap(24.).fill((
                         spinner()
                             .theme(theme.clone())
                             .name("Loading files")

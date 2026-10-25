@@ -1,7 +1,40 @@
 //! Static entry and a small representative hydration matrix for the Rust site.
 use std::{error::Error, fs, path::PathBuf};
-fn document(html: &str, selection: &str, hue: &str, scheme: &str, ssr: bool) -> String {
+fn document(
+    html: &str,
+    selection: &str,
+    hue: &str,
+    scheme: &str,
+    ssr: bool,
+    assets: &str,
+) -> String {
+    let theme = sapid_web_example::themes::select(
+        hue,
+        if scheme == "dark" {
+            sapid::ColorScheme::Dark
+        } else {
+            sapid::ColorScheme::Light
+        },
+    );
     include_str!("../../showcase.html")
+        .replace(
+            "<body>",
+            &format!(
+                "<body style=\"background:{};color:{};color-scheme:{}\">",
+                sapid_web_example::theme_studio::model::hex(theme.canvas),
+                sapid_web_example::theme_studio::model::hex(theme.foreground),
+                theme.scheme.name()
+            ),
+        )
+        .replace(
+            "href=\"sapid.css\"",
+            &format!("href=\"{assets}/sapid.css\""),
+        )
+        .replace("href=\"site.css\"", &format!("href=\"{assets}/site.css\""))
+        .replace(
+            "'./sapid_web_example.js'",
+            &format!("'./{assets}/sapid_web_example.js'"),
+        )
         .replace(
             "<!--BASE_CSS-->",
             &format!(
@@ -48,7 +81,17 @@ fn main() -> Result<(), Box<dyn Error>> {
         return Err("showcase output must be an absolute D-drive directory".into());
     }
     fs::create_dir_all(&directory)?;
-    let csr = document("", "", "blue", "light", false);
+    let assets = std::env::args()
+        .nth(2)
+        .ok_or("expected immutable asset directory")?;
+    if !assets.starts_with("assets-")
+        || !assets
+            .bytes()
+            .all(|b| b.is_ascii_alphanumeric() || b == b'-')
+    {
+        return Err("invalid asset directory".into());
+    }
+    let csr = document("", "", "blue", "light", false, &assets);
     fs::write(directory.join("showcase.html"), &csr)?;
     fs::write(directory.join("index.html"), csr)?;
     // This is a deliberately representative SSR set, not 149 × four renders.
@@ -60,16 +103,23 @@ fn main() -> Result<(), Box<dyn Error>> {
         ("P9-01", "dates"),
         ("P13-01", "chat"),
     ] {
-        for (hue_name, hue) in [("blue", sapid::Hue::Blue), ("green", sapid::Hue::Green)] {
+        for hue_name in ["blue", "green"] {
             for (scheme_name, scheme) in [
                 ("light", sapid::ColorScheme::Light),
                 ("dark", sapid::ColorScheme::Dark),
             ] {
                 let snapshot = glory::ssr::snapshot(sapid_web_example::showcase::site(
-                    sapid::Theme::new(hue, scheme),
+                    sapid_web_example::themes::select(hue_name, scheme),
                     selection.to_owned(),
                 ))?;
-                let html = document(&snapshot.html, selection, hue_name, scheme_name, true);
+                let html = document(
+                    &snapshot.html,
+                    selection,
+                    hue_name,
+                    scheme_name,
+                    true,
+                    &assets,
+                );
                 fs::write(
                     directory.join(format!("ssr-{name}-{hue_name}-{scheme_name}.html")),
                     html,

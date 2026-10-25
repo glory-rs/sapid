@@ -39,6 +39,7 @@ mod fixture {
             let weak_clear = scope.downgrade();
             let weak_drop = scope.downgrade();
             sapid::stack()
+                .theme(theme.clone())
                 .gap(12.)
                 .fill((
                     glory::ui::group().fill((

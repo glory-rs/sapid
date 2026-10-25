@@ -86,6 +86,7 @@ mod fixture {
                     .theme(theme.clone())
                     .content("TimeInput / TimeValue"),
                 sapid::form("time-form")
+                    .theme(theme.clone())
                     .on_submit(move |_| {
                         submits.revise(|n| *n += 1);
                         submitted.revise(|s| {
@@ -135,7 +136,7 @@ mod fixture {
                     .class("time-unstyled")
                     .default_value(Some(t("10:00"))),
                 text_field()
-                    .theme(theme)
+                    .theme(theme.clone())
                     .name("Unrelated time draft")
                     .class("time-draft")
                     .default_value("Stable time draft"),

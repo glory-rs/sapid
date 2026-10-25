@@ -7,10 +7,11 @@ pub fn button_form(theme: sapid::Theme) -> impl Widget {
         let typed = order;
         let generic = order;
         sapid::stack()
+            .theme(theme.clone())
             .class("button-enhancements-fixture")
             .gap(14.0)
             .fill((
-                sapid::group().fill((
+                sapid::group().theme(theme.clone()).fill((
                     sapid::button()
                         .theme(theme.clone())
                         .size(sapid::Size::ExtraSmall)

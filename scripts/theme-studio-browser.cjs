@@ -1,0 +1,82 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const assert = require('node:assert/strict');
+process.env.TEMP = process.env.TMP = 'D:/BuildCache/sapid/tmp';
+const {chromium} = require(process.env.SAPID_PLAYWRIGHT || 'D:/Works/glory-rs/glory/tests/playwright/node_modules/playwright');
+const base=process.env.SAPID_SHOWCASE_BASE || 'http://127.0.0.1:8795';
+(async()=>{
+ let browser;const report={checks:[],errors:[]};
+ const ok=name=>{report.checks.push(name);console.log(name)};
+ try {
+  browser=await chromium.launch({headless:true});
+  const context=await browser.newContext({permissions:['clipboard-read','clipboard-write'],viewport:{width:1440,height:1000}});
+  const page=await context.newPage();page.on('pageerror',e=>report.errors.push(String(e)));
+  const go=async url=>{await page.goto(base+url);await page.waitForFunction(()=>{if(!window.ready)return false;if(!location.pathname.endsWith('showcase.html'))return true;const q=new URLSearchParams(location.search),h=document.documentElement;return h.getAttribute('data-sapid-widget')===(q.get('widget')||'')&&h.getAttribute('data-sapid-palette')===(q.get('theme')||'blue')&&h.getAttribute('data-sapid-scheme')===(q.get('scheme')||'light')})};
+  const input=name=>page.getByRole('textbox',{name,exact:true});
+  const button=name=>page.getByRole('button',{name,exact:true});
+  const until=async(fn,message)=>{const end=Date.now()+5000;while(Date.now()<end){if(await fn())return;await page.waitForTimeout(25)}throw new Error(message)};
+  const value=async(name,expected)=>until(async()=>await input(name).inputValue()===expected,`${name} should become ${expected}`);
+  const disabled=async(locator,expected)=>until(async()=>await locator.isDisabled()===expected,'disabled state did not settle');
+  const fill=async(name,v)=>{await input(name).fill(v);await page.waitForTimeout(75)};
+  await go('/showcase.html?widget=P3-04&theme=green&scheme=dark');
+  const surfaces=await page.evaluate(()=>['html','body','.sapid-site','.site-header','.site-sidebar'].map(s=>{let e=document.querySelector(s),paint=e;while(paint.parentElement&&getComputedStyle(paint).backgroundColor==='rgba(0, 0, 0, 0)')paint=paint.parentElement;return {selector:s,bg:getComputedStyle(paint).backgroundColor,color:getComputedStyle(e).color}}));
+  for(const s of surfaces){assert.equal(s.bg,'rgb(20, 21, 23)',JSON.stringify(s));assert.equal(s.color,'rgb(222, 226, 230)',JSON.stringify(s))}
+  const cssFiles=await page.locator('link[rel=stylesheet]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href')));
+  assert(cssFiles.every(h=>/^assets-[a-f0-9]{20}\//.test(h)));ok('Dark chrome, body and immutable asset set');
+  await go('/showcase.html?widget=theme-studio&theme=green&scheme=dark');
+  await input('Theme name').waitFor();await fill('Theme name','Violet dusk');
+  const oldCanvas=await input('Base canvas').inputValue();
+  await fill('Seed color','#7c3aed');await button('Generate accent colors').click();
+  await value('Base shade 6','#7c3aedff');await value('Base canvas',oldCanvas);ok('Oklab generation preserves seed and neutral roles');
+  await fill('Base canvas','#1');await disabled(button('Save & preview'),true);await disabled(button('Copy Rust definition'),true);
+  await fill('Base canvas','#faf7ffff');await disabled(button('Save & preview'),false);ok('Incomplete exact hex never saves an invalid draft');
+  await button('Preview light').click();await input('Preview name').fill('Retained sample');await button('Preview action').click();
+  await fill('Base muted','#675879ff');await value('Preview name','Retained sample');assert(await page.getByText('Clicked 1 times',{exact:true}).count());ok('Live actual widgets retain sample state while theme changes');
+  await button('Edit Dark colors').click();await fill('Dark canvas','#171322ff');await fill('Dark foreground','#f2edfaff');
+  await fill('Dark backdrop','#281c4066');
+  const override=page.getByRole('checkbox',{name:'Override Dark warning',exact:true});
+  await override.uncheck();await disabled(input('Dark warning'),true);
+  await override.check();await fill('Dark warning','#fedc98ff');
+  await button('Preview dark').click();
+  await page.waitForFunction(()=>getComputedStyle(document.querySelector('.studio-demo')).backgroundColor==='rgb(23, 19, 34)');
+  await value('Preview name','Retained sample');ok('Sparse dark overrides and inheritance reset resolve correctly');
+  await page.screenshot({path:'D:/BuildCache/sapid/theme-studio-dark.png',fullPage:true});
+  await button('Copy Rust definition').click();await page.waitForTimeout(120);
+  let source=await page.evaluate(()=>navigator.clipboard.readText());assert(source.includes('pub const VIOLET_DUSK: ThemeDefinition'));assert(source.includes('canvas: Some(Color(23, 19, 34, 255))'));
+  fs.writeFileSync('D:/BuildCache/sapid/studio-export.rs',source);ok('Copy exports complete Rust definition');
+  await button('Save & preview').click();await page.waitForURL(/widget=P0-01&theme=custom-1&scheme=dark/);await page.waitForFunction(()=>{if(!window.ready)return false;if(!location.pathname.endsWith('showcase.html'))return true;const q=new URLSearchParams(location.search),h=document.documentElement;return h.getAttribute('data-sapid-widget')===(q.get('widget')||'')&&h.getAttribute('data-sapid-palette')===(q.get('theme')||'blue')&&h.getAttribute('data-sapid-scheme')===(q.get('scheme')||'light')});
+  assert.equal(await page.locator('.site-palette[aria-current=location]').getAttribute('aria-label'),'Use Violet dusk palette');
+  assert.equal(await page.locator('.site-header').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(23, 19, 34)');
+  assert.equal(await page.locator('body').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(23, 19, 34)');
+  await button('Copy theme code').click();await page.waitForTimeout(100);source=await page.evaluate(()=>navigator.clipboard.readText());assert(source.includes('"custom-1"'));
+  fs.writeFileSync('D:/BuildCache/sapid/studio-export.rs',source);ok('Save adds selected custom header swatch, full-page preview and copy action');
+  await go('/showcase.html?widget=P0-07&theme=custom-1&scheme=dark');
+  await button('Open modal').click();
+  const dialog=page.getByRole('dialog',{name:'Edit your profile'});await dialog.waitFor();
+  await until(async()=>await dialog.evaluate(e=>getComputedStyle(e,'::backdrop').backgroundColor)==='rgba(40, 28, 64, 0.4)','custom backdrop color');
+  await page.keyboard.press('Escape');ok('Modal backdrop reads the selected palette override');
+  await go('/showcase.html?widget=P0-01&theme=custom-1&scheme=dark');
+  await page.reload();await page.waitForFunction(()=>{if(!window.ready)return false;if(!location.pathname.endsWith('showcase.html'))return true;const q=new URLSearchParams(location.search),h=document.documentElement;return h.getAttribute('data-sapid-widget')===(q.get('widget')||'')&&h.getAttribute('data-sapid-palette')===(q.get('theme')||'blue')&&h.getAttribute('data-sapid-scheme')===(q.get('scheme')||'light')});assert(await page.getByRole('link',{name:'Use Violet dusk palette'}).count());
+  await page.getByRole('link',{name:'Edit theme',exact:true}).click();await page.waitForFunction(()=>{if(!window.ready)return false;if(!location.pathname.endsWith('showcase.html'))return true;const q=new URLSearchParams(location.search),h=document.documentElement;return h.getAttribute('data-sapid-widget')===(q.get('widget')||'')&&h.getAttribute('data-sapid-palette')===(q.get('theme')||'blue')&&h.getAttribute('data-sapid-scheme')===(q.get('scheme')||'light')});
+  await value('Theme name','Violet dusk');await button('Edit Dark colors').click();await value('Dark canvas','#171322ff');ok('Saved record survives reload and reopens for editing');
+  await page.getByRole('checkbox',{name:'Support dark mode',exact:true}).uncheck();
+  await disabled(button('Preview dark'),true);await disabled(input('Dark canvas'),true);
+  await button('Save & preview').click();await page.waitForURL(/theme=custom-1&scheme=light/);await page.waitForFunction(()=>{if(!window.ready)return false;if(!location.pathname.endsWith('showcase.html'))return true;const q=new URLSearchParams(location.search),h=document.documentElement;return h.getAttribute('data-sapid-widget')===(q.get('widget')||'')&&h.getAttribute('data-sapid-palette')===(q.get('theme')||'blue')&&h.getAttribute('data-sapid-scheme')===(q.get('scheme')||'light')});
+  assert(await button('Alternate mode is not supported').isDisabled());ok('Unsupported mode is explicit and disabled in site toggle');
+  await go('/ssr-button-blue-dark.html');assert(await page.getByRole('link',{name:'Use Violet dusk palette'}).count());ok('Saved catalog attaches after SSR adoption');
+  await go('/showcase.html?widget=theme-studio&theme=custom-1&scheme=light');
+  for(const width of [320,360,390]){
+   await page.setViewportSize({width,height:900});
+   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`overflow ${width}`);
+   const swatch=page.getByRole('link',{name:'Use Violet dusk palette'});assert(await swatch.isVisible());
+   const box=await swatch.boundingBox();assert(box.x>=0&&box.x+box.width<=width,`selected palette ${width}`);
+  }
+  await page.screenshot({path:'D:/BuildCache/sapid/theme-studio-mobile.png',fullPage:true});ok('320/360/390px mobile workbench and selected swatch fit');
+  await button('Remove saved preview').click();await page.waitForURL(/widget=theme-studio&theme=blue&scheme=light/);await page.waitForFunction(()=>{if(!window.ready)return false;if(!location.pathname.endsWith('showcase.html'))return true;const q=new URLSearchParams(location.search),h=document.documentElement;return h.getAttribute('data-sapid-widget')===(q.get('widget')||'')&&h.getAttribute('data-sapid-palette')===(q.get('theme')||'blue')&&h.getAttribute('data-sapid-scheme')===(q.get('scheme')||'light')});
+  assert.equal(await page.getByRole('link',{name:'Use Violet dusk palette'}).count(),0);ok('Remove reclaims a saved slot');
+  await page.evaluate(()=>localStorage.setItem('sapid.theme-studio.v1','broken'));
+  await go('/showcase.html?widget=theme-studio');assert(await page.getByText(/Stored data was kept/).count());
+  assert.equal(await page.evaluate(()=>localStorage.getItem('sapid.theme-studio.v1')),'broken');ok('Malformed local data is reported and preserved');
+ }catch(error){report.errors.push(error.stack||String(error))}
+ finally{if(browser)await browser.close();fs.writeFileSync('D:/BuildCache/sapid/theme-studio-browser.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));if(report.errors.length)process.exitCode=1}
+})();

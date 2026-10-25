@@ -97,6 +97,7 @@ mod fixture {
         });
         (
             sapid::form("mask-demo")
+                .theme(theme.clone())
                 .on_submit(move |_| submits.revise(|n| *n += 1))
                 .fill(
                     glory::ui::view().class("mask-input-demo").fill((
@@ -127,7 +128,7 @@ mod fixture {
                             .default_value("0012")
                             .enabled(false),
                         mask_input(MaskPattern::parse("##-##").unwrap())
-                            .theme(theme)
+                            .theme(theme.clone())
                             .name("Plain masked reference")
                             .class("plain-mask")
                             .default_value("0012")

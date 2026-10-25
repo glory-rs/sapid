@@ -8,7 +8,7 @@ pub fn json_tree_example(theme: sapid::Theme) -> impl Widget {
         let paths = scope.cage(vec![String::new()]);
         let accept = scope.cage(true);
         let proposals = scope.cage(0usize);
-        sapid::stack().gap(10.).fill((
+        sapid::stack().theme(theme.clone()).gap(10.).fill((
    sapid::text_field().theme(theme.clone()).name("Search JSON tree").value(query).on_value_change(move|value|query.revise(|v|*v=value)),
    sapid::json_viewer("code-tree").theme(theme.clone()).class("json-tree-demo").tree_navigation(true).source(source).search(query).expanded(paths).copy_button(sapid::copy_button().theme(theme.clone()).class("tree-json-copy").label("Copy JSON tree source")).on_expanded_change(move|next|{proposals.revise(|n|*n+=1);if accept.get(){paths.revise(|v|*v=next)}}),
    sapid::button().theme(theme.clone()).label("Toggle JSON tree acceptance").on_press(move||accept.revise(|v|*v = !*v)),

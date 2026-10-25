@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" color="#0077B6" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
+  <title>Sapid — ocean blue stingray</title>
+  <desc>A wide, shallow heart-inspired wing is reflected about x=132, with an open interior and one long, left-sweeping tail.</desc>
+  <defs>
+    <path id="sapid-heart-half" d="M132 78C111 62 86 56 62 58C41 59 25 81 25 90C25 102 55 102 81 111C110 121 132 140 132 160"/>
+  </defs>
+  <!-- One authored half; the other half is its exact horizontal reflection. -->
+  <use href="#sapid-heart-half"/>
+  <use href="#sapid-heart-half" transform="translate(264 0) scale(-1 1)"/>
+  <path id="sapid-tail" d="M123 150V160C123 189 98 212 48 225C112 232 141 198 141 160V150Z" fill="currentColor" stroke="none"/>
+</svg>

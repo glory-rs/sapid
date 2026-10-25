@@ -28,10 +28,14 @@ pub fn document_form(theme: Theme) -> impl Widget {
                     .ordered(true)
                     .name("Document steps")
                     .item(text_list_item().fill(text().content("First step")))
-                    .item(text_list_item().fill((
-                        text().content("Second step"),
-                        text_list().item(text_list_item().fill(text().content("Nested step"))),
-                    ))),
+                    .item(
+                        text_list_item().fill((
+                            text().content("Second step"),
+                            text_list()
+                                .theme(theme.clone())
+                                .item(text_list_item().fill(text().content("Nested step"))),
+                        )),
+                    ),
                 blockquote()
                     .theme(theme.clone())
                     .fill(text().content("A quotation <&>"))

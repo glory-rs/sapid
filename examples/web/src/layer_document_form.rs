@@ -93,12 +93,8 @@ mod browser {
         let document = web_sys::window()
             .and_then(|window| window.document())
             .ok_or_else(|| js("missing document"))?;
-        let theme = Theme::new(
-            if hue == "green" {
-                sapid::Hue::Green
-            } else {
-                sapid::Hue::Blue
-            },
+        let theme = crate::themes::select(
+            if hue == "green" { "green" } else { "blue" },
             if scheme == "dark" {
                 sapid::ColorScheme::Dark
             } else {

@@ -88,6 +88,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .theme(theme.clone())
                 .content("TimePicker / TimeGrid"),
             sapid::form("appointment-form")
+                .theme(theme.clone())
                 .on_submit(move |_| {
                     submits.revise(|n| *n += 1);
                     submitted.revise(|s| {
@@ -146,7 +147,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .spec(spec)
                 .direction(glory::render::Direction::Rtl),
             text_field()
-                .theme(theme)
+                .theme(theme.clone())
                 .name("Unrelated segmented draft")
                 .class("time-picker-draft")
                 .default_value("Stable segmented draft"),
@@ -181,12 +182,8 @@ mod browser {
             .and_then(|w| w.document())
             .and_then(|d| d.get_element_by_id("app"))
             .ok_or_else(|| js("missing segmented time root"))?;
-        let theme = Theme::new(
-            if hue == "green" {
-                Hue::Green
-            } else {
-                Hue::Blue
-            },
+        let theme = crate::themes::select(
+            if hue == "green" { "green" } else { "blue" },
             if scheme == "dark" {
                 ColorScheme::Dark
             } else {

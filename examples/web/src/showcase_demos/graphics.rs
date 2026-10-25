@@ -18,9 +18,11 @@ mod fixture {
             let icon = scope.cage(Icon::Check);
             let name = scope.cage("Completed".to_string());
             sapid::stack()
+                .theme(theme.clone())
                 .gap(24.0)
                 .fill((
                     sapid::group()
+                        .theme(theme.clone())
                         .gap(20.0)
                         .style(Style::new().padding(Edges::all(16.0)))
                         .fill((
@@ -42,7 +44,7 @@ mod fixture {
                                 .class("graphics-indicator-unstyled")
                                 .fill(glory::ui::text().content("Unstyled marker")),
                         )),
-                    sapid::group().gap(12.0).fill((
+                    sapid::group().theme(theme.clone()).gap(12.0).fill((
                         theme_icon(icon)
                             .name(name)
                             .theme(theme.clone())

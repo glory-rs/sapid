@@ -214,6 +214,10 @@ impl Widget for SuggestionGroup {
         let callback = Callback::new(self.choose.take());
         let mut group = crate::toolbar_group("suggestions");
         for mut item in self.items.drain(..) {
+            // Toolbar owns group appearance; apply it before producing nested classes too.
+            item.common.theme = self.common.theme.clone();
+            item.common.size = self.common.size;
+            item.common.unstyled |= self.common.unstyled;
             group = group.button(item.button(scope, Some(callback.clone()))?);
         }
         let (class, style) =

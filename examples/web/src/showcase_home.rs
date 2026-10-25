@@ -18,14 +18,8 @@ fn heading(level: u8, class: &str, content: &str) -> impl Widget {
 }
 
 fn destination(theme: &Theme, id: &str) -> String {
-    let hue = match theme.hue {
-        sapid::Hue::Blue => "blue",
-        sapid::Hue::Green => "green",
-    };
-    let scheme = match theme.scheme {
-        sapid::ColorScheme::Light => "light",
-        sapid::ColorScheme::Dark => "dark",
-    };
+    let hue = &theme.name;
+    let scheme = theme.scheme.name();
     format!("showcase.html?widget={id}&theme={hue}&scheme={scheme}")
 }
 
@@ -33,6 +27,7 @@ fn link(theme: &Theme, id: &str, label: &str, class: &str) -> impl Widget {
     sapid::anchor()
         .unstyled()
         .href(destination(theme, id))
+        .on_navigate(crate::showcase_host::request)
         .label(label.to_owned())
         .class(class.to_owned())
 }

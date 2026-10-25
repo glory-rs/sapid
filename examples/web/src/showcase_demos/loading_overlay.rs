@@ -51,6 +51,7 @@ mod fixture {
             let inside_theme = theme.clone();
             let global_theme = theme.clone();
             sapid::stack()
+                .theme(theme.clone())
                 .gap(20.)
                 .fill((
                     loading_overlay(loading)
@@ -60,7 +61,7 @@ mod fixture {
                         .class("loading-region")
                         .style(Style::new().width(Length::Px(280.)))
                         .fill(
-                            sapid::stack().gap(12.).fill((
+                            sapid::stack().theme(theme.clone()).gap(12.).fill((
                                 text_field()
                                     .theme(theme.clone())
                                     .name("Region editor")

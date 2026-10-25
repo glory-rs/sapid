@@ -14,6 +14,7 @@ mod fixture {
             let unknown = scope.cage(false);
             let text = scope.cage("Quarter complete".to_string());
             sapid::stack()
+                .theme(theme.clone())
                 .gap(20.0)
                 .fill((
                     progress(value)
@@ -24,7 +25,7 @@ mod fixture {
                         .size(240.)
                         .thickness(12.)
                         .class("progress-linear"),
-                    sapid::group().gap(24.0).fill((
+                    sapid::group().theme(theme.clone()).gap(24.0).fill((
                         ring_progress(value)
                             .theme(theme.clone())
                             .name("Circular upload")

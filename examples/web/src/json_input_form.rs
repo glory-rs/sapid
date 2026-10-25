@@ -102,12 +102,8 @@ mod browser {
             .and_then(|window| window.document())
             .and_then(|document| document.get_element_by_id("app"))
             .ok_or_else(|| js("missing JSON root"))?;
-        let theme = Theme::new(
-            if hue == "green" {
-                sapid::Hue::Green
-            } else {
-                sapid::Hue::Blue
-            },
+        let theme = crate::themes::select(
+            if hue == "green" { "green" } else { "blue" },
             if scheme == "dark" {
                 sapid::ColorScheme::Dark
             } else {

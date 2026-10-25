@@ -91,8 +91,14 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .theme(theme.clone())
                 .content("DatePicker / DatePickerInput"),
             sapid::form("appointment-form")
+                .theme(theme.clone())
                 .on_submit(move |_| submits.revise(|n| *n += 1))
-                .fill((primary, submit_button().label("Save appointment"))),
+                .fill((
+                    primary,
+                    submit_button()
+                        .theme(theme.clone())
+                        .label("Save appointment"),
+                )),
             sapid::text()
                 .theme(theme.clone())
                 .class("date-picker-status")
@@ -158,12 +164,8 @@ mod browser {
             .and_then(|w| w.document())
             .and_then(|d| d.get_element_by_id("app"))
             .ok_or_else(|| js("missing calendar root"))?;
-        let theme = Theme::new(
-            if hue == "green" {
-                Hue::Green
-            } else {
-                Hue::Blue
-            },
+        let theme = crate::themes::select(
+            if hue == "green" { "green" } else { "blue" },
             if scheme == "dark" {
                 ColorScheme::Dark
             } else {

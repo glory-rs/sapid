@@ -81,6 +81,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .theme(theme.clone())
                 .content("MonthPicker / YearPicker"),
             sapid::form("period-form")
+                .theme(theme.clone())
                 .on_submit(move |_| submits.revise(|n| *n += 1))
                 .fill((
                     primary,
@@ -101,7 +102,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                                 y.revise(|old| *old = v)
                             }
                         }),
-                    submit_button().label("Save periods"),
+                    submit_button().theme(theme.clone()).label("Save periods"),
                 )),
             sapid::text()
                 .theme(theme.clone())
@@ -137,7 +138,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .theme(theme.clone())
                 .class("year-min"),
             text_field()
-                .theme(theme)
+                .theme(theme.clone())
                 .name("Unrelated period draft")
                 .class("period-draft")
                 .default_value("Stable period draft"),
@@ -175,12 +176,8 @@ mod browser {
             .and_then(|w| w.document())
             .and_then(|d| d.get_element_by_id("app"))
             .ok_or_else(|| js("missing period root"))?;
-        let theme = Theme::new(
-            if hue == "green" {
-                Hue::Green
-            } else {
-                Hue::Blue
-            },
+        let theme = crate::themes::select(
+            if hue == "green" { "green" } else { "blue" },
             if scheme == "dark" {
                 ColorScheme::Dark
             } else {

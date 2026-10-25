@@ -74,7 +74,7 @@ pub fn sheet_form(theme: Theme) -> impl Widget {
                     .class(format!("sheet-{name}")).open(open).snap_index(snap).snap_config(options).content_policy(ContentPolicy::KeepMounted)
                     .on_snap_change(move|index|{proposals.revise(|n|*n+=1);if accept.get(){snap.revise(|v|*v=index)}})
                     .on_open_change(move|next|{if next||accept_close.get(){open.revise(|v|*v=next)}})
-                    .content(move||sapid::stack().gap(8.0).fill((
+                    .content(move||sapid::stack().theme(content_theme.clone()).gap(8.0).fill((
                         text_field().theme(content_theme.clone()).name(format!("{name} sheet editor")).value(value).on_value_change(move|next|value.revise(|v|*v=next)),
                         button().theme(content_theme.clone()).label("Toggle snap acceptance").on_press(move||accept.revise(|v|*v = !*v)),
                         button().theme(content_theme.clone()).label("Toggle close acceptance").on_press(move||accept_close.revise(|v|*v = !*v)),

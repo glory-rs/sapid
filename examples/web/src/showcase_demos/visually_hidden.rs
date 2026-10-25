@@ -13,6 +13,7 @@ mod fixture {
             let detail = scope.cage("Changes are stored in this workspace.".to_string());
             let id = SemanticId::new("hidden-detail").unwrap();
             sapid::stack()
+                .theme(theme.clone())
                 .class("hidden-fixture")
                 .gap(14.0)
                 .fill((

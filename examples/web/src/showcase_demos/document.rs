@@ -42,6 +42,7 @@ mod fixture {
                             text_list_item().fill((
                                 text().content("Second step"),
                                 text_list()
+                                    .theme(theme.clone())
                                     .item(text_list_item().fill(text().content("Nested step"))),
                             )),
                         ),

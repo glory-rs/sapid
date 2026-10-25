@@ -94,7 +94,7 @@ mod fixture {
                             .on_commit(move |_| commits.revise(|count| *count += 1))
                     }),
                 field("many-countries")
-                    .theme(theme)
+                    .theme(theme.clone())
                     .label("Countries")
                     .description("Search, choose several, or remove a tag.")
                     .required(true)
@@ -169,11 +169,14 @@ mod fixture {
                         submitted.get()
                     )
                 })),
-                sapid::submit_button().label("Submit choices"),
+                sapid::submit_button()
+                    .theme(theme.clone())
+                    .label("Submit choices"),
                 button().label("After choices"),
             ));
         (
             sapid::form("choice-extras")
+                .theme(theme.clone())
                 .on_submit(move |_| {
                     model
                         .submit(move |token| {

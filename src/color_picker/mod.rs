@@ -353,6 +353,7 @@ impl Widget for ColorPicker {
             }
         }
         let read = state.clone();
+        let marker_border = self.common.theme.control_thumb;
         glory::ui::view()
             .class("sapid-color-plane-indicator")
             .style(scope.bond(move || {
@@ -377,7 +378,7 @@ impl Widget for ColorPicker {
                     .radius(5.)
                     .border_width(glory::style::Edges::all(2.))
                     .border_style(glory::style::BorderStyle::Solid)
-                    .border_color(Color(255, 255, 255, 255))
+                    .border_color(marker_border)
                     .pointer_events(PointerEvents::None)
             }))
             .show_in(&plane)?;

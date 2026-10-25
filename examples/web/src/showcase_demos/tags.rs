@@ -94,7 +94,7 @@ mod fixture {
                             })
                     }),
                 sapid::field("labels")
-                    .theme(theme)
+                    .theme(theme.clone())
                     .label("Labels")
                     .description("Pill values may repeat; each is submitted separately.")
                     .form_name("labels")
@@ -117,11 +117,14 @@ mod fixture {
                     )
                 })),
                 text().content(rejection),
-                sapid::submit_button().label("Submit tags"),
+                sapid::submit_button()
+                    .theme(theme.clone())
+                    .label("Submit tags"),
                 button().label("After tags"),
             ));
         (
             sapid::form("free-tags")
+                .theme(theme.clone())
                 .on_submit(move |_| {
                     model
                         .submit(move |token| {

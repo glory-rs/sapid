@@ -42,7 +42,7 @@ mod fixture {
             .fill((
                 button().label("Before combobox"),
                 field("editable-country")
-                    .theme(theme)
+                    .theme(theme.clone())
                     .label("Country")
                     .description("Type a country, then choose a suggestion.")
                     .required(true)
@@ -94,11 +94,14 @@ mod fixture {
                         submitted.get()
                     )
                 })),
-                sapid::submit_button().label("Submit country"),
+                sapid::submit_button()
+                    .theme(theme.clone())
+                    .label("Submit country"),
                 button().label("After combobox"),
             ));
         (
             sapid::form("combobox-form")
+                .theme(theme.clone())
                 .on_submit(move |_| submitted.revise(|value| *value += 1))
                 .fill(content),
             State {

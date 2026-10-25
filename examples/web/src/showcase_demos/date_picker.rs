@@ -99,8 +99,14 @@ mod fixture {
                     .theme(theme.clone())
                     .content("DatePicker / DatePickerInput"),
                 sapid::form("appointment-form")
+                    .theme(theme.clone())
                     .on_submit(move |_| submits.revise(|n| *n += 1))
-                    .fill((primary, submit_button().label("Save appointment"))),
+                    .fill((
+                        primary,
+                        submit_button()
+                            .theme(theme.clone())
+                            .label("Save appointment"),
+                    )),
                 sapid::text()
                     .theme(theme.clone())
                     .class("date-picker-status")

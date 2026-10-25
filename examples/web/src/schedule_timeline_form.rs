@@ -180,12 +180,8 @@ mod browser {
             .and_then(|w| w.document())
             .and_then(|d| d.get_element_by_id("app"))
             .ok_or_else(|| js("missing timeline root"))?;
-        let theme = Theme::new(
-            if hue == "green" {
-                Hue::Green
-            } else {
-                Hue::Blue
-            },
+        let theme = crate::themes::select(
+            if hue == "green" { "green" } else { "blue" },
             if scheme == "dark" {
                 ColorScheme::Dark
             } else {

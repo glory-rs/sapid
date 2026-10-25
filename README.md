@@ -574,3 +574,57 @@ universal animation behavior is inferred from catalogue completion. Browser
 protocol tests do not establish actual OS IME or screen-reader acceptance. The native tests use the
 Glory document/shell and AccessKit consumer without claiming displayed windows,
 new Windows UIA client acceptance, or screen-reader speech for Sapid.
+
+
+### Theme definitions
+
+`BLUE` and `GREEN` are `ThemeDefinition` values, each with complete base colors
+and optional independent `PaletteOverrides` for light/dark modes. No colors are
+created or substituted by `Theme::new`.
+
+```rust
+use sapid::{BLUE, ColorScheme, PaletteOverrides, Theme, ThemeDefinition};
+use glory::style::Color;
+
+let brand = ThemeDefinition::new("brand", BLUE.base).with_dark(PaletteOverrides {
+    canvas: Some(Color(12, 14, 18, 255)),
+    foreground: Some(Color(240, 241, 242, 255)),
+    ..PaletteOverrides::NONE
+});
+let (scheme, colors) = brand.default(); // Light and the complete base palette
+assert_eq!(scheme, ColorScheme::Light);
+assert_eq!(brand.light(), Some(colors)); // no light override is necessary
+let dark_colors = brand.dark().expect("dark is supported");
+assert_eq!(dark_colors.surface, colors.surface); // omitted fields inherit base
+let theme = Theme::new(&brand, ColorScheme::Dark).unwrap();
+assert_eq!(theme.canvas, dark_colors.canvas);
+```
+
+The default mode is always available, even when its override is absent. A
+non-default mode is supported only when its override is `Some`; an empty
+`PaletteOverrides` explicitly supports that mode using the unchanged base.
+`with_default_scheme(ColorScheme::Dark)` can make the base a dark-only theme.
+`definition.light()`/`.dark()` return `Option<Palette>`; unsupported modes return
+`None`. `definition.default()` returns `(ColorScheme, Palette)` with the default
+mode's overrides applied. Resolving one mode never changes the base or the other
+mode. `Theme::new(&definition, scheme)` rejects unsupported modes;
+`Theme::from_default(&definition)` uses the definition's default mode.
+
+Theme names are 1–64 ASCII lowercase letters, digits or hyphens, starting with a
+letter. Use distinct names for distinct CSS themes. All colors, including canvas,
+surface, text, borders, disabled/danger states and focus colors, belong to the
+base palette and its overrides. No neutral colors are implicit in the resolver.
+
+Widget colors use typed styles. For Web/native CSS states, install the resolved
+theme's `stylesheet()?` alongside `styles/sapid.css` in the outer host; widgets
+never inject CSS. `cargo run --example palette_css` regenerates the shipped
+rules; `-- --check` verifies them. Palette selection remains mount-time configuration.
+
+
+The [Theme Studio](http://127.0.0.1:8795/showcase.html?widget=theme-studio) generates
+and edits complete palettes, including per-index shades/series and independent
+light/dark overrides. Save local previews to try them across the showcase, copy
+compilable Rust definitions, or reopen a saved theme for editing. The palette
+contains 34 semantic color roles, ten shades and eight series colors; optional
+array overrides use `[Option<Color>; 10]` / `[Option<Color>; 8]`. See
+[theme definitions and audit](docs/theme-definitions.md#theme-studio-and-color-audit).

@@ -35,7 +35,7 @@ pub fn message_scroller_form_with_controller(
                 });
                 sapid::message(message_key.as_str(),body).theme(theme.clone()).show_in(scope)
             })
-        }).height(320.).estimate(100.).revision(revision)
+        }).theme(theme.clone()).height(320.).estimate(100.).revision(revision)
         .on_ready(move |handle| {
             if let Some(external)=external {external.revise(|value|*value=Some(handle.clone()));}
             current.revise(|value|*value=Some(handle));

@@ -10,6 +10,67 @@
 挂载容器和 WASM 启动；没有 React、iframe 或 JavaScript UI 模板。
 链接导航会加载对应页面；主题通过 URL 保留当前widget并重新挂载。
 
+## 站点标识
+
+顶栏与浏览器 favicon 使用同一海蓝色魟鱼标识，颜色固定为 `#0077B6`，不随页面配色切换。
+矢量文件为 `examples/web/assets/sapid-logo.svg`，与设计目录的 `sapid-stingray.svg` 保持一致。
+SVG 宽高均为 256；顶栏桌面显示 36 × 36，手机显示 32 × 32，保持正方形比例。
+图形由共享的浅心形宽翼、镜像复用与向左回弯的尾巴组成；内部完整留白，无中间竖线。
+顶栏使用语义 Image，旁边的 Sapid 首页链接提供文字名称，图形本身作为装饰图片。
+
+## 主题定义、基础色与模式覆盖
+
+内置 `BLUE` 和 `GREEN` 是两个 `ThemeDefinition`，各自支持 Light/Dark，展示站仍提供
+四种组合。完整的基础 `Palette` 包含所有颜色；可选 `PaletteOverrides` 只覆盖指定字段。
+颜色常量全部位于 `src/theme/presets.rs`，`Theme::new` 不生成或替换任何模式颜色。
+
+- `BLUE.default()` 返回 `(ColorScheme, Palette)`，默认模式为 Light。
+- `BLUE.light()` / `BLUE.dark()` 返回 `Option<Palette>`；不支持的模式为 None。
+- 默认模式不需要声明覆盖；非默认模式用 Some 声明支持，可以是空覆盖。
+- `Theme::new(&BLUE, ColorScheme::Dark)?` 创建 widget 使用的已解析主题；不支持的模式返回错误。
+
+详见 [主题定义](theme-definitions.md)。默认 CSS 使用同一解析结果，通过
+`cargo run --example palette_css` 生成，widget 不自行注入 CSS。网站的背景、文字、边框、
+强调色、焦点与 hover 也读取解析后的数据，不另设暗色颜色常量。
+
+展示站的 Blue/Green 选择属于应用配置（`examples/web/src/themes.rs`），配色与明暗切换
+互相保留当前选择和指南。此前单独四个 Palette 常量的设计已经替换；下方旧验收记录
+中的哈希只描述对应历史产物，通用报告/截图路径会由最新运行更新。
+
+最新主题定义验收：完整库门禁、原生编译、展示站 host/wasm32 构建与严格 Clippy、
+182 条浏览器报告全部通过，零错误。包含四种组合的实际背景/文字颜色检查和 SSR 接管。
+日志与当前资产哈希见 [主题定义验收记录](theme-definitions.md#2026-10-25-theme-studio-verification)。
+
+## Theme Studio 调色与本地预览
+
+顶栏 Theme studio 打开 Rust 调色页面，也可直接访问
+[调色页面](http://127.0.0.1:8795/showcase.html?widget=theme-studio&theme=green&scheme=dark)。
+提供种子色生成、逐项 RGBA/颜色选择器编辑、Base / Light / Dark 独立覆盖、继承重置、
+模式支持与默认模式设置、实际 Sapid widget 预览和对比度参考。
+
+保存最多 8 个本地预览后，会加入右上角配色选项。选中时顶部显示复制主题代码、
+继续编辑的操作；编辑页可删除预览。数据只保存在当前浏览器，不会上传。
+复制内容为完整的可编译 Rust ThemeDefinition，包含所有基础值和稀疏模式覆盖。
+
+这轮审计补齐状态色、高亮、阴影、图表序列、棋盘格及颜色标记的 Palette 字段，
+并修复展示示例布局容器未传入当前主题的问题。整页宿主背景与组件共用解析后的颜色。
+构建发布使用带内容哈希的 CSS/JS/WASM 目录，防止旧缓存与新颜色变量混用。
+详细模型、保存限制与审计范围见 [主题定义](theme-definitions.md#theme-studio-and-color-audit)。
+
+## 顶栏配色入口
+
+次级导航整行已移除。蓝/绿选择改为实际配色的圆形色块，放在顶栏明暗切换左侧；
+保留 `Use blue palette` / `Use green palette` 无障碍名称和 `aria-current` 选中状态。
+选中项有描边，键盘焦点单独可见。手机首页菜单从 60px 顶栏下方展开。
+
+`header-swatches-final-gate.log` 记录 host/wasm32 构建、严格 Clippy、SSR 和 182 条
+浏览器检查通过，零错误；报告中仍包含完整主题切换与指南导航检查。
+额外布局断言覆盖 320/360/390px 控制项可见、不重叠和页面无横向溢出。
+首页菜单的独立实际检查为 `D:/BuildCache/sapid/header-swatches-home-probe.json`，
+菜单与顶栏边缘均为 y=60。截图为 `header-swatches-desktop.png` 和
+`header-swatches-mobile.png`，位于 `D:/BuildCache/sapid`。
+本次资产清单 SHA256 为 `df7493460c28ca06a1c2d17af623364f749fcacd52beef81035d3179c22c9cbf`。
+
 ## 启动与页面
 
 从 Sapid 目录执行：
@@ -129,3 +190,11 @@ SHA256 为 `b37cfe082935f7b83bb6246963bb9b83d51ec29d12eb31ed8fcfcdee5a9a9fd3`。
 `src` 内不再用 `#[path]` 改写模块位置；共享的跨宿主验收夹具可显式引用共享文件。
 Web 的 72 个原根目录模块已归入 `examples/web/src`，对应的 Rust/native 测试引用同步迁移。
 Glory 闭包入口为 `widget(...) -> WidgetFn<_>`，不保留 `component` 兼容别名。
+
+
+## Theme Studio 最新验收
+
+当前轮次通过 182 项原有浏览器检查、14 项调色流程检查，以及独立的 149 个绿色深色页面审计，均无错误。
+快速主题传递门禁对 149 个已编译示例分别使用绿色深色与任意命名的自定义亮色主题，共 298 次挂载，没有残留其他主题类。
+浏览器实际复制出的 Rust ThemeDefinition 已在 D 盘独立项目编译，并断言生成色阶与模式覆盖的值。
+详细日志、当前资产哈希与截图见 [本轮验收](theme-definitions.md#2026-10-25-theme-studio-verification)。

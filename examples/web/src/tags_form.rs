@@ -83,7 +83,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                         })
                 }),
             sapid::field("labels")
-                .theme(theme)
+                .theme(theme.clone())
                 .label("Labels")
                 .description("Pill values may repeat; each is submitted separately.")
                 .form_name("labels")
@@ -106,11 +106,14 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 )
             })),
             text().content(rejection),
-            sapid::submit_button().label("Submit tags"),
+            sapid::submit_button()
+                .theme(theme.clone())
+                .label("Submit tags"),
             button().label("After tags"),
         ));
     (
         sapid::form("free-tags")
+            .theme(theme.clone())
             .on_submit(move |_| {
                 model
                     .submit(move |token| {
@@ -146,12 +149,8 @@ mod browser {
             .and_then(|w| w.document())
             .and_then(|d| d.get_element_by_id("app"))
             .ok_or_else(|| js("missing tags root"))?;
-        let theme = Theme::new(
-            if hue == "green" {
-                sapid::Hue::Green
-            } else {
-                sapid::Hue::Blue
-            },
+        let theme = crate::themes::select(
+            if hue == "green" { "green" } else { "blue" },
             if scheme == "dark" {
                 sapid::ColorScheme::Dark
             } else {

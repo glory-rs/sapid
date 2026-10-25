@@ -34,7 +34,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
         .fill((
             button().label("Before combobox"),
             field("editable-country")
-                .theme(theme)
+                .theme(theme.clone())
                 .label("Country")
                 .description("Type a country, then choose a suggestion.")
                 .required(true)
@@ -86,11 +86,14 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                     submitted.get()
                 )
             })),
-            sapid::submit_button().label("Submit country"),
+            sapid::submit_button()
+                .theme(theme.clone())
+                .label("Submit country"),
             button().label("After combobox"),
         ));
     (
         sapid::form("combobox-form")
+            .theme(theme.clone())
             .on_submit(move |_| submitted.revise(|value| *value += 1))
             .fill(content),
         State {
@@ -122,12 +125,8 @@ mod browser {
             .and_then(|w| w.document())
             .and_then(|d| d.get_element_by_id("app"))
             .ok_or_else(|| js("missing combobox root"))?;
-        let theme = Theme::new(
-            if hue == "green" {
-                sapid::Hue::Green
-            } else {
-                sapid::Hue::Blue
-            },
+        let theme = crate::themes::select(
+            if hue == "green" { "green" } else { "blue" },
             if scheme == "dark" {
                 sapid::ColorScheme::Dark
             } else {

@@ -81,6 +81,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
         });
     (
         sapid::form("number-demo")
+            .theme(theme.clone())
             .on_submit(move |_| submits.revise(|n| *n += 1))
             .fill(
                 glory::ui::view().class("number-input-demo").fill((
@@ -110,7 +111,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                         .default_value(d("2.5"))
                         .unstyled(),
                     number_input()
-                        .theme(theme)
+                        .theme(theme.clone())
                         .name("Fine decimal")
                         .class("fine-number-input")
                         .default_value(d("0.000000000000000001"))
@@ -150,12 +151,8 @@ mod browser {
             .and_then(|w| w.document())
             .and_then(|d| d.get_element_by_id("app"))
             .ok_or_else(|| js("missing number root"))?;
-        let theme = Theme::new(
-            if hue == "green" {
-                sapid::Hue::Green
-            } else {
-                sapid::Hue::Blue
-            },
+        let theme = crate::themes::select(
+            if hue == "green" { "green" } else { "blue" },
             if scheme == "dark" {
                 sapid::ColorScheme::Dark
             } else {

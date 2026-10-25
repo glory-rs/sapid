@@ -9,6 +9,7 @@ pub fn grid_form(theme: Theme) -> impl Widget {
             ..Style::new().min_height(Length::Px(40.0))
         };
         sapid::stack()
+            .theme(theme.clone())
             .gap(16.0)
             .class("grid-fixture")
             .fill((
