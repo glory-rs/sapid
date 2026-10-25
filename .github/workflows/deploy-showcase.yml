@@ -15,6 +15,7 @@ env:
   RUSTUP_HOME: D:/BuildCache/sapid-pages-ci/rustup
   TEMP: D:/BuildCache/sapid-pages-ci/tmp
   TMP: D:/BuildCache/sapid-pages-ci/tmp
+  PYTHONPYCACHEPREFIX: D:/BuildCache/sapid-pages-ci/pycache
   CARGO_INCREMENTAL: '0'
   CARGO_BUILD_JOBS: '2'
   npm_config_cache: D:/BuildCache/sapid-pages-ci/npm
@@ -79,6 +80,9 @@ jobs:
           "$tools/$package" >> $env:GITHUB_PATH
       - name: Validate library and shared adapters
         run: ./scripts/check.ps1 -BuildRoot $env:BUILD_ROOT
+      - name: Verify immutable assets and release retention
+        run: python scripts/test-site-assets.py
+
       - name: Validate and build production showcase
         run: ./scripts/check-showcase.ps1 -Release -BuildRoot $env:BUILD_ROOT -Bindgen wasm-bindgen
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -102,6 +106,8 @@ jobs:
             if (-not $ready) { throw 'Showcase preview did not start' }
             node scripts/showcase-browser.cjs
             if ($LASTEXITCODE -ne 0) { throw 'Showcase browser acceptance failed' }
+            node scripts/cache-browser.cjs "$env:BUILD_ROOT/showcase"
+            if ($LASTEXITCODE -ne 0) { throw 'Browser cache rollover acceptance failed' }
             node scripts/palette-order-browser.cjs
             if ($LASTEXITCODE -ne 0) { throw 'Palette order browser acceptance failed' }
           } finally { Stop-Process -Id $server.Id -ErrorAction SilentlyContinue }
@@ -110,7 +116,7 @@ jobs:
           name: sapid-showcase-dist
           path: D:/BuildCache/sapid-pages-ci/showcase
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 30
       - name: Deploy to Cloudflare Pages
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

@@ -246,3 +246,30 @@ Host/wasm32 严格 Clippy、19 项 Web 测试及导出 Rust 定义编译通过�
 蓝/绿 × 亮/暗的 20 个页面完成 308 次输入聚焦检查，无页面错误；包含搜索键盘焦点及无效色值。
 报告为 `D:/BuildCache/sapid/input-focus-browser.json`，截图为 `D:/BuildCache/sapid/input-focus-fixed.png`。
 CSS 资产 `assets-7a3f7e3005cb55775b16` 已发布到 8795；本次仅更新 CSS 并复用已验证的 WASM。
+
+## Deployment caching
+
+`check-showcase.ps1` builds into a clean D-drive output. CSS, JS, WASM and bindgen
+snippets share one `assets-<content-hash>/` directory; images and the favicon use
+`media-<content-hash>/`. The media prefix is computed before compilation and shared
+by CSR/SSR via `SAPID_SHOWCASE_MEDIA`, so hydration uses identical URLs. Fixtures
+without that environment variable keep using `/assets/`.
+
+Hashed assets receive `public, max-age=31536000, immutable`. HTML uses Pages'
+default `public, max-age=0, must-revalidate` and ETag/304; the deployment manifest
+uses `no-cache`. Avoid a global Cache-Control rule, since Pages combines matching
+header values. The Cloudflare Cache Rule **Glory and Sapid origin browser caching**
+respects origin Browser TTL only for the two official site hostnames, preventing
+the zone's default 4-hour Browser TTL from overriding short asset/entry TTLs.
+
+Before upload, `deploy-pages.ps1` downloads the production `asset-manifest.json`
+and carries forward the last three distinct asset releases. All files must match
+their recorded SHA-256/size; failures stop deployment. Budgets are 25 MiB per file,
+500 files per release and 200 MiB overall. The initial migration also retains the
+old published asset graph. This uses production assets rather than expiring CI
+artifacts; Actions artifacts are retained separately for 30 days. Tabs older than
+three previous releases may need a reload. Already open pages keep running their
+loaded application until navigation/reload; no forced reload interrupts demos.
+
+Run `python scripts/test-site-assets.py` for deterministic fingerprint, rollover,
+old-WASM lookup and corruption tests, followed by the usual showcase browser gate.

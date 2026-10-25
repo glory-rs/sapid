@@ -18,6 +18,10 @@ fn document(
     );
     include_str!("../../showcase.html")
         .replace(
+            "assets/sapid-logo.svg",
+            &sapid_web_example::assets::media("sapid-logo.svg"),
+        )
+        .replace(
             "<body>",
             &format!(
                 "<body style=\"background:{};color:{};color-scheme:{}\">",

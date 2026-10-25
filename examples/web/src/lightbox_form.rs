@@ -2,12 +2,24 @@ use glory::prelude::*;
 use sapid::{LightboxImage, LightboxView, lightbox, lightbox_image};
 pub fn images() -> Vec<LightboxImage> {
     vec![
-        lightbox_image("one", "assets/image-pattern.png", "Color pattern")
-            .caption("First color pattern"),
-        lightbox_image("two", "assets/image-fallback.png", "Fallback pattern")
-            .caption("Second color pattern"),
-        lightbox_image("broken", "assets/image-invalid.png", "Unavailable pattern")
-            .caption("Unavailable image with a text alternative"),
+        lightbox_image(
+            "one",
+            crate::assets::media("image-pattern.png"),
+            "Color pattern",
+        )
+        .caption("First color pattern"),
+        lightbox_image(
+            "two",
+            crate::assets::media("image-fallback.png"),
+            "Fallback pattern",
+        )
+        .caption("Second color pattern"),
+        lightbox_image(
+            "broken",
+            crate::assets::media("image-invalid.png"),
+            "Unavailable pattern",
+        )
+        .caption("Unavailable image with a text alternative"),
     ]
 }
 pub fn lightbox_form(theme: sapid::Theme) -> impl Widget {

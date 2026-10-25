@@ -229,7 +229,7 @@ fn header(
                 view().class("site-header-inner").fill((
                     view().class("site-brand-wrap").fill((
                         image()
-                            .source("assets/sapid-logo.svg")
+                            .source(crate::assets::media("sapid-logo.svg"))
                             .decorative()
                             .class("site-logo"),
                         link("Sapid", route("", &theme), "site-brand"),

@@ -8,9 +8,13 @@ if (-not $env:CLOUDFLARE_API_TOKEN -or $env:CLOUDFLARE_ACCOUNT_ID -notmatch '^[a
     throw 'Set CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID Actions secrets'
 }
 if ($ProjectName -notmatch '^[a-z0-9][a-z0-9-]{0,57}[a-z0-9]$') { throw 'Invalid Pages project name' }
-foreach ($name in @('index.html','showcase.html','asset-hashes.json','_headers')) {
+foreach ($name in @('index.html','showcase.html','asset-manifest.json','asset-hashes.json','_headers')) {
     if (-not (Test-Path -LiteralPath (Join-Path $Directory $name) -PathType Leaf)) { throw "Missing deployment asset: $name" }
 }
+& python "$PSScriptRoot/site-assets.py" retain $Directory https://sapid.taidge.org
+if ($LASTEXITCODE -ne 0) { throw 'Previous asset retention failed' }
+& python "$PSScriptRoot/site-assets.py" validate $Directory
+if ($LASTEXITCODE -ne 0) { throw 'Deployment asset validation failed' }
 $headers = @{ Authorization = "Bearer $env:CLOUDFLARE_API_TOKEN" }
 $endpoint = "https://api.cloudflare.com/client/v4/accounts/$env:CLOUDFLARE_ACCOUNT_ID/pages/projects"
 try { $response = Invoke-RestMethod -Uri "$endpoint/$ProjectName" -Headers $headers }

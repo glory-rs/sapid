@@ -274,6 +274,11 @@ def fixture_source(module):
     # Shared plot data is included explicitly, rather than a file-path override.
     text = text.replace('#[path = "../../fixtures/plot_samples.rs"]\npub mod samples;',
                         'pub mod samples {\n' + (WEB.parent / "fixtures/plot_samples.rs").read_text(encoding="utf-8") + '\n}')
+    # Media URLs are build inputs, but displayed demos must remain self-contained.
+    if 'crate::assets::media(' in text:
+        text = text.replace('crate::assets::media(', 'media(')
+        helper = (WEB / 'src/assets.rs').read_text(encoding='utf-8')
+        text += '\n' + '\n'.join(line for line in helper.splitlines() if not line.startswith('//!'))
     return text.strip()
 
 

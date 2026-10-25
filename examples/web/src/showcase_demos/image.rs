@@ -11,7 +11,7 @@ mod fixture {
     use sapid::{Theme, avatar, avatar_group, background_image, button, image};
     pub fn image_form(theme: Theme) -> impl Widget {
         widget(move |scope| {
-            let source = scope.cage("assets/image-pattern.png".to_string());
+            let source = scope.cage(media("image-pattern.png"));
             let status = scope.cage("Loading".to_string());
             let fallback_status = scope.cage("Loading fallback".to_string());
             sapid::stack()
@@ -32,9 +32,9 @@ mod fixture {
                             .on_error(move |revision| {
                                 status.revise(|value| *value = format!("Failed {revision}"))
                             }),
-                        image("assets/image-invalid.png")
+                        image(media("image-invalid.png"))
                             .alt("Fallback pattern")
-                            .fallback_src("assets/image-fallback.png")
+                            .fallback_src(media("image-fallback.png"))
                             .theme(theme.clone())
                             .class("image-fallback-demo")
                             .width(Length::Px(120.0))
@@ -64,12 +64,12 @@ mod fixture {
                                 "ada",
                                 avatar("Ada Lovelace")
                                     .fallback("AL")
-                                    .source("assets/image-pattern.png"),
+                                    .source(media("image-pattern.png")),
                             )
                             .avatar("grace", avatar("Grace Hopper").fallback("GH"))
                             .avatar("katherine", avatar("Katherine Johnson").fallback("KJ")),
                     )),
-                    background_image("assets/image-pattern.png")
+                    background_image(media("image-pattern.png"))
                         .theme(theme.clone())
                         .name("Pattern background")
                         .class("image-background")
@@ -88,17 +88,13 @@ mod fixture {
                         )),
                     sapid::group().theme(theme.clone()).gap(8.0).fill((
                         button().theme(theme.clone()).label("Break image").on_press(
-                            move || {
-                                source
-                                    .revise(|value| *value = "assets/image-invalid.png".into())
-                            },
+                            move || source.revise(|value| *value = media("image-invalid.png")),
                         ),
                         button()
                             .theme(theme.clone())
                             .label("Restore image")
                             .on_press(move || {
-                                source
-                                    .revise(|value| *value = "assets/image-pattern.png".into())
+                                source.revise(|value| *value = media("image-pattern.png"))
                             }),
                     )),
                     sapid::group().theme(theme.clone()).gap(8.0).fill((
@@ -106,29 +102,30 @@ mod fixture {
                             .theme(theme.clone())
                             .label("Delayed A")
                             .on_press(move || {
-                                source.revise(|value| {
-                                    *value = "assets/image-delayed-a.png".into()
-                                })
+                                source.revise(|value| *value = media("image-delayed-a.png"))
                             }),
                         button()
                             .theme(theme.clone())
                             .label("Delayed B")
                             .on_press(move || {
-                                source.revise(|value| {
-                                    *value = "assets/image-delayed-b.png".into()
-                                })
+                                source.revise(|value| *value = media("image-delayed-b.png"))
                             }),
                         button()
                             .theme(theme.clone())
                             .label("Delayed C")
                             .on_press(move || {
-                                source.revise(|value| {
-                                    *value = "assets/image-delayed-c.png".into()
-                                })
+                                source.revise(|value| *value = media("image-delayed-c.png"))
                             }),
                     )),
                 ))
                 .show_in(scope)
         })
+    }
+
+    pub fn media(name: &str) -> String {
+        format!(
+            "{}/{name}",
+            option_env!("SAPID_SHOWCASE_MEDIA").unwrap_or("/assets")
+        )
     }
 }

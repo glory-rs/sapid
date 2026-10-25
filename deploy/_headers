@@ -7,5 +7,11 @@
 /assets-*
   Cache-Control: public, max-age=31536000, immutable
 
+/media-*
+  Cache-Control: public, max-age=31536000, immutable
+
+/asset-manifest.json
+  Cache-Control: no-cache
+
 /*.wasm
   Content-Type: application/wasm

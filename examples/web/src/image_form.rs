@@ -3,7 +3,7 @@ use glory::ui::{Widget, text, widget};
 use sapid::{Theme, avatar, avatar_group, background_image, button, image};
 pub fn image_form(theme: Theme) -> impl Widget {
     widget(move |scope| {
-        let source = scope.cage("assets/image-pattern.png".to_string());
+        let source = scope.cage(crate::assets::media("image-pattern.png"));
         let status = scope.cage("Loading".to_string());
         let fallback_status = scope.cage("Loading fallback".to_string());
         sapid::stack()
@@ -24,9 +24,9 @@ pub fn image_form(theme: Theme) -> impl Widget {
                         .on_error(move |revision| {
                             status.revise(|value| *value = format!("Failed {revision}"))
                         }),
-                    image("assets/image-invalid.png")
+                    image(crate::assets::media("image-invalid.png"))
                         .alt("Fallback pattern")
-                        .fallback_src("assets/image-fallback.png")
+                        .fallback_src(crate::assets::media("image-fallback.png"))
                         .theme(theme.clone())
                         .class("image-fallback-demo")
                         .width(Length::Px(120.0))
@@ -55,12 +55,12 @@ pub fn image_form(theme: Theme) -> impl Widget {
                             "ada",
                             avatar("Ada Lovelace")
                                 .fallback("AL")
-                                .source("assets/image-pattern.png"),
+                                .source(crate::assets::media("image-pattern.png")),
                         )
                         .avatar("grace", avatar("Grace Hopper").fallback("GH"))
                         .avatar("katherine", avatar("Katherine Johnson").fallback("KJ")),
                 )),
-                background_image("assets/image-pattern.png")
+                background_image(crate::assets::media("image-pattern.png"))
                     .theme(theme.clone())
                     .name("Pattern background")
                     .class("image-background")
@@ -81,13 +81,17 @@ pub fn image_form(theme: Theme) -> impl Widget {
                         .theme(theme.clone())
                         .label("Break image")
                         .on_press(move || {
-                            source.revise(|value| *value = "assets/image-invalid.png".into())
+                            source.revise(|value| {
+                                *value = crate::assets::media("image-invalid.png")
+                            })
                         }),
                     button()
                         .theme(theme.clone())
                         .label("Restore image")
                         .on_press(move || {
-                            source.revise(|value| *value = "assets/image-pattern.png".into())
+                            source.revise(|value| {
+                                *value = crate::assets::media("image-pattern.png")
+                            })
                         }),
                 )),
                 sapid::group().theme(theme.clone()).gap(8.0).fill((
@@ -95,19 +99,25 @@ pub fn image_form(theme: Theme) -> impl Widget {
                         .theme(theme.clone())
                         .label("Delayed A")
                         .on_press(move || {
-                            source.revise(|value| *value = "assets/image-delayed-a.png".into())
+                            source.revise(|value| {
+                                *value = crate::assets::media("image-delayed-a.png")
+                            })
                         }),
                     button()
                         .theme(theme.clone())
                         .label("Delayed B")
                         .on_press(move || {
-                            source.revise(|value| *value = "assets/image-delayed-b.png".into())
+                            source.revise(|value| {
+                                *value = crate::assets::media("image-delayed-b.png")
+                            })
                         }),
                     button()
                         .theme(theme.clone())
                         .label("Delayed C")
                         .on_press(move || {
-                            source.revise(|value| *value = "assets/image-delayed-c.png".into())
+                            source.revise(|value| {
+                                *value = crate::assets::media("image-delayed-c.png")
+                            })
                         }),
                 )),
             ))

@@ -13,7 +13,7 @@ if ($BuildRoot -notmatch '^D:\\BuildCache\\[^\\]+') { throw 'BuildRoot must be i
 $showcaseBuild = "$BuildRoot/showcase"
 $showcaseTarget = "$BuildRoot/target"
 $savedEnvironment = @{}
-$environmentNames = @('CARGO_HOME','CARGO_TARGET_DIR','CARGO_BUILD_JOBS','CARGO_PROFILE_DEV_DEBUG','CARGO_PROFILE_TEST_DEBUG','CARGO_INCREMENTAL','TEMP','TMP','PYTHONPYCACHEPREFIX','SAPID_SHOWCASE_BASE','SAPID_PLAYWRIGHT')
+$environmentNames = @('CARGO_HOME','CARGO_TARGET_DIR','CARGO_BUILD_JOBS','CARGO_PROFILE_DEV_DEBUG','CARGO_PROFILE_TEST_DEBUG','CARGO_INCREMENTAL','TEMP','TMP','PYTHONPYCACHEPREFIX','SAPID_SHOWCASE_BASE','SAPID_PLAYWRIGHT','SAPID_SHOWCASE_MEDIA')
 foreach ($name in $environmentNames) { $savedEnvironment[$name] = [Environment]::GetEnvironmentVariable($name, 'Process') }
 function Invoke-ShowcaseCargo {
     param([string[]]$Arguments)
@@ -32,7 +32,13 @@ try {
     $env:TEMP = "$BuildRoot/tmp"
     $env:TMP = $env:TEMP
     $env:PYTHONPYCACHEPREFIX = "$BuildRoot/pycache"
-    New-Item -ItemType Directory -Force -Path $showcaseBuild,$env:TEMP | Out-Null
+    New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
+    # A clean output prevents removed assets or obsolete HTML from leaking into a release.
+    if (Test-Path -LiteralPath $showcaseBuild) { Remove-Item -LiteralPath $showcaseBuild -Recurse -Force }
+    New-Item -ItemType Directory -Force -Path $showcaseBuild | Out-Null
+    $mediaDirectory = & python scripts/site-assets.py prepare $showcaseBuild examples/web/assets
+    if ($LASTEXITCODE -ne 0) { throw 'Media fingerprint failed' }
+    $env:SAPID_SHOWCASE_MEDIA = "/$mediaDirectory"
     $metadata = & cargo metadata --locked --manifest-path examples/web/Cargo.toml --no-deps --format-version 1 | ConvertFrom-Json
     if ($LASTEXITCODE -ne 0) { throw 'showcase metadata failed' }
     if ([IO.Path]::GetFullPath($metadata.target_directory) -ne [IO.Path]::GetFullPath($showcaseTarget)) { throw "Unexpected showcase target: $($metadata.target_directory)" }
@@ -54,30 +60,16 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'showcase wasm-bindgen failed' }
     Copy-Item -LiteralPath examples/web/site.css -Destination "$showcaseBuild/site.css"
     Copy-Item -LiteralPath styles/sapid.css -Destination "$showcaseBuild/sapid.css"
-    if (Test-Path -LiteralPath examples/web/assets) {
-        New-Item -ItemType Directory -Force -Path "$showcaseBuild/assets" | Out-Null
-        Copy-Item -Path examples/web/assets/* -Destination "$showcaseBuild/assets"
-    }
-    # Publish a complete content-addressed asset set before replacing the HTML.
-    # The bindgen JS resolves its WASM next to itself in the same immutable directory.
-    $assetNames = @('sapid.css','site.css','sapid_web_example.js','sapid_web_example_bg.wasm')
-    $loaderSource = Get-Content -LiteralPath "$showcaseBuild/sapid_web_example.js" -Raw
-    $snippetImports = [regex]::Matches($loaderSource, '\./snippets/[^''"]+')
-    $assetNames += @($snippetImports | ForEach-Object { $_.Value.Substring(2) } | Sort-Object -Unique)
-    $digestText = ($assetNames | Sort-Object | ForEach-Object { $_ + (Get-FileHash -LiteralPath "$showcaseBuild/$_" -Algorithm SHA256).Hash }) -join ''
-    $digestBytes = [Text.Encoding]::UTF8.GetBytes($digestText)
-    $digest = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($digestBytes)).ToLowerInvariant().Substring(0,20)
-    $assetDirectory = "assets-$digest"
-    New-Item -ItemType Directory -Force -Path "$showcaseBuild/$assetDirectory" | Out-Null
-    foreach ($assetName in $assetNames) {
-        $destination = "$showcaseBuild/$assetDirectory/$assetName"
-        New-Item -ItemType Directory -Force -Path (Split-Path -Parent $destination) | Out-Null
-        Copy-Item -LiteralPath "$showcaseBuild/$assetName" -Destination $destination
-    }
+    # Keep bindgen snippets and the relative WASM URL in one immutable asset graph.
+    $assetDirectory = & python scripts/site-assets.py bundle $showcaseBuild
+    if ($LASTEXITCODE -ne 0) { throw 'Asset fingerprint failed' }
     $generateArguments = @('run','--locked','--manifest-path','examples/web/Cargo.toml','--bin','showcase_ssr')
-    if ($Release) { $generateArguments += '--release' }
+    # This native build tool is not published. Reuse its validated dev build;
+    # the browser bundle above still uses the requested release profile.
     Invoke-ShowcaseCargo -Arguments ($generateArguments + @('--',$showcaseBuild,$assetDirectory))
     if (Test-Path -LiteralPath deploy/_headers) { Copy-Item -LiteralPath deploy/_headers -Destination "$showcaseBuild/_headers" }
+    & python scripts/site-assets.py validate $showcaseBuild
+    if ($LASTEXITCODE -ne 0) { throw 'Asset validation failed' }
     $oversized = @(Get-ChildItem -LiteralPath $showcaseBuild -Recurse -File | Where-Object Length -GT (25 * 1024 * 1024))
     if ($Release -and $oversized.Count) { throw "Cloudflare Pages assets exceed 25 MiB: $($oversized.Name -join ', ')" }
     $buildFiles = Get-ChildItem -LiteralPath $showcaseBuild -File -Recurse | Where-Object Name -ne 'asset-hashes.json'

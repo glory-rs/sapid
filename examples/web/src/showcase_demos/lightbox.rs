@@ -10,11 +10,11 @@ mod fixture {
     use sapid::{LightboxImage, LightboxView, lightbox, lightbox_image};
     pub fn images() -> Vec<LightboxImage> {
         vec![
-            lightbox_image("one", "assets/image-pattern.png", "Color pattern")
+            lightbox_image("one", media("image-pattern.png"), "Color pattern")
                 .caption("First color pattern"),
-            lightbox_image("two", "assets/image-fallback.png", "Fallback pattern")
+            lightbox_image("two", media("image-fallback.png"), "Fallback pattern")
                 .caption("Second color pattern"),
-            lightbox_image("broken", "assets/image-invalid.png", "Unavailable pattern")
+            lightbox_image("broken", media("image-invalid.png"), "Unavailable pattern")
                 .caption("Unavailable image with a text alternative"),
         ]
     }
@@ -91,5 +91,12 @@ mod fixture {
             scope.retain(area)?;
             Ok(())
         })
+    }
+
+    pub fn media(name: &str) -> String {
+        format!(
+            "{}/{name}",
+            option_env!("SAPID_SHOWCASE_MEDIA").unwrap_or("/assets")
+        )
     }
 }

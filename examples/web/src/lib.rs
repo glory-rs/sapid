@@ -2,6 +2,7 @@ pub mod accordion_form;
 pub mod actions_form;
 pub mod affix_form;
 pub mod alerts_form;
+pub mod assets;
 pub mod avatar_form;
 pub mod button_form;
 pub mod choice_extras_form;
