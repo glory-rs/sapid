@@ -14,7 +14,7 @@ explicit even when another variant of the same family is available.
 | ID / widget | Inventory | Model | SSR | Web | Native | AccessKit |
 |---|---|---|---|---|---|---|
 | [P0-01 Button](#evidence-p0-01) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
-| [P0-02 TextField](#evidence-p0-02) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
+| [P0-02 TextField](#evidence-p0-02) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract. |
 | [P0-03 Checkbox](#evidence-p0-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P0-04 Collapsible](#evidence-p0-04) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P0-05 Accordion](#evidence-p0-05) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
@@ -30,8 +30,8 @@ explicit even when another variant of the same family is available.
 | [P1-01 Field / InputWrapper](#evidence-p1-01) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P1-02 Label / FieldDescription / FieldError](#evidence-p1-02) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P1-03 Fieldset / Legend](#evidence-p1-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
-| [P1-04 Textarea](#evidence-p1-04) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Fixed-row Textarea supported; intrinsic autosizing FieldSizing explicitly rejected. | **tested**: Fixed-row Textarea supported; intrinsic autosizing FieldSizing explicitly rejected. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P1-05 PasswordInput](#evidence-p1-05) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
+| [P1-04 Textarea](#evidence-p1-04) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Fixed-row Textarea supported; intrinsic autosizing FieldSizing explicitly rejected. | **tested**: Fixed-row Textarea supported; intrinsic autosizing FieldSizing explicitly rejected. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract. |
+| [P1-05 PasswordInput](#evidence-p1-05) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract. |
 | [P1-06 InputGroup / Addon / InputSection](#evidence-p1-06) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P1-07 Form / FormState / Validation](#evidence-p1-07) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Typed state/validation is host independent; native form requests and controls tested; file values unsupported. | **tested**: Typed state/validation is host independent; native form requests and controls tested; file values unsupported. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P1-08 Form submission / serialization](#evidence-p1-08) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
@@ -114,7 +114,7 @@ explicit even when another variant of the same family is available.
 | [P7-08 ColorPicker / ColorInput](#evidence-p7-08) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P7-09 PinInput / InputOTP](#evidence-p7-09) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P7-10 MaskInput](#evidence-p7-10) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P7-11 JsonInput](#evidence-p7-11) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
+| [P7-11 JsonInput](#evidence-p7-11) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract. |
 | [P8-01 Table](#evidence-p8-01) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P8-02 DataTable](#evidence-p8-02) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P8-03 Tree](#evidence-p8-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
@@ -174,6 +174,7 @@ Implementation:
 - `src/button.rs`
 - `src/theme/mod.rs`
 - `docs/button.md`
+- `docs/mantine-api-comparison.md`
 
 Tests:
 
@@ -184,6 +185,8 @@ Tests:
 - `D:/BuildCache/sapid/buttons-browser.json (8 passed, Chromium 148.0.7778.96)`
 - `examples/native/tests/button_enhancements.rs`
 - `D:/BuildCache/sapid/button-native-enhancements.log`
+- `tests/button_enhancements.rs`
+- `scripts/mantine-api-browser.cjs`
 
 ### Evidence P0-02
 
@@ -194,6 +197,8 @@ Implementation:
 - `src/text_field.rs`
 - `docs/basic-controls.md`
 - `docs/form-widgets.md`
+- `docs/mantine-api-comparison.md`
+- `../glory/docs/input-placeholder.md`
 
 Tests:
 
@@ -204,6 +209,8 @@ Tests:
 - `tests/basic_control_state.rs`
 - `D:/BuildCache/sapid/gate-snapshot8.log`
 - `D:/BuildCache/sapid/browser-snapshot8-results.json`
+- `tests/placeholders.rs`
+- `scripts/mantine-api-browser.cjs`
 
 ### Evidence P0-03
 
@@ -565,6 +572,7 @@ Implementation:
 - `../glory/crates/style/src/lib.rs (FieldSizing; HTML/RECORD v4)`
 - `../glory/crates/html/src/styles.rs`
 - `../glory/crates/blitz/src/document.rs (Blitz v5 explicitly rejects FieldSizing)`
+- `../glory/docs/input-placeholder.md`
 
 Tests:
 
@@ -580,6 +588,7 @@ Tests:
 - `D:/BuildCache/sapid/inputs-native-profile.log`
 - `D:/BuildCache/sapid/browser-results.json`
 - `D:/BuildCache/sapid/inputs-browser.log (Chromium 148.0.7778.96; 30 reports, zero errors across all suites)`
+- `tests/placeholders.rs`
 
 ### Evidence P1-05
 
@@ -590,6 +599,7 @@ Implementation:
 - `src/password_input.rs`
 - `src/text_input.rs`
 - `src/text_field.rs`
+- `../glory/docs/input-placeholder.md`
 
 Tests:
 
@@ -605,6 +615,7 @@ Tests:
 - `D:/BuildCache/sapid/inputs-native-profile.log`
 - `D:/BuildCache/sapid/browser-results.json`
 - `D:/BuildCache/sapid/inputs-browser.log (Chromium 148.0.7778.96; 30 reports, zero errors across all suites)`
+- `tests/placeholders.rs`
 
 ### Evidence P1-06
 
@@ -834,20 +845,23 @@ Tests:
 
 ### Evidence P2-08
 
-ActionIcon与CloseButton复用真实Button激活，强制非空名称、主题尺寸/unstyled与disabled；浏览器AX名称和原生布局已验证。
+ActionIcon与CloseButton复用真实Button激活，强制非空名称、主题尺寸/unstyled与disabled；浏览器AX名称和原生布局已验证。新增五种 ActionIconVariant、CloseButton 自定义 icon、居中零 padding 和动态 disabled 配色；视觉复核见 showcase-style-review。
 
 Implementation:
 
 - `src/actions.rs`
+- `docs/showcase-style-review.md`
 - `docs/action-widgets.md`
+- `examples/web/src/showcase_demos/core_icon_actions.rs`
 
 Tests:
 
-- `tests/actions.rs (14 family tests passed)`
+- `tests/actions.rs (15 family tests)`
 - `examples/web/display-acceptance.js (16 family reports; zero errors)`
 - `D:/BuildCache/sapid/display-browser.json`
 - `examples/native/tests/display.rs`
 - `D:/BuildCache/sapid/display-native.log`
+- `scripts/showcase-style-browser.cjs`
 
 ### Evidence P2-09
 
@@ -1060,6 +1074,9 @@ Implementation:
 
 - `src/display.rs`
 - `docs/display-widgets.md`
+- `docs/showcase-style-review.md`
+- `examples/web/src/showcase_demos/core_pills.rs`
+- `src/tag.rs`
 
 Tests:
 
@@ -1068,6 +1085,7 @@ Tests:
 - `D:/BuildCache/sapid/display-browser.json`
 - `examples/native/tests/display.rs`
 - `D:/BuildCache/sapid/display-native.log`
+- `scripts/showcase-style-browser.cjs`
 
 ### Evidence P3-11
 
@@ -1390,6 +1408,7 @@ Implementation:
 
 - `src/combobox.rs`
 - `docs/combobox-implementation.md`
+- `../glory/docs/input-placeholder.md`
 
 Tests:
 
@@ -1397,6 +1416,7 @@ Tests:
 - `examples/web/combobox-acceptance.js`
 - `D:/BuildCache/sapid/combobox-browser-web12.json (12 passed, Chromium 148.0.7778.96)`
 - `D:/BuildCache/sapid/gate-snapshot10.log`
+- `tests/placeholders.rs`
 
 ### Evidence P4-07
 
@@ -1407,6 +1427,7 @@ Implementation:
 - `src/autocomplete.rs`
 - `src/combobox.rs`
 - `docs/autocomplete-multi-select.md`
+- `../glory/docs/input-placeholder.md`
 
 Tests:
 
@@ -1414,16 +1435,21 @@ Tests:
 - `examples/web/choice-extras-acceptance.js`
 - `D:/BuildCache/sapid/choice-extras-browser-choice-extras-next.json (12 passed, Chromium 148.0.7778.96)`
 - `D:/BuildCache/sapid/browser-web14-results.json (43 suites, 378 reports)`
+- `tests/placeholders.rs`
 
 ### Evidence P4-08
 
-真实 Multiple Input、独立受控搜索与 known-key Vec、动态 tags/移除、IME 保护、multiple 成功值 proxy 和有界选项已实现。弱 Owner handle 支持当前过滤且 enabled 选项的原子全选及清空；受控拒绝、只读/组合输入/退休拒绝与四主题实际浏览器已验收。
+真实 Multiple Input、独立受控搜索与 known-key Vec、动态 tags/移除、IME 保护、multiple 成功值 proxy 和有界选项已实现。弱 Owner handle 支持当前过滤且 enabled 选项的原子全选及清空；受控拒绝、只读/组合输入/退休拒绝与四主题实际浏览器已验收。 新增 max_values、hide_picked_options、clearable/clear_label 与真实 placeholder；新增边界和宿主证据见 Mantine 全量 API 报告。
 
 Implementation:
 
 - `src/multi_select.rs`
+- `docs/showcase-style-review.md`
 - `src/combobox.rs`
 - `docs/autocomplete-multi-select.md`
+- `examples/web/src/showcase_demos/core_multi_select.rs`
+- `src/tag.rs`
+- `docs/mantine-api-comparison.md`
 
 Tests:
 
@@ -1431,6 +1457,9 @@ Tests:
 - `examples/web/choice-extras-acceptance.js`
 - `D:/BuildCache/sapid/choice-extras-browser-web15.json (12 passed, Chromium 148.0.7778.96)`
 - `D:/BuildCache/sapid/browser-web15-results.json (46 suites, 406 reports, errors=0)`
+- `scripts/showcase-style-browser.cjs`
+- `src/combobox_advanced_tests.rs`
+- `scripts/mantine-api-browser.cjs`
 
 ### Evidence P4-09
 
@@ -1439,8 +1468,12 @@ Tests:
 Implementation:
 
 - `src/tags_input.rs`
+- `docs/showcase-style-review.md`
 - `src/pills_input.rs`
 - `docs/tags-input.md`
+- `examples/web/src/showcase_demos/core_tags.rs`
+- `src/tag.rs`
+- `../glory/docs/input-placeholder.md`
 
 Tests:
 
@@ -1449,6 +1482,8 @@ Tests:
 - `examples/web/tags-acceptance.js`
 - `D:/BuildCache/sapid/tags-browser-tags-next.json (14 passed, Chromium 148.0.7778.96)`
 - `D:/BuildCache/sapid/tags-browser-web16.json (14 passed, Chromium 148.0.7778.96)`
+- `scripts/showcase-style-browser.cjs`
+- `tests/placeholders.rs`
 
 ### Evidence P4-10
 
@@ -2233,6 +2268,7 @@ Implementation:
 - `src/json_input.rs`
 - `src/json_model.rs`
 - `docs/json-input.md`
+- `../glory/docs/input-placeholder.md`
 
 Tests:
 
@@ -2243,6 +2279,7 @@ Tests:
 - `D:/BuildCache/sapid/json-native.log`
 - `examples/web/json-input-acceptance.js`
 - `D:/BuildCache/sapid/json-browser-web16.json (9 passed, Chromium 148.0.7778.96)`
+- `tests/placeholders.rs`
 
 ### Evidence P8-01
 

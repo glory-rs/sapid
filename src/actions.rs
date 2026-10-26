@@ -1,6 +1,8 @@
 //! Named native button actions. Expansion is independent from actual focus.
 use glory::render::{Direction, Event, EventKind, Orientation, Role, SemanticId, Semantics};
-use glory::style::{BorderStyle, Display, Edges, FlexDirection, Length, Overflow, Style};
+use glory::style::{
+    Align, BorderStyle, Color, Display, Edges, FlexDirection, Justify, Length, Overflow, Style,
+};
 use glory::ui::{Children, IntoChildren, Result, Widget};
 use glory::{Lotus, Scope};
 
@@ -70,7 +72,34 @@ fn square(common: &Common) -> Style {
     let mut style = common.theme.control(common.size);
     style.width = Some(Length::Px(side));
     style.height = Some(Length::Px(side));
+    style.min_width = Some(Length::Px(side));
+    style.padding = Some(Edges::all(0.0));
+    style.display = Some(Display::InlineFlex);
+    style.align = Some(Align::Center);
+    style.justify = Some(Justify::Center);
     style
+}
+
+/// Portable icon-action appearances. Explicit style declarations take precedence.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum ActionIconVariant {
+    #[default]
+    Default,
+    Filled,
+    Light,
+    Outline,
+    Subtle,
+}
+impl ActionIconVariant {
+    fn class(self) -> &'static str {
+        match self {
+            Self::Default => "sapid-action-default",
+            Self::Filled => "sapid-action-filled",
+            Self::Light => "sapid-action-light",
+            Self::Outline => "sapid-action-outline",
+            Self::Subtle => "sapid-action-subtle",
+        }
+    }
 }
 fn validate_name(name: &str) -> Result {
     if name.trim().is_empty() {
@@ -89,6 +118,7 @@ pub struct ActionIcon {
     action_name: String,
     icon: Option<Children>,
     class: &'static str,
+    variant: ActionIconVariant,
     presses: Vec<Box<dyn FnMut()>>,
 }
 pub fn action_icon(name: impl Into<String>) -> ActionIcon {
@@ -97,11 +127,16 @@ pub fn action_icon(name: impl Into<String>) -> ActionIcon {
         action_name: name.into(),
         icon: None,
         class: "sapid-action-icon",
+        variant: ActionIconVariant::Default,
         presses: Vec::new(),
     }
 }
 impl ActionIcon {
     action_methods!();
+    pub fn variant(mut self, variant: ActionIconVariant) -> Self {
+        self.variant = variant;
+        self
+    }
     pub fn name(mut self, name: impl Into<String>) -> Self {
         self.action_name = name.into();
         self
@@ -117,11 +152,63 @@ impl Widget for ActionIcon {
         let icon = self.icon.take().ok_or(glory::render::Error::InvalidProps(
             "action icon requires icon content",
         ))?;
-        let base = square(&self.common);
-        let mut button = configure!(self.common, glory::ui::button(), scope, self.class, base)
-            .name(self.action_name.clone())
-            .enabled(self.common.enabled.clone())
-            .fill(icon);
+        let mut base = square(&self.common);
+        let theme = self.common.theme.clone();
+        match self.variant {
+            ActionIconVariant::Default => {}
+            ActionIconVariant::Filled => {
+                base.background = Some(theme.accent);
+                base.color = Some(theme.on_accent);
+                base.border_color = Some(theme.accent);
+            }
+            ActionIconVariant::Light | ActionIconVariant::Subtle => {
+                base.background = Some(if self.variant == ActionIconVariant::Light {
+                    theme.accent_soft
+                } else {
+                    Color(0, 0, 0, 0)
+                });
+                base.color = Some(if self.variant == ActionIconVariant::Subtle {
+                    theme.muted
+                } else {
+                    theme.accent_text
+                });
+                base.border_color = Some(Color(0, 0, 0, 0));
+            }
+            ActionIconVariant::Outline => {
+                base.background = Some(Color(0, 0, 0, 0));
+                base.color = Some(theme.accent_text);
+                base.border_color = Some(theme.accent);
+            }
+        }
+        let own_style = self.common.style.clone();
+        let enabled = self.common.enabled.clone();
+        let plain = self.common.unstyled;
+        let state_style = move || {
+            let mut base = if plain { Style::new() } else { base.clone() };
+            if !plain && !enabled.get() {
+                base.background = Some(theme.disabled);
+                base.color = Some(theme.disabled_text);
+                base.border_color = Some(theme.border);
+            }
+            crate::appearance::merge(base, own_style.get())
+        };
+        self.common.style =
+            if self.common.enabled.is_reactive() || self.common.style.is_reactive() {
+                scope.bond(state_style).into()
+            } else {
+                state_style().into()
+            };
+        let class = format!("{} {}", self.class, self.variant.class());
+        let mut button = configure!(
+            self.common,
+            glory::ui::button(),
+            scope,
+            &class,
+            Style::new()
+        )
+        .name(self.action_name.clone())
+        .enabled(self.common.enabled.clone())
+        .fill(icon);
         let owner = scope.id();
         let mut presses = std::mem::take(&mut self.presses);
         let mut observers = self
@@ -152,11 +239,22 @@ pub struct CloseButton {
     inner: ActionIcon,
 }
 pub fn close_button() -> CloseButton {
-    let mut inner = action_icon("Close").icon(glory::ui::text().content("×"));
+    let mut inner = action_icon("Close")
+        .variant(ActionIconVariant::Subtle)
+        .icon(glory::ui::text().content("×").selectable(false));
     inner.class = "sapid-action-icon sapid-close-button";
     CloseButton { inner }
 }
 impl CloseButton {
+    /// Replace the decorative close glyph while retaining the named action.
+    pub fn icon(mut self, icon: impl IntoChildren) -> Self {
+        self.inner = self.inner.icon(icon);
+        self
+    }
+    pub fn variant(mut self, variant: ActionIconVariant) -> Self {
+        self.inner = self.inner.variant(variant);
+        self
+    }
     pub fn theme(mut self, theme: crate::Theme) -> Self {
         self.inner = self.inner.theme(theme);
         self

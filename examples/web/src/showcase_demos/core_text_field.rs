@@ -12,6 +12,7 @@ fn column() -> glory::ui::View {
 pub fn demo(theme: sapid::Theme) -> impl Widget {
     widget(move |scope| {
         let value = scope.cage(String::new());
+        let hint = scope.cage("Ada Lovelace".to_owned());
         column()
             .fill((
                 sapid::field("showcase-name")
@@ -25,6 +26,7 @@ pub fn demo(theme: sapid::Theme) -> impl Widget {
                                 .theme(theme.clone())
                                 .field(field)
                                 .value(value)
+                                .placeholder(hint)
                                 .on_value_change(move |next| value.revise(|v| *v = next))
                         }
                     }),
@@ -36,6 +38,25 @@ pub fn demo(theme: sapid::Theme) -> impl Widget {
                     }
                 })),
             ))
+            .fill(
+                sapid::group().theme(theme.clone()).fill(
+                    sapid::button()
+                        .theme(theme.clone())
+                        .variant(sapid::ButtonVariant::Subtle)
+                        .size(sapid::Size::Small)
+                        .label("Change hint")
+                        .on_press(move || {
+                            hint.revise(|value| {
+                                *value = if value == "Ada Lovelace" {
+                                    "Grace Hopper"
+                                } else {
+                                    "Ada Lovelace"
+                                }
+                                .to_owned()
+                            })
+                        }),
+                ),
+            )
             .show_in(scope)
     })
 }

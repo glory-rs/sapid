@@ -1,5 +1,10 @@
 # Button
 
+`ButtonVariant` also supports `Light`, `Outline` and `Subtle`, alongside Primary,
+Secondary and Danger. These are typed theme appearances, with the same native
+button, loading/disabled suppression, callback order and style-override rules.
+They do not require showcase-only CSS or custom application color calculations.
+
 `button().label("Save")` builds a real Glory Button. Primary, Secondary and
 Danger variants use the four supplied themes. ExtraSmall, Small, Medium, Large
 and ExtraLarge share control minimum heights of 24/30/36/42/50 px; ActionIcon,

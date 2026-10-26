@@ -1,7 +1,9 @@
 use glory::render::{Event, NodeId, Orientation, Props, Role, SemanticId, Semantics};
 use glory::style::{Edges, FlexDirection, Length, Style};
 use glory::ui::App;
-use sapid::{Size, Theme, action_icon, burger, button, button_group, close_button};
+use sapid::{
+    ActionIconVariant, Size, Theme, action_icon, burger, button, button_group, close_button,
+};
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 
@@ -70,6 +72,122 @@ fn close_button_reuses_disabled_native_activation_and_observer_order() {
     assert!(app.dispatch(id, Event::Activate).unwrap());
     assert_eq!(*order.borrow(), [1, 2]);
     assert_eq!(root(&app), id);
+}
+
+#[test]
+fn icon_variants_restore_after_disable_and_preserve_explicit_styles() {
+    use glory::style::Color;
+    for theme in [
+        Theme::blue_light(),
+        Theme::blue_dark(),
+        Theme::green_light(),
+        Theme::green_dark(),
+    ] {
+        for (variant, background, color, border) in [
+            (
+                ActionIconVariant::Default,
+                theme.input,
+                theme.foreground,
+                theme.border,
+            ),
+            (
+                ActionIconVariant::Filled,
+                theme.accent,
+                theme.on_accent,
+                theme.accent,
+            ),
+            (
+                ActionIconVariant::Light,
+                theme.accent_soft,
+                theme.accent_text,
+                Color(0, 0, 0, 0),
+            ),
+            (
+                ActionIconVariant::Outline,
+                Color(0, 0, 0, 0),
+                theme.accent_text,
+                theme.accent,
+            ),
+            (
+                ActionIconVariant::Subtle,
+                Color(0, 0, 0, 0),
+                theme.muted,
+                Color(0, 0, 0, 0),
+            ),
+        ] {
+            let app = App::memory();
+            let enabled = app.scope().cage(true);
+            app.mount(
+                action_icon("Refresh")
+                    .theme(theme.clone())
+                    .variant(variant)
+                    .enabled(enabled)
+                    .icon(glory::ui::text().content("↻")),
+            )
+            .unwrap();
+            let id = root(&app);
+            let original = app
+                .tree()
+                .node(id)
+                .unwrap()
+                .descriptor
+                .view()
+                .style
+                .to_owned();
+            assert_eq!(original.background, Some(background));
+            assert_eq!(original.color, Some(color));
+            assert_eq!(original.border_color, Some(border));
+            assert_eq!(original.padding, Some(Edges::all(0.0)));
+            enabled.revise(|value| *value = false);
+            app.flush().unwrap();
+            assert_eq!(
+                app.tree().node(id).unwrap().descriptor.view().style.color,
+                Some(theme.disabled_text)
+            );
+            enabled.revise(|value| *value = true);
+            app.flush().unwrap();
+            assert_eq!(
+                *app.tree().node(id).unwrap().descriptor.view().style,
+                original
+            );
+            app.clear().unwrap();
+
+            let explicit = Style {
+                color: Some(Color(12, 34, 56, 255)),
+                ..Style::new().width(Length::Px(22.0))
+            };
+            app.mount(
+                close_button()
+                    .theme(theme.clone())
+                    .variant(variant)
+                    .enabled(false)
+                    .style(explicit.clone()),
+            )
+            .unwrap();
+            assert_eq!(
+                app.tree()
+                    .node(root(&app))
+                    .unwrap()
+                    .descriptor
+                    .view()
+                    .style
+                    .color,
+                explicit.color
+            );
+            app.clear().unwrap();
+            app.mount(
+                close_button()
+                    .variant(variant)
+                    .unstyled()
+                    .style(explicit.clone()),
+            )
+            .unwrap();
+            assert_eq!(
+                *app.tree().node(root(&app)).unwrap().descriptor.view().style,
+                explicit
+            );
+        }
+    }
 }
 #[test]
 fn burger_local_expansion_updates_name_glyph_and_controls_without_new_identity() {
@@ -199,7 +317,8 @@ fn all_themes_unstyled_and_explicit_overrides_are_portable() {
             .descriptor
             .view()
             .to_owned();
-        assert_eq!(d.style.background, Some(theme.input));
+        assert_eq!(d.style.background, Some(glory::style::Color(0, 0, 0, 0)));
+        assert_eq!(d.style.color, Some(theme.muted));
         assert_eq!(d.style.radius, Some(0.0));
     }
     let app = App::memory();

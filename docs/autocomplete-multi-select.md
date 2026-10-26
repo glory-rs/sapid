@@ -1,5 +1,28 @@
 # Autocomplete and MultiSelect
 
+## Selection policies and input hints
+
+`MultiSelect::max_values(n)` sets an application limit from 0 through 256;
+the default is 256. Initial/external over-limit sources reject before cloning,
+retaining the last accepted view. At the limit, existing choices remain
+removable and other options are disabled. `select_all` rejects an over-limit
+proposal whole, without partial callbacks.
+
+`hide_picked_options(true)` hides accepted selected options, now-empty groups
+and stale active descendants. Rejected controlled proposals do not hide options.
+Empty-result messaging uses the same accepted search/selection predicate.
+
+`clearable(true).clear_label("Clear countries")` adds a real named CloseButton.
+It proposes an empty selection while preserving search, returns focus to the
+same editor, and is absent while disabled, readonly, composing or already empty.
+Controlled refusal keeps the selection and clear action. The label is a bounded,
+nonempty mount configuration. All handles remain weak and Owner-bound.
+
+Combobox, Autocomplete and MultiSelect now accept reactive `placeholder(...)`.
+It lowers through Glory's bounded Input metadata, independently from name/value;
+it is never overlay text or an accessible-label replacement. See the
+[full comparison and remaining gaps](mantine-api-comparison.md).
+
 P4-07 `Autocomplete` and P4-08 `MultiSelect` extend the editable choice controller.
 They use a real single-line Glory Input, intrinsic Button options, a named
 Listbox and the host's focus-preserving Layer. Collection/RovingFocus owns only

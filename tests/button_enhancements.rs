@@ -56,6 +56,75 @@ fn five_sizes_share_control_tokens_and_icon_dimensions() {
         assert_eq!(style.height, Some(Length::Px(height)));
     }
 }
+
+#[test]
+fn added_button_variants_survive_loading_disabled_and_style_overrides() {
+    for theme in [
+        sapid::Theme::blue_light(),
+        sapid::Theme::blue_dark(),
+        sapid::Theme::green_light(),
+        sapid::Theme::green_dark(),
+    ] {
+        for variant in [
+            sapid::ButtonVariant::Light,
+            sapid::ButtonVariant::Outline,
+            sapid::ButtonVariant::Subtle,
+        ] {
+            let app = App::memory();
+            let loading = app.scope().cage(false);
+            let enabled = app.scope().cage(true);
+            let calls = app.scope().cage(0usize);
+            app.mount(
+                button()
+                    .theme(theme.clone())
+                    .variant(variant)
+                    .label("Save")
+                    .loading(loading)
+                    .enabled(enabled)
+                    .style(Style::new().radius(11.0))
+                    .on_press(move || calls.revise(|value| *value += 1)),
+            )
+            .unwrap();
+            let id = root(&app);
+            let original = app
+                .tree()
+                .node(id)
+                .unwrap()
+                .descriptor
+                .view()
+                .style
+                .to_owned();
+            assert_eq!(original.color, Some(theme.accent_text));
+            assert_eq!(original.radius, Some(11.0));
+            loading.revise(|value| *value = true);
+            app.flush().unwrap();
+            assert!(!app.dispatch(id, Event::Activate).unwrap());
+            assert_eq!(
+                app.tree()
+                    .node(id)
+                    .unwrap()
+                    .descriptor
+                    .view()
+                    .style
+                    .background,
+                Some(theme.disabled)
+            );
+            enabled.revise(|value| *value = false);
+            loading.revise(|value| *value = false);
+            app.flush().unwrap();
+            assert!(!app.dispatch(id, Event::Activate).unwrap());
+            enabled.revise(|value| *value = true);
+            app.flush().unwrap();
+            assert_eq!(
+                app.tree().node(id).unwrap().descriptor.view().style,
+                &original
+            );
+            app.dispatch(id, Event::Activate).unwrap();
+            assert_eq!(calls.get(), 1);
+            assert_eq!(root(&app), id);
+        }
+    }
+}
 #[test]
 fn sections_preserve_label_identity_and_exclude_adornment_text_from_the_button_name() {
     let app = App::memory();

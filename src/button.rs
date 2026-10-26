@@ -11,6 +11,9 @@ pub enum ButtonVariant {
     Primary,
     Secondary,
     Danger,
+    Light,
+    Outline,
+    Subtle,
 }
 
 pub struct Button {
@@ -18,7 +21,7 @@ pub struct Button {
     common: Common,
     variant: ButtonVariant,
     loading: Lotus<bool>,
-    toolbar: Option<ToolbarItem>,
+    toolbar: Option<Box<dyn ToolbarHooks>>,
     label: Lotus<String>,
     body: Option<Children>,
     left: Option<Children>,
@@ -30,6 +33,19 @@ struct ToolbarItem {
     roving: crate::RovingFocus,
     key: String,
     reference: glory::Cage<Option<glory::render::NodeId>>,
+    token: Option<glory::Cage<Option<crate::CollectionMember>>>,
+}
+
+// Only in_toolbar constructs this implementation/vtable. An ordinary Button
+// calls the optional hooks without retaining the collection/roving code itself.
+trait ToolbarHooks {
+    fn configure(
+        &mut self,
+        scope: &Scope,
+        inner: glory::ui::Button,
+        handlers: &mut crate::appearance::Handlers,
+    ) -> glory::ui::Button;
+    fn register(self: Box<Self>, scope: &Scope, enabled: Lotus<bool>) -> Result;
 }
 
 pub fn button() -> Button {
@@ -65,12 +81,13 @@ impl Button {
         }
         let reference = self.common.node_ref.unwrap_or_else(|| scope.cage(None));
         self.common.node_ref = Some(reference);
-        self.toolbar = Some(ToolbarItem {
+        self.toolbar = Some(Box::new(ToolbarItem {
             collection,
             roving,
             key,
             reference,
-        });
+            token: None,
+        }));
         Ok(self)
     }
 
@@ -194,6 +211,24 @@ impl Widget for Button {
                 "sapid-button sapid-button-primary"
             }
             ButtonVariant::Secondary => "sapid-button sapid-button-secondary",
+            ButtonVariant::Light | ButtonVariant::Outline | ButtonVariant::Subtle => {
+                base.background = Some(if self.variant == ButtonVariant::Light {
+                    self.common.theme.accent_soft
+                } else {
+                    glory::style::Color(0, 0, 0, 0)
+                });
+                base.color = Some(self.common.theme.accent_text);
+                base.border_color = Some(if self.variant == ButtonVariant::Outline {
+                    self.common.theme.accent
+                } else {
+                    glory::style::Color(0, 0, 0, 0)
+                });
+                match self.variant {
+                    ButtonVariant::Light => "sapid-button sapid-button-light",
+                    ButtonVariant::Outline => "sapid-button sapid-button-outline",
+                    _ => "sapid-button sapid-button-subtle",
+                }
+            }
             ButtonVariant::Danger => {
                 base.background = Some(self.common.theme.danger_fill);
                 base.color = Some(self.common.theme.on_danger);
@@ -251,49 +286,9 @@ impl Widget for Button {
         } else {
             inner.semantics(metadata())
         };
-        let mut registration = None;
-        if let Some(toolbar) = self.toolbar.take() {
-            let token = scope.cage(None::<crate::CollectionMember>);
-            let roving = toolbar.roving.clone();
-            inner = inner.focus(scope.bond(move || {
-                if token
-                    .get()
-                    .as_ref()
-                    .is_some_and(|member| roving.is_tab_stop(member).unwrap_or(false))
-                {
-                    glory::render::FocusMode::TabStop
-                } else {
-                    glory::render::FocusMode::Programmatic
-                }
-            }));
-            let roving = toolbar.roving.clone();
-            let mut observers = self
-                .common
-                .handlers
-                .remove(&EventKind::FocusChanged)
-                .unwrap_or_default();
-            let owner = scope.id();
-            let weak = scope.downgrade();
-            inner = inner.on(EventKind::FocusChanged, move |event| {
-                if event == glory::render::Event::FocusChanged(true) {
-                    if let Some(scope) = weak.upgrade() {
-                        let result = (|| -> Result {
-                            if let Some(member) = token.try_get()? {
-                                roving.observe(&member)?;
-                            }
-                            Ok(())
-                        })();
-                        if let Err(error) = result {
-                            scope.report_error(error);
-                            return;
-                        }
-                    } else {
-                        return;
-                    }
-                }
-                observe(&mut observers, owner, event);
-            });
-            registration = Some((toolbar, token));
+        let mut registration = self.toolbar.take();
+        if let Some(toolbar) = &mut registration {
+            inner = toolbar.configure(scope, inner, &mut self.common.handlers);
         }
         let mut presses = std::mem::take(&mut self.presses);
         let mut observers = self
@@ -318,16 +313,70 @@ impl Widget for Button {
             inner = inner.on(kind, move |event| observe(&mut handlers, owner, event));
         }
         inner.show_in(scope)?;
-        if let Some((toolbar, token)) = registration {
-            let member = toolbar.collection.register(
-                scope,
-                toolbar.key,
-                toolbar.reference,
-                enabled,
-                "".to_string(),
-            )?;
-            token.try_revise(|value| *value = Some(member))?;
+        if let Some(toolbar) = registration {
+            toolbar.register(scope, enabled)?;
         }
+        Ok(())
+    }
+}
+impl ToolbarHooks for ToolbarItem {
+    fn configure(
+        &mut self,
+        scope: &Scope,
+        inner: glory::ui::Button,
+        handlers: &mut crate::appearance::Handlers,
+    ) -> glory::ui::Button {
+        let token = scope.cage(None::<crate::CollectionMember>);
+        self.token = Some(token);
+        let roving = self.roving.clone();
+        let inner = inner.focus(scope.bond(move || {
+            if token
+                .get()
+                .as_ref()
+                .is_some_and(|member| roving.is_tab_stop(member).unwrap_or(false))
+            {
+                glory::render::FocusMode::TabStop
+            } else {
+                glory::render::FocusMode::Programmatic
+            }
+        }));
+        let roving = self.roving.clone();
+        let mut observers = handlers
+            .remove(&EventKind::FocusChanged)
+            .unwrap_or_default();
+        let owner = scope.id();
+        let weak = scope.downgrade();
+        inner.on(EventKind::FocusChanged, move |event| {
+            if event == glory::render::Event::FocusChanged(true) {
+                if let Some(scope) = weak.upgrade() {
+                    let result = (|| -> Result {
+                        if let Some(member) = token.try_get()? {
+                            roving.observe(&member)?;
+                        }
+                        Ok(())
+                    })();
+                    if let Err(error) = result {
+                        scope.report_error(error);
+                        return;
+                    }
+                } else {
+                    return;
+                }
+            }
+            observe(&mut observers, owner, event);
+        })
+    }
+    fn register(self: Box<Self>, scope: &Scope, enabled: Lotus<bool>) -> Result {
+        let member = self.collection.register(
+            scope,
+            self.key,
+            self.reference,
+            enabled,
+            String::new(),
+        )?;
+        self.token
+            .expect("configured toolbar button")
+            .try_revise(|value| *value = Some(member))?;
         Ok(())
     }
 }

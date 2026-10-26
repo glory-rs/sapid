@@ -1,5 +1,11 @@
 # Glory + Sapid 展示站
 
+标签、图标动作和选择输入的视觉修复与 Mantine API 对照见
+[样式复核](showcase-style-review.md)。共享修复位于 Sapid 本身；新增专项浏览器
+矩阵覆盖四主题、桌面/手机及 CSR/SSR 接管。展示站现生成 36 个代表性 SSR 页面。
+
+项目源码：[sapid-ui/sapid](https://github.com/sapid-ui/sapid)。顶栏 GitHub 与首页源码入口均指向此仓库。
+
 展示站对照 [Mantine 首页](https://mantine.dev/)与
 [Button 文档](https://mantine.dev/core/button/)的页面结构，采用 Sapid 自己的品牌：
 顶部导航与搜索、大标题首页和真实控件卡片、分类侧栏、widget文档、预览与参数面板、
@@ -95,8 +101,8 @@ SVG 宽高均为 256；顶栏桌面显示 36 × 36，手机显示 32 × 32，保
 - [Button 深色主题](http://127.0.0.1:8795/showcase.html?widget=P0-01&scheme=dark)
 
 149 个指南对应路线图的 149 个工作项，并不表示 149 个互不重复的底层控件。
-10 个核心示例在 `src/showcase_demos/core_*.rs` 中直接编写，其余 104 个示例族由
-`showcase-catalog.py` 从实际夹具生成独立完整的模块；共 114 个实现模块供 149 个指南复用。
+14 个核心示例在 `src/showcase_demos/core_*.rs` 中直接编写，其余 103 个示例族由
+`showcase-catalog.py` 从实际夹具生成独立完整的模块；共 117 个实现模块供 149 个指南复用。
 目录的 `build` 指向这些模块的 `demo(theme)`，`code` 通过 `include_str!` 读取同一个文件。
 因此 Source、Copy 与预览使用完全相同的已编译源码，包含状态、导入和所需辅助模块，
 没有依赖展示站私有 `crate::…` 的片段。生成器 `--check` 验证同步；Rust 测试逐一挂载

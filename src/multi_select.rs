@@ -17,6 +17,28 @@ pub fn multi_select(key: impl Into<String>) -> MultiSelect {
     }
 }
 impl MultiSelect {
+    pub fn placeholder(mut self, value: impl Into<Lotus<String>>) -> Self {
+        self.inner = self.inner.placeholder(value);
+        self
+    }
+    /// Application selection limit, from zero through the 256-key safety budget.
+    pub fn max_values(mut self, maximum: usize) -> Self {
+        self.inner = self.inner.max_values(maximum);
+        self
+    }
+    /// Hide accepted selected options, including now-empty groups.
+    pub fn hide_picked_options(mut self, hide: bool) -> Self {
+        self.inner = self.inner.hide_picked_options(hide);
+        self
+    }
+    pub fn clearable(mut self, clearable: bool) -> Self {
+        self.inner = self.inner.clearable(clearable);
+        self
+    }
+    pub fn clear_label(mut self, label: impl Into<String>) -> Self {
+        self.inner = self.inner.clear_label(label.into());
+        self
+    }
     pub fn on_ready(mut self, callback: impl FnMut(MultiSelectHandle) + 'static) -> Self {
         self.inner = self.inner.on_multiple_ready(callback);
         self

@@ -27,6 +27,7 @@ pub struct JsonInput {
     validation: Option<Box<dyn FnMut(JsonValidity)>>,
     formatted: Option<Box<dyn FnMut(String)>>,
     format_error: Option<Box<dyn FnMut(JsonError)>>,
+    placeholder: Option<Lotus<String>>,
 }
 pub fn json_input(key: impl Into<String>) -> JsonInput {
     JsonInput {
@@ -48,9 +49,14 @@ pub fn json_input(key: impl Into<String>) -> JsonInput {
         validation: None,
         formatted: None,
         format_error: None,
+        placeholder: None,
     }
 }
 impl JsonInput {
+    pub fn placeholder(mut self, value: impl Into<Lotus<String>>) -> Self {
+        self.placeholder = Some(value.into());
+        self
+    }
     pub fn value(mut self, value: impl Into<Lotus<String>>) -> Self {
         self.value.source = Some(value.into());
         self
@@ -279,6 +285,9 @@ impl Widget for JsonInput {
             .additional_error(error_id.clone(), parse_message.into());
         if self.common.unstyled {
             input = input.unstyled()
+        }
+        if let Some(placeholder) = self.placeholder.take() {
+            input = input.placeholder(placeholder);
         }
         if let Some(field) = self.field.take() {
             input = input.field(field)

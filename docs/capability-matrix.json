@@ -78,14 +78,14 @@
       },
       "native": {
         "state": "tested",
-        "notes": "Finite declared contract; variant-specific limits remain in the linked canonical evidence.",
+        "notes": "Finite declared contract; variant-specific limits remain in the linked canonical evidence. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract.",
         "evidence": [
           "inventory:P0-02"
         ]
       },
       "accesskit": {
         "state": "tested",
-        "notes": "Actual finite semantic projection tested; OS client/speech acceptance remains separate.",
+        "notes": "Actual finite semantic projection tested; OS client/speech acceptance remains separate. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract.",
         "evidence": [
           "inventory:P0-02"
         ]
@@ -735,14 +735,14 @@
       },
       "native": {
         "state": "tested",
-        "notes": "Fixed-row Textarea supported; intrinsic autosizing FieldSizing explicitly rejected.",
+        "notes": "Fixed-row Textarea supported; intrinsic autosizing FieldSizing explicitly rejected. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract.",
         "evidence": [
           "inventory:P1-04"
         ]
       },
       "accesskit": {
         "state": "model-only",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract.",
         "evidence": [
           "inventory:P1-04"
         ]
@@ -776,14 +776,14 @@
       },
       "native": {
         "state": "tested",
-        "notes": "Finite declared contract; variant-specific limits remain in the linked canonical evidence.",
+        "notes": "Finite declared contract; variant-specific limits remain in the linked canonical evidence. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract.",
         "evidence": [
           "inventory:P1-05"
         ]
       },
       "accesskit": {
         "state": "tested",
-        "notes": "Actual finite semantic projection tested; OS client/speech acceptance remains separate.",
+        "notes": "Actual finite semantic projection tested; OS client/speech acceptance remains separate. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract.",
         "evidence": [
           "inventory:P1-05"
         ]
@@ -4179,14 +4179,14 @@
       },
       "native": {
         "state": "tested",
-        "notes": "Finite declared contract; variant-specific limits remain in the linked canonical evidence.",
+        "notes": "Finite declared contract; variant-specific limits remain in the linked canonical evidence. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract.",
         "evidence": [
           "inventory:P7-11"
         ]
       },
       "accesskit": {
         "state": "model-only",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract.",
         "evidence": [
           "inventory:P7-11"
         ]

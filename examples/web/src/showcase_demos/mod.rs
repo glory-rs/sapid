@@ -116,6 +116,18 @@ mod core_drawer;
 pub fn core_drawer_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(core_drawer::demo(theme))
 }
+mod core_icon_actions;
+pub fn core_icon_actions_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(core_icon_actions::demo(theme))
+}
+mod core_multi_select;
+pub fn core_multi_select_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(core_multi_select::demo(theme))
+}
+mod core_pills;
+pub fn core_pills_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(core_pills::demo(theme))
+}
 mod core_popover;
 pub fn core_popover_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(core_popover::demo(theme))
@@ -123,6 +135,10 @@ pub fn core_popover_widget(theme: sapid::Theme) -> Box<dyn Widget> {
 mod core_tabs;
 pub fn core_tabs_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(core_tabs::demo(theme))
+}
+mod core_tags;
+pub fn core_tags_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(core_tags::demo(theme))
 }
 mod core_text_field;
 pub fn core_text_field_widget(theme: sapid::Theme) -> Box<dyn Widget> {
@@ -399,10 +415,6 @@ pub fn table_widget(theme: sapid::Theme) -> Box<dyn Widget> {
 mod table_of_contents;
 pub fn table_of_contents_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(table_of_contents::demo(theme))
-}
-mod tags;
-pub fn tags_widget(theme: sapid::Theme) -> Box<dyn Widget> {
-    Box::new(tags::demo(theme))
 }
 mod tasks;
 pub fn tasks_widget(theme: sapid::Theme) -> Box<dyn Widget> {

@@ -525,3 +525,96 @@ fn multiple_select_all_over_budget_rejects_the_whole_proposal_before_any_callbac
     assert!(selected(&app, "Option 0"));
     assert!(!selected(&app, "Option 1"));
 }
+
+#[test]
+fn configured_multiple_limit_is_atomic_for_picking_select_all_and_sources() {
+    let app = App::memory();
+    let slot = Rc::new(std::cell::RefCell::new(None));
+    let ready = slot.clone();
+    let calls = app.scope().cage(0usize);
+    app.mount(choices().multiple().max_values(1).default_open(true)
+        .on_multiple_ready(move |handle| *ready.borrow_mut() = Some(handle))
+        .on_values_change(move |_| calls.revise(|count| *count += 1))).unwrap();
+    let handle = slot.borrow().clone().unwrap();
+    assert!(handle.select_all().is_err());
+    assert_eq!(calls.get(), 0);
+    app.dispatch(option(&app, "Alpha"), Event::Activate).unwrap();
+    assert!(selected(&app, "Alpha"));
+    assert!(!app.dispatch(option(&app, "Bravo"), Event::Activate).unwrap());
+    assert_eq!(calls.get(), 1);
+    handle.clear_all().unwrap();
+    app.flush().unwrap();
+    assert!(!selected(&app, "Alpha"));
+    assert!(app.dispatch(option(&app, "Bravo"), Event::Activate).unwrap());
+    assert!(selected(&app, "Bravo"));
+    for widget in [
+        choices().multiple().max_values(257),
+        choices().multiple().max_values(0).default_values(vec!["a".into()]),
+        choices().multiple().max_values(1).default_values(vec!["a".into(), "b".into()]),
+    ] {
+        let app = App::memory();
+        assert!(app.mount(widget).is_err());
+        assert!(app.tree().is_empty());
+    }
+    let app = App::memory();
+    let values = app.scope().cage(vec!["a".to_owned()]);
+    app.mount(choices().multiple().max_values(1).values(values)).unwrap();
+    values.revise(|value| *value = vec!["a".into(), "b".into()]);
+    assert!(app.flush().is_err());
+    assert!(selected(&app, "Alpha") && !selected(&app, "Bravo"));
+    values.revise(|value| *value = vec!["b".into()]);
+    app.flush().unwrap();
+    assert!(!selected(&app, "Alpha") && selected(&app, "Bravo"));
+}
+
+#[test]
+fn hiding_picked_options_uses_accepted_values_and_repairs_groups_empty_state_and_cursor() {
+    let app = App::memory();
+    let values = app.scope().cage(vec!["a".to_owned()]);
+    let refused = app.scope().cage(true);
+    app.mount(combobox("hide").multiple().label("Hidden picks").hide_picked_options(true)
+        .values(values).default_open(true)
+        .group(crate::select_group("Letters").option(crate::select_option("a", "Alpha")).option(crate::select_option("b", "Bravo")))
+        .on_values_change(move |proposal| { if !refused.get() { values.revise(|current| *current = proposal); } })).unwrap();
+    let hidden = |app: &App, id| app.tree().node(id).unwrap().descriptor.view().semantics.as_ref().is_some_and(|value| value.hidden);
+    assert!(hidden(&app, option(&app, "Alpha")));
+    app.dispatch(option(&app, "Bravo"), Event::Activate).unwrap();
+    assert!(!hidden(&app, option(&app, "Bravo")));
+    refused.revise(|value| *value = false);
+    app.dispatch(option(&app, "Bravo"), Event::Activate).unwrap();
+    assert!(hidden(&app, option(&app, "Bravo")));
+    let group = nodes(&app).into_iter().find(|id| app.tree().node(*id).unwrap().descriptor.view().name.as_deref() == Some("Letters")).unwrap();
+    assert!(hidden(&app, group));
+    assert!(app.tree().node(editor(&app)).unwrap().descriptor.view().semantics.as_ref().unwrap().active_descendant.is_none());
+    values.revise(Vec::clear);
+    app.flush().unwrap();
+    assert!(!hidden(&app, group));
+    let editor = editor(&app);
+    app.dispatch(editor, Event::Choice { from: editor, command: ChoiceCommand::Next }).unwrap();
+    assert!(app.tree().node(editor).unwrap().descriptor.view().semantics.as_ref().unwrap().active_descendant.is_some());
+}
+
+#[test]
+fn clear_action_preserves_search_and_controlled_refusal_and_retires_during_composition() {
+    let app = App::memory();
+    let values = app.scope().cage(vec!["a".to_owned()]);
+    let proposals = Rc::new(std::cell::RefCell::new(Vec::new()));
+    let out = proposals.clone();
+    app.mount(choices().multiple().values(values).search("Br".to_owned()).clearable(true)
+        .clear_label("Clear countries".into())
+        .on_values_change(move |proposal| out.borrow_mut().push(proposal))).unwrap();
+    let find_clear = |app: &App| nodes(app).into_iter().find(|id| app.tree().node(*id).unwrap().descriptor.view().name.as_deref() == Some("Clear countries"));
+    app.dispatch(find_clear(&app).unwrap(), Event::Activate).unwrap();
+    assert_eq!(*proposals.borrow(), [Vec::<String>::new()]);
+    assert_eq!(values.get(), ["a"]);
+    assert_eq!(input(&app).value, "Br");
+    let input = editor(&app);
+    app.dispatch(input, Event::Composition { active: true }).unwrap();
+    assert!(find_clear(&app).is_none());
+    app.dispatch(input, Event::Composition { active: false }).unwrap();
+    assert!(find_clear(&app).is_some());
+    values.revise(Vec::clear);
+    app.flush().unwrap();
+    assert!(find_clear(&app).is_none());
+    assert_eq!(editor(&app), input);
+}

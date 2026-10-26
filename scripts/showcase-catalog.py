@@ -22,7 +22,7 @@ if len(tasks) != 149 or len(records) != 149 or {t["id"] for t in tasks} != set(r
 EXTRA_PAGES = {"P0-08": "drawer", "P2-09": "actions", "P10-07": "json-viewer"}
 CORE = {f"P0-{i:02}": name for i, name in enumerate([
     "button", "text_field", "checkbox", "collapsible", "accordion", "tabs", "dialog", "drawer", "popover"
-], 1)} | {"P0-14": "catalogue"}
+], 1)} | {"P0-14": "catalogue", "P2-08": "icon_actions", "P3-10": "pills", "P4-08": "multi_select", "P4-09": "tags"}
 SPECIAL = {
     "index": ("form", "form_themed", "scope, theme.clone()", True),
     "composites": ("composite_form", "form_themed", "scope, theme.clone()", True),

@@ -18,6 +18,8 @@ pub struct TextField {
     readonly: Lotus<bool>,
     invalid: Lotus<bool>,
     extra_error: Option<(glory::render::SemanticId, Lotus<String>)>,
+    placeholder: Option<Lotus<String>>,
+    multiline: bool,
 }
 
 pub fn text_field() -> TextField {
@@ -33,10 +35,16 @@ pub fn text_field() -> TextField {
         readonly: false.into(),
         invalid: false.into(),
         extra_error: None,
+        placeholder: None,
+        multiline: false,
     }
 }
 
 impl TextField {
+    pub fn placeholder(mut self, value: impl Into<Lotus<String>>) -> Self {
+        self.placeholder = Some(value.into());
+        self
+    }
     pub(crate) fn additional_error(
         mut self,
         id: glory::render::SemanticId,
@@ -84,6 +92,7 @@ impl TextField {
     }
 
     pub fn multiline(mut self, value: bool) -> Self {
+        self.multiline = value;
         self.inner = self.inner.take().map(|inner| inner.multiline(value));
         self
     }
@@ -105,6 +114,8 @@ impl TextField {
 
 impl Widget for TextField {
     fn build(&mut self, scope: &Scope) -> Result {
+        let placeholder =
+            crate::text_input::placeholder(scope, self.placeholder.take(), self.multiline)?;
         let control = std::mem::take(&mut self.value).mount(scope);
         let initial = control.source.try_get()?;
         let dirty = Dirty::new(scope);
@@ -133,6 +144,17 @@ impl Widget for TextField {
                         state.error_message = Some(id.clone())
                     }
                     crate::composite::metadata(*state)
+                })
+                .into()
+        } else {
+            metadata
+        };
+        let metadata = if let Some(placeholder) = placeholder {
+            scope
+                .bond(move || {
+                    let mut state = metadata.get().unwrap_or_default();
+                    state.placeholder = Some(placeholder.get());
+                    Some(state)
                 })
                 .into()
         } else {

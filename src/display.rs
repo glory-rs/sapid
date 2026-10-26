@@ -38,15 +38,6 @@ macro_rules! display_methods {
     };
 }
 
-fn row() -> Style {
-    Style {
-        align: Some(Align::Center),
-        ..Style::new()
-            .display(Display::Flex)
-            .flex_direction(FlexDirection::Row)
-            .gap(6.0)
-    }
-}
 fn column(gap: f64) -> Style {
     Style::new()
         .display(Display::Flex)
@@ -260,12 +251,7 @@ impl Widget for Pill {
                 ..Default::default()
             }))
         });
-        let mut base = row()
-            .display(Display::InlineFlex)
-            .padding(Edges::all(4.0))
-            .radius(100.0);
-        base.background = Some(self.common.theme.accent_soft);
-        base.color = Some(self.common.theme.accent_text);
+        let base = crate::tag::style(&self.common.theme, self.common.size, true);
         let mut root = configure!(self.common, glory::ui::view(), scope, "sapid-pill", base)
             .semantics(metadata)
             .fill(
@@ -285,12 +271,11 @@ impl Widget for Pill {
             let enabled = self.common.enabled.clone();
             let source = visible.source.clone();
             let button_enabled = scope.bond(move || enabled.get() && source.get());
-            let mut button = crate::button()
+            let mut button = crate::close_button()
                 .theme(self.common.theme.clone())
                 .size(self.common.size)
-                .variant(crate::ButtonVariant::Secondary)
+                .style(crate::tag::remove_style(self.common.size))
                 .class("sapid-pill-remove")
-                .label("×")
                 .name(label)
                 .enabled(button_enabled)
                 .on_press(move || {

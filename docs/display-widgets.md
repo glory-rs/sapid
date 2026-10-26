@@ -14,6 +14,10 @@ tokens. A badge does not silently become a live status announcement.
 separate native button displaying `×` with the supplied accessible action name.
 Names must be nonempty. Omit `removable` for a passive pill. `enabled(false)`
 disables the removal button, while preserving readable content.
+Pill, MultiSelect, TagsInput and PillsInput share compact, size-aware tag metrics.
+Their remove actions use CloseButton rather than a full-sized text button.
+The opt-in stylesheet truncates long labels within the available width and keeps
+pills content-sized in flex columns. The full remove action name is retained.
 The root uses typed `Display::InlineFlex`: it fits its label/action content in a
 normal block parent instead of painting a full-width tag. An explicit display
 override retains precedence; unstyled output adds no component display value.

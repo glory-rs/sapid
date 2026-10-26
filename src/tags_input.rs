@@ -6,7 +6,7 @@ use glory::render::{
     Descriptor, Event, EventKind, FormControl, Props, SelectEntry, SelectOption, SelectProps,
     SemanticId, Semantics, TagHostRejection, TagSeparators, TagsCommand,
 };
-use glory::style::{Display, Edges, FlexDirection, FlexWrap, Limit, Overflow, Style};
+use glory::style::{Display, FlexDirection, FlexWrap, Limit, Overflow, Style};
 use glory::ui::{Result, Widget};
 use glory::{Cage, Lotus, Scope};
 use std::rc::Rc;
@@ -135,6 +135,7 @@ pub struct TagsInput {
     required: Lotus<bool>,
     readonly: Lotus<bool>,
     invalid: Lotus<bool>,
+    placeholder: Option<Lotus<String>>,
 }
 pub fn tags_input(key: impl Into<String>) -> TagsInput {
     TagsInput {
@@ -156,9 +157,14 @@ pub fn tags_input(key: impl Into<String>) -> TagsInput {
         required: false.into(),
         readonly: false.into(),
         invalid: false.into(),
+        placeholder: None,
     }
 }
 impl TagsInput {
+    pub fn placeholder(mut self, value: impl Into<Lotus<String>>) -> Self {
+        self.placeholder = Some(value.into());
+        self
+    }
     common_methods!();
     pub(crate) fn pills(mut self) -> Self {
         self.pills = true;
@@ -390,6 +396,8 @@ struct Row {
 }
 impl Widget for TagsInput {
     fn build(&mut self, scope: &Scope) -> Result {
+        let placeholder =
+            crate::text_input::placeholder(scope, self.placeholder.take(), false)?;
         let settings = self.settings;
         if settings.max_tags == 0 || settings.max_tags > MAX_TAGS_INPUT_VALUES {
             return Err(invalid("tags input max_tags must be 1..=256"));
@@ -449,7 +457,11 @@ impl Widget for TagsInput {
         let content = scope.child_in(root)?;
         let tags_reference = scope.cage(None);
         glory::ui::view()
-            .class("sapid-tags-input-values")
+            .class(if self.common.unstyled {
+                "sapid-tags-input-values sapid-unstyled"
+            } else {
+                "sapid-tags-input-values"
+            })
             .style(
                 Style::new()
                     .display(Display::Flex)
@@ -480,6 +492,7 @@ impl Widget for TagsInput {
         let theme = self.common.theme.clone();
         let plain = self.common.unstyled;
         let pills = self.pills;
+        let size = self.common.size;
         glory::ui::each(
             rows,
             |row| row.clone(),
@@ -488,6 +501,7 @@ impl Widget for TagsInput {
                 let theme = theme.clone();
                 glory::ui::widget(move |scope| {
                     let row = row.get();
+                    let label = row.value.clone();
                     let command = tags.clone();
                     let weak = scope.downgrade();
                     let mut style = Style::new()
@@ -496,49 +510,55 @@ impl Widget for TagsInput {
                         .max_width(Limit::Percent(100.0))
                         .overflow_x(Overflow::Auto);
                     if !plain {
-                        style.background = Some(theme.accent_soft);
-                        style.color = Some(theme.accent_text);
-                        style = style.padding(Edges::all(4.0)).radius(if pills {
-                            999.0
+                        style = crate::tag::style(&theme, size, pills);
+                    }
+                    let mut remove = crate::close_button()
+                        .theme(theme.clone())
+                        .size(size)
+                        .style(if plain {
+                            Style::new()
                         } else {
-                            4.0
+                            crate::tag::remove_style(size)
+                        })
+                        .class("sapid-tag-remove")
+                        .name(format!("Remove {} ({})", row.value, row.occurrence + 1))
+                        .enabled(tags.editable.clone())
+                        .on(EventKind::Activate, move |_| {
+                            let Some(scope) = weak.upgrade() else { return };
+                            let result =
+                                command.remove(&row.value, row.occurrence).and_then(|()| {
+                                    if command.owner.is_alive()
+                                        && command.editable.try_get()?
+                                        && !command.composing.try_get()?
+                                        && scope.capabilities()?.focus
+                                        && let Some(node) = reference.try_get()?
+                                    {
+                                        scope.action(glory::render::Action::Focus(node))?;
+                                    }
+                                    Ok(())
+                                });
+                            if let Err(error) = result {
+                                scope.report_error(error)
+                            }
                         });
+                    if plain {
+                        remove = remove.unstyled();
                     }
                     glory::ui::view()
-                        .class(if pills {
-                            "sapid-pill-input-tag"
-                        } else {
-                            "sapid-tags-input-tag"
-                        })
+                        .class(format!(
+                            "{} {} {}{}",
+                            if pills {
+                                "sapid-pill-input-tag"
+                            } else {
+                                "sapid-tags-input-tag"
+                            },
+                            theme.class(),
+                            size.class(),
+                            if plain { " sapid-unstyled" } else { "" }
+                        ))
                         .style(style)
-                        .fill(glory::ui::text().content(row.value.clone()))
-                        .fill(
-                            glory::ui::button()
-                                .label("×")
-                                .name(format!("Remove {} ({})", row.value, row.occurrence + 1))
-                                .enabled(tags.editable.clone())
-                                .on(EventKind::Activate, move |_| {
-                                    let Some(scope) = weak.upgrade() else { return };
-                                    let result = command
-                                        .remove(&row.value, row.occurrence)
-                                        .and_then(|()| {
-                                            if command.owner.is_alive()
-                                                && command.editable.try_get()?
-                                                && !command.composing.try_get()?
-                                                && scope.capabilities()?.focus
-                                                && let Some(node) = reference.try_get()?
-                                            {
-                                                scope.action(glory::render::Action::Focus(
-                                                    node,
-                                                ))?;
-                                            }
-                                            Ok(())
-                                        });
-                                    if let Err(error) = result {
-                                        scope.report_error(error)
-                                    }
-                                }),
-                        )
+                        .fill(glory::ui::text().class("sapid-tag-label").content(label))
+                        .fill(remove)
                         .show_in(scope)
                 })
             },
@@ -551,6 +571,7 @@ impl Widget for TagsInput {
             value.id = Some(input_id.clone());
             value.form_control = None;
             value.tags_input = Some(settings.separators);
+            value.placeholder = placeholder.map(|placeholder| placeholder.get());
             Some(Box::new(value))
         });
         let base = self.common.theme.control(self.common.size);

@@ -104,6 +104,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         ("", "home"),
         ("P0-01", "button"),
         ("P0-02", "textfield"),
+        ("P2-08", "actions"),
+        ("P3-10", "pills"),
+        ("P4-08", "multi-select"),
+        ("P4-09", "tags"),
         ("P9-01", "dates"),
         ("P13-01", "chat"),
     ] {
@@ -132,7 +136,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
     println!(
-        "Showcase: CSR entry + 20 representative SSR pages in {}",
+        "Showcase: CSR entry + 36 representative SSR pages in {}",
         directory.display()
     );
     Ok(())

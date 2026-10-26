@@ -6,6 +6,9 @@ Pushes to `main` validate and publish the showcase through Cloudflare Pages.
 See [deployment configuration](deploy/README.md) for the pinned Glory revision,
 required Actions secrets, release build and custom-domain setup.
 
+Mantine 全组件 API/功能对照与实施记录见 [181 项差异报告](docs/mantine-api-comparison.md)，
+完整 Props 与本地入口见 [API 索引](docs/mantine-api-surface.md)。组件清单的 done 不表示上游 API 全兼容。
+
 Composable widgets for Glory, written with Rust builders and the public
 `Cage` / `Bond` / `Lotus` reactive model. Applications select their host; Sapid
 does not install a browser runtime, stylesheet, font loader, or native engine.
@@ -93,7 +96,7 @@ app.mount_with(|| {
 
 | Widget | Configuration |
 |---|---|
-| `button()` | `label`, `fill`, `variant(Primary/Secondary/Danger)`, `loading`, `on_press` |
+| `button()` | `label`, `fill`, `variant(Primary/Secondary/Danger/Light/Outline/Subtle)`, `loading`, `on_press` |
 | `text_field()` | `value` / `default_value`, `purpose`, `multiline`, `on_value_change`, `on_commit` |
 | `textarea()` | TextField state/events and Field integration; `rows`, `min_rows`, `max_rows`, `autosize` |
 | `password_input()` | TextField state/events and Field integration; `visible` / `default_visible`, `on_visibility_change`, `visibility_labels` |
@@ -640,3 +643,5 @@ The public showcase uses Rust client routing with shareable URLs and browser
 back/forward support. Theme Studio fills the viewport and retains one unsaved
 workspace while browsing or changing the site's palette/scheme. Saved preview
 payloads from the earlier schema are backed up and upgraded on load.
+
+The [WASM size baseline](docs/wasm-size.md) compares unused features and actual widget use against Glory, with reproducible builds and browser checks.

@@ -28,6 +28,7 @@ impl PillsInput {
     forward!(class, impl Into<Lotus<String>>);
     forward!(style, impl Into<Lotus<Style>>);
     forward!(name, impl Into<Lotus<String>>);
+    forward!(placeholder, impl Into<Lotus<String>>);
     forward!(label, impl Into<Lotus<String>>);
     forward!(enabled, impl Into<Lotus<bool>>);
     forward!(focus, FocusMode);

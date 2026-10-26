@@ -179,6 +179,31 @@ pub fn demo(theme: sapid::Theme) -> impl Widget {
                             .on_checked_change(move |next| loading.revise(|v| *v = next)),
                     )),
             ))
+            .show_in(scope)?;
+        sapid::group()
+            .theme(theme.clone())
+            .style(Style::new().margin(Edges {
+                top: 24.0,
+                ..Edges::all(0.0)
+            }))
+            .fill(
+                [
+                    ("Light variant", sapid::ButtonVariant::Light),
+                    ("Outline variant", sapid::ButtonVariant::Outline),
+                    ("Subtle variant", sapid::ButtonVariant::Subtle),
+                ]
+                .into_iter()
+                .map(|(label, variant)| {
+                    sapid::button()
+                        .theme(theme.clone())
+                        .variant(variant)
+                        .label(label)
+                        .enabled(disabled.map(|value| !value))
+                        .loading(loading)
+                        .on_press(move || clicks.revise(|count| *count += 1))
+                })
+                .collect::<Vec<_>>(),
+            )
             .show_in(scope)
     })
 }

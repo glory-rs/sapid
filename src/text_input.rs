@@ -1,5 +1,20 @@
 // Shared builder surface without exposing switches that break a specialized
 // input's invariant (multiline for Textarea, purpose for PasswordInput).
+pub(crate) fn placeholder(
+    scope: &glory::Scope,
+    source: Option<glory::Lotus<String>>,
+    multiline: bool,
+) -> glory::ui::Result<Option<glory::Cage<String>>> {
+    source
+        .as_ref()
+        .map(|source| {
+            crate::composite::validated(scope, source, move |value| {
+                glory::render::validate_input_placeholder(value, multiline).map_err(Into::into)
+            })
+        })
+        .transpose()
+}
+
 macro_rules! text_input_methods {
     () => {
         pub fn theme(mut self, value: crate::Theme) -> Self {
@@ -56,6 +71,10 @@ macro_rules! text_input_methods {
         }
         pub fn value(mut self, value: impl Into<glory::Lotus<String>>) -> Self {
             self.input = self.input.value(value);
+            self
+        }
+        pub fn placeholder(mut self, value: impl Into<glory::Lotus<String>>) -> Self {
+            self.input = self.input.placeholder(value);
             self
         }
         pub fn default_value(mut self, value: impl Into<String>) -> Self {

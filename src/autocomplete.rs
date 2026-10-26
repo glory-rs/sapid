@@ -27,6 +27,10 @@ pub fn autocomplete_option(key: impl Into<String>, text: impl Into<String>) -> N
     }
 }
 impl Autocomplete {
+    pub fn placeholder(mut self, value: impl Into<Lotus<String>>) -> Self {
+        self.inner = self.inner.placeholder(value);
+        self
+    }
     pub fn theme(mut self, value: Theme) -> Self {
         self.inner = self.inner.theme(value);
         self

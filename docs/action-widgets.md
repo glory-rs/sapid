@@ -18,6 +18,15 @@ style overrides preserve unspecified theme declarations; unstyled removes theme
 declarations while preserving explicit styles. Multiple observers run in order
 while the Owner remains live. References/captures retire with the Owner.
 
+`variant(ActionIconVariant::{Default,Filled,Light,Outline,Subtle})` selects a
+portable appearance for either action. ActionIcon defaults to Default;
+CloseButton defaults to Subtle. Disabled colors update with `enabled` and restore
+the chosen variant when reenabled, without replacing the native button. Explicit
+styles still win, including while disabled. `close_button().icon(children)`
+replaces the decorative glyph while preserving its accessible name and behavior.
+Square controls have zero internal padding and center their content. Tag remove
+actions use the same CloseButton with smaller, size-specific dimensions.
+
 ## Connected buttons
 
 `button_group().name("Document actions").buttons([button().label("Save"), ...])`

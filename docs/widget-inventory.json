@@ -197,7 +197,8 @@
         "implementation": [
           "src/button.rs",
           "src/theme/mod.rs",
-          "docs/button.md"
+          "docs/button.md",
+          "docs/mantine-api-comparison.md"
         ],
         "tests": [
           "tests/button_enhancements.rs (8 passed)",
@@ -206,7 +207,9 @@
           "examples/web/buttons-acceptance.js",
           "D:/BuildCache/sapid/buttons-browser.json (8 passed, Chromium 148.0.7778.96)",
           "examples/native/tests/button_enhancements.rs",
-          "D:/BuildCache/sapid/button-native-enhancements.log"
+          "D:/BuildCache/sapid/button-native-enhancements.log",
+          "tests/button_enhancements.rs",
+          "scripts/mantine-api-browser.cjs"
         ]
       }
     },
@@ -225,7 +228,9 @@
         "implementation": [
           "src/text_field.rs",
           "docs/basic-controls.md",
-          "docs/form-widgets.md"
+          "docs/form-widgets.md",
+          "docs/mantine-api-comparison.md",
+          "../glory/docs/input-placeholder.md"
         ],
         "tests": [
           "tests/widgets.rs",
@@ -234,7 +239,9 @@
           "tests/forms.rs",
           "tests/basic_control_state.rs",
           "D:/BuildCache/sapid/gate-snapshot8.log",
-          "D:/BuildCache/sapid/browser-snapshot8-results.json"
+          "D:/BuildCache/sapid/browser-snapshot8-results.json",
+          "tests/placeholders.rs",
+          "scripts/mantine-api-browser.cjs"
         ]
       }
     },
@@ -716,7 +723,8 @@
           "src/text_field.rs",
           "../glory/crates/style/src/lib.rs (FieldSizing; HTML/RECORD v4)",
           "../glory/crates/html/src/styles.rs",
-          "../glory/crates/blitz/src/document.rs (Blitz v5 explicitly rejects FieldSizing)"
+          "../glory/crates/blitz/src/document.rs (Blitz v5 explicitly rejects FieldSizing)",
+          "../glory/docs/input-placeholder.md"
         ],
         "tests": [
           "tests/inputs.rs (6 focused tests)",
@@ -730,7 +738,8 @@
           "D:/BuildCache/sapid/inputs-native-widgets.log",
           "D:/BuildCache/sapid/inputs-native-profile.log",
           "D:/BuildCache/sapid/browser-results.json",
-          "D:/BuildCache/sapid/inputs-browser.log (Chromium 148.0.7778.96; 30 reports, zero errors across all suites)"
+          "D:/BuildCache/sapid/inputs-browser.log (Chromium 148.0.7778.96; 30 reports, zero errors across all suites)",
+          "tests/placeholders.rs"
         ]
       }
     },
@@ -748,7 +757,8 @@
         "implementation": [
           "src/password_input.rs",
           "src/text_input.rs",
-          "src/text_field.rs"
+          "src/text_field.rs",
+          "../glory/docs/input-placeholder.md"
         ],
         "tests": [
           "tests/inputs.rs (6 focused tests)",
@@ -762,7 +772,8 @@
           "D:/BuildCache/sapid/inputs-native-widgets.log",
           "D:/BuildCache/sapid/inputs-native-profile.log",
           "D:/BuildCache/sapid/browser-results.json",
-          "D:/BuildCache/sapid/inputs-browser.log (Chromium 148.0.7778.96; 30 reports, zero errors across all suites)"
+          "D:/BuildCache/sapid/inputs-browser.log (Chromium 148.0.7778.96; 30 reports, zero errors across all suites)",
+          "tests/placeholders.rs"
         ]
       }
     },
@@ -1069,19 +1080,22 @@
         "M:ActionIcon",
         "M:CloseButton"
       ],
-      "work": "ActionIcon与CloseButton复用真实Button激活，强制非空名称、主题尺寸/unstyled与disabled；浏览器AX名称和原生布局已验证。",
+      "work": "ActionIcon与CloseButton复用真实Button激活，强制非空名称、主题尺寸/unstyled与disabled；浏览器AX名称和原生布局已验证。新增五种 ActionIconVariant、CloseButton 自定义 icon、居中零 padding 和动态 disabled 配色；视觉复核见 showcase-style-review。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
           "src/actions.rs",
-          "docs/action-widgets.md"
+          "docs/showcase-style-review.md",
+          "docs/action-widgets.md",
+          "examples/web/src/showcase_demos/core_icon_actions.rs"
         ],
         "tests": [
-          "tests/actions.rs (14 family tests passed)",
+          "tests/actions.rs (15 family tests)",
           "examples/web/display-acceptance.js (16 family reports; zero errors)",
           "D:/BuildCache/sapid/display-browser.json",
           "examples/native/tests/display.rs",
-          "D:/BuildCache/sapid/display-native.log"
+          "D:/BuildCache/sapid/display-native.log",
+          "scripts/showcase-style-browser.cjs"
         ]
       }
     },
@@ -1385,14 +1399,18 @@
       "evidence": {
         "implementation": [
           "src/display.rs",
-          "docs/display-widgets.md"
+          "docs/display-widgets.md",
+          "docs/showcase-style-review.md",
+          "examples/web/src/showcase_demos/core_pills.rs",
+          "src/tag.rs"
         ],
         "tests": [
           "tests/display.rs (12 family tests passed)",
           "examples/web/display-acceptance.js (16 family reports passed)",
           "D:/BuildCache/sapid/display-browser.json",
           "examples/native/tests/display.rs",
-          "D:/BuildCache/sapid/display-native.log"
+          "D:/BuildCache/sapid/display-native.log",
+          "scripts/showcase-style-browser.cjs"
         ]
       }
     },
@@ -1848,13 +1866,15 @@
       "evidence": {
         "implementation": [
           "src/combobox.rs",
-          "docs/combobox-implementation.md"
+          "docs/combobox-implementation.md",
+          "../glory/docs/input-placeholder.md"
         ],
         "tests": [
           "src/combobox.rs::tests (11 passed)",
           "examples/web/combobox-acceptance.js",
           "D:/BuildCache/sapid/combobox-browser-web12.json (12 passed, Chromium 148.0.7778.96)",
-          "D:/BuildCache/sapid/gate-snapshot10.log"
+          "D:/BuildCache/sapid/gate-snapshot10.log",
+          "tests/placeholders.rs"
         ]
       }
     },
@@ -1872,13 +1892,15 @@
         "implementation": [
           "src/autocomplete.rs",
           "src/combobox.rs",
-          "docs/autocomplete-multi-select.md"
+          "docs/autocomplete-multi-select.md",
+          "../glory/docs/input-placeholder.md"
         ],
         "tests": [
           "src/combobox_advanced_tests.rs (22 passed shared Auto/Multi tests)",
           "examples/web/choice-extras-acceptance.js",
           "D:/BuildCache/sapid/choice-extras-browser-choice-extras-next.json (12 passed, Chromium 148.0.7778.96)",
-          "D:/BuildCache/sapid/browser-web14-results.json (43 suites, 378 reports)"
+          "D:/BuildCache/sapid/browser-web14-results.json (43 suites, 378 reports)",
+          "tests/placeholders.rs"
         ]
       }
     },
@@ -1890,19 +1912,26 @@
       "sources": [
         "M:MultiSelect"
       ],
-      "work": "真实 Multiple Input、独立受控搜索与 known-key Vec、动态 tags/移除、IME 保护、multiple 成功值 proxy 和有界选项已实现。弱 Owner handle 支持当前过滤且 enabled 选项的原子全选及清空；受控拒绝、只读/组合输入/退休拒绝与四主题实际浏览器已验收。",
+      "work": "真实 Multiple Input、独立受控搜索与 known-key Vec、动态 tags/移除、IME 保护、multiple 成功值 proxy 和有界选项已实现。弱 Owner handle 支持当前过滤且 enabled 选项的原子全选及清空；受控拒绝、只读/组合输入/退休拒绝与四主题实际浏览器已验收。 新增 max_values、hide_picked_options、clearable/clear_label 与真实 placeholder；新增边界和宿主证据见 Mantine 全量 API 报告。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
           "src/multi_select.rs",
+          "docs/showcase-style-review.md",
           "src/combobox.rs",
-          "docs/autocomplete-multi-select.md"
+          "docs/autocomplete-multi-select.md",
+          "examples/web/src/showcase_demos/core_multi_select.rs",
+          "src/tag.rs",
+          "docs/mantine-api-comparison.md"
         ],
         "tests": [
           "src/combobox_advanced_tests.rs (25 passed shared Auto/Multi tests)",
           "examples/web/choice-extras-acceptance.js",
           "D:/BuildCache/sapid/choice-extras-browser-web15.json (12 passed, Chromium 148.0.7778.96)",
-          "D:/BuildCache/sapid/browser-web15-results.json (46 suites, 406 reports, errors=0)"
+          "D:/BuildCache/sapid/browser-web15-results.json (46 suites, 406 reports, errors=0)",
+          "scripts/showcase-style-browser.cjs",
+          "src/combobox_advanced_tests.rs",
+          "scripts/mantine-api-browser.cjs"
         ]
       }
     },
@@ -1920,15 +1949,21 @@
       "evidence": {
         "implementation": [
           "src/tags_input.rs",
+          "docs/showcase-style-review.md",
           "src/pills_input.rs",
-          "docs/tags-input.md"
+          "docs/tags-input.md",
+          "examples/web/src/showcase_demos/core_tags.rs",
+          "src/tag.rs",
+          "../glory/docs/input-placeholder.md"
         ],
         "tests": [
           "src/tags_input.rs (12 passed)",
           "../glory/crates/blitz/tests/tags.rs",
           "examples/web/tags-acceptance.js",
           "D:/BuildCache/sapid/tags-browser-tags-next.json (14 passed, Chromium 148.0.7778.96)",
-          "D:/BuildCache/sapid/tags-browser-web16.json (14 passed, Chromium 148.0.7778.96)"
+          "D:/BuildCache/sapid/tags-browser-web16.json (14 passed, Chromium 148.0.7778.96)",
+          "scripts/showcase-style-browser.cjs",
+          "tests/placeholders.rs"
         ]
       }
     },
@@ -3024,7 +3059,8 @@
         "implementation": [
           "src/json_input.rs",
           "src/json_model.rs",
-          "docs/json-input.md"
+          "docs/json-input.md",
+          "../glory/docs/input-placeholder.md"
         ],
         "tests": [
           "tests/json_input.rs (7 passed)",
@@ -3033,7 +3069,8 @@
           "examples/native/tests/json_input.rs (1 passed, four themes)",
           "D:/BuildCache/sapid/json-native.log",
           "examples/web/json-input-acceptance.js",
-          "D:/BuildCache/sapid/json-browser-web16.json (9 passed, Chromium 148.0.7778.96)"
+          "D:/BuildCache/sapid/json-browser-web16.json (9 passed, Chromium 148.0.7778.96)",
+          "tests/placeholders.rs"
         ]
       }
     },

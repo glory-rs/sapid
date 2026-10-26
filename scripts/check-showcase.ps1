@@ -106,6 +106,10 @@ try {
         & "$PSScriptRoot/check-theme-export.ps1"
         & node scripts/showcase-navigation-browser.cjs
         if ($LASTEXITCODE -ne 0) { throw 'showcase navigation acceptance failed' }
+        & node scripts/showcase-style-browser.cjs
+        if ($LASTEXITCODE -ne 0) { throw 'showcase style acceptance failed' }
+        & node scripts/mantine-api-browser.cjs
+        if ($LASTEXITCODE -ne 0) { throw 'Mantine API browser acceptance failed' }
     }
 } finally {
     Pop-Location
