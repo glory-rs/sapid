@@ -93,7 +93,8 @@ Native paste accepts an explicit clipboard provider or the asynchronous
 `Config::clipboard` service. The opt-in native acceptance suite covers actual
 TagsInput with the latter; desktop CopyText and macOS system round trips are
 recorded by [Glory native clipboard](../../glory/docs/native-clipboard.md).
-Mobile system clipboard, real device keyboard/IME and VoiceOver/TalkBack remain
+Android system service acceptance is recorded separately in that contract.
+iOS clipboard, mobile clipboard menus, real device keyboard/IME and VoiceOver/TalkBack remain
 separately open. SDK probe initial display is not that acceptance. See
 [Glory native tags](../../glory/docs/native-tags.md) and
 `/Volumes/Data/Caches/glory/native-tags/result.json` for the current bounds.

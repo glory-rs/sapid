@@ -31,4 +31,7 @@ Logs are `/Volumes/Data/Caches/glory/clipboard-sapid-{tests,clippy}.log`.
 The native acceptance lock now follows Glory's current fixed engine revisions
 and registry baseline; it previously retained an older Blitz/AccessKit baseline.
 Actual macOS OS round trips belong to Glory's guarded system test. Injected
-consumer tests do not establish Android/iOS clipboard or screen-reader support.
+consumer tests do not establish mobile clipboard menus or screen-reader support.
+Android now has a separate safe-JNI/ARM64 foreground OS service check, including
+semantic CopyText and prior ClipData restoration; iOS remains open. Those checks
+are recorded in the linked Glory contract, separately from these Sapid consumers.
