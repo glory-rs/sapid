@@ -696,7 +696,7 @@ macro_rules! file_composite_methods {
 }
 impl FileInput {
     file_composite_methods!();
-    /// Enable explicit Preview buttons. Header validation precedes blob URL creation.
+    /// Enable explicit Preview buttons. The host validates image headers before publishing a preview resource.
     pub fn previews(mut self, value: bool) -> Self {
         self.preview = value;
         self

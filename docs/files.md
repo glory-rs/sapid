@@ -2,8 +2,10 @@
 
 The optional `files` feature provides `file_button()`, `file_input()`,
 `dropzone()` and `file_attachment(info, controller)`. The finite protocol, real Web
-chooser/drop/read driver, four themes, unstyled appearance and explicit native
-rejection have focused tests. Immutable Web36 passed nine actual widget groups and
+chooser/drop/read driver, four themes, unstyled appearance and default-native
+rejection have focused tests. The explicit native `blitz-files` service now also
+supports FileInput/FileButton, reading and private previews; the follow-up below
+keeps actual OS dialog and drag/drop acceptance separate. Immutable Web36 passed nine actual widget groups and
 one classic-stream/adoption group in Chromium 148.0.7778.96, with no page errors.
 
 The application receives opaque `FileToken` references and display metadata, never
@@ -197,3 +199,34 @@ untrusted empty-selection change rather than an OS cancel; that synthetic event 
 ignored. No manual OS-dialog cancellation or native OS picker acceptance is claimed.
 Native File controls intentionally remain typed Unsupported; no ambient filesystem
 fallback is installed. Upload transport and its cancellation remain application-owned.
+
+
+## 2026-10-27: explicit native file service consumers
+
+The separate `examples/native` workspace adds opt-in `files`, forwarding only to
+`glory/blitz-files`. Sapid's widget/default dependency graph gains no native
+transport. Applications install a `glory::blitz::files::Files` service explicitly;
+normal widgets retain their existing controller and Owner lifecycle.
+
+`examples/native/tests/file_driver.rs` passes two tests across blue/green and
+light/dark. Actual FileInput/FileAttachment/FileButton consumers cover selected
+CJK/emoji display names, exact chunk reading, explicit Preview activation, native
+PNG header admission and decoding, CPU frames, Remove/clear, retired reads, and
+preserving the previous selection on cancellation/Busy/Unavailable. The test uses
+an injected picker/reader and the real engine/resource provider; it does not open
+an OS chooser. Strict Clippy and the default-unavailable CopyButton regression
+pass separately. Logs are `/Volumes/Data/Caches/glory/native-files-sapid-tests.log`,
+`native-files-sapid-clippy.log`, and `native-files-default-sapid-tests.log`.
+
+Glory's shared UI now revalidates a successful read/preview reply if an earlier
+event in the same drained tick revoked the selected token. Native private preview
+addresses are revoked together with the engine reuse-cache entry, so a later
+image cannot bypass the provider by reusing cached pixels. Already delivered
+pixels are not secure-erased. The genuine engine pin and all native acceptance
+lock entries are synchronized; details and budgets are in
+[`../glory/docs/native-files.md`](../../glory/docs/native-files.md).
+
+Dropzone still requires native drag/drop and is explicitly rejected by that host.
+Android/iOS pickers, OS chooser selection/cancellation, sandbox security-scoped
+bookmarks and real assistive-technology input remain open. Existing browser and
+classic-stream records above retain their original scope.
