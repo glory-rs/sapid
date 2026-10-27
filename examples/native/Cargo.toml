@@ -6,9 +6,14 @@ publish = false
 
 [workspace]
 
+[features]
+clipboard = ["glory/blitz-clipboard", "dep:blitz-traits", "dep:blitz-dom"]
+
 [dependencies]
 sapid = { path = "../..", features = ["json", "code", "dates", "charts", "chat"] }
 glory = { path = "../../../glory/crates/glory", default-features = false, features = ["html", "blitz-accesskit", "blitz-raster"] }
+blitz-traits = { git = "https://github.com/glory-rs/blitz", rev = "f717842413c46125d0d9bd425890fbe62777a559", version = "=0.3.0-beta.4", default-features = false, optional = true }
+blitz-dom = { git = "https://github.com/glory-rs/blitz", rev = "f717842413c46125d0d9bd425890fbe62777a559", version = "=0.3.0-beta.4", default-features = false, optional = true }
 
 [lints.rust]
 unsafe_code = "forbid"

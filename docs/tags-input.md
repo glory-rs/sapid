@@ -89,10 +89,12 @@ in four themes, including 256 tags, same-tick edit/commit, selected successful
 proxies, controlled refusal, paste recovery and cleanup. Sapid's controller is
 unchanged; no native/web types enter its state.
 
-Native paste currently requires an explicit clipboard provider. The stock
-platform clipboard service, semantic CopyText, OS clipboard, real device
-keyboard/IME and VoiceOver/TalkBack acceptance remain separately open. SDK probe
-initial display is not that acceptance. See
+Native paste accepts an explicit clipboard provider or the asynchronous
+`Config::clipboard` service. The opt-in native acceptance suite covers actual
+TagsInput with the latter; desktop CopyText and macOS system round trips are
+recorded by [Glory native clipboard](../../glory/docs/native-clipboard.md).
+Mobile system clipboard, real device keyboard/IME and VoiceOver/TalkBack remain
+separately open. SDK probe initial display is not that acceptance. See
 [Glory native tags](../../glory/docs/native-tags.md) and
 `/Volumes/Data/Caches/glory/native-tags/result.json` for the current bounds.
 

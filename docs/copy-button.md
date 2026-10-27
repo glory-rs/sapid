@@ -8,7 +8,7 @@ Each live semantic node retains only its numeric request watermark and at most o
 
 `feedback_delay(|| Box::pin(host_timer()))` supplies a host timer. One Owner-owned task resets terminal feedback to Idle. A new request, changed source or Owner disposal cancels it. Without this explicit timer terminal feedback remains visible until a new request or source update. The component owns no ambient clock, browser timer or platform thread. `copied_label`, `failed_label`, `label`, four themes, size, explicit styles and `unstyled` customize the actual button.
 
-The source declaration is semantic host data, not a DOM attribute. HTML full shaping, field lowering and the classic stream emit no source edits or plaintext clipboard data. SSR records the ordinary button and interest but rejects the physical action. Native currently advertises no text clipboard driver: a CopyButton activation reports Unavailable, and direct `CopyText` returns typed Unsupported after identity, enabled/inert, source and revision checks. No native OS clipboard support is implied.
+The source declaration is semantic host data, not a DOM attribute. HTML full shaping, field lowering and the classic stream emit no source edits or plaintext clipboard data. SSR records the ordinary button and interest but rejects the physical action. Native defaults to no text clipboard driver: activation reports Unavailable, and direct `CopyText` returns typed Unsupported. Applications can now enable `glory/blitz-clipboard` and supply `Config::clipboard`, using the bounded desktop worker or an explicit driver. See [Glory's native clipboard contract](../../glory/docs/native-clipboard.md). This adds no platform dependency to Sapid widget state.
 
 Focused evidence:
 
@@ -21,3 +21,14 @@ Focused evidence:
 Inspected final Green/Dark screenshots: `D:/BuildCache/sapid/copy-button-green-dark-hydrate.png` and `copy-button-green-dark-mobile.png`. The mobile page has no horizontal overflow and retains intrinsic button feedback.
 
 The same nine strengthened browser groups passed fixed Web29 (`copy-button-browser-web29.json`), including a real browser permission denial. `json-tree-copy-browser-web29.log` also records Code/Json copy integration and reused Tree acceptance. Normalization-expansion rejection (65,536 NUL bytes) now has a component regression before publishing a new accepted source.
+
+Native's opt-in acceptance feature is `examples/native --features clipboard`.
+`tests/clipboard_driver.rs` covers four-theme CopyButton feedback for all results
+and source cancellation, exact accepted CodeHighlight/JsonViewer source in both
+JSON modes, and actual asynchronous TagsInput paste/budget recovery. CPU pixels
+and cleanup are checked; the existing default-unavailable test remains separate.
+Logs are `/Volumes/Data/Caches/glory/clipboard-sapid-{tests,clippy}.log`.
+The native acceptance lock now follows Glory's current fixed engine revisions
+and registry baseline; it previously retained an older Blitz/AccessKit baseline.
+Actual macOS OS round trips belong to Glory's guarded system test. Injected
+consumer tests do not establish Android/iOS clipboard or screen-reader support.

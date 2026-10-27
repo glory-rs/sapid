@@ -3593,14 +3593,15 @@
       "sources": [
         "M:CopyButton"
       ],
-      "work": "显式带revision/request的可信宿主剪贴板action、真实成功/拒绝/不可用/失败、每文档至多一个OS写入、Owner/源替换撤销与注入计时反馈已完成；4组件、共享协议/HTML零输出差分/SSR拒绝、原生明确不可用及四主题像素1、Web28实际9组写读/权限/迟到/dirty/退休全过。",
+      "work": "显式带revision/request的可信宿主剪贴板action、真实成功/拒绝/不可用/失败、每文档至多一个OS写入、Owner/源替换撤销与注入计时反馈已完成；4组件、共享协议/HTML零输出差分/SSR拒绝、原生默认不可用及四主题像素1；显式可选桌面剪贴板、四主题 CopyButton/Code/Json/Tags 异步消费端和 macOS 系统往返另已通过，移动 OS driver 仍开放；Web28实际9组写读/权限/迟到/dirty/退休全过。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
           "src/copy_button.rs",
           "docs/copy-button.md",
           "../glory/crates/render/src/clipboard.rs",
-          "../glory/crates/web/src/browser/clipboard.rs"
+          "../glory/crates/web/src/browser/clipboard.rs",
+          "../glory/docs/native-clipboard.md"
         ],
         "tests": [
           "tests/copy_button.rs (4 passed)",
@@ -3610,7 +3611,10 @@
           "D:/BuildCache/sapid/clipboard-protocol-tests.log",
           "D:/BuildCache/sapid/clipboard-html-tests.log",
           "D:/BuildCache/sapid/clipboard-ssr-tests.log",
-          "D:/BuildCache/sapid/clipboard-native-tests.log"
+          "D:/BuildCache/sapid/clipboard-native-tests.log",
+          "examples/native/tests/clipboard_driver.rs (--features clipboard; 3 passed, four themes)",
+          "/Volumes/Data/Caches/glory/clipboard-sapid-tests.log",
+          "/Volumes/Data/Caches/glory/clipboard-macos-system.log (guarded macOS system round trip)"
         ]
       }
     },
