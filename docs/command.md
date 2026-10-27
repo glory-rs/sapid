@@ -53,10 +53,15 @@ million-element admission, application capture cleanup, cold SSR/pending shape
 equality, lazy host polling, new-query/refresh/disable/close/Owner cancellation,
 nearest shortcut-scope retirement, blank/Unicode-whitespace name rejection before
 node allocation and the maximum live/scrollable result set. Render's Palette test covers finite
-origin constraints and suspension; native `blitz/tests/palette.rs` explicitly
-rejects the interest while preserving the accepted Bounds watermark. Existing
-The required editable Choice and Palette facets remain explicitly unsupported
-in native; the separate Dialog/Popover native layer driver is implemented.
+origin constraints and suspension; native `blitz/tests/palette.rs` admits the
+interest while preserving the accepted Bounds watermark. The native driver now
+connects Choice, editable Input, Listbox and Palette facets. Ctrl/Meta+K only
+observes its nearest explicitly registered non-editor physical scope; editors,
+composition, modified/repeated chords and owner retirement retain their guards.
+The actual four-theme Command consumer opens a modal, searches Chinese labels,
+commits through Choice and restores focus. Native/AX/CPU and mobile SDK evidence
+are bounded separately from actual platform input or reader acceptance; see
+[native menus](../../glory/docs/native-menus.md).
 `ssr/src/stream/command_tests.rs` produces real Dialog/Input/Listbox/Option
 Shell/Patch/End, originally verified with HTML v5/classic v2 on Web20. Current
 producers follow HTML v13/classic v2, without a pre-WASM input driver.
@@ -68,3 +73,9 @@ Chromium 148 against the fixed root Web20 snapshot, with no recorded errors:
 CSR/hydration combinations, actual keyboard/pointer/touch/AX, asynchronous
 replacement/cancel/refresh, IME, controlled refusal, oversized-search recovery,
 maximum-results scrolling, dirty adoption and classic stream handoff.
+
+
+当前 Apple 主机复验：既有 Menu/Menubar/ContextMenu/Command 四组浏览器脚本共
+49 个报告通过（含四主题 CSR/水合）。Home 验证默认事件未被拦截，光标行首使用
+平台快捷键，避免把某一浏览器宿主的 Home 位置当作所有系统的保证。当前报告为
+`/Volumes/Data/Caches/glory/native-menus/browser-results.json`，保留此前失败诊断。

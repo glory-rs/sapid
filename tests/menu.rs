@@ -474,3 +474,135 @@ fn menu_ssr_has_real_menu_checks_radio_grouping_and_stable_hidden_shells() {
     assert_eq!(snapshot.html.matches("popover=\"manual\"").count(), 2);
     assert!(snapshot.html.contains("hidden=\"\""));
 }
+
+#[test]
+fn keyboard_focus_and_reveal_follow_visibility_and_exit_retires_older_focus_intents() {
+    use glory::render::{
+        Action, Capabilities, Input, Mutation, Query, QueryToken, Receipt, Render,
+    };
+    struct Host {
+        memory: glory::render::memory::Memory,
+        actions: Rc<RefCell<Vec<Action>>>,
+        queued: Rc<RefCell<Vec<Input>>>,
+    }
+    impl Render for Host {
+        fn style_profile(&self) -> glory::style::Profile {
+            glory::style::Profile::RECORD
+        }
+        fn capabilities(&self) -> Capabilities {
+            Capabilities {
+                focus: true,
+                scroll: true,
+                ..Default::default()
+            }
+        }
+        fn apply(
+            &mut self,
+            m: &[Mutation],
+        ) -> std::result::Result<Receipt, glory::render::Error> {
+            self.memory.apply(m)
+        }
+        fn request(
+            &mut self,
+            q: Query,
+            t: QueryToken,
+        ) -> std::result::Result<(), glory::render::Error> {
+            self.memory.request(q, t)
+        }
+        fn action(&mut self, a: Action) -> std::result::Result<(), glory::render::Error> {
+            if matches!(a, Action::Focus(_) | Action::ScrollIntoView(_)) {
+                assert!(
+                    self.memory.active(a.node()),
+                    "focus/reveal must follow the visibility commit"
+                );
+            }
+            self.actions.borrow_mut().push(a);
+            Ok(())
+        }
+        fn drain(&mut self, out: &mut Vec<Input>) {
+            out.append(&mut self.queued.borrow_mut());
+        }
+    }
+    let actions = Rc::new(RefCell::new(Vec::new()));
+    let output = actions.clone();
+    let queued = Rc::new(RefCell::new(Vec::<Input>::new()));
+    let queue = queued.clone();
+    let app = App::new(move |runtime| Host {
+        memory: glory::render::memory::Memory::new(runtime),
+        actions: output,
+        queued: queue,
+    });
+    let open = app.scope().cage(false);
+    let accept = app.scope().cage(true);
+    app.mount(
+        dropdown_menu("reveal")
+            .label("Actions")
+            .open(open)
+            .on_open_change(move |next| {
+                if accept.get() {
+                    open.revise(|value| *value = next)
+                }
+            })
+            .items([
+                menu_item("alpha").label("Alpha"),
+                menu_item("beta").label("Beta"),
+            ]),
+    )
+    .unwrap();
+    let trigger = control(&app, "Actions");
+    let alpha = control(&app, "Alpha");
+    let beta = control(&app, "Beta");
+    command(&app, trigger, MenuCommand::Last);
+    app.settle(16).unwrap();
+    assert_eq!(
+        *actions.borrow(),
+        [Action::Focus(beta), Action::ScrollIntoView(beta)]
+    );
+    actions.borrow_mut().clear();
+    app.dispatch(
+        beta,
+        Event::Navigate {
+            from: beta,
+            command: Navigation::First,
+        },
+    )
+    .unwrap();
+    app.settle(16).unwrap();
+    assert_eq!(
+        *actions.borrow(),
+        [Action::Focus(alpha), Action::ScrollIntoView(alpha)]
+    );
+    actions.borrow_mut().clear();
+    accept.revise(|value| *value = false);
+    queued.borrow_mut().extend([
+        Input::Event {
+            node: trigger,
+            event: Event::Menu {
+                from: trigger,
+                command: MenuCommand::Last,
+            },
+        },
+        Input::Event {
+            node: alpha,
+            event: Event::Menu {
+                from: alpha,
+                command: MenuCommand::Exit { backwards: false },
+            },
+        },
+    ]);
+    app.pump().unwrap();
+    app.settle(16).unwrap();
+    assert!(open.get(), "the controlled close was refused");
+    assert_eq!(
+        *actions.borrow(),
+        [Action::ExitMenu {
+            node: panels(&app)[0],
+            backwards: false
+        }],
+        "an older focus/reveal request must not reclaim focus after Tab"
+    );
+    actions.borrow_mut().clear();
+    app.clear().unwrap();
+    app.settle(16).unwrap();
+    assert!(actions.borrow().is_empty());
+}

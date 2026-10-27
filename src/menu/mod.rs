@@ -630,6 +630,8 @@ struct MenuState {
     owner: glory::core::InstanceId,
     pending: Rc<OwnerDelay>,
     hovered: Cell<Option<NodeId>>,
+    // One current keyboard/hover focus intent, delivered after visible bindings.
+    focus_request: Cage<Option<NodeId>>,
     delay: Option<Delay>,
 }
 impl MenuState {
@@ -642,6 +644,11 @@ impl MenuState {
             return Ok(());
         }
         if !open {
+            // Closing/Tab supersedes an older navigation intent even when the
+            // application refuses the controlled close.
+            if self.focus_request.try_get()?.is_some() {
+                self.focus_request.try_revise(|pending| *pending = None)?;
+            }
             self.cancel_pending();
             self.close_children(None)?;
         }
@@ -678,9 +685,11 @@ impl MenuState {
         }
         Ok(())
     }
-    fn focus_item(&self, scope: &Scope, item: crate::MountedItem) -> Result {
+    fn focus_item(&self, _scope: &Scope, item: crate::MountedItem) -> Result {
         self.roving.accept(&item)?;
-        composite::focus_node(scope, Some(item.node))
+        self.focus_request
+            .try_revise(|pending| *pending = Some(item.node))?;
+        Ok(())
     }
     fn boundary(&self, scope: &Scope, last: bool) -> Result {
         let items = self.collection.mounted()?;
@@ -908,6 +917,7 @@ impl Level {
             owner: scope.id(),
             pending,
             hovered: Cell::new(None),
+            focus_request: scope.cage(None),
             delay: self.delay.clone(),
         });
         let cleanup = Rc::downgrade(&state);
@@ -1203,8 +1213,31 @@ impl Level {
             let result = (|| -> Result {
                 let visible = live.visible.try_get()?;
                 live.roving.repair(None)?;
+                let requested = live.focus_request.try_get()?;
+                if requested.is_some() {
+                    live.focus_request.try_revise(|pending| *pending = None)?;
+                }
                 if !visible {
                     live.cancel_pending();
+                } else if let Some(target) = requested {
+                    let items = live.collection.mounted()?;
+                    let current = live.roving.current()?;
+                    let target = items
+                        .iter()
+                        .find(|item| item.enabled && item.node == target)
+                        .or_else(|| {
+                            items.iter().find(|item| {
+                                item.enabled && Some(&item.member) == current.as_ref()
+                            })
+                        });
+                    if let Some(item) = target
+                        && scope.is_active(item.node)?
+                    {
+                        composite::focus_node(&scope, Some(item.node))?;
+                        if scope.capabilities()?.scroll {
+                            scope.action(Action::ScrollIntoView(item.node))?;
+                        }
+                    }
                 }
                 Ok(())
             })();

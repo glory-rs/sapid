@@ -1726,7 +1726,7 @@
         "M:Menu",
         "S:Dropdown Menu"
       ],
-      "work": "真实Menu/MenuItem/原生勾选单选、共享Collection/RTL/Typeahead、层级键盘与指针延迟/间隙、Tab退出和受控拒绝已实现；浏览器11组及SSR stream通过，原生Layer/输入明确拒绝并验证前缀水位。",
+      "work": "真实Menu/MenuItem/勾选单选、Collection/RTL/Typeahead、层级/指针延迟/Tab退出与受控拒绝已有实现；原生Menu Layer/输入/AX现已连接。焦点与显式显露在可见绑定后执行，关闭取消旧意图；四主题实际消费者含长菜单滚动点击通过，OS输入/读屏另验收。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -1740,7 +1740,10 @@
           "../glory/crates/html/tests/menu.rs",
           "../glory/crates/blitz/tests/menu.rs",
           "../glory/crates/blitz/src/accessibility_menu_tests.rs",
-          "D:/BuildCache/sapid/menu-browser-results.json (11 passed; errors=[]; isolated menu-next snapshot)"
+          "D:/BuildCache/sapid/menu-browser-results.json (11 passed; errors=[]; isolated menu-next snapshot)",
+          "/Volumes/Data/Caches/glory/menu-consumer-tests.log (8 actual native consumer tests; four themes where applicable)",
+          "tests/menu.rs: keyboard_focus_and_reveal_follow_visibility_and_exit_retires_older_focus_intents",
+          "/Volumes/Data/Caches/glory/native-menus/browser-results.json (49 reports across Menu/Menubar/ContextMenu/Command; four-theme CSR/hydration)"
         ]
       }
     },
@@ -1752,7 +1755,7 @@
       "sources": [
         "S:Context Menu"
       ],
-      "work": "真实 ContextMenu region、鼠标/键盘有限 viewport point、最近嵌套区域与编辑器 Native/Override 策略、复用 Menu 模型/子菜单/受控开关、实际焦点恢复与双向 Tab 退出已实现。禁用/IME native followup 一致性、Owner 退休、SSR/stream 与根 Web17 实际14项通过；原生新 facet 明确拒绝，触屏长按保留 native 策略。",
+      "work": "ContextMenu region、有限viewport point、最近边界、Native/Override编辑器策略及Menu模型/子菜单/受控关闭已实现；Glory原生ContextPoint Layer/输入及上下文区域Tab边界已连接，四主题实际消费端通过；触屏长按保持宿主策略，真实OS输入/读屏另验收。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -1768,7 +1771,9 @@
           "../glory/crates/blitz/tests/context_menu.rs (1 passed)",
           "../glory/crates/ssr/src/stream/menu_tests.rs",
           "examples/web/context-menu-acceptance.js",
-          "D:/BuildCache/sapid/context-menu-browser-root17.json (14 passed, Chromium 148.0.7778.96)"
+          "D:/BuildCache/sapid/context-menu-browser-root17.json (14 passed, Chromium 148.0.7778.96)",
+          "/Volumes/Data/Caches/glory/menu-consumer-tests.log (8 actual native consumer tests; four themes where applicable)",
+          "/Volumes/Data/Caches/glory/native-menus/browser-results.json (49 reports across Menu/Menubar/ContextMenu/Command; four-theme CSR/hydration)"
         ]
       }
     },
@@ -1781,7 +1786,7 @@
         "M:Menubar",
         "S:Menubar"
       ],
-      "work": "真正Menubar/MenuItemAction根语义、互斥受控根菜单、水平/RTL/typeahead和嵌套菜单/Tab边界已实现。4组件/2render/1HTML oracle/1stream/1原生明确拒绝与实际Chromium148原始10组全过；自定义name回归已修。",
+      "work": "Menubar/MenuItemAction根语义、互斥受控根菜单、水平/RTL/typeahead和嵌套菜单/Tab边界已实现；Glory原生协议和AX关系现已连接，四主题实际消费端及原有浏览器证据保留；系统菜单栏/OS读屏分开验收。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -1796,7 +1801,9 @@
           "../glory/crates/html/src/menu/bar/tests.rs (1 passed)",
           "../glory/crates/blitz/tests/menubar.rs (1 passed)",
           "examples/web/menubar-acceptance.js",
-          "D:/BuildCache/sapid/menubar-browser-menubar-final-rating-next.json (10 passed, Chromium 148.0.7778.96)"
+          "D:/BuildCache/sapid/menubar-browser-menubar-final-rating-next.json (10 passed, Chromium 148.0.7778.96)",
+          "/Volumes/Data/Caches/glory/menu-consumer-tests.log (8 actual native consumer tests; four themes where applicable)",
+          "/Volumes/Data/Caches/glory/native-menus/browser-results.json (49 reports across Menu/Menubar/ContextMenu/Command; four-theme CSR/hydration)"
         ]
       }
     },
@@ -1976,7 +1983,7 @@
         "S:Command",
         "X:Spotlight"
       ],
-      "work": "Command/Spotlight真正Dialog+editable Input+有界Listbox/分组已实现，显式Owner Palette快捷键、受控搜索/打开、戳记结果或Owner resource异步加载取消、IME/禁用/空错误状态和256项Reveal均补齐。11模型、共享Palette/SSRstream/原生明确拒绝证据及Web20实际14项全过。",
+      "work": "Command/Spotlight真实Dialog+editable Input+有界Listbox/分组、显式Owner Palette快捷键、受控搜索/打开及异步结果取消已实现；Glory原生Choice/Palette连接后，四主题实际中文搜索/提交/模态恢复及同批菜单导航隔离通过，OS输入/读屏另验收。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -1990,7 +1997,9 @@
           "../glory/crates/blitz/tests/palette.rs",
           "../glory/crates/ssr/src/stream/command_tests.rs",
           "examples/web/command-acceptance.js",
-          "D:/BuildCache/sapid/command-browser-root20.json (14 passed, Chromium 148.0.7778.96)"
+          "D:/BuildCache/sapid/command-browser-root20.json (14 passed, Chromium 148.0.7778.96)",
+          "/Volumes/Data/Caches/glory/menu-consumer-tests.log (8 actual native consumer tests; four themes where applicable)",
+          "/Volumes/Data/Caches/glory/native-menus/browser-results.json (49 reports across Menu/Menubar/ContextMenu/Command; four-theme CSR/hydration)"
         ]
       }
     },

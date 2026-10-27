@@ -1,6 +1,6 @@
 # ContextMenu
 
-P4-02 has component, shared protocol, native refusal and actual browser evidence
+P4-02 has component, shared protocol, native connection and actual browser evidence
 against the unified root Web17 snapshot.
 
 `context_menu(key).target(widget)` mounts a named Group region around an ordinary
@@ -57,15 +57,19 @@ oracle. Classic streaming transports declarations and point updates; it does not
 implement a second pre-WASM menu input/focus driver. Adoption starts the actual
 Web driver from the declared live state.
 
-Blitz explicitly rejects context input policy before registering engine facets,
-in descriptor preflight, patch preflight and direct apply. It retains accepted
-prefix nodes and query watermarks. Ordinary native Views remain supported;
-native context-menu interaction or platform accessibility acceptance is not
-claimed.
+Blitz admits context regions, nearest-boundary/editor policy and finite mouse/pen or
+keyboard requests. ContextPoint Menu layers use actual viewport geometry and
+preserve parent modal/focus-scope boundaries. Native Tab exit uses the current
+context region as a boundary, excluding its descendants and all Menu trees;
+controlled close and exit can commit in one frame. The native tests retain the
+accepted-prefix/query contract when a later unsupported control is rejected.
+Actual four-theme Sapid context consumers, CPU frames and AX models are covered
+in [native menus](../../glory/docs/native-menus.md); OS input and screen-reader
+acceptance remain separate. Touch long-press is unchanged.
 
 Current evidence: Sapid `tests/context_menu.rs` has four passing component,
 controlled refusal, observer order, Owner and iterator-budget tests. Existing `tests/menu.rs`
-has seven passing regressions. Glory `render/tests/context_menu.rs` has two
+has eight passing regressions. Glory `render/tests/context_menu.rs` has two
 passing finite-policy/payload/ancestry/retirement/rollback tests;
 `html/src/context_menu_tests.rs` has one passing policy/point/reset full-shape
 oracle; `ssr/src/stream/menu_tests.rs` verifies policy/point Shell/Patch/End;

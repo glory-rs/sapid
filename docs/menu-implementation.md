@@ -63,7 +63,7 @@ Hydration 全子树验证通过后才修复 inactive/disabled Check 的脏 check
 
 ## 验收证据
 
-- `tests/menu.rs`：7 项，覆盖真实控件、共享导航/搜索、层级/关闭、受控拒绝、非法 sibling
+- `tests/menu.rs`：8 项，覆盖真实控件、共享导航/搜索、层级/关闭、受控拒绝、非法 sibling
   外部状态、Owner 捕获释放、单 task 取消/晚到唤醒、接收预算及稳定 SSR shell。
 - `tests/choices_budget.rs`：2 项，百万迭代器/重复单项添加，以及百万外部多选来源的构建和
   事件拒绝路径。
@@ -80,15 +80,24 @@ Hydration 全子树验证通过后才修复 inactive/disabled Check 的脏 check
   静止鼠标回归修复后，隔离 `web/menu-race` 在 Chromium 148.0.7778.96 和
   153.0.8010.12 各 11/11 报告通过、errors=[]，证据分别为
   `D:/BuildCache/sapid/menu-browser-148.json` 与 `menu-browser-153.json`。
-- Native `blitz/tests/menu.rs`：1 项，通过 descriptor/patch preflight、direct apply、成功前缀、
-  listen 拒绝与 query 水位；AccessKit `menu_metadata_refines_actual_intrinsic_controls_and_exports_typed_popup`：
-  1 项，支持的无 Layer live 模型使用真实 Menu/MenuItem/MenuItemCheckBox、PopupKind 和 checked。
+- Native `blitz/tests/menu.rs` 验证当前 Menu Layer 准入、后续拒绝的成功前缀及 query 水位；
+  原生输入/CPU/AX 回归验证实际 Menu/Item/Check/Radio、菜单栏关系、模态边界和关闭后动作退休。
 - Sapid lib/Menu/budget strict Clippy、Glory SSR stream strict Clippy 通过。
 
 ## 当前边界
 
-Native 明确拒绝 Menu Layer 和 Menu/Pointer 输入；Radio 继续明确拒绝，保留模型验证和已接受
-前缀。上述 AccessKit 模型测试不宣称 native 菜单已可用，也不替代 OS 菜单键或屏幕阅读器朗读。
-ContextMenu（P4-02）与 Menubar（P4-03）尚未由本批交付。菜单是有限显式配置，不提供动态
-列表来源/虚拟菜单、触屏长按策略、任意宿主定时器或任意 DOM 插槽。单选/勾选菜单偏好
-不会作为 Field 表单值提交。
+Glory 原生后端已连接 Menu/Menubar、RTL/Typeahead、勾选 Enter、最近的 ContextMenu region、
+Palette 快捷键、ContextPoint 定位和有界 Tab 退出。当前键盘焦点请求只保留一个 NodeId，
+在可见性绑定提交后请求 Focus 与显式 ScrollIntoView；不改变 Focus 的 prevent-scroll 契约。
+关闭/Tab 会取消旧焦点意图，包括受控关闭拒绝，避免稍后的显露动作夺回焦点。
+选项显露只经过当前 Layer 内的物理滚动容器，不扫描业务数据。
+
+`/Volumes/Data/Caches/glory/native-menu-consumer` 的实际消费端覆盖四主题菜单、菜单栏、
+ContextMenu、Command/Spotlight、初始子菜单、受控拒绝、长列表显露与滚动后点击；
+另验证同一宿主批次中菜单导航与新 Palette modal 的焦点隔离。实现和宿主证据见
+[Glory native menus](../../glory/docs/native-menus.md)。历史浏览器记录继续保留，
+协议/CPU 和 AX 模型检查不等于真实 OS 菜单键、屏幕阅读器或系统菜单栏验收。
+
+菜单仍是有限显式配置，不提供动态列表来源/虚拟菜单、触屏长按策略、任意宿主定时器或
+任意 DOM 插槽。单选/勾选菜单偏好不会作为 Field 表单值提交。Cocoa/Win32 等系统
+菜单栏、托盘服务与这套自绘语义菜单分开记录。

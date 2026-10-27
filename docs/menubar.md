@@ -64,10 +64,13 @@ producer transports Menubar role/orientation, root marker and expanded state
 through Shell/Patch/End. The original acceptance used HTML v4/classic v2;
 current producers use HTML v13 with the same classic v2 envelope.
 
-`blitz/tests/menubar.rs` verifies descriptor/patch preflight and direct rejection
-before engine facets, with the accepted-prefix Bounds watermark retained.
-Native Menubar input and native accessibility acceptance remain unsupported;
-the pure AccessKit enum mapping is not input-driver evidence.
+`blitz/tests/menubar.rs` now verifies finite admission and retained query/prefix
+watermarks after a later unsupported control. The native connection covers root
+and submenu commands, directional navigation, Typeahead and whole-bar Tab exit.
+Actual four-theme Sapid consumers and current AccessKit MenuBar/MenuItem/popup
+relations pass; this is a self-drawn semantic menubar, separate from platform
+system-menu services and OS assistive-technology acceptance. See
+[native menus](../../glory/docs/native-menus.md).
 
 `D:/BuildCache/sapid/menubar-browser-menubar-final-rating-next.json` records the
 unmodified `examples/web/menubar-acceptance.js` against the fixed combined
@@ -82,6 +85,6 @@ Owner removal. Independent groups cover dirty adoption preserving sibling
 editor identity/value/focus/selection and Rust-produced classic stream End.
 The earlier snapshot using a diagnostic name adapter is not completion evidence.
 
-Existing Menu's seven model tests and ContextMenu's four model tests remain
+Existing Menu's eight model tests and ContextMenu's four model tests remain
 green; ContextMenu's full 14 browser groups also passed against the Menubar host
 changes. No OS screen-reader or native Menubar interaction acceptance is claimed.
