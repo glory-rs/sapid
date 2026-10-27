@@ -1,6 +1,6 @@
 # TagsInput and PillsInput
 
-P4-09 has model, shared protocol, native refusal and actual browser evidence.
+P4-09 has model, shared protocol, native host connection and actual browser evidence.
 The final browser report uses the unified root Web16 snapshot; the earlier
 isolated `tags-next` report remains useful diagnostic evidence.
 
@@ -81,10 +81,20 @@ value/revision untouched on policy changes. This batch used HTML v4/classic
 stream v2 without new edit operations. Current producers follow HTML v13 with
 the classic v2 envelope; the original snapshot evidence below retains its version.
 
-Blitz explicitly rejects tags policy in descriptor preflight and direct apply
-before registering facets. Plain native Inputs remain supported. The rejection
-test preserves successful-prefix query watermarks. No native tags input or AX
-support, OS IME, or screen-reader acceptance is claimed.
+Blitz now admits the tags policy and connects shared key/revision commands,
+software punctuation/Return, composition guards, atomic UTF-16 paste and body-free
+budget rejection. It retains an ordinary native TextInput and controlled
+selection/identity. Five actual TagsInput/PillsInput native consumer tests pass
+in four themes, including 256 tags, same-tick edit/commit, selected successful
+proxies, controlled refusal, paste recovery and cleanup. Sapid's controller is
+unchanged; no native/web types enter its state.
+
+Native paste currently requires an explicit clipboard provider. The stock
+platform clipboard service, semantic CopyText, OS clipboard, real device
+keyboard/IME and VoiceOver/TalkBack acceptance remain separately open. SDK probe
+initial display is not that acceptance. See
+[Glory native tags](../../glory/docs/native-tags.md) and
+`/Volumes/Data/Caches/glory/native-tags/result.json` for the current bounds.
 
 Current evidence:
 
@@ -96,8 +106,9 @@ Current evidence:
 - Glory `render/tests/tags.rs`: three payload/policy/routing/rollback tests.
   `html/src/tags_tests.rs`: prepared-field/full-shape oracle, required/default
   resets and preservation of a large unrelated editor value/revision.
-- Glory `blitz/tests/tags.rs`: one passing explicit refusal/plain Input/prefix/query
-  test, run against the verified native D-drive target.
+- Glory `blitz/tests/tags.rs`: plain/refined admission and retained successful-prefix/query
+  watermark after a later unsupported File control. Eight native input/AX tests
+  and five actual Sapid consumer tests provide the current host evidence.
 - Sapid library/tests and current WASM fixture compile with strict Clippy.
   `examples/web/src/tags_form.rs`, `tags.html` and `tags-acceptance.js` are prepared
   for four-theme CSR/hydration, real clipboard, IME protocol, pointer/touch,

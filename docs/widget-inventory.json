@@ -1951,7 +1951,7 @@
         "M:TagsInput",
         "M:PillsInput"
       ],
-      "work": "自由 TagsInput/PillsInput 的原子受控 state、重复策略、有界分隔/粘贴/删除、IME 保护、真实成功值 proxy 与退休清理已实现；模型/共享协议、原生明确拒绝 facet 与 Web16 实际 14 项通过。",
+      "work": "自由 TagsInput/PillsInput 的原子受控 state、重复策略、有界分隔/粘贴/删除、IME 保护、成功值 proxy 与清理已实现；Glory 原生 host 协议和 AX textbox 现已连接，五项四主题实际消费端含 256 tags/UTF-16/拒绝恢复通过。平台剪贴板服务与 OS 输入/读屏另验收；原 Web16 14 项证据保留。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -1961,7 +1961,8 @@
           "docs/tags-input.md",
           "examples/web/src/showcase_demos/core_tags.rs",
           "src/tag.rs",
-          "../glory/docs/input-placeholder.md"
+          "../glory/docs/input-placeholder.md",
+          "../glory/docs/native-tags.md"
         ],
         "tests": [
           "src/tags_input.rs (12 passed)",
@@ -1970,7 +1971,9 @@
           "D:/BuildCache/sapid/tags-browser-tags-next.json (14 passed, Chromium 148.0.7778.96)",
           "D:/BuildCache/sapid/tags-browser-web16.json (14 passed, Chromium 148.0.7778.96)",
           "scripts/showcase-style-browser.cjs",
-          "tests/placeholders.rs"
+          "tests/placeholders.rs",
+          "/Volumes/Data/Caches/glory/tags-workspace-tests.log (8 native input/AX regressions within the 1032-test workspace)",
+          "/Volumes/Data/Caches/glory/tags-consumer-tests.log (5 actual native consumers, four themes)"
         ]
       }
     },
