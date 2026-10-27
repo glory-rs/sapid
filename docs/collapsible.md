@@ -23,14 +23,17 @@ Web 对真实 intrinsic height 插值。进入、退出、快速反向和内容�
 
 外部裁剪壳必须保持 intrinsic block：不接受自身 height/min/max-height/aspect-ratio、非零 padding/border/shadow、flex-grow 或定位。内容内层可自由布局和装饰。默认主题的间距置于内层，`.unstyled()` 去除外观而保留结构与语义；显式样式仍按这些结构约束校验。
 
-SSR 没有物理完成观察，关闭直接采用逻辑内容策略。Blitz 明确拒绝启用高度过渡这一可选 facet，创建和 patch 都在前缀契约下拒绝；不会以原生 check 通过宣称动画支持。`animated(false)` 仍是已声明的 motion facet，原生应省略该 API。普通折叠原生基线保持可用。
+SSR 没有物理完成观察，关闭直接采用逻辑内容策略。Blitz 现接通相同的有限高度声明与 revision 完成回执：原生布局测量实际 intrinsic height，Stylo 对临时数值约束插值，跟随内容与裁剪更新真实 CPU 像素。反向从当前高度继续，内容增长/宽度变化使用剩余时间；完成后释放约束。关闭立即 hidden/inert，匹配终态才释放 Unmount Owner。初始、0/停用/Reduce、不可用祖先、CSS 隐藏、零 viewport 与 Suspend 都有单次终态；Resume 不重放，Dispose 退休当前原生动画。
+
+原生宿主的 `Config::motion` 默认 Reduce；应用显式选择 `MotionPreference::NoPreference` 才进行动画，也可通过 `Renderer::set_motion_preference` 修改。该选项不隐式读取 OS 偏好。引擎的隐藏子树动画与 block/contents 旧布局缓存修复位于真正的固定 fork；详见 [Glory 原生收合边界](../../glory/docs/native-collapse.md)。
 
 ## 协议与证据
 
 高度能力使用共享有限 `CollapseConfig`、`CollapseComplete` 和显式 completion capability，HTML Snapshot 为 v5、classic envelope 为 v2。classic End 后采用重新开始客户端 revision 生命周期；整个子树验证成功才原地重置计数，保留编辑器身份、dirty 值、焦点与选择。旧、未来、重复完成分别遵守丢弃、拒绝和单次终态约束。
 
 - `tests/collapse_motion.rs`：4 项，包含延迟 Owner、旧/未来/重复完成、受控静默、KeepMounted、无完成宿主及四主题整树退休回归。
-- Glory render 5 项共享与 conformance、2 项有限配置单测；HTML 2 项 full-shape oracle；SSR 同步 1 项、stream 1 项；Blitz 2 项显式拒绝和 prefix-query conformance。
+- Glory render 5 项共享与 conformance、2 项有限配置单测；HTML 2 项 full-shape oracle；SSR 同步 1 项、stream 1 项；Blitz 5 项 native conformance/几何/CPU/retarget/生命周期回归。
+- `examples/native/tests/collapse_motion.rs`：实际 Collapsible 四主题 × Unmount/KeepMounted，原生中间高度、焦点返回、旧回执拒绝、重开编辑器身份、零时长与 Owner 清理；记录在 `/Volumes/Data/Caches/glory/native-collapse-sapid-final-tests.log`。
 - `examples/web/collapse-motion-acceptance.js`：四主题 CSR/采用、真实中间高度、反向、动态内容、焦点和 Chrome AX、Clear/0/Reduce、受控拒绝及 Owner 退休；另含失败采用不修改、classic End 接管和能力不足回退。
 
 Chromium 148.0.7778.96 的独立同源 `command-next` 快照最终通过 12/12，`errors: []`，报告为 `D:/BuildCache/sapid/collapse-motion-browser-command-next.json`。真实进入中间高度约 29px、目标 128px，退出中间约 98px；反向关键帧使用当前 `calc-size` 系数，内容增长后达到 212px。classic End 的 revision 1 原地采用为客户端 0，dirty 输入、选择和焦点保留，关闭终态只观察一次。四张采用截图已保存并检查绿色暗色 390px 移动视口。

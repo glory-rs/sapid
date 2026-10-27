@@ -282,22 +282,27 @@
         "M:Collapse",
         "S:Collapsible"
       ],
-      "work": "Collapsible有限intrinsic height动画、反向/内容增长、匹配revision完成后的Unmount、KeepMounted、Clear/0/Reduce和能力不足即时完成已补齐。4组件/共享render5+2/HTML2/SSR+stream/native2与Chromium148实际12场景全过；v5采用仅全树成功后重置counter并保dirty编辑器。Blitz可选motion facet明确拒绝，普通基线保留。",
+      "work": "Collapsible 有限 intrinsic height 动画、反向/内容增长、匹配 revision 后的 Unmount、KeepMounted、Clear/0/Reduce 已补齐。Web 四主题 CSR/采用及 Chromium 12 场景原证据保留；Blitz 现接通真实原生几何/CPU 插值、2x 文字重排、嵌套、隐藏/恢复/清理和单次完成回执，实际四主题双内容策略消费端验证编辑器身份、焦点返回、旧回执拒绝与 Owner 清理。OS 输入、读屏和真机呈现仍单独验收。",
       "baseline_at_snapshot": true,
       "evidence": {
         "implementation": [
           "src/collapsible/mod.rs",
           "docs/collapsible.md",
           "../glory/crates/render/src/collapse.rs",
-          "../glory/crates/web/src/browser/collapse.rs"
+          "../glory/crates/web/src/browser/collapse.rs",
+          "../glory/crates/blitz/src/collapse.rs",
+          "../glory/docs/native-collapse.md"
         ],
         "tests": [
           "tests/collapse_motion.rs (4 passed)",
           "../glory/crates/render/tests/collapse.rs (5 passed)",
           "../glory/crates/html/src/collapse_tests.rs (2 passed)",
-          "../glory/crates/blitz/tests/collapse.rs (2 passed)",
+          "../glory/crates/blitz/tests/collapse.rs (5 passed)",
           "examples/web/collapse-motion-acceptance.js",
-          "D:/BuildCache/sapid/collapse-motion-browser-command-next.json (12 passed, Chromium 148.0.7778.96)"
+          "D:/BuildCache/sapid/collapse-motion-browser-command-next.json (12 passed, Chromium 148.0.7778.96)",
+          "examples/native/tests/collapse_motion.rs (four themes, two content policies)",
+          "/Volumes/Data/Caches/glory/native-collapse-sapid-final-tests.log",
+          "/Volumes/Data/Caches/glory/native-collapse-final-tests.log"
         ]
       }
     },
