@@ -2758,6 +2758,7 @@ dependencies = [
  "blitz-traits",
  "glory",
  "sapid",
+ "winit",
 ]
 
 [[package]]

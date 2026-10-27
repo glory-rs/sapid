@@ -226,7 +226,40 @@ pixels are not secure-erased. The genuine engine pin and all native acceptance
 lock entries are synchronized; details and budgets are in
 [`../glory/docs/native-files.md`](../../glory/docs/native-files.md).
 
-Dropzone still requires native drag/drop and is explicitly rejected by that host.
+At that milestone Dropzone still required native drag/drop and was explicitly
+rejected by that host. The desktop follow-up below adds the input path.
 Android/iOS pickers, OS chooser selection/cancellation, sandbox security-scoped
 bookmarks and real assistive-technology input remain open. Existing browser and
 classic-stream records above retain their original scope.
+
+
+## 2026-10-27: desktop native Dropzone
+
+The native `files` acceptance feature now also imports the same pinned Winit
+identity for its owned event source. Production Shell forwards native file and
+availability events; custom hosts forward them once through
+`WindowApp::handle_native_file_event`. `Files::desktop()` connects a production
+`FileDrop` opener, while custom chooser services require an explicit
+`with_drop_driver` opt-in. Headless/mobile capability rejection is preserved.
+
+`examples/native/tests/file_drop.rs` mounts actual Dropzone/FileAttachment widgets
+in all four themes and forwards real Winit event types through an application-owned
+`ActiveEventLoop` implementation. The production desktop opener reads a temporary
+PNG. After selection, the original file is renamed and its former path replaced;
+controller chunk reads and explicit PNG preview still use the original opened
+handle. Native CPU rendering, invalid URI preserving the previous selection,
+Remove and reference/preview cleanup all pass. The earlier FileInput/FileButton
+consumers remain in the same feature's regression suite.
+
+The owned source does not perform an OS mouse drag or prove an OS source/destination
+handshake, screen-reader input or mobile picker. The driver has no ambient URI
+provider or source-history cache. Raw platform URI allocation precedes the bounded
+host payload; an accepted local-file URI is an application path grant, not an OS
+sandbox. Glory's thirteen focused tests separately cover matching/admission,
+DPI/offset hit testing, current CSS visibility, modal/focus/lifecycle boundaries,
+future/destructor reentry, deadlines and chooser/drop races.
+
+Evidence: `/Volumes/Data/Caches/glory/native-file-drop-sapid-tests.log`,
+`native-file-drop-sapid-clippy.log`, and
+`/Volumes/Data/Caches/glory/native-file-drop/result.json`. Widget inventory status
+still describes baseline coverage with the remaining platform boundaries above.

@@ -3538,7 +3538,7 @@
         "M:FileInput",
         "M:FileButton"
       ],
-      "work": "FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。显式 blitz-files 已接通原生选择/读取/私有预览及四主题真实消费端；原生拖放、移动 driver、OS chooser 输入验收仍开放，ambient 路径不支持；上传网络由应用提供。",
+      "work": "FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。显式 blitz-files 已接通原生选择/读取/私有预览及四主题真实消费端；桌面原生投放通道与四主题 Dropzone 真实句柄执行端已通过；移动 driver、实际 OS 拖动/chooser 输入验收仍开放，ambient 路径不支持；上传网络由应用提供。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -3557,7 +3557,10 @@
           "D:/BuildCache/sapid/files-stream-browser-web36.json (one report, zero errors)",
           "examples/native/tests/file_driver.rs (2 tests across four themes; selection/read/preview/removal/cancel/refusal)",
           "/Volumes/Data/Caches/glory/native-files-sapid-tests.log (2 passed; actual native engine PNG decode)",
-          "/Volumes/Data/Caches/glory/native-files-sapid-clippy.log"
+          "/Volumes/Data/Caches/glory/native-files-sapid-clippy.log",
+          "examples/native/tests/file_drop.rs (four themes; real desktop opener, path replacement, chunk read, PNG preview, retirement; owned Winit event source)",
+          "/Volumes/Data/Caches/glory/native-file-drop-sapid-tests.log",
+          "/Volumes/Data/Caches/glory/native-file-drop-sapid-clippy.log"
         ]
       }
     },
@@ -3570,7 +3573,7 @@
         "X:Dropzone",
         "S:Attachment"
       ],
-      "work": "FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。显式 blitz-files 已接通原生选择/读取/私有预览及四主题真实消费端；原生拖放、移动 driver、OS chooser 输入验收仍开放，ambient 路径不支持；上传网络由应用提供。",
+      "work": "FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。显式 blitz-files 已接通原生选择/读取/私有预览及四主题真实消费端；桌面原生投放通道与四主题 Dropzone 真实句柄执行端已通过；移动 driver、实际 OS 拖动/chooser 输入验收仍开放，ambient 路径不支持；上传网络由应用提供。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -3589,7 +3592,10 @@
           "D:/BuildCache/sapid/files-stream-browser-web36.json (one report, zero errors)",
           "examples/native/tests/file_driver.rs (2 tests across four themes; selection/read/preview/removal/cancel/refusal)",
           "/Volumes/Data/Caches/glory/native-files-sapid-tests.log (2 passed; actual native engine PNG decode)",
-          "/Volumes/Data/Caches/glory/native-files-sapid-clippy.log"
+          "/Volumes/Data/Caches/glory/native-files-sapid-clippy.log",
+          "examples/native/tests/file_drop.rs (four themes; real desktop opener, path replacement, chunk read, PNG preview, retirement; owned Winit event source)",
+          "/Volumes/Data/Caches/glory/native-file-drop-sapid-tests.log",
+          "/Volumes/Data/Caches/glory/native-file-drop-sapid-clippy.log"
         ]
       }
     },
