@@ -91,7 +91,7 @@ pub fn floating_indicator_form(theme: Theme) -> impl Widget {
                                         .show_in(scope)
                                 } else {
                                     let next = key.clone();
-                                    let label: Lotus<String> = if key == "one" {
+                                    let label: Vary<String> = if key == "one" {
                                         long.map(|long| {
                                             if *long {
                                                 "All projects and recent work".to_owned()

@@ -2,7 +2,7 @@ use crate::composite::{self, ContentPolicy, Factory};
 use glory::render::{CollapseConfig, Event, EventKind, NodeId, Semantics};
 use glory::style::{Edges, Overflow, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 #[derive(Clone, Copy)]
 pub(super) struct State {
@@ -32,9 +32,9 @@ fn next_config(
 impl State {
     pub fn new(
         scope: &Scope,
-        open: Lotus<bool>,
-        duration: Lotus<u16>,
-        animated: Lotus<bool>,
+        open: Vary<bool>,
+        duration: Vary<u16>,
+        animated: Vary<bool>,
         policy: ContentPolicy,
     ) -> Result<Self> {
         let initial = CollapseConfig {

@@ -2,14 +2,14 @@
 use glory::render::{Change, NodeId, Patch, SemanticId, Semantics};
 use glory::style::{Display, Edges, Length, Limit, Overflow, Position, Style, WhiteSpace};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 pub const MAX_VISUALLY_HIDDEN_BYTES: usize = 65_536;
 
 /// Plain text only: invisible interactive descendants cannot enter the Tab order.
 pub struct VisuallyHidden {
-    content: Lotus<String>,
-    class: Lotus<String>,
+    content: Vary<String>,
+    class: Vary<String>,
     id: Option<SemanticId>,
     node_ref: Option<Cage<Option<NodeId>>>,
 }
@@ -22,11 +22,11 @@ pub fn visually_hidden() -> VisuallyHidden {
     }
 }
 impl VisuallyHidden {
-    pub fn content(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn content(mut self, value: impl Into<Vary<String>>) -> Self {
         self.content = value.into();
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.class = value.into();
         self
     }

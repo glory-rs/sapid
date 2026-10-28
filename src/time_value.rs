@@ -4,14 +4,14 @@ use crate::composite;
 use crate::{LocalTime, TimeFormat};
 use glory::style::Style;
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 pub struct TimeValue {
     common: Common,
-    value: Lotus<Option<LocalTime>>,
+    value: Vary<Option<LocalTime>>,
     format: TimeFormat,
-    empty: Lotus<String>,
+    empty: Vary<String>,
 }
-pub fn time_value(value: impl Into<Lotus<Option<LocalTime>>>) -> TimeValue {
+pub fn time_value(value: impl Into<Vary<Option<LocalTime>>>) -> TimeValue {
     TimeValue {
         common: Common::default(),
         value: value.into(),
@@ -25,7 +25,7 @@ impl TimeValue {
         self.format = format;
         self
     }
-    pub fn empty_label(mut self, label: impl Into<Lotus<String>>) -> Self {
+    pub fn empty_label(mut self, label: impl Into<Vary<String>>) -> Self {
         self.empty = label.into();
         self
     }

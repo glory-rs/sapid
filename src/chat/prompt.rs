@@ -5,7 +5,7 @@ use crate::{FileController, FileStatus, Theme};
 use glory::render::{Event, EventKind, FileConfig, FileInfo, KeyboardCommand, NodeId};
 use glory::style::{Display, FlexWrap, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 pub const MAX_PROMPT_BYTES: usize = 65536;
 pub const MAX_PROMPT_SUGGESTIONS: usize = 16;
@@ -60,8 +60,8 @@ pub struct PromptInput {
     key: String,
     common: Common,
     value: Value<String>,
-    readonly: Lotus<bool>,
-    busy: Lotus<bool>,
+    readonly: Vary<bool>,
+    busy: Vary<bool>,
     mode: PromptSubmitMode,
     rows: u16,
     label: String,
@@ -107,27 +107,27 @@ impl PromptInput {
         self.common.theme = value;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.common.enabled = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn busy(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn busy(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.busy = value.into();
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<String>>) -> Self {
         self.value.source = Some(value.into());
         self
     }

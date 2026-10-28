@@ -9,7 +9,7 @@ async(hostPage)=>{
       await page.goto(`http://127.0.0.1:8794/${hydration?`${family}-hydrate-${hue}-${scheme}.html`:`${family}.html?theme=${hue}&scheme=${scheme}`}`);
       await page.waitForFunction(()=>window.ready===true);
       if(family==='display'){
-        assert(await page.locator('.display-fixture').getByRole('heading',{name:'Display components',exact:true}).count()===1,`${mode}: card heading`);
+        assert(await page.locator('.display-fixture').getByRole('heading',{name:'Display widgets',exact:true}).count()===1,`${mode}: card heading`);
         assert((await page.locator('.number-us').innerText()).trim()==='1,234.50',`${mode}: US number`);
         assert((await page.locator('.number-eur').innerText()).includes('1.234,50'),`${mode}: EU currency`);
         assert((await page.locator('.number-percent').innerText()).includes('12.5'),`${mode}: percentage`);

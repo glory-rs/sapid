@@ -7,6 +7,8 @@ model-only, rejected and pending states for all 149 work items. The family table
 and gate history below preserve earlier snapshots; newer native Layer and other
 capabilities supersede their older refusals only where the explicit ledger and
 canonical evidence say so.
+The [2026-10-29 Glory main migration](glory-main-migration-2026-10-29.md)
+records the current native consumer regressions and superseded refusal assertions.
 
 This matrix records implemented finite contracts, not full parity with every
 upstream option. Record/SSR validate structure; browser tests validate actual DOM,

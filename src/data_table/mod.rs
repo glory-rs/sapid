@@ -9,7 +9,7 @@ use crate::{
 use glory::render::{NodeId, Role, Semantics, SortDirection, TableMetadata};
 use glory::style::{Display, Edges, FlexDirection, Length, Overflow, Style};
 use glory::ui::{Result, Widget, list::ListStats};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 pub use model::*;
 use std::{
     cell::RefCell,
@@ -18,8 +18,8 @@ use std::{
 };
 
 enum Source {
-    Local(Lotus<Vec<DataRecord>>),
-    Server(Lotus<DataPage>),
+    Local(Vary<Vec<DataRecord>>),
+    Server(Vary<DataPage>),
 }
 #[derive(Clone, Copy)]
 enum Accepted {
@@ -92,7 +92,7 @@ impl Accepted {
 }
 fn accept_server_page(
     scope: &Scope,
-    source: Lotus<DataPage>,
+    source: Vary<DataPage>,
     columns: Rc<Vec<DataColumn>>,
     query: Cage<DataTableQuery>,
 ) -> Result<Cage<Option<DataPage>>> {
@@ -198,8 +198,7 @@ impl SelectionControl {
         Ok(())
     }
 }
-type CellFactory =
-    Rc<RefCell<dyn FnMut(Cage<usize>, String, Lotus<String>) -> Box<dyn Widget>>>;
+type CellFactory = Rc<RefCell<dyn FnMut(Cage<usize>, String, Vary<String>) -> Box<dyn Widget>>>;
 pub struct DataTable {
     common: Common,
     key: String,
@@ -212,7 +211,7 @@ pub struct DataTable {
     selectable: bool,
     height: f64,
     row_height: f64,
-    position: Option<Lotus<f64>>,
+    position: Option<Vary<f64>>,
     scroll: Option<Box<dyn FnMut(f64)>>,
     inspect: Option<Box<dyn FnMut(ListStats)>>,
     renderers: BTreeMap<String, CellFactory>,
@@ -245,15 +244,15 @@ impl DataTable {
         self.columns = value.into_iter().take(MAX_DATA_COLUMNS + 1).collect();
         self
     }
-    pub fn local_rows(mut self, value: impl Into<Lotus<Vec<DataRecord>>>) -> Self {
+    pub fn local_rows(mut self, value: impl Into<Vary<Vec<DataRecord>>>) -> Self {
         self.source = Some(Source::Local(value.into()));
         self
     }
-    pub fn server_page(mut self, value: impl Into<Lotus<DataPage>>) -> Self {
+    pub fn server_page(mut self, value: impl Into<Vary<DataPage>>) -> Self {
         self.source = Some(Source::Server(value.into()));
         self
     }
-    pub fn query(mut self, value: impl Into<Lotus<DataTableQuery>>) -> Self {
+    pub fn query(mut self, value: impl Into<Vary<DataTableQuery>>) -> Self {
         self.query.source = Some(value.into());
         self
     }
@@ -265,7 +264,7 @@ impl DataTable {
         self.changed = Some(Box::new(value));
         self
     }
-    pub fn selected(mut self, value: impl Into<Lotus<BTreeSet<String>>>) -> Self {
+    pub fn selected(mut self, value: impl Into<Vary<BTreeSet<String>>>) -> Self {
         self.selected.source = Some(value.into());
         self
     }
@@ -292,7 +291,7 @@ impl DataTable {
         self.row_height = value;
         self
     }
-    pub fn position(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn position(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.position = Some(value.into());
         self
     }
@@ -307,7 +306,7 @@ impl DataTable {
     pub fn render_cell<W: Widget>(
         mut self,
         key: impl Into<String>,
-        mut factory: impl FnMut(Cage<usize>, String, Lotus<String>) -> W + 'static,
+        mut factory: impl FnMut(Cage<usize>, String, Vary<String>) -> W + 'static,
     ) -> Self {
         self.renderers.insert(
             key.into(),
@@ -325,19 +324,19 @@ impl DataTable {
         self.common.size = value;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.common.enabled = value.into();
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }

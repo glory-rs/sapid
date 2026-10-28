@@ -2,11 +2,11 @@
 use crate::radio::{Radio, RadioGroup, radio, radio_group};
 use glory::render::{Event, EventKind, FocusMode, NodeId, Orientation};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 pub struct Segment {
     inner: Radio,
-    class: Lotus<String>,
+    class: Vary<String>,
 }
 pub fn segment(value: impl Into<String>) -> Segment {
     Segment {
@@ -15,23 +15,23 @@ pub fn segment(value: impl Into<String>) -> Segment {
     }
 }
 impl Segment {
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.inner = self.inner.label(value);
         self
     }
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.inner = self.inner.enabled(value);
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.inner = self.inner.name(value);
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<glory::style::Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<glory::style::Style>>) -> Self {
         self.inner = self.inner.style(value);
         self
     }
@@ -47,7 +47,7 @@ impl Segment {
 
 pub struct SegmentedControl {
     inner: Option<RadioGroup>,
-    class: Lotus<String>,
+    class: Vary<String>,
     segments: Vec<Segment>,
 }
 pub fn segmented_control(key: impl Into<String>) -> SegmentedControl {
@@ -71,20 +71,20 @@ impl SegmentedControl {
     pub fn unstyled(self) -> Self {
         self.map(RadioGroup::unstyled)
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.class = value.into();
         self
     }
-    pub fn style(self, value: impl Into<Lotus<glory::style::Style>>) -> Self {
+    pub fn style(self, value: impl Into<Vary<glory::style::Style>>) -> Self {
         self.map(|group| group.style(value))
     }
-    pub fn name(self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(self, value: impl Into<Vary<String>>) -> Self {
         self.map(|group| group.name(value))
     }
-    pub fn label(self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(self, value: impl Into<Vary<String>>) -> Self {
         self.map(|group| group.label(value))
     }
-    pub fn enabled(self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(self, value: impl Into<Vary<bool>>) -> Self {
         self.map(|group| group.enabled(value))
     }
     /// The group itself owns the member tab stops; Auto is the valid root mode.
@@ -103,19 +103,19 @@ impl SegmentedControl {
     pub fn form_name(self, value: impl Into<String>) -> Self {
         self.map(|group| group.form_name(value))
     }
-    pub fn value(self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn value(self, value: impl Into<Vary<String>>) -> Self {
         self.map(|group| group.value(value))
     }
     pub fn default_value(self, value: impl Into<String>) -> Self {
         self.map(|group| group.default_value(value))
     }
-    pub fn required(self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(self, value: impl Into<Vary<bool>>) -> Self {
         self.map(|group| group.required(value))
     }
-    pub fn readonly(self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(self, value: impl Into<Vary<bool>>) -> Self {
         self.map(|group| group.readonly(value))
     }
-    pub fn invalid(self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(self, value: impl Into<Vary<bool>>) -> Self {
         self.map(|group| group.invalid(value))
     }
     pub fn on_value_change(self, handler: impl FnMut(String) + 'static) -> Self {

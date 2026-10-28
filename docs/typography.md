@@ -25,7 +25,7 @@ Style 的数值校验仍由 Glory 统一执行。`.style(...)` 最后逐字段�
 
 Text/Title 支持 theme/size/unstyled/class/style/node_ref/on、可响应式 content 和 selectable。
 unstyled 移除主题外观，保留显式 font_size/line_height/color/weight/truncate/style；不会删除文字语义。
-外部源更新不发布变更回调，保留节点 identity。动态布局和文字来源仍使用 Cage/Bond/Lotus。
+外部源更新不发布变更回调，保留节点 identity。动态布局和文字来源仍使用 Cage/Bond/Vary。
 
 Sapid 与 Glory 均导出 text 构造器；混用两个 prelude 时请显式使用 `sapid::text()` 或导入别名。
 

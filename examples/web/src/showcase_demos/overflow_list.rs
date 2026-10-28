@@ -83,7 +83,7 @@ mod fixture {
                                     .default_value("Retained draft")
                                     .show_in(scope)
                             } else {
-                                let label: Lotus<String> = if key == "report" {
+                                let label: Vary<String> = if key == "report" {
                                     long.map(|long| {
                                         if *long {
                                             "A much longer annual report action".to_owned()

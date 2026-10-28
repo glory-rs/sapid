@@ -11,7 +11,7 @@ use glory::style::{
     Overflow, Style,
 };
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 use crate::appearance::{Common, common_methods, configure};
 use crate::collection::{Collection, CollectionLimits, MountedItem, RovingFocus};
@@ -63,15 +63,15 @@ pub struct Combobox {
     filter: ComboboxFilter,
     empty: String,
     field: Option<crate::FieldControl>,
-    form_name: Option<Lotus<String>>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
+    form_name: Option<Vary<String>>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
     max_values: usize,
     hide_picked_options: bool,
     clearable: bool,
     clear_label: String,
-    placeholder: Option<Lotus<String>>,
+    placeholder: Option<Vary<String>>,
 }
 pub fn combobox(key: impl Into<String>) -> Combobox {
     Combobox {
@@ -106,7 +106,7 @@ pub fn combobox(key: impl Into<String>) -> Combobox {
     }
 }
 impl Combobox {
-    pub fn placeholder(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn placeholder(mut self, value: impl Into<Vary<String>>) -> Self {
         self.placeholder = Some(value.into());
         self
     }
@@ -134,7 +134,7 @@ impl Combobox {
         self.kind = ComboboxKind::Multiple;
         self
     }
-    pub(crate) fn values(mut self, values: impl Into<Lotus<Vec<String>>>) -> Self {
+    pub(crate) fn values(mut self, values: impl Into<Vary<Vec<String>>>) -> Self {
         self.values.source = Some(values.into());
         self
     }
@@ -157,7 +157,7 @@ impl Combobox {
         self
     }
     common_methods!();
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -168,11 +168,11 @@ impl Combobox {
         self.field = Some(field);
         self
     }
-    pub fn form_name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn form_name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.form_name = Some(value.into());
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<Option<String>>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<Option<String>>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -180,7 +180,7 @@ impl Combobox {
         self.value.default = value;
         self
     }
-    pub fn search(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn search(mut self, value: impl Into<Vary<String>>) -> Self {
         self.search.source = Some(value.into());
         self.explicit_search = true;
         self
@@ -190,7 +190,7 @@ impl Combobox {
         self.explicit_search = true;
         self
     }
-    pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(value.into());
         self
     }
@@ -222,15 +222,15 @@ impl Combobox {
         self.empty = value.into();
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
@@ -334,8 +334,8 @@ struct State {
     composing: Cage<bool>,
     dirty: Dirty,
     open: Control<bool>,
-    visible: Lotus<bool>,
-    editable: Lotus<bool>,
+    visible: Vary<bool>,
+    editable: Vary<bool>,
     collection: Collection,
     cursor: RovingFocus,
     config: Rc<SelectProps>,
@@ -807,12 +807,12 @@ impl Widget for Combobox {
         );
         let visible_open = open.source.clone();
         let visible_enabled = enabled.clone();
-        let visible: Lotus<bool> = scope
+        let visible: Vary<bool> = scope
             .bond(move || visible_open.get() && visible_enabled.get())
             .into();
         let editable_enabled = enabled.clone();
         let editable_meta = metadata.clone();
-        let editable: Lotus<bool> = scope
+        let editable: Vary<bool> = scope
             .bond(move || {
                 editable_enabled.get()
                     && !editable_meta.get().is_some_and(|value| value.readonly)

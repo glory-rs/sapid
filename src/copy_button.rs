@@ -5,7 +5,7 @@ use glory::render::{
     ClipboardOutcome, ClipboardText, Event, EventKind, MAX_CLIPBOARD_BYTES, Semantics,
 };
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::rc::Rc;
 
 /// Current feedback, never an optimistic claim that the clipboard was written.
@@ -31,8 +31,8 @@ impl From<ClipboardOutcome> for CopyState {
 }
 pub struct CopyButton {
     common: Common,
-    source: Lotus<String>,
-    label: Lotus<String>,
+    source: Vary<String>,
+    label: Vary<String>,
     copied_label: String,
     failed_label: String,
     state_ref: Option<Cage<CopyState>>,
@@ -53,11 +53,11 @@ pub fn copy_button() -> CopyButton {
 }
 impl CopyButton {
     common_methods!();
-    pub fn source(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn source(mut self, value: impl Into<Vary<String>>) -> Self {
         self.source = value.into();
         self
     }
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }

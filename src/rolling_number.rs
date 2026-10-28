@@ -6,20 +6,20 @@ use glory::render::{
 };
 use glory::style::{Display, Family, Length, Overflow, PointerEvents, Style, WhiteSpace};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 pub const MAX_ROLLING_NUMBER_DIGITS: usize = 24;
 pub const MAX_ROLLING_NUMBER_CHARACTERS: usize = 64;
 pub struct RollingNumber {
     common: Common,
-    value: Lotus<f64>,
+    value: Vary<f64>,
     locale: crate::NumberLocale,
     format: crate::NumberFormat,
     min: Option<u8>,
     max: Option<u8>,
     grouping: bool,
-    duration: Lotus<u16>,
-    paused: Lotus<bool>,
-    animated: Lotus<bool>,
+    duration: Vary<u16>,
+    paused: Vary<bool>,
+    animated: Vary<bool>,
 }
 pub fn rolling_number() -> RollingNumber {
     RollingNumber {
@@ -48,11 +48,11 @@ impl RollingNumber {
         self.common.unstyled = true;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
@@ -60,7 +60,7 @@ impl RollingNumber {
         self.common.node_ref = Some(value);
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.value = value.into();
         self
     }
@@ -84,15 +84,15 @@ impl RollingNumber {
         self.grouping = value;
         self
     }
-    pub fn duration_millis(mut self, value: impl Into<Lotus<u16>>) -> Self {
+    pub fn duration_millis(mut self, value: impl Into<Vary<u16>>) -> Self {
         self.duration = value.into();
         self
     }
-    pub fn paused(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn paused(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.paused = value.into();
         self
     }
-    pub fn animated(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn animated(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.animated = value.into();
         self
     }

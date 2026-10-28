@@ -1,5 +1,8 @@
 # Sapid 全量验收记录
 
+2026-10-29 的 Glory 新 `main` 同步、`Vary` API、引擎固定版本及重新执行的验证，
+见 [Glory main 迁移记录](glory-main-migration-2026-10-29.md)。下文保留原目录验收批次。
+
 日期：2026-10-25。冻结目录的 268 个来源条目已归并为 149 项工作，
 当前 149 项均已实现并记录逐项证据，覆盖 14 个阶段。
 [路线图](widgets-roadmap.md)、[canonical inventory](widget-inventory.json)、

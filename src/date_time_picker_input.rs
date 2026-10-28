@@ -9,24 +9,24 @@ use crate::{
 use glory::render::{Direction, FormControl, NodeId};
 use glory::style::{Align, Display, Length, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 /// Complete valid edits publish immediately. Done commits/closes; Escape keeps
 /// accepted edits. A draft or unresolved timezone gap never replaces the ISO value.
 pub struct DateTimePicker {
     common: Common,
     key: String,
-    provider: Lotus<DatesProvider>,
+    provider: Vary<DatesProvider>,
     policy: DateTimePolicy,
     value: Value<Option<LocalDateTime>>,
     open: Value<bool>,
-    bounds: Lotus<DateTimeBounds>,
-    revision: Lotus<u64>,
+    bounds: Vary<DateTimeBounds>,
+    revision: Vary<u64>,
     format: TimeFormat,
-    readonly: Lotus<bool>,
-    required: Lotus<bool>,
-    invalid: Lotus<bool>,
+    readonly: Vary<bool>,
+    required: Vary<bool>,
+    invalid: Vary<bool>,
     field: Option<FieldControl>,
-    form_name: Option<Lotus<String>>,
+    form_name: Option<Vary<String>>,
     direction: Direction,
     grid: Option<TimeGridSpec>,
     content_policy: ContentPolicy,
@@ -43,7 +43,7 @@ pub struct DateTimePicker {
 }
 pub fn date_time_picker(
     key: impl Into<String>,
-    provider: impl Into<Lotus<DatesProvider>>,
+    provider: impl Into<Vary<DatesProvider>>,
     policy: DateTimePolicy,
 ) -> DateTimePicker {
     DateTimePicker {
@@ -78,7 +78,7 @@ pub fn date_time_picker(
 }
 impl DateTimePicker {
     common_methods!();
-    pub fn value(mut self, v: impl Into<Lotus<Option<LocalDateTime>>>) -> Self {
+    pub fn value(mut self, v: impl Into<Vary<Option<LocalDateTime>>>) -> Self {
         self.value.source = Some(v.into());
         self
     }
@@ -86,7 +86,7 @@ impl DateTimePicker {
         self.value.default = v;
         self
     }
-    pub fn open(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(v.into());
         self
     }
@@ -94,11 +94,11 @@ impl DateTimePicker {
         self.open.default = v;
         self
     }
-    pub fn bounds(mut self, v: impl Into<Lotus<DateTimeBounds>>) -> Self {
+    pub fn bounds(mut self, v: impl Into<Vary<DateTimeBounds>>) -> Self {
         self.bounds = v.into();
         self
     }
-    pub fn reset_revision(mut self, v: impl Into<Lotus<u64>>) -> Self {
+    pub fn reset_revision(mut self, v: impl Into<Vary<u64>>) -> Self {
         self.revision = v.into();
         self
     }
@@ -106,15 +106,15 @@ impl DateTimePicker {
         self.format = v;
         self
     }
-    pub fn readonly(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.readonly = v.into();
         self
     }
-    pub fn required(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.required = v.into();
         self
     }
-    pub fn invalid(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.invalid = v.into();
         self
     }
@@ -125,7 +125,7 @@ impl DateTimePicker {
         self.field = Some(v);
         self
     }
-    pub fn form_name(mut self, v: impl Into<Lotus<String>>) -> Self {
+    pub fn form_name(mut self, v: impl Into<Vary<String>>) -> Self {
         self.form_name = Some(v.into());
         self
     }

@@ -5,7 +5,7 @@ use std::rc::Rc;
 
 use glory::render::{Navigation, NodeId, SemanticId, validate_typeahead};
 use glory::ui::Result;
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 #[derive(Clone, Copy, Debug)]
 pub struct CollectionLimits {
@@ -39,9 +39,9 @@ struct Entry {
     member: CollectionMember,
     key: String,
     reference: Cage<Option<NodeId>>,
-    enabled: Lotus<bool>,
-    label: Lotus<String>,
-    position: Option<Lotus<usize>>,
+    enabled: Vary<bool>,
+    label: Vary<String>,
+    position: Option<Vary<usize>>,
 }
 struct Registry {
     entries: Vec<Entry>,
@@ -87,7 +87,7 @@ impl Collection {
                     registry.closed = true;
                     std::mem::take(&mut registry.entries)
                 };
-                // Lotus/configuration destructors may reenter the application.
+                // Vary/configuration destructors may reenter the application.
                 drop(entries);
             }
         })?;
@@ -107,8 +107,8 @@ impl Collection {
         scope: &Scope,
         key: impl Into<String>,
         reference: Cage<Option<NodeId>>,
-        enabled: impl Into<Lotus<bool>>,
-        label: impl Into<Lotus<String>>,
+        enabled: impl Into<Vary<bool>>,
+        label: impl Into<Vary<String>>,
     ) -> Result<CollectionMember> {
         self.register_inner(
             scope,
@@ -127,9 +127,9 @@ impl Collection {
         scope: &Scope,
         key: impl Into<String>,
         reference: Cage<Option<NodeId>>,
-        enabled: impl Into<Lotus<bool>>,
-        label: impl Into<Lotus<String>>,
-        position: impl Into<Lotus<usize>>,
+        enabled: impl Into<Vary<bool>>,
+        label: impl Into<Vary<String>>,
+        position: impl Into<Vary<usize>>,
     ) -> Result<CollectionMember> {
         self.register_inner(
             scope,
@@ -146,9 +146,9 @@ impl Collection {
         scope: &Scope,
         key: String,
         reference: Cage<Option<NodeId>>,
-        enabled: Lotus<bool>,
-        label: Lotus<String>,
-        position: Option<Lotus<usize>>,
+        enabled: Vary<bool>,
+        label: Vary<String>,
+        position: Option<Vary<usize>>,
     ) -> Result<CollectionMember> {
         if key.len() > 64 {
             return Err(invalid("collection keys exceed 64 bytes"));
@@ -269,7 +269,7 @@ impl Collection {
                                 entry
                                     .position
                                     .as_ref()
-                                    .map(Lotus::try_get)
+                                    .map(Vary::try_get)
                                     .transpose()?
                                     .unwrap_or(registered),
                                 registered,

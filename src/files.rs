@@ -9,7 +9,7 @@ use glory::style::{
     BorderStyle, Display, Edges, FlexDirection, Length, Limit, ObjectFit, Overflow, Style,
 };
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum FileStatus {
@@ -31,10 +31,10 @@ pub struct FileController {
     output_status: Option<Cage<FileStatus>>,
 }
 impl FileController {
-    pub fn files(&self) -> Lotus<Vec<FileInfo>> {
+    pub fn files(&self) -> Vary<Vec<FileInfo>> {
         self.files.into()
     }
-    pub fn status(&self) -> Lotus<FileStatus> {
+    pub fn status(&self) -> Vary<FileStatus> {
         self.status.into()
     }
     fn current(&self) -> Result<(Scope, NodeId)> {
@@ -149,8 +149,8 @@ impl FileController {
 }
 pub struct FileButton {
     common: Common,
-    label: Lotus<String>,
-    configuration: Lotus<FileConfig>,
+    label: Vary<String>,
+    configuration: Vary<FileConfig>,
     files_ref: Option<Cage<Vec<FileInfo>>>,
     status_ref: Option<Cage<FileStatus>>,
     controller_ref: Option<Cage<Option<FileController>>>,
@@ -173,11 +173,11 @@ pub fn file_button() -> FileButton {
 }
 impl FileButton {
     common_methods!();
-    pub fn label(mut self, label: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, label: impl Into<Vary<String>>) -> Self {
         self.label = label.into();
         self
     }
-    pub fn configuration(mut self, configuration: impl Into<Lotus<FileConfig>>) -> Self {
+    pub fn configuration(mut self, configuration: impl Into<Vary<FileConfig>>) -> Self {
         self.configuration = configuration.into();
         self
     }
@@ -636,19 +636,19 @@ macro_rules! file_composite_methods {
             self.button = self.button.unstyled();
             self
         }
-        pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
             self.button = self.button.class(value);
             self
         }
-        pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
             self.button = self.button.style(value);
             self
         }
-        pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
             self.button = self.button.name(value);
             self
         }
-        pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+        pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
             self.button = self.button.enabled(value);
             self
         }
@@ -660,11 +660,11 @@ macro_rules! file_composite_methods {
             self.button = self.button.node_ref(value);
             self
         }
-        pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
             self.button = self.button.label(value);
             self
         }
-        pub fn configuration(mut self, value: impl Into<Lotus<FileConfig>>) -> Self {
+        pub fn configuration(mut self, value: impl Into<Vary<FileConfig>>) -> Self {
             self.button = self.button.configuration(value);
             self
         }

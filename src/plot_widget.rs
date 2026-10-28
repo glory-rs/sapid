@@ -6,7 +6,7 @@ use crate::plot_table::{self, PlotTable};
 use glory::render::{Event, EventKind, FocusMode, PointerPhase, Role, Semantics};
 use glory::style::{AspectRatio, Display, Edges, Length, Overflow, Position, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{collections::BTreeMap, rc::Rc};
 pub const MAX_PLOT_KEY_BYTES: usize = 48;
 fn invalid(error: ChartError) -> glory::ui::Error {
@@ -26,12 +26,12 @@ pub struct Plot {
     common: Common,
     key: String,
     kind: PlotKind,
-    data: Lotus<PlotData>,
-    options: Option<Lotus<PlotOptions>>,
+    data: Vary<PlotData>,
+    options: Option<Vary<PlotOptions>>,
     default_options: PlotOptions,
     frame: ChartFrame,
     palette: Option<ChartTheme>,
-    selection: Option<Lotus<Option<String>>>,
+    selection: Option<Vary<Option<String>>>,
     changed: Option<Box<dyn FnMut(PlotOptions)>>,
     selected: Option<Box<dyn FnMut(Option<String>)>>,
     show_table: bool,
@@ -72,11 +72,11 @@ macro_rules! constructors{($($name:ident:$kind:ident),+$(,)?)=>{$(pub fn $name(k
 constructors! {pie_chart:Pie,donut_chart:Donut,radial_bar_chart:RadialBar,scatter_chart:Scatter,bubble_chart:Bubble,candlestick_chart:Candlestick,radar_chart:Radar,funnel_chart:Funnel,sparkline:Sparkline,heatmap:Heatmap,matrix_chart:Matrix,waffle_chart:Waffle,bars_list:BarsList,bullet_chart:Bullet,gauge_chart:Gauge,treemap:Treemap,sunburst_chart:Sunburst,sankey_chart:Sankey}
 impl Plot {
     common_methods!();
-    pub fn data(mut self, value: impl Into<Lotus<PlotData>>) -> Self {
+    pub fn data(mut self, value: impl Into<Vary<PlotData>>) -> Self {
         self.data = value.into();
         self
     }
-    pub fn options(mut self, value: impl Into<Lotus<PlotOptions>>) -> Self {
+    pub fn options(mut self, value: impl Into<Vary<PlotOptions>>) -> Self {
         self.options = Some(value.into());
         self
     }
@@ -92,7 +92,7 @@ impl Plot {
         self.palette = Some(value);
         self
     }
-    pub fn selection(mut self, value: impl Into<Lotus<Option<String>>>) -> Self {
+    pub fn selection(mut self, value: impl Into<Vary<Option<String>>>) -> Self {
         self.selection = Some(value.into());
         self
     }
@@ -125,7 +125,7 @@ struct State {
     controlled_options: bool,
     selection: Cage<Option<String>>,
     controlled_selection: bool,
-    enabled: Lotus<bool>,
+    enabled: Vary<bool>,
     changed: Callback<PlotOptions>,
     selected: Callback<Option<String>>,
 }

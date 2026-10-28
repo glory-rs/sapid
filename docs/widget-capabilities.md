@@ -35,12 +35,12 @@ explicit even when another variant of the same family is available.
 | [P1-06 InputGroup / Addon / InputSection](#evidence-p1-06) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P1-07 Form / FormState / Validation](#evidence-p1-07) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Typed state/validation is host independent; native form requests and controls tested; file values unsupported. | **tested**: Typed state/validation is host independent; native form requests and controls tested; file values unsupported. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P1-08 Form submission / serialization](#evidence-p1-08) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P2-01 MixedCheckbox / CheckboxGroup](#evidence-p2-01) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: CheckboxGroup supported; MixedCheckbox indeterminate explicitly rejected. | **tested**: CheckboxGroup supported; MixedCheckbox indeterminate explicitly rejected. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
+| [P2-01 MixedCheckbox / CheckboxGroup](#evidence-p2-01) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: CheckboxGroup supported; MixedCheckbox indeterminate explicitly rejected. | **tested**: MixedCheckbox/CheckboxGroup 保留真实三态与有限全选/禁用策略；新版 Glory 原生已支持 indeterminate。四主题消费端验证 Mixed 转 Checked、真实引擎属性与 Owner 清理。 OS 输入和 AT 客户端另行验收。 | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P2-02 Switch](#evidence-p2-02) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
-| [P2-03 Radio / RadioGroup](#evidence-p2-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Native radio groups are explicitly rejected; no checkbox fallback. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
+| [P2-03 Radio / RadioGroup](#evidence-p2-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: 真实 RadioGroup、单 Tab、方向/Home/End、整组受控恢复与 Web/adoption/stream 已实现；新版 Glory 原生 Radio 已连接，四主题消费端验证实际 checked、选择、只读和物理身份。 OS 输入和 AT 客户端另行验收。 | **model-only**: Current shared native semantic projection is available; this migration does not add component-specific AT client or speech acceptance. |
 | [P2-04 Toggle / ToggleGroup](#evidence-p2-04) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
-| [P2-05 SegmentedControl](#evidence-p2-05) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Uses real RadioGroup; native radio driver is explicitly rejected. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P2-06 Chip / ChipGroup](#evidence-p2-06) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Standalone/multiple checkbox mode tested; single Radio mode explicitly rejected. | **tested**: Standalone/multiple checkbox mode tested; single Radio mode explicitly rejected. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
+| [P2-05 SegmentedControl](#evidence-p2-05) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: SegmentedControl 复用真实 RadioGroup 与单值控制器；四主题原生受控选择、只读及物理身份已验证，不引入 Tabs 面板语义。 OS 输入和 AT 客户端另行验收。 | **model-only**: Current shared native semantic projection is available; this migration does not add component-specific AT client or speech acceptance. |
+| [P2-06 Chip / ChipGroup](#evidence-p2-06) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Standalone/multiple checkbox mode tested; single Radio mode explicitly rejected. | **tested**: Chip 使用真实 Checkbox，ChipGroup 按单选 Radio/多选 Checkbox 分别实现；Web/SSR 与原生均有消费端证据，新增四主题单选受控选择、只读与物理身份。 OS 输入和 AT 客户端另行验收。 | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P2-07 ButtonGroup](#evidence-p2-07) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P2-08 ActionIcon / CloseButton](#evidence-p2-08) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P2-09 Burger](#evidence-p2-09) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
@@ -65,20 +65,20 @@ explicit even when another variant of the same family is available.
 | [P3-19 Timeline](#evidence-p3-19) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P3-20 NumberFormatter](#evidence-p3-20) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P3-21 Spoiler](#evidence-p3-21) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P4-01 Menu / DropdownMenu](#evidence-p4-01) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P4-02 ContextMenu](#evidence-p4-02) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P4-03 Menubar](#evidence-p4-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P4-04 NativeSelect](#evidence-p4-04) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P4-05 Select](#evidence-p4-05) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P4-06 Combobox](#evidence-p4-06) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P4-07 Autocomplete](#evidence-p4-07) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P4-08 MultiSelect](#evidence-p4-08) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P4-09 TagsInput / PillsInput](#evidence-p4-09) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P4-10 Command / Spotlight](#evidence-p4-10) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
+| [P4-01 Menu / DropdownMenu](#evidence-p4-01) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance. | **model-only**: Shared native projection is available; current component-specific AT client acceptance is not established here. |
+| [P4-02 ContextMenu](#evidence-p4-02) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance. | **model-only**: Shared native projection is available; current component-specific AT client acceptance is not established here. |
+| [P4-03 Menubar](#evidence-p4-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance. | **model-only**: Shared native projection is available; current component-specific AT client acceptance is not established here. |
+| [P4-04 NativeSelect](#evidence-p4-04) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance. | **model-only**: Shared native projection is available; current component-specific AT client acceptance is not established here. |
+| [P4-05 Select](#evidence-p4-05) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance. | **model-only**: Shared native projection is available; current component-specific AT client acceptance is not established here. |
+| [P4-06 Combobox](#evidence-p4-06) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance. | **model-only**: Shared native projection is available; current component-specific AT client acceptance is not established here. |
+| [P4-07 Autocomplete](#evidence-p4-07) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance. | **model-only**: Shared native projection is available; current component-specific AT client acceptance is not established here. |
+| [P4-08 MultiSelect](#evidence-p4-08) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance. | **model-only**: Shared native projection is available; current component-specific AT client acceptance is not established here. |
+| [P4-09 TagsInput / PillsInput](#evidence-p4-09) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance. | **model-only**: Shared native projection is available; current component-specific AT client acceptance is not established here. |
+| [P4-10 Command / Spotlight](#evidence-p4-10) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance. | **model-only**: Shared native projection is available; current component-specific AT client acceptance is not established here. |
 | [P5-01 AlertDialog](#evidence-p5-01) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P5-02 Sheet / Drawer gestures](#evidence-p5-02) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Sheet layer/gesture facet is explicitly rejected. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P5-03 Tooltip](#evidence-p5-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Tooltip Layer and precise pointer presence are explicitly rejected. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P5-04 HoverCard](#evidence-p5-04) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: HoverCard Layer and precise pointer presence are explicitly rejected. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
+| [P5-03 Tooltip](#evidence-p5-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Tooltip Layer are explicitly rejected. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
+| [P5-04 HoverCard](#evidence-p5-04) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: HoverCard Layer are explicitly rejected. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P5-05 Alert](#evidence-p5-05) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P5-06 Notification / Toast system](#evidence-p5-06) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Default notifications/timer controls supported; precise hover interest unsupported. | **tested**: Default notifications/timer controls supported; precise hover interest unsupported. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P5-07 Spinner / Loader](#evidence-p5-07) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
@@ -108,7 +108,7 @@ explicit even when another variant of the same family is available.
 | [P7-02 Slider](#evidence-p7-02) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P7-03 RangeSlider](#evidence-p7-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P7-04 AngleSlider](#evidence-p7-04) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
-| [P7-05 Rating](#evidence-p7-05) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Passive display-only stars tested; interactive/readonly Radio mode explicitly rejected. | **tested**: Passive display-only stars tested; interactive/readonly Radio mode explicitly rejected. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
+| [P7-05 Rating](#evidence-p7-05) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Passive display-only stars tested; interactive/readonly Radio mode explicitly rejected. | **tested**: Whole/Half Rating、真实 RadioGroup、数值成功值、受控/Field 与 display_only 已实现；新版 Glory 原生交互/只读 Radio 支持，四主题实际 checked、稳定身份、半星像素和 direct-apply 水位验证通过。 OS 输入和 AT 客户端另行验收。 | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P7-06 ColorSwatch](#evidence-p7-06) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P7-07 HueSlider / AlphaSlider](#evidence-p7-07) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P7-08 ColorPicker / ColorInput](#evidence-p7-08) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
@@ -118,21 +118,21 @@ explicit even when another variant of the same family is available.
 | [P8-01 Table](#evidence-p8-01) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P8-02 DataTable](#evidence-p8-02) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P8-03 Tree](#evidence-p8-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
-| [P8-04 TreeSelect](#evidence-p8-04) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Intrinsic combobox controls are explicitly rejected; ordinary Tree is separate. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P8-05 Cascader](#evidence-p8-05) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Intrinsic combobox controls are explicitly rejected; ordinary Tree is separate. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
+| [P8-04 TreeSelect](#evidence-p8-04) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: TreeSelect 复用 Tree/Combobox 与完整路径值、多选/半选策略；新版 Glory 原生树弹层已连接，四主题消费端验证真实几何、选择、关闭恢复焦点与触发器身份。 OS 输入和 AT 客户端另行验收。 | **model-only**: Current shared native semantic projection is available; this migration does not add component-specific AT client or speech acceptance. |
+| [P8-05 Cascader](#evidence-p8-05) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Cascader 保留分列路径、展开/返回与懒加载；新版 Glory 原生树弹层已连接，四主题消费端验证真实几何、路径选择、焦点返回与触发器身份。 OS 输入和 AT 客户端另行验收。 | **model-only**: Current shared native semantic projection is available; this migration does not add component-specific AT client or speech acceptance. |
 | [P9-01 Date model / DatesProvider](#evidence-p9-01) | done | **tested**: Finite model and ownership rules are separately tested. | **model-only**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **model-only**: Host-independent model only. | **model-only**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P9-02 Calendar / MiniCalendar](#evidence-p9-02) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P9-03 DatePicker / DatePickerInput](#evidence-p9-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P9-04 DateInput](#evidence-p9-04) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P9-05 MonthPicker / MonthPickerInput](#evidence-p9-05) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P9-06 YearPicker / YearPickerInput](#evidence-p9-06) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P9-07 TimeInput / TimeValue](#evidence-p9-07) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
+| [P9-07 TimeInput / TimeValue](#evidence-p9-07) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: TimeInput/TimeValue 保留小时/分/秒、12/24h、空值与本地化；新版 Glory 原生支持中文 UTF-16 精确选区，真实编辑器、只读/禁用、身份与像素已验证。 OS 输入和 AT 客户端另行验收。 | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P9-08 TimePicker / TimeGrid](#evidence-p9-08) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P9-09 DateTimePicker / InlineDateTimePicker](#evidence-p9-09) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P10-01 FileInput / FileButton](#evidence-p10-01) | done | **tested**: Finite document/node/revision-owned file protocol; Web38 original picker/drop/read/preview plus classic cases. No ambient paths or transport. | **tested**: Finite document/node/revision-owned file protocol; Web38 original picker/drop/read/preview plus classic cases. No ambient paths or transport. | **tested**: Finite document/node/revision-owned file protocol; Web38 original picker/drop/read/preview plus classic cases. No ambient paths or transport. | **rejected**: Native file-picker/drop/read protocol is explicitly unsupported; no OS chooser acceptance. | **model-only**: No native file-input or screen-reader acceptance claim. |
-| [P10-02 Dropzone / Attachment](#evidence-p10-02) | done | **tested**: Finite document/node/revision-owned file protocol; Web38 original picker/drop/read/preview plus classic cases. No ambient paths or transport. | **tested**: Finite document/node/revision-owned file protocol; Web38 original picker/drop/read/preview plus classic cases. No ambient paths or transport. | **tested**: Finite document/node/revision-owned file protocol; Web38 original picker/drop/read/preview plus classic cases. No ambient paths or transport. | **rejected**: Native file-picker/drop/read protocol is explicitly unsupported; no OS chooser acceptance. | **model-only**: No native file-input or screen-reader acceptance claim. |
-| [P10-03 CopyButton](#evidence-p10-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **rejected**: Native clipboard writes are explicitly rejected; unavailable state is real. | **rejected**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P10-04 Carousel](#evidence-p10-04) | done | **tested**: Finite implemented contract and actual host evidence in docs/carousel.md. SSR proves shape/adoption only; it has no input driver. Native scope excludes optional unsupported facets and does not imply OS/AT acceptance. | **tested**: Finite implemented contract and actual host evidence in docs/carousel.md. SSR proves shape/adoption only; it has no input driver. Native scope excludes optional unsupported facets and does not imply OS/AT acceptance. | **tested**: Finite implemented contract and actual host evidence in docs/carousel.md. SSR proves shape/adoption only; it has no input driver. Native scope excludes optional unsupported facets and does not imply OS/AT acceptance. | **tested**: Finite implemented contract and actual host evidence in docs/carousel.md. SSR proves shape/adoption only; it has no input driver. Native scope excludes optional unsupported facets and does not imply OS/AT acceptance. | **model-only**: Shared semantic projection only; browser AX/table and native geometry are not native AT client or screen-reader speech acceptance. |
+| [P10-01 FileInput / FileButton](#evidence-p10-01) | done | **tested**: Finite document/node/revision-owned file protocol; Web38 original picker/drop/read/preview plus classic cases. No ambient paths or transport. | **tested**: Finite document/node/revision-owned file protocol; Web38 original picker/drop/read/preview plus classic cases. No ambient paths or transport. | **tested**: Finite document/node/revision-owned file protocol; Web38 original picker/drop/read/preview plus classic cases. No ambient paths or transport. | **tested**: Explicit optional files/clipboard native driver tested by the all-feature Sapid consumer gate; ambient authority and actual OS picker/drop/clipboard UI acceptance are separate. Without the optional service, unavailability remains explicit. | **model-only**: No native file-input or screen-reader acceptance claim. |
+| [P10-02 Dropzone / Attachment](#evidence-p10-02) | done | **tested**: Finite document/node/revision-owned file protocol; Web38 original picker/drop/read/preview plus classic cases. No ambient paths or transport. | **tested**: Finite document/node/revision-owned file protocol; Web38 original picker/drop/read/preview plus classic cases. No ambient paths or transport. | **tested**: Finite document/node/revision-owned file protocol; Web38 original picker/drop/read/preview plus classic cases. No ambient paths or transport. | **tested**: Explicit optional files/clipboard native driver tested by the all-feature Sapid consumer gate; ambient authority and actual OS picker/drop/clipboard UI acceptance are separate. Without the optional service, unavailability remains explicit. | **model-only**: No native file-input or screen-reader acceptance claim. |
+| [P10-03 CopyButton](#evidence-p10-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Explicit optional files/clipboard native driver tested by the all-feature Sapid consumer gate; ambient authority and actual OS picker/drop/clipboard UI acceptance are separate. Without the optional service, unavailability remains explicit. | **model-only**: Shared semantic projection only; no component-specific AT client claim. |
+| [P10-04 Carousel](#evidence-p10-04) | done | **tested**: Finite implemented contract and actual host evidence in docs/carousel.md. SSR proves shape/adoption only; it has no input driver. Native scope excludes optional unsupported facets and does not imply OS/AT acceptance. | **tested**: Finite implemented contract and actual host evidence in docs/carousel.md. SSR proves shape/adoption only; it has no input driver. Native scope excludes optional unsupported facets and does not imply OS/AT acceptance. | **tested**: Finite implemented contract and actual host evidence in docs/carousel.md. SSR proves shape/adoption only; it has no input driver. Native scope excludes optional unsupported facets and does not imply OS/AT acceptance. | **tested**: 索引轮播最多七个短 Owner、百万 count 不扫描源；受控页、RTL/Swipe、注入时钟与暂停协议已实现。新版 Glory 原生真实鼠标悬停可取消当前时钟，离开恢复；四主题几何/像素与清理验证保留。 OS 输入和 AT 客户端另行验收。 | **model-only**: Shared semantic projection only; browser AX/table and native geometry are not native AT client or screen-reader speech acceptance. |
 | [P10-05 Lightbox](#evidence-p10-05) | done | **tested**: Finite implemented contract and actual host evidence in docs/lightbox.md. SSR proves shape/adoption only; it has no input driver. Native scope excludes optional unsupported facets and does not imply OS/AT acceptance. | **tested**: Finite implemented contract and actual host evidence in docs/lightbox.md. SSR proves shape/adoption only; it has no input driver. Native scope excludes optional unsupported facets and does not imply OS/AT acceptance. | **tested**: Finite implemented contract and actual host evidence in docs/lightbox.md. SSR proves shape/adoption only; it has no input driver. Native scope excludes optional unsupported facets and does not imply OS/AT acceptance. | **tested**: Finite implemented contract and actual host evidence in docs/lightbox.md. SSR proves shape/adoption only; it has no input driver. Native scope excludes optional unsupported facets and does not imply OS/AT acceptance. | **model-only**: Shared semantic projection only; browser AX/table and native geometry are not native AT client or screen-reader speech acceptance. |
 | [P10-06 CodeBlock / CodeHighlight](#evidence-p10-06) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P10-07 JsonViewer](#evidence-p10-07) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
@@ -154,7 +154,7 @@ explicit even when another variant of the same family is available.
 | [P13-02 MessageScroller / Chat](#evidence-p13-02) | done | **tested**: Finite indexed window, explicit accepted-append notifications and current reading anchors. Original Web40 twelve cases. Native scrolling tested in BlueLight; separate Message content test covers four themes. No inferred IME or AT acceptance. | **tested**: Finite indexed window, explicit accepted-append notifications and current reading anchors. Original Web40 twelve cases. Native scrolling tested in BlueLight; separate Message content test covers four themes. No inferred IME or AT acceptance. SSR proves structure/adoption, not an input driver. | **tested**: Finite indexed window, explicit accepted-append notifications and current reading anchors. Original Web40 twelve cases. Native scrolling tested in BlueLight; separate Message content test covers four themes. No inferred IME or AT acceptance. | **tested**: Finite indexed window, explicit accepted-append notifications and current reading anchors. Original Web40 twelve cases. Native scrolling tested in BlueLight; separate Message content test covers four themes. No inferred IME or AT acceptance. | **model-only**: Shared current semantic projection only; no component-specific native AT client or screen-reader speech acceptance. |
 | [P13-03 PromptInput](#evidence-p13-03) | done | **tested**: Finite real Form/Textarea, controlled send/cancel proposals, current Owner tasks, composition/submit guards and bounded suggestions. Actual four-theme native plain prompt; optional native file facet is explicitly rejected. Web41 fourteen actual cases include file query and dirty adoption. SSR proves serialization/adoption only; no model transport, OS IME or speech acceptance inferred. | **tested**: Finite real Form/Textarea, controlled send/cancel proposals, current Owner tasks, composition/submit guards and bounded suggestions. Actual four-theme native plain prompt; optional native file facet is explicitly rejected. Web41 fourteen actual cases include file query and dirty adoption. SSR proves serialization/adoption only; no model transport, OS IME or speech acceptance inferred. | **tested**: Finite real Form/Textarea, controlled send/cancel proposals, current Owner tasks, composition/submit guards and bounded suggestions. Actual four-theme native plain prompt; optional native file facet is explicitly rejected. Web41 fourteen actual cases include file query and dirty adoption. SSR proves serialization/adoption only; no model transport, OS IME or speech acceptance inferred. | **tested**: Finite real Form/Textarea, controlled send/cancel proposals, current Owner tasks, composition/submit guards and bounded suggestions. Actual four-theme native plain prompt; optional native file facet is explicitly rejected. Web41 fourteen actual cases include file query and dirty adoption. SSR proves serialization/adoption only; no model transport, OS IME or speech acceptance inferred. | **model-only**: Shared semantic projection; no component-specific AT client or screen-reader acceptance. |
 | [P13-04 Questionnaire](#evidence-p13-04) | done | **tested**: Typed Form/Stepper questionnaire, retained field identity, fresh current/final validation and repeated-invalid attempt/cancellation guards. Web43 original12 and four-theme native real controls passed. No schema VM, transport, OS IME or speech claim. | **tested**: Typed Form/Stepper questionnaire, retained field identity, fresh current/final validation and repeated-invalid attempt/cancellation guards. Web43 original12 and four-theme native real controls passed. No schema VM, transport, OS IME or speech claim. SSR establishes finite serialization/adoption only. | **tested**: Typed Form/Stepper questionnaire, retained field identity, fresh current/final validation and repeated-invalid attempt/cancellation guards. Web43 original12 and four-theme native real controls passed. No schema VM, transport, OS IME or speech claim. | **tested**: Typed Form/Stepper questionnaire, retained field identity, fresh current/final validation and repeated-invalid attempt/cancellation guards. Web43 original12 and four-theme native real controls passed. No schema VM, transport, OS IME or speech claim. | **model-only**: Shared finite native semantic projection; component-specific AT client/speech acceptance is not established. Actual Chromium AX is recorded separately on the Web axis. |
-| [P13-05 ModelSelector](#evidence-p13-05) | done | **tested**: Bounded explicit provider/model catalog and real Combobox/Field/Search. Accepted selection is distinct from query; refused choice emits one proposal. Web43 actual combined12 passed. Native editable Choice is explicitly rejected with prefix preserved; no provider/pricing service. | **tested**: Bounded explicit provider/model catalog and real Combobox/Field/Search. Accepted selection is distinct from query; refused choice emits one proposal. Web43 actual combined12 passed. Native editable Choice is explicitly rejected with prefix preserved; no provider/pricing service. SSR establishes finite serialization/adoption only. | **tested**: Bounded explicit provider/model catalog and real Combobox/Field/Search. Accepted selection is distinct from query; refused choice emits one proposal. Web43 actual combined12 passed. Native editable Choice is explicitly rejected with prefix preserved; no provider/pricing service. | **rejected**: Bounded explicit provider/model catalog and real Combobox/Field/Search. Accepted selection is distinct from query; refused choice emits one proposal. Web43 actual combined12 passed. Native editable Choice is explicitly rejected with prefix preserved; no provider/pricing service. | **rejected**: Native editing/Choice facet is explicitly rejected before exposing an AT driver. |
+| [P13-05 ModelSelector](#evidence-p13-05) | done | **tested**: Bounded explicit provider/model catalog and real Combobox/Field/Search. Accepted selection is distinct from query; refused choice emits one proposal. Web43 actual combined12 passed. Native editable Choice is explicitly rejected with prefix preserved; no provider/pricing service. | **tested**: Bounded explicit provider/model catalog and real Combobox/Field/Search. Accepted selection is distinct from query; refused choice emits one proposal. Web43 actual combined12 passed. Native editable Choice is explicitly rejected with prefix preserved; no provider/pricing service. SSR establishes finite serialization/adoption only. | **tested**: Bounded explicit provider/model catalog and real Combobox/Field/Search. Accepted selection is distinct from query; refused choice emits one proposal. Web43 actual combined12 passed. Native editable Choice is explicitly rejected with prefix preserved; no provider/pricing service. | **tested**: 有限显式模型/provider catalog、真实 Combobox/Search/Listbox、独立 accepted model/query 与受控拒绝已实现；新版 Glory 原生 editable Choice 已连接，四主题消费端验证业务值、拒绝/接受、编辑器焦点/身份与像素。 OS 输入和 AT 客户端另行验收。 | **model-only**: Current shared native semantic projection is available; this migration does not add component-specific AT client or speech acceptance. |
 | [P13-06 Suggestion](#evidence-p13-06) | done | **tested**: Finite application-supplied values with real Toolbar/Button roving keyboard focus. Selection only proposes a value; no automatic prompt send. Web43 combined12 and actual four-theme native controls/focus/pixels passed. | **tested**: Finite application-supplied values with real Toolbar/Button roving keyboard focus. Selection only proposes a value; no automatic prompt send. Web43 combined12 and actual four-theme native controls/focus/pixels passed. SSR establishes finite serialization/adoption only. | **tested**: Finite application-supplied values with real Toolbar/Button roving keyboard focus. Selection only proposes a value; no automatic prompt send. Web43 combined12 and actual four-theme native controls/focus/pixels passed. | **tested**: Finite application-supplied values with real Toolbar/Button roving keyboard focus. Selection only proposes a value; no automatic prompt send. Web43 combined12 and actual four-theme native controls/focus/pixels passed. | **model-only**: Shared finite native semantic projection; component-specific AT client/speech acceptance is not established. Actual Chromium AX is recorded separately on the Web axis. |
 | [P13-07 Confirmation / Checkpoint](#evidence-p13-07) | done | **tested**: Explicit application confirmation/checkpoint states and revisions; real Approve/Reject/Restore buttons only propose. Refused/disabled/absent callbacks, source updates and Owner cleanup covered. Web43 original9 and four-theme native geometry/hit/focus/pixels passed; no authorization or rollback service. | **tested**: Explicit application confirmation/checkpoint states and revisions; real Approve/Reject/Restore buttons only propose. Refused/disabled/absent callbacks, source updates and Owner cleanup covered. Web43 original9 and four-theme native geometry/hit/focus/pixels passed; no authorization or rollback service. SSR establishes finite serialization/adoption only. | **tested**: Explicit application confirmation/checkpoint states and revisions; real Approve/Reject/Restore buttons only propose. Refused/disabled/absent callbacks, source updates and Owner cleanup covered. Web43 original9 and four-theme native geometry/hit/focus/pixels passed; no authorization or rollback service. | **tested**: Explicit application confirmation/checkpoint states and revisions; real Approve/Reject/Restore buttons only propose. Refused/disabled/absent callbacks, source updates and Owner cleanup covered. Web43 original9 and four-theme native geometry/hit/focus/pixels passed; no authorization or rollback service. | **model-only**: Shared finite native semantic projection; component-specific AT client/speech acceptance is not established. Actual Chromium AX is recorded separately on the Web axis. |
 | [P13-08 Plan / Task / Queue](#evidence-p13-08) | done | **tested**: Bounded application plans/tasks/ordered queues, exact supplied task progress and processed-work counts; genuine buttons propose full keys only. Actual four-theme native geometry/hit/focus/pixels and Web42 CSR/adoption. No execution, authorization or scheduling. | **tested**: Bounded application plans/tasks/ordered queues, exact supplied task progress and processed-work counts; genuine buttons propose full keys only. Actual four-theme native geometry/hit/focus/pixels and Web42 CSR/adoption. No execution, authorization or scheduling. SSR establishes serialization/adoption only. | **tested**: Bounded application plans/tasks/ordered queues, exact supplied task progress and processed-work counts; genuine buttons propose full keys only. Actual four-theme native geometry/hit/focus/pixels and Web42 CSR/adoption. No execution, authorization or scheduling. | **tested**: Bounded application plans/tasks/ordered queues, exact supplied task progress and processed-work counts; genuine buttons propose full keys only. Actual four-theme native geometry/hit/focus/pixels and Web42 CSR/adoption. No execution, authorization or scheduling. | **model-only**: Current shared semantic projection only. No component-specific AT client or screen-reader speech acceptance. |
@@ -234,7 +234,7 @@ Tests:
 
 ### Evidence P0-04
 
-Collapsible有限intrinsic height动画、反向/内容增长、匹配revision完成后的Unmount、KeepMounted、Clear/0/Reduce和能力不足即时完成已补齐。4组件/共享render5+2/HTML2/SSR+stream/native2与Chromium148实际12场景全过；v5采用仅全树成功后重置counter并保dirty编辑器。Blitz可选motion facet明确拒绝，普通基线保留。
+Collapsible 有限 intrinsic height 动画、反向/内容增长、匹配 revision 后的 Unmount、KeepMounted、Clear/0/Reduce 已补齐。Web 四主题 CSR/采用及 Chromium 12 场景原证据保留；Blitz 现接通真实原生几何/CPU 插值、2x 文字重排、嵌套、隐藏/恢复/清理和单次完成回执，实际四主题双内容策略消费端验证编辑器身份、焦点返回、旧回执拒绝与 Owner 清理。OS 输入、读屏和真机呈现仍单独验收。
 
 Implementation:
 
@@ -242,15 +242,20 @@ Implementation:
 - `docs/collapsible.md`
 - `../glory/crates/render/src/collapse.rs`
 - `../glory/crates/web/src/browser/collapse.rs`
+- `../glory/crates/blitz/src/collapse.rs`
+- `../glory/docs/native-collapse.md`
 
 Tests:
 
 - `tests/collapse_motion.rs (4 passed)`
 - `../glory/crates/render/tests/collapse.rs (5 passed)`
 - `../glory/crates/html/src/collapse_tests.rs (2 passed)`
-- `../glory/crates/blitz/tests/collapse.rs (2 passed)`
+- `../glory/crates/blitz/tests/collapse.rs (5 passed)`
 - `examples/web/collapse-motion-acceptance.js`
 - `D:/BuildCache/sapid/collapse-motion-browser-command-next.json (12 passed, Chromium 148.0.7778.96)`
+- `examples/native/tests/collapse_motion.rs (four themes, two content policies)`
+- `/Volumes/Data/Caches/glory/native-collapse-sapid-final-tests.log`
+- `/Volumes/Data/Caches/glory/native-collapse-final-tests.log`
 
 ### Evidence P0-05
 
@@ -686,7 +691,7 @@ Tests:
 
 ### Evidence P2-01
 
-真实三态indeterminate与有限CheckboxGroup全选/禁用保留；Web脏接管/stream已验证。纯无JS SSR记录三态；Blitz明确拒绝Mixed，保留成功前缀与查询水位。
+MixedCheckbox/CheckboxGroup 保留真实三态与有限全选/禁用策略；新版 Glory 原生已支持 indeterminate。四主题消费端验证 Mixed 转 Checked、真实引擎属性与 Owner 清理。
 
 Implementation:
 
@@ -709,6 +714,9 @@ Tests:
 - `D:/BuildCache/sapid/choices-browser-results.json`
 - `../glory/crates/blitz/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)`
 - `../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name`
+- `examples/native/tests/choices.rs`
+- `D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)`
+- `docs/glory-main-migration-2026-10-29.md`
 
 ### Evidence P2-02
 
@@ -738,7 +746,7 @@ Tests:
 
 ### Evidence P2-03
 
-真实Radio/RadioGroup、single Tab、方向/Home/End、禁用与整组受控恢复；native name与successful name须一致；Web/adoption/stream保护脏同组，Blitz明确拒绝Radio。
+真实 RadioGroup、单 Tab、方向/Home/End、整组受控恢复与 Web/adoption/stream 已实现；新版 Glory 原生 Radio 已连接，四主题消费端验证实际 checked、选择、只读和物理身份。
 
 Implementation:
 
@@ -761,6 +769,9 @@ Tests:
 - `D:/BuildCache/sapid/choices-browser-results.json`
 - `../glory/crates/blitz/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)`
 - `../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name`
+- `examples/native/tests/choices.rs`
+- `D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)`
+- `docs/glory-main-migration-2026-10-29.md`
 
 ### Evidence P2-04
 
@@ -786,7 +797,7 @@ Tests:
 
 ### Evidence P2-05
 
-SegmentedControl复用真实单选值模型，水平默认/有限items、单Tab与受控拒绝；未冒用Tabs面板语义，原生沿用Radio拒绝。
+SegmentedControl 复用真实 RadioGroup 与单值控制器；四主题原生受控选择、只读及物理身份已验证，不引入 Tabs 面板语义。
 
 Implementation:
 
@@ -809,10 +820,13 @@ Tests:
 - `D:/BuildCache/sapid/choices-browser-results.json`
 - `../glory/crates/blitz/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)`
 - `../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name`
+- `examples/native/tests/choices.rs`
+- `D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)`
+- `docs/glory-main-migration-2026-10-29.md`
 
 ### Evidence P2-06
 
-Chip真实Checkbox、ChipGroup单选Radio/多选Checkbox，接入受控值、Field、禁用与有限集合；Web/SSR验收通过，原生Radio明确拒绝而Checkbox可用。
+Chip 使用真实 Checkbox，ChipGroup 按单选 Radio/多选 Checkbox 分别实现；Web/SSR 与原生均有消费端证据，新增四主题单选受控选择、只读与物理身份。
 
 Implementation:
 
@@ -824,6 +838,9 @@ Tests:
 - `tests/chip.rs`
 - `examples/web/choice-acceptance.js`
 - `D:/BuildCache/sapid/choices-browser-results.json`
+- `examples/native/tests/choices.rs`
+- `D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)`
+- `docs/glory-main-migration-2026-10-29.md`
 
 ### Evidence P2-07
 
@@ -1306,7 +1323,7 @@ Tests:
 
 ### Evidence P4-01
 
-真实Menu/MenuItem/原生勾选单选、共享Collection/RTL/Typeahead、层级键盘与指针延迟/间隙、Tab退出和受控拒绝已实现；浏览器11组及SSR stream通过，原生Layer/输入明确拒绝并验证前缀水位。
+真实Menu/MenuItem/勾选单选、Collection/RTL/Typeahead、层级/指针延迟/Tab退出与受控拒绝已有实现；原生Menu Layer/输入/AX现已连接。焦点与显式显露在可见绑定后执行，关闭取消旧意图；四主题实际消费者含长菜单滚动点击通过，OS输入/读屏另验收。
 
 Implementation:
 
@@ -1322,10 +1339,13 @@ Tests:
 - `../glory/crates/blitz/tests/menu.rs`
 - `../glory/crates/blitz/src/accessibility_menu_tests.rs`
 - `D:/BuildCache/sapid/menu-browser-results.json (11 passed; errors=[]; isolated menu-next snapshot)`
+- `/Volumes/Data/Caches/glory/menu-consumer-tests.log (8 actual native consumer tests; four themes where applicable)`
+- `tests/menu.rs: keyboard_focus_and_reveal_follow_visibility_and_exit_retires_older_focus_intents`
+- `/Volumes/Data/Caches/glory/native-menus/browser-results.json (49 reports across Menu/Menubar/ContextMenu/Command; four-theme CSR/hydration)`
 
 ### Evidence P4-02
 
-真实 ContextMenu region、鼠标/键盘有限 viewport point、最近嵌套区域与编辑器 Native/Override 策略、复用 Menu 模型/子菜单/受控开关、实际焦点恢复与双向 Tab 退出已实现。禁用/IME native followup 一致性、Owner 退休、SSR/stream 与根 Web17 实际14项通过；原生新 facet 明确拒绝，触屏长按保留 native 策略。
+ContextMenu region、有限viewport point、最近边界、Native/Override编辑器策略及Menu模型/子菜单/受控关闭已实现；Glory原生ContextPoint Layer/输入及上下文区域Tab边界已连接，四主题实际消费端通过；触屏长按保持宿主策略，真实OS输入/读屏另验收。
 
 Implementation:
 
@@ -1343,10 +1363,12 @@ Tests:
 - `../glory/crates/ssr/src/stream/menu_tests.rs`
 - `examples/web/context-menu-acceptance.js`
 - `D:/BuildCache/sapid/context-menu-browser-root17.json (14 passed, Chromium 148.0.7778.96)`
+- `/Volumes/Data/Caches/glory/menu-consumer-tests.log (8 actual native consumer tests; four themes where applicable)`
+- `/Volumes/Data/Caches/glory/native-menus/browser-results.json (49 reports across Menu/Menubar/ContextMenu/Command; four-theme CSR/hydration)`
 
 ### Evidence P4-03
 
-真正Menubar/MenuItemAction根语义、互斥受控根菜单、水平/RTL/typeahead和嵌套菜单/Tab边界已实现。4组件/2render/1HTML oracle/1stream/1原生明确拒绝与实际Chromium148原始10组全过；自定义name回归已修。
+Menubar/MenuItemAction根语义、互斥受控根菜单、水平/RTL/typeahead和嵌套菜单/Tab边界已实现；Glory原生协议和AX关系现已连接，四主题实际消费端及原有浏览器证据保留；系统菜单栏/OS读屏分开验收。
 
 Implementation:
 
@@ -1363,6 +1385,8 @@ Tests:
 - `../glory/crates/blitz/tests/menubar.rs (1 passed)`
 - `examples/web/menubar-acceptance.js`
 - `D:/BuildCache/sapid/menubar-browser-menubar-final-rating-next.json (10 passed, Chromium 148.0.7778.96)`
+- `/Volumes/Data/Caches/glory/menu-consumer-tests.log (8 actual native consumer tests; four themes where applicable)`
+- `/Volumes/Data/Caches/glory/native-menus/browser-results.json (49 reports across Menu/Menubar/ContextMenu/Command; four-theme CSR/hydration)`
 
 ### Evidence P4-04
 
@@ -1463,7 +1487,7 @@ Tests:
 
 ### Evidence P4-09
 
-自由 TagsInput/PillsInput 的原子受控 state、重复策略、有界分隔/粘贴/删除、IME 保护、真实成功值 proxy 与退休清理已实现；模型/共享协议、原生明确拒绝 facet 与 Web16 实际 14 项通过。
+自由 TagsInput/PillsInput 的原子受控 state、重复策略、有界分隔/粘贴/删除、IME 保护、成功值 proxy 与清理已实现；Glory 原生 host 协议和 AX textbox 现已连接，五项四主题实际消费端含 256 tags/UTF-16/拒绝恢复通过。平台剪贴板服务与 OS 输入/读屏另验收；原 Web16 14 项证据保留。
 
 Implementation:
 
@@ -1474,6 +1498,7 @@ Implementation:
 - `examples/web/src/showcase_demos/core_tags.rs`
 - `src/tag.rs`
 - `../glory/docs/input-placeholder.md`
+- `../glory/docs/native-tags.md`
 
 Tests:
 
@@ -1484,10 +1509,12 @@ Tests:
 - `D:/BuildCache/sapid/tags-browser-web16.json (14 passed, Chromium 148.0.7778.96)`
 - `scripts/showcase-style-browser.cjs`
 - `tests/placeholders.rs`
+- `/Volumes/Data/Caches/glory/tags-workspace-tests.log (8 native input/AX regressions within the 1032-test workspace)`
+- `/Volumes/Data/Caches/glory/tags-consumer-tests.log (5 actual native consumers, four themes)`
 
 ### Evidence P4-10
 
-Command/Spotlight真正Dialog+editable Input+有界Listbox/分组已实现，显式Owner Palette快捷键、受控搜索/打开、戳记结果或Owner resource异步加载取消、IME/禁用/空错误状态和256项Reveal均补齐。11模型、共享Palette/SSRstream/原生明确拒绝证据及Web20实际14项全过。
+Command/Spotlight真实Dialog+editable Input+有界Listbox/分组、显式Owner Palette快捷键、受控搜索/打开及异步结果取消已实现；Glory原生Choice/Palette连接后，四主题实际中文搜索/提交/模态恢复及同批菜单导航隔离通过，OS输入/读屏另验收。
 
 Implementation:
 
@@ -1503,6 +1530,8 @@ Tests:
 - `../glory/crates/ssr/src/stream/command_tests.rs`
 - `examples/web/command-acceptance.js`
 - `D:/BuildCache/sapid/command-browser-root20.json (14 passed, Chromium 148.0.7778.96)`
+- `/Volumes/Data/Caches/glory/menu-consumer-tests.log (8 actual native consumer tests; four themes where applicable)`
+- `/Volumes/Data/Caches/glory/native-menus/browser-results.json (49 reports across Menu/Menubar/ContextMenu/Command; four-theme CSR/hydration)`
 
 ### Evidence P5-01
 
@@ -1546,7 +1575,7 @@ Tests:
 
 ### Evidence P5-03
 
-被动Tooltip角色与稳定描述、hover/focus、可取消Owner延迟及Escape已实现；不抢焦点/禁止交互后代，Web实际AX、dirty接管与classicstream通过，原生Layer和PointerWithin驱动明确拒绝。
+被动Tooltip角色与稳定描述、hover/focus、可取消Owner延迟及Escape已实现；不抢焦点/禁止交互后代，Web实际AX、dirty接管与classicstream通过，原生 Tooltip Layer 仍明确拒绝；新版 Glory 的共享 PointerWithin 已接通，不能把 Layer 拒绝等同于缺少指针边界驱动。
 
 Implementation:
 
@@ -2126,7 +2155,7 @@ Tests:
 
 ### Evidence P7-05
 
-Whole/Half离散Rating、真正RadioGroup/Check radio、clear数值0、受控拒绝/Field/数值成功值和被动display_only已实现。11组件+2模型+3原生+Chromium148实际10项通过；原生交互Radio保持明确Unsupported，display_only有四主题真实半星像素证据。
+Whole/Half Rating、真实 RadioGroup、数值成功值、受控/Field 与 display_only 已实现；新版 Glory 原生交互/只读 Radio 支持，四主题实际 checked、稳定身份、半星像素和 direct-apply 水位验证通过。
 
 Implementation:
 
@@ -2142,6 +2171,9 @@ Tests:
 - `examples/web/rating-acceptance.js`
 - `D:/BuildCache/sapid/rating-native.log`
 - `D:/BuildCache/sapid/rating-browser.json (10 passed, Chromium 148.0.7778.96)`
+- `examples/native/tests/rating.rs`
+- `D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)`
+- `docs/glory-main-migration-2026-10-29.md`
 
 ### Evidence P7-06
 
@@ -2358,7 +2390,7 @@ Tests:
 
 ### Evidence P8-04
 
-复用 Tree 和 Combobox，路径值与多选/半选策略。
+TreeSelect 复用 Tree/Combobox 与完整路径值、多选/半选策略；新版 Glory 原生树弹层已连接，四主题消费端验证真实几何、选择、关闭恢复焦点与触发器身份。
 
 Implementation:
 
@@ -2369,7 +2401,7 @@ Implementation:
 - `../glory/crates/render/src/choice.rs`
 - `../glory/crates/render/src/tree.rs`
 - `docs/tree-choices.md`
-- `完整路径与配对admission；真实Combobox+Tree popup；TreeSelect多选/父半选/叶子策略；Cascader真实Grid分列和单祖先链/懒加载。Native组合控件明确拒绝，独立Tree仍受支持。`
+- `完整路径与配对admission；真实Combobox+Tree popup；TreeSelect多选/父半选/叶子策略；Cascader真实Grid分列和单祖先链/懒加载。原生组合控件已接通，当前验证见 2026-10-29 迁移记录。`
 
 Tests:
 
@@ -2387,10 +2419,12 @@ Tests:
 - `D:/BuildCache/sapid/tree-choices-browser-web33.log`
 - `D:/BuildCache/sapid/web33-source/source-hashes.json (immutable production and acceptance sources)`
 - `D:/BuildCache/sapid/tree-choices-final-strict.log`
+- `D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)`
+- `docs/glory-main-migration-2026-10-29.md`
 
 ### Evidence P8-05
 
-分列路径选择、懒加载、返回/展开导航。
+Cascader 保留分列路径、展开/返回与懒加载；新版 Glory 原生树弹层已连接，四主题消费端验证真实几何、路径选择、焦点返回与触发器身份。
 
 Implementation:
 
@@ -2401,7 +2435,7 @@ Implementation:
 - `../glory/crates/render/src/choice.rs`
 - `../glory/crates/render/src/tree.rs`
 - `docs/tree-choices.md`
-- `完整路径与配对admission；真实Combobox+Tree popup；TreeSelect多选/父半选/叶子策略；Cascader真实Grid分列和单祖先链/懒加载。Native组合控件明确拒绝，独立Tree仍受支持。`
+- `完整路径与配对admission；真实Combobox+Tree popup；TreeSelect多选/父半选/叶子策略；Cascader真实Grid分列和单祖先链/懒加载。原生组合控件已接通，当前验证见 2026-10-29 迁移记录。`
 
 Tests:
 
@@ -2419,6 +2453,8 @@ Tests:
 - `D:/BuildCache/sapid/tree-choices-browser-web33.log`
 - `D:/BuildCache/sapid/web33-source/source-hashes.json (immutable production and acceptance sources)`
 - `D:/BuildCache/sapid/tree-choices-final-strict.log`
+- `D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)`
+- `docs/glory-main-migration-2026-10-29.md`
 
 ### Evidence P9-01
 
@@ -2549,7 +2585,7 @@ Tests:
 
 ### Evidence P9-07
 
-小时/分/秒、12/24h、空值和本地化展示。
+TimeInput/TimeValue 保留小时/分/秒、12/24h、空值与本地化；新版 Glory 原生支持中文 UTF-16 精确选区，真实编辑器、只读/禁用、身份与像素已验证。
 
 Implementation:
 
@@ -2569,6 +2605,9 @@ Tests:
 - `D:/BuildCache/sapid/dates-browser-web31.log (sequential original browser log)`
 - `D:/BuildCache/sapid/time-input-native.log`
 - `D:/BuildCache/sapid/time-input-clippy.log`
+- `examples/native/tests/time_input.rs`
+- `D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)`
+- `docs/glory-main-migration-2026-10-29.md`
 
 ### Evidence P9-08
 
@@ -2619,7 +2658,7 @@ Tests:
 
 ### Evidence P10-01
 
-FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。原生 picker/ambient 路径明确不支持；上传网络由应用提供。
+FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。显式 blitz-files 已接通原生选择/读取/私有预览及四主题真实消费端；桌面原生投放通道与四主题 Dropzone 真实句柄执行端已通过；移动 driver、实际 OS 拖动/chooser 输入验收仍开放，ambient 路径不支持；上传网络由应用提供。
 
 Implementation:
 
@@ -2627,6 +2666,7 @@ Implementation:
 - `../glory/crates/render/src/files.rs`
 - `../glory/crates/web/src/browser/files.rs`
 - `src/files.rs`
+- `../glory/docs/native-files.md`
 
 Tests:
 
@@ -2636,10 +2676,16 @@ Tests:
 - `D:/BuildCache/sapid/file-fixture-shape-pass.log`
 - `D:/BuildCache/sapid/files-browser-web36.json (9 reports, zero errors)`
 - `D:/BuildCache/sapid/files-stream-browser-web36.json (one report, zero errors)`
+- `examples/native/tests/file_driver.rs (2 tests across four themes; selection/read/preview/removal/cancel/refusal)`
+- `/Volumes/Data/Caches/glory/native-files-sapid-tests.log (2 passed; actual native engine PNG decode)`
+- `/Volumes/Data/Caches/glory/native-files-sapid-clippy.log`
+- `examples/native/tests/file_drop.rs (four themes; real desktop opener, path replacement, chunk read, PNG preview, retirement; owned Winit event source)`
+- `/Volumes/Data/Caches/glory/native-file-drop-sapid-tests.log`
+- `/Volumes/Data/Caches/glory/native-file-drop-sapid-clippy.log`
 
 ### Evidence P10-02
 
-FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。原生 picker/ambient 路径明确不支持；上传网络由应用提供。
+FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。显式 blitz-files 已接通原生选择/读取/私有预览及四主题真实消费端；桌面原生投放通道与四主题 Dropzone 真实句柄执行端已通过；移动 driver、实际 OS 拖动/chooser 输入验收仍开放，ambient 路径不支持；上传网络由应用提供。
 
 Implementation:
 
@@ -2647,6 +2693,7 @@ Implementation:
 - `../glory/crates/render/src/files.rs`
 - `../glory/crates/web/src/browser/files.rs`
 - `src/files.rs`
+- `../glory/docs/native-files.md`
 
 Tests:
 
@@ -2656,10 +2703,16 @@ Tests:
 - `D:/BuildCache/sapid/file-fixture-shape-pass.log`
 - `D:/BuildCache/sapid/files-browser-web36.json (9 reports, zero errors)`
 - `D:/BuildCache/sapid/files-stream-browser-web36.json (one report, zero errors)`
+- `examples/native/tests/file_driver.rs (2 tests across four themes; selection/read/preview/removal/cancel/refusal)`
+- `/Volumes/Data/Caches/glory/native-files-sapid-tests.log (2 passed; actual native engine PNG decode)`
+- `/Volumes/Data/Caches/glory/native-files-sapid-clippy.log`
+- `examples/native/tests/file_drop.rs (four themes; real desktop opener, path replacement, chunk read, PNG preview, retirement; owned Winit event source)`
+- `/Volumes/Data/Caches/glory/native-file-drop-sapid-tests.log`
+- `/Volumes/Data/Caches/glory/native-file-drop-sapid-clippy.log`
 
 ### Evidence P10-03
 
-显式带revision/request的可信宿主剪贴板action、真实成功/拒绝/不可用/失败、每文档至多一个OS写入、Owner/源替换撤销与注入计时反馈已完成；4组件、共享协议/HTML零输出差分/SSR拒绝、原生明确不可用及四主题像素1、Web28实际9组写读/权限/迟到/dirty/退休全过。
+显式带revision/request的可信宿主剪贴板action、真实成功/拒绝/不可用/失败、每文档至多一个OS写入、Owner/源替换撤销与注入计时反馈已完成；4组件、共享协议/HTML零输出差分/SSR拒绝、原生默认不可用及四主题像素1；显式可选桌面剪贴板、四主题 CopyButton/Code/Json/Tags 异步消费端和 macOS 系统往返另已通过，Android 安全 JNI/ARM64 前台系统服务独立验收，iOS driver/移动菜单仍开放；Web28实际9组写读/权限/迟到/dirty/退休全过。
 
 Implementation:
 
@@ -2667,6 +2720,7 @@ Implementation:
 - `docs/copy-button.md`
 - `../glory/crates/render/src/clipboard.rs`
 - `../glory/crates/web/src/browser/clipboard.rs`
+- `../glory/docs/native-clipboard.md`
 
 Tests:
 
@@ -2678,10 +2732,13 @@ Tests:
 - `D:/BuildCache/sapid/clipboard-html-tests.log`
 - `D:/BuildCache/sapid/clipboard-ssr-tests.log`
 - `D:/BuildCache/sapid/clipboard-native-tests.log`
+- `examples/native/tests/clipboard_driver.rs (--features clipboard; 3 passed, four themes)`
+- `/Volumes/Data/Caches/glory/clipboard-sapid-tests.log`
+- `/Volumes/Data/Caches/glory/clipboard-macos-system.log (guarded macOS system round trip)`
 
 ### Evidence P10-04
 
-按索引最多7个短Owner、百万count不扫描源的真实轮播；受控页/RTL键盘、独立修订Swipe与轴意图/多指取消、注入宿主时钟autoplay及hover/focus/manual暂停；四主题CSR/adoption/Native实际验收。
+索引轮播最多七个短 Owner、百万 count 不扫描源；受控页、RTL/Swipe、注入时钟与暂停协议已实现。新版 Glory 原生真实鼠标悬停可取消当前时钟，离开恢复；四主题几何/像素与清理验证保留。
 
 Implementation:
 
@@ -2698,6 +2755,8 @@ Tests:
 - `D:/BuildCache/sapid/carousel-browser-web39.json (9 original reports, zero errors)`
 - `D:/BuildCache/sapid/carousel-native-debug0.log`
 - `D:/BuildCache/sapid/carousel-native-clippy-final.log`
+- `D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)`
+- `docs/glory-main-migration-2026-10-29.md`
 
 ### Evidence P10-05
 
@@ -3160,7 +3219,7 @@ Tests:
 
 ### Evidence P13-05
 
-1024模型/32 provider组/128KiB显式业务catalog，真实Field/Combobox/Search/Listbox，accepted model与独立query明确分开，受控拒绝不多发None提案、readonly/禁用/当前值与Owner清理；不嵌服务/价格清单，Native editableChoice明确拒绝保prefix，Web43实际通过。
+有限显式模型/provider catalog、真实 Combobox/Search/Listbox、独立 accepted model/query 与受控拒绝已实现；新版 Glory 原生 editable Choice 已连接，四主题消费端验证业务值、拒绝/接受、编辑器焦点/身份与像素。
 
 Implementation:
 
@@ -3177,6 +3236,8 @@ Tests:
 - `D:/BuildCache/sapid/chat-actions-native-tests.log`
 - `D:/BuildCache/sapid/chat-actions-final-strict.log`
 - `D:/BuildCache/sapid/model-suggestions-browser-web43-accepted.json (12 combined reports, zero errors; native disabled/AX and host-frame focus assertions corrected, frozen original failures retained)`
+- `D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)`
+- `docs/glory-main-migration-2026-10-29.md`
 
 ### Evidence P13-06
 

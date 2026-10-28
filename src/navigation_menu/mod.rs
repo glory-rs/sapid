@@ -11,7 +11,7 @@ use glory::render::{
 };
 use glory::style::{Display, Edges, FlexDirection, Length, Style};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Bond, Cage, Lotus, Scope};
+use glory::{Bond, Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     future::Future,
@@ -48,7 +48,7 @@ fn valid_path(path: &[String]) -> Result {
     }
     Ok(())
 }
-fn label(scope: &Scope, source: &Lotus<String>) -> Result<Cage<String>> {
+fn label(scope: &Scope, source: &Vary<String>) -> Result<Cage<String>> {
     composite::validated(scope, source, |label| {
         if label.is_empty() || label.len() > 4096 {
             Err(invalid("navigation labels require 1..=4096 bytes"))
@@ -70,7 +70,7 @@ struct Entry {
     opened: Cage<bool>,
     trigger_id: SemanticId,
     panel_id: SemanticId,
-    enabled: Lotus<bool>,
+    enabled: Vary<bool>,
 }
 struct Registry {
     entries: Vec<Entry>,
@@ -776,15 +776,15 @@ impl NavigationMenu {
         self.common.unstyled = true;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -804,7 +804,7 @@ impl NavigationMenu {
         self.direction = value;
         self
     }
-    pub fn open_path(mut self, value: impl Into<Lotus<Vec<String>>>) -> Self {
+    pub fn open_path(mut self, value: impl Into<Vary<Vec<String>>>) -> Self {
         self.path.source = Some(value.into());
         self
     }

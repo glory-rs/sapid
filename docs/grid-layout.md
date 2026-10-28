@@ -46,7 +46,7 @@ provider and responsive column/span props are still pending; P3-03 therefore
 retains a documented partial boundary. No HTML-only media CSS is injected.
 Explicit typed style overrides can deliberately change the computed layout.
 
-`aspect_ratio(source)` accepts a read-only numeric Lotus. Its preferred ratio is
+`aspect_ratio(source)` accepts a read-only numeric Vary. Its preferred ratio is
 finite and in [0.000001,1000000]. Width defaults to 100%; `width`, `height`, `fill`,
 and typed style overrides remain available. With both axes definite, CSS's size
 constraints determine the box. Minimums can exceed maximums; the engine still

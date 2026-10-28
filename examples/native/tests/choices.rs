@@ -104,26 +104,107 @@ fn standalone_and_multiple_chips_keep_real_native_checkbox_values_field_and_iden
     host.app().clear().unwrap();
 }
 #[test]
-fn native_mixed_and_single_value_radio_variants_refuse_without_leaving_partial_controls() {
-    let host = WindowApp::new();
-    assert!(
-        host.mount(mixed_checkbox().default_state(CheckState::Mixed))
-            .is_err()
-    );
-    assert!(host.app().tree().is_empty());
-    assert!(
-        host.mount(radio_group("radio-native").radio(radio("a").label("A")))
-            .is_err()
-    );
-    assert!(host.app().tree().is_empty());
-    assert!(
-        host.mount(segmented_control("segment-native").segment(segment("a").label("A")))
-            .is_err()
-    );
-    assert!(host.app().tree().is_empty());
-    assert!(
-        host.mount(chip_group("single-native").item(chip_item("a", "A")))
-            .is_err()
-    );
-    assert!(host.app().tree().is_empty());
+fn native_mixed_and_single_value_variants_preserve_real_controls_and_controlled_state() {
+    for theme in [
+        sapid::Theme::blue_light(),
+        sapid::Theme::blue_dark(),
+        sapid::Theme::green_light(),
+        sapid::Theme::green_dark(),
+    ] {
+        let host = WindowApp::new();
+        let app = host.app();
+        let state = app.scope().cage(CheckState::Mixed);
+        host.mount(
+            mixed_checkbox()
+                .theme(theme.clone())
+                .state(state)
+                .on_state_change(move |value| state.revise(|old| *old = value)),
+        )
+        .unwrap();
+        app.settle(8).unwrap();
+        let node = find(app, "sapid-mixed-checkbox")[0];
+        let physical = host.renderer().engine_id(node, Part::Control).unwrap();
+        assert!(host.renderer().inspect(|doc| {
+            doc.get_node(physical)
+                .unwrap()
+                .element_data()
+                .unwrap()
+                .checkbox_input_indeterminate()
+                .unwrap()
+        }));
+        app.dispatch(node, Event::CheckedChanged(true)).unwrap();
+        app.settle(8).unwrap();
+        assert_eq!(state.get(), CheckState::Checked);
+        assert!(checked(&host, node));
+        assert!(!host.renderer().inspect(|doc| {
+            doc.get_node(physical)
+                .unwrap()
+                .element_data()
+                .unwrap()
+                .checkbox_input_indeterminate()
+                .unwrap()
+        }));
+        app.clear().unwrap();
+        for variant in 0..3 {
+            let value = app.scope().cage("a".to_owned());
+            let readonly = app.scope().cage(false);
+            let widget: Box<dyn glory::Widget> = match variant {
+                0 => Box::new(
+                    radio_group("native-radio")
+                        .theme(theme.clone())
+                        .value(value)
+                        .readonly(readonly)
+                        .radio(radio("a").label("A"))
+                        .radio(radio("b").label("B"))
+                        .on_value_change(move |next| value.revise(|old| *old = next)),
+                ),
+                1 => Box::new(
+                    segmented_control("native-segments")
+                        .theme(theme.clone())
+                        .value(value)
+                        .readonly(readonly)
+                        .segment(segment("a").label("A"))
+                        .segment(segment("b").label("B"))
+                        .on_value_change(move |next| value.revise(|old| *old = next)),
+                ),
+                _ => Box::new(
+                    chip_group("native-single")
+                        .theme(theme.clone())
+                        .value(value)
+                        .readonly(readonly)
+                        .items([chip_item("a", "A"), chip_item("b", "B")])
+                        .on_value_change(move |next| value.revise(|old| *old = next)),
+                ),
+            };
+            host.mount(widget).unwrap();
+            app.settle(8).unwrap();
+            let members = find(app, "sapid-radio");
+            assert_eq!(members.len(), 2);
+            let identity = host
+                .renderer()
+                .engine_id(members[1], Part::Control)
+                .unwrap();
+            assert!(checked(&host, members[0]) && !checked(&host, members[1]));
+            app.dispatch(members[1], Event::CheckedChanged(true))
+                .unwrap();
+            app.settle(8).unwrap();
+            assert_eq!(value.get(), "b");
+            assert!(!checked(&host, members[0]) && checked(&host, members[1]));
+            readonly.revise(|old| *old = true);
+            app.flush().unwrap();
+            assert!(
+                !app.dispatch(members[0], Event::CheckedChanged(true))
+                    .unwrap()
+            );
+            assert_eq!(value.get(), "b");
+            assert_eq!(
+                host.renderer()
+                    .engine_id(members[1], Part::Control)
+                    .unwrap(),
+                identity
+            );
+            app.clear().unwrap();
+            assert!(app.tree().is_empty());
+        }
+    }
 }

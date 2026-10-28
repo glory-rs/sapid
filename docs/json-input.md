@@ -22,7 +22,7 @@ relation. Parsing and metadata updates preserve editor identity, value revisions
 selection and composition. Error announcements are opt-in with
 `.announce_errors(true)`; this does not establish screen-reader acceptance.
 
-`.value(Lotus<String>)` is controlled: `.on_value_change` proposes edits and
+`.value(Vary<String>)` is controlled: `.on_value_change` proposes edits and
 formatting; only the application updates that source. `.default_value` uses local
 state. Typed change callbacks precede generic input observers. `.on_format`
 observes a successful formatting proposal, including a proposal the controlled

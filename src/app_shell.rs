@@ -8,7 +8,7 @@ use glory::render::{
 };
 use glory::style::{Display, Edges, FlexDirection, Length, Overflow, Style};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Bond, Cage, Lotus, Scope};
+use glory::{Bond, Cage, Scope, Vary};
 use std::{cell::Cell, rc::Rc};
 
 const MAX_SHELL_WIDTH: f64 = 1_000_000.0;
@@ -302,11 +302,11 @@ macro_rules! shell_methods {
             self.common.unstyled = true;
             self
         }
-        pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.class = value.into();
             self
         }
-        pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
             self.common.style = value.into();
             self
         }
@@ -326,7 +326,7 @@ macro_rules! shell_methods {
 }
 impl Sidebar {
     shell_methods!(theme_explicit, size_explicit);
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -334,7 +334,7 @@ impl Sidebar {
         self.layout = Some(value);
         self
     }
-    pub fn collapsed(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn collapsed(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.collapsed.source = Some(value.into());
         self
     }
@@ -342,7 +342,7 @@ impl Sidebar {
         self.collapsed.default = value;
         self
     }
-    pub fn mobile_open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn mobile_open(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(value.into());
         self
     }
@@ -725,7 +725,7 @@ pub struct AppShell {
     footer: Option<Factory<ShellContext>>,
     main: Option<Factory<ShellContext>>,
     layout: Option<ShellLayout>,
-    skip_label: Lotus<String>,
+    skip_label: Vary<String>,
     width_change: Option<Box<dyn FnMut(f64)>>,
     main_ref: Option<Cage<Option<NodeId>>>,
 }
@@ -784,7 +784,7 @@ impl AppShell {
         self.main = Some(Box::new(move |context| Box::new(factory(context))));
         self
     }
-    pub fn skip_label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn skip_label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.skip_label = value.into();
         self
     }

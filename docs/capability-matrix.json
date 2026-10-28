@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "review_date": "2026-10-25",
+  "review_date": "2026-10-29",
   "states": [
     "tested",
     "model-only",
@@ -940,7 +940,7 @@
       },
       "native": {
         "state": "tested",
-        "notes": "CheckboxGroup supported; MixedCheckbox indeterminate explicitly rejected.",
+        "notes": "MixedCheckbox/CheckboxGroup 保留真实三态与有限全选/禁用策略；新版 Glory 原生已支持 indeterminate。四主题消费端验证 Mixed 转 Checked、真实引擎属性与 Owner 清理。 OS 输入和 AT 客户端另行验收。",
         "evidence": [
           "inventory:P2-01"
         ]
@@ -1021,15 +1021,15 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Native radio groups are explicitly rejected; no checkbox fallback.",
+        "state": "tested",
+        "notes": "真实 RadioGroup、单 Tab、方向/Home/End、整组受控恢复与 Web/adoption/stream 已实现；新版 Glory 原生 Radio 已连接，四主题消费端验证实际 checked、选择、只读和物理身份。 OS 输入和 AT 客户端另行验收。",
         "evidence": [
           "inventory:P2-03"
         ]
       },
       "accesskit": {
-        "state": "rejected",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "state": "model-only",
+        "notes": "Current shared native semantic projection is available; this migration does not add component-specific AT client or speech acceptance.",
         "evidence": [
           "inventory:P2-03"
         ]
@@ -1103,15 +1103,15 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Uses real RadioGroup; native radio driver is explicitly rejected.",
+        "state": "tested",
+        "notes": "SegmentedControl 复用真实 RadioGroup 与单值控制器；四主题原生受控选择、只读及物理身份已验证，不引入 Tabs 面板语义。 OS 输入和 AT 客户端另行验收。",
         "evidence": [
           "inventory:P2-05"
         ]
       },
       "accesskit": {
-        "state": "rejected",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "state": "model-only",
+        "notes": "Current shared native semantic projection is available; this migration does not add component-specific AT client or speech acceptance.",
         "evidence": [
           "inventory:P2-05"
         ]
@@ -1145,7 +1145,7 @@
       },
       "native": {
         "state": "tested",
-        "notes": "Standalone/multiple checkbox mode tested; single Radio mode explicitly rejected.",
+        "notes": "Chip 使用真实 Checkbox，ChipGroup 按单选 Radio/多选 Checkbox 分别实现；Web/SSR 与原生均有消费端证据，新增四主题单选受控选择、只读与物理身份。 OS 输入和 AT 客户端另行验收。",
         "evidence": [
           "inventory:P2-06"
         ]
@@ -2167,15 +2167,15 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available.",
+        "state": "model-only",
+        "notes": "Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance.",
         "evidence": [
           "inventory:P4-01"
         ]
       },
       "accesskit": {
-        "state": "rejected",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "state": "model-only",
+        "notes": "Shared native projection is available; current component-specific AT client acceptance is not established here.",
         "evidence": [
           "inventory:P4-01"
         ]
@@ -2208,15 +2208,15 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available.",
+        "state": "model-only",
+        "notes": "Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance.",
         "evidence": [
           "inventory:P4-02"
         ]
       },
       "accesskit": {
-        "state": "rejected",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "state": "model-only",
+        "notes": "Shared native projection is available; current component-specific AT client acceptance is not established here.",
         "evidence": [
           "inventory:P4-02"
         ]
@@ -2249,15 +2249,15 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available.",
+        "state": "model-only",
+        "notes": "Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance.",
         "evidence": [
           "inventory:P4-03"
         ]
       },
       "accesskit": {
-        "state": "rejected",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "state": "model-only",
+        "notes": "Shared native projection is available; current component-specific AT client acceptance is not established here.",
         "evidence": [
           "inventory:P4-03"
         ]
@@ -2290,15 +2290,15 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available.",
+        "state": "model-only",
+        "notes": "Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance.",
         "evidence": [
           "inventory:P4-04"
         ]
       },
       "accesskit": {
-        "state": "rejected",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "state": "model-only",
+        "notes": "Shared native projection is available; current component-specific AT client acceptance is not established here.",
         "evidence": [
           "inventory:P4-04"
         ]
@@ -2331,15 +2331,15 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available.",
+        "state": "model-only",
+        "notes": "Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance.",
         "evidence": [
           "inventory:P4-05"
         ]
       },
       "accesskit": {
-        "state": "rejected",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "state": "model-only",
+        "notes": "Shared native projection is available; current component-specific AT client acceptance is not established here.",
         "evidence": [
           "inventory:P4-05"
         ]
@@ -2372,15 +2372,15 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available.",
+        "state": "model-only",
+        "notes": "Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance.",
         "evidence": [
           "inventory:P4-06"
         ]
       },
       "accesskit": {
-        "state": "rejected",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "state": "model-only",
+        "notes": "Shared native projection is available; current component-specific AT client acceptance is not established here.",
         "evidence": [
           "inventory:P4-06"
         ]
@@ -2413,15 +2413,15 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available.",
+        "state": "model-only",
+        "notes": "Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance.",
         "evidence": [
           "inventory:P4-07"
         ]
       },
       "accesskit": {
-        "state": "rejected",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "state": "model-only",
+        "notes": "Shared native projection is available; current component-specific AT client acceptance is not established here.",
         "evidence": [
           "inventory:P4-07"
         ]
@@ -2454,15 +2454,15 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available.",
+        "state": "model-only",
+        "notes": "Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance.",
         "evidence": [
           "inventory:P4-08"
         ]
       },
       "accesskit": {
-        "state": "rejected",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "state": "model-only",
+        "notes": "Shared native projection is available; current component-specific AT client acceptance is not established here.",
         "evidence": [
           "inventory:P4-08"
         ]
@@ -2495,15 +2495,15 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available.",
+        "state": "model-only",
+        "notes": "Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance.",
         "evidence": [
           "inventory:P4-09"
         ]
       },
       "accesskit": {
-        "state": "rejected",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "state": "model-only",
+        "notes": "Shared native projection is available; current component-specific AT client acceptance is not established here.",
         "evidence": [
           "inventory:P4-09"
         ]
@@ -2536,15 +2536,15 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Intrinsic menu/choice/pointer facet is explicitly rejected before mutation; reference models remain available.",
+        "state": "model-only",
+        "notes": "Current Glory supplies the shared native menu/choice/select/tags driver. Historical consumer evidence remains in the inventory; this migration has no dedicated current Sapid consumer test for this family, so it does not claim full adapter acceptance.",
         "evidence": [
           "inventory:P4-10"
         ]
       },
       "accesskit": {
-        "state": "rejected",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "state": "model-only",
+        "notes": "Shared native projection is available; current component-specific AT client acceptance is not established here.",
         "evidence": [
           "inventory:P4-10"
         ]
@@ -2660,7 +2660,7 @@
       },
       "native": {
         "state": "rejected",
-        "notes": "Tooltip Layer and precise pointer presence are explicitly rejected.",
+        "notes": "Tooltip Layer are explicitly rejected.",
         "evidence": [
           "inventory:P5-03"
         ]
@@ -2701,7 +2701,7 @@
       },
       "native": {
         "state": "rejected",
-        "notes": "HoverCard Layer and precise pointer presence are explicitly rejected.",
+        "notes": "HoverCard Layer are explicitly rejected.",
         "evidence": [
           "inventory:P5-04"
         ]
@@ -3932,7 +3932,7 @@
       },
       "native": {
         "state": "tested",
-        "notes": "Passive display-only stars tested; interactive/readonly Radio mode explicitly rejected.",
+        "notes": "Whole/Half Rating、真实 RadioGroup、数值成功值、受控/Field 与 display_only 已实现；新版 Glory 原生交互/只读 Radio 支持，四主题实际 checked、稳定身份、半星像素和 direct-apply 水位验证通过。 OS 输入和 AT 客户端另行验收。",
         "evidence": [
           "inventory:P7-05"
         ]
@@ -4343,15 +4343,15 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Intrinsic combobox controls are explicitly rejected; ordinary Tree is separate.",
+        "state": "tested",
+        "notes": "TreeSelect 复用 Tree/Combobox 与完整路径值、多选/半选策略；新版 Glory 原生树弹层已连接，四主题消费端验证真实几何、选择、关闭恢复焦点与触发器身份。 OS 输入和 AT 客户端另行验收。",
         "evidence": [
           "inventory:P8-04"
         ]
       },
       "accesskit": {
-        "state": "rejected",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "state": "model-only",
+        "notes": "Current shared native semantic projection is available; this migration does not add component-specific AT client or speech acceptance.",
         "evidence": [
           "inventory:P8-04"
         ]
@@ -4384,15 +4384,15 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Intrinsic combobox controls are explicitly rejected; ordinary Tree is separate.",
+        "state": "tested",
+        "notes": "Cascader 保留分列路径、展开/返回与懒加载；新版 Glory 原生树弹层已连接，四主题消费端验证真实几何、路径选择、焦点返回与触发器身份。 OS 输入和 AT 客户端另行验收。",
         "evidence": [
           "inventory:P8-05"
         ]
       },
       "accesskit": {
-        "state": "rejected",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "state": "model-only",
+        "notes": "Current shared native semantic projection is available; this migration does not add component-specific AT client or speech acceptance.",
         "evidence": [
           "inventory:P8-05"
         ]
@@ -4673,7 +4673,7 @@
       },
       "native": {
         "state": "tested",
-        "notes": "Finite declared contract; variant-specific limits remain in the linked canonical evidence.",
+        "notes": "TimeInput/TimeValue 保留小时/分/秒、12/24h、空值与本地化；新版 Glory 原生支持中文 UTF-16 精确选区，真实编辑器、只读/禁用、身份与像素已验证。 OS 输入和 AT 客户端另行验收。",
         "evidence": [
           "inventory:P9-07"
         ]
@@ -4795,8 +4795,8 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Native file-picker/drop/read protocol is explicitly unsupported; no OS chooser acceptance.",
+        "state": "tested",
+        "notes": "Explicit optional files/clipboard native driver tested by the all-feature Sapid consumer gate; ambient authority and actual OS picker/drop/clipboard UI acceptance are separate. Without the optional service, unavailability remains explicit.",
         "evidence": [
           "inventory:P10-01"
         ]
@@ -4836,8 +4836,8 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Native file-picker/drop/read protocol is explicitly unsupported; no OS chooser acceptance.",
+        "state": "tested",
+        "notes": "Explicit optional files/clipboard native driver tested by the all-feature Sapid consumer gate; ambient authority and actual OS picker/drop/clipboard UI acceptance are separate. Without the optional service, unavailability remains explicit.",
         "evidence": [
           "inventory:P10-02"
         ]
@@ -4877,15 +4877,15 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Native clipboard writes are explicitly rejected; unavailable state is real.",
+        "state": "tested",
+        "notes": "Explicit optional files/clipboard native driver tested by the all-feature Sapid consumer gate; ambient authority and actual OS picker/drop/clipboard UI acceptance are separate. Without the optional service, unavailability remains explicit.",
         "evidence": [
           "inventory:P10-03"
         ]
       },
       "accesskit": {
-        "state": "rejected",
-        "notes": "No component-specific AT client claim; shared projection is not screen-reader acceptance.",
+        "state": "model-only",
+        "notes": "Shared semantic projection only; no component-specific AT client claim.",
         "evidence": [
           "inventory:P10-03"
         ]
@@ -4919,7 +4919,7 @@
       },
       "native": {
         "state": "tested",
-        "notes": "Finite implemented contract and actual host evidence in docs/carousel.md. SSR proves shape/adoption only; it has no input driver. Native scope excludes optional unsupported facets and does not imply OS/AT acceptance.",
+        "notes": "索引轮播最多七个短 Owner、百万 count 不扫描源；受控页、RTL/Swipe、注入时钟与暂停协议已实现。新版 Glory 原生真实鼠标悬停可取消当前时钟，离开恢复；四主题几何/像素与清理验证保留。 OS 输入和 AT 客户端另行验收。",
         "evidence": [
           "inventory:P10-04"
         ]
@@ -5818,15 +5818,15 @@
         ]
       },
       "native": {
-        "state": "rejected",
-        "notes": "Bounded explicit provider/model catalog and real Combobox/Field/Search. Accepted selection is distinct from query; refused choice emits one proposal. Web43 actual combined12 passed. Native editable Choice is explicitly rejected with prefix preserved; no provider/pricing service.",
+        "state": "tested",
+        "notes": "有限显式模型/provider catalog、真实 Combobox/Search/Listbox、独立 accepted model/query 与受控拒绝已实现；新版 Glory 原生 editable Choice 已连接，四主题消费端验证业务值、拒绝/接受、编辑器焦点/身份与像素。 OS 输入和 AT 客户端另行验收。",
         "evidence": [
           "inventory:P13-05"
         ]
       },
       "accesskit": {
-        "state": "rejected",
-        "notes": "Native editing/Choice facet is explicitly rejected before exposing an AT driver.",
+        "state": "model-only",
+        "notes": "Current shared native semantic projection is available; this migration does not add component-specific AT client or speech acceptance.",
         "evidence": [
           "inventory:P13-05"
         ]

@@ -6,7 +6,7 @@ use crate::state::Value;
 use glory::render::{Role, Semantics, TextKind};
 use glory::style::{BorderStyle, Edges, Length, Style};
 use glory::ui::{Children, IntoChildren, Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 
 pub const MAX_ALERT_TEXT_BYTES: usize = 64 * 1024;
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
@@ -27,13 +27,13 @@ pub enum AlertSeverity {
 pub struct Alert {
     key: String,
     common: Common,
-    content: Lotus<String>,
-    title: Option<Lotus<String>>,
+    content: Vary<String>,
+    title: Option<Vary<String>>,
     severity: AlertSeverity,
     announcement: Announcement,
     visible: Value<bool>,
     closable: bool,
-    close_label: Lotus<String>,
+    close_label: Vary<String>,
     close: Option<Box<dyn FnMut(())>>,
     children: Option<Children>,
 }
@@ -56,11 +56,11 @@ pub fn alert(key: impl Into<String>) -> Alert {
     }
 }
 impl Alert {
-    pub fn content(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn content(mut self, value: impl Into<Vary<String>>) -> Self {
         self.content = value.into();
         self
     }
-    pub fn title(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn title(mut self, value: impl Into<Vary<String>>) -> Self {
         self.title = Some(value.into());
         self
     }
@@ -72,7 +72,7 @@ impl Alert {
         self.announcement = value;
         self
     }
-    pub fn visible(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn visible(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.visible.source = Some(value.into());
         self
     }
@@ -80,7 +80,7 @@ impl Alert {
         self.closable = value;
         self
     }
-    pub fn close_label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn close_label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.close_label = value.into();
         self
     }
@@ -100,15 +100,15 @@ impl Alert {
         self.common.size = value;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }

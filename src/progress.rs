@@ -6,7 +6,7 @@ use glory::render::{
 };
 use glory::style::{Color, Display, Length, Overflow, Position, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::f64::consts::{PI, TAU};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -18,16 +18,16 @@ enum View {
 pub struct Progress {
     common: Common,
     view: View,
-    value: Lotus<f64>,
-    indeterminate: Lotus<bool>,
-    value_text: Option<Lotus<String>>,
+    value: Vary<f64>,
+    indeterminate: Vary<bool>,
+    value_text: Option<Vary<String>>,
     min: f64,
     max: f64,
     size: f64,
     thickness: f64,
     width: Option<Length>,
 }
-fn create(view: View, value: impl Into<Lotus<f64>>) -> Progress {
+fn create(view: View, value: impl Into<Vary<f64>>) -> Progress {
     let common = Common {
         name: Some("Progress".into()),
         ..Common::default()
@@ -45,13 +45,13 @@ fn create(view: View, value: impl Into<Lotus<f64>>) -> Progress {
         width: None,
     }
 }
-pub fn progress(value: impl Into<Lotus<f64>>) -> Progress {
+pub fn progress(value: impl Into<Vary<f64>>) -> Progress {
     create(View::Line, value)
 }
-pub fn ring_progress(value: impl Into<Lotus<f64>>) -> Progress {
+pub fn ring_progress(value: impl Into<Vary<f64>>) -> Progress {
     create(View::Ring, value)
 }
-pub fn semi_circle_progress(value: impl Into<Lotus<f64>>) -> Progress {
+pub fn semi_circle_progress(value: impl Into<Vary<f64>>) -> Progress {
     create(View::SemiCircle, value)
 }
 impl Progress {
@@ -63,11 +63,11 @@ impl Progress {
         self.common.unstyled = true;
         self
     }
-    pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
         self.common.class = class.into();
         self
     }
-    pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
         self.common.style = style.into();
         self
     }
@@ -75,7 +75,7 @@ impl Progress {
         self.common.node_ref = Some(reference);
         self
     }
-    pub fn name(mut self, name: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, name: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(name.into());
         self
     }
@@ -84,11 +84,11 @@ impl Progress {
         self.max = max;
         self
     }
-    pub fn indeterminate(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn indeterminate(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.indeterminate = value.into();
         self
     }
-    pub fn value_text(mut self, text: impl Into<Lotus<String>>) -> Self {
+    pub fn value_text(mut self, text: impl Into<Vary<String>>) -> Self {
         self.value_text = Some(text.into());
         self
     }
@@ -119,9 +119,9 @@ fn validate_name(name: &str) -> Result {
     Ok(())
 }
 fn selection(
-    value: &Lotus<f64>,
-    indeterminate: &Lotus<bool>,
-    text: Option<&Lotus<String>>,
+    value: &Vary<f64>,
+    indeterminate: &Vary<bool>,
+    text: Option<&Vary<String>>,
     min: f64,
     max: f64,
 ) -> Result<ProgressValue> {

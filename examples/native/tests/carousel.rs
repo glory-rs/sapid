@@ -131,24 +131,18 @@ fn four_theme_real_native_window_geometry_retained_editors_and_actual_pixels() {
 }
 
 #[test]
-fn native_autoplay_requires_explicit_hover_policy_and_uses_actual_owner_executor() {
+fn native_autoplay_tracks_hover_and_uses_actual_owner_executor() {
+    use blitz_dom::Document;
+    use blitz_traits::events::{
+        BlitzPointerEvent, BlitzPointerId, MouseEventButton, MouseEventButtons, Point,
+        PointerCoords, UiEvent,
+    };
     use std::{
         cell::Cell,
         future::Future,
         pin::Pin,
         task::{Context, Poll, Waker},
     };
-    let unsupported = WindowApp::new();
-    assert!(
-        unsupported
-            .mount(
-                sapid::carousel()
-                    .count(3usize)
-                    .autoplay(|| Box::pin(std::future::pending()))
-                    .render_slide(|n| glory::ui::text().content(n.to_string()))
-            )
-            .is_err()
-    );
     struct Clock {
         ready: Rc<Cell<bool>>,
         wake: Rc<RefCell<Option<Waker>>>,
@@ -164,7 +158,8 @@ fn native_autoplay_requires_explicit_hover_policy_and_uses_actual_owner_executor
             }
         }
     }
-    let host = WindowApp::new();
+    let mut host = WindowApp::new();
+    host.renderer().set_viewport(640, 420, 1.).unwrap();
     let app = host.app();
     let current = app.scope().cage(0usize);
     let paused = app.scope().cage(false);
@@ -177,7 +172,6 @@ fn native_autoplay_requires_explicit_hover_policy_and_uses_actual_owner_executor
             .count(3usize)
             .current(current)
             .looping(true)
-            .pause_on_hover(false)
             .paused(paused)
             .autoplay(move || {
                 Box::pin(Clock {
@@ -196,11 +190,50 @@ fn native_autoplay_requires_explicit_hover_policy_and_uses_actual_owner_executor
     wake.borrow().as_ref().unwrap().wake_by_ref();
     observe(&host);
     assert_eq!(current.get(), 1);
+    let root = nodes(host.app(), "sapid-carousel")[0];
+    let area = bounds(host.app(), root);
+    let move_pointer = |host: &mut WindowApp, x: f32, y: f32| {
+        host.handle_ui_event(UiEvent::PointerMove(BlitzPointerEvent {
+            id: BlitzPointerId::Mouse,
+            is_primary: true,
+            coords: PointerCoords {
+                page_x: x,
+                page_y: y,
+                client_x: x,
+                client_y: y,
+                screen_x: x,
+                screen_y: y,
+            },
+            button: MouseEventButton::Main,
+            buttons: MouseEventButtons::empty(),
+            mods: Default::default(),
+            details: Default::default(),
+            element: Point::default(),
+            active_pointers: Default::default(),
+        }));
+        observe(host);
+    };
+    let hover_wake = wake.borrow().as_ref().unwrap().clone();
+    move_pointer(&mut host, (area.x + 5.) as f32, (area.y + 5.) as f32);
+    ready.set(true);
+    hover_wake.wake();
+    observe(&host);
+    assert_eq!(
+        current.get(),
+        1,
+        "real native hover revokes the current wait"
+    );
+    ready.set(false);
+    move_pointer(&mut host, 639., 419.);
+    ready.set(true);
+    wake.borrow().as_ref().unwrap().wake_by_ref();
+    observe(&host);
+    assert_eq!(current.get(), 2, "leaving the carousel resumes its clock");
     let late = wake.borrow().as_ref().unwrap().clone();
     paused.revise(|v| *v = true);
-    app.flush().unwrap();
+    host.app().flush().unwrap();
     ready.set(true);
     late.wake();
     observe(&host);
-    assert_eq!(current.get(), 1, "retired native clock cannot publish");
+    assert_eq!(current.get(), 2, "retired native clock cannot publish");
 }

@@ -3,7 +3,7 @@ use glory::render::{Role, SemanticId, Semantics};
 use glory::ui::{Widget, view, widget};
 use sapid::{ButtonVariant, Size, Theme};
 
-fn copy(class: &str, content: impl Into<glory::Lotus<String>>) -> impl Widget {
+fn copy(class: &str, content: impl Into<glory::Vary<String>>) -> impl Widget {
     sapid::text()
         .unstyled()
         .class(class.to_owned())

@@ -1,6 +1,6 @@
 use glory::render::{EventKind, NodeId, Semantics};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 use crate::appearance::{Common, common_methods, configure, observe};
 use crate::composite::{self, ContentPolicy, Factory, Panel};
@@ -11,7 +11,7 @@ mod motion;
 pub struct Collapsible {
     common: Common,
     key: String,
-    label: Lotus<String>,
+    label: Vary<String>,
     open: Value<bool>,
     on_change: Option<Box<dyn FnMut(bool)>>,
     content: Option<Factory>,
@@ -19,8 +19,8 @@ pub struct Collapsible {
     policy: ContentPolicy,
     trigger: Option<Cage<Option<NodeId>>>,
     panel: Option<Cage<Option<NodeId>>>,
-    height_duration: Option<Lotus<u16>>,
-    animated: Lotus<bool>,
+    height_duration: Option<Vary<u16>>,
+    animated: Vary<bool>,
 }
 pub fn collapsible(key: impl Into<String>) -> Collapsible {
     Collapsible {
@@ -40,11 +40,11 @@ pub fn collapsible(key: impl Into<String>) -> Collapsible {
 }
 impl Collapsible {
     common_methods!();
-    pub fn label(mut self, label: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, label: impl Into<Vary<String>>) -> Self {
         self.label = label.into();
         self
     }
-    pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(value.into());
         self
     }
@@ -81,13 +81,13 @@ impl Collapsible {
     }
     /// Opt into finite intrinsic-height motion. Zero settles immediately;
     /// Web and Blitz publish revisioned host completion for closing content.
-    pub fn height_transition(mut self, millis: impl Into<Lotus<u16>>) -> Self {
+    pub fn height_transition(mut self, millis: impl Into<Vary<u16>>) -> Self {
         self.height_duration = Some(millis.into());
         self
     }
     /// Toggle an opted-in height transition; false explicitly settles its
     /// current target and releases closing Unmount content at host completion.
-    pub fn animated(mut self, animated: impl Into<Lotus<bool>>) -> Self {
+    pub fn animated(mut self, animated: impl Into<Vary<bool>>) -> Self {
         self.height_duration.get_or_insert_with(|| 180.into());
         self.animated = animated.into();
         self
@@ -112,7 +112,7 @@ impl Widget for Collapsible {
                 )
             })
             .transpose()?;
-        let panel_open: Lotus<bool> = motion.map_or_else(
+        let panel_open: Vary<bool> = motion.map_or_else(
             || control.source.clone(),
             |motion| motion.config.map(|config| config.open).into(),
         );

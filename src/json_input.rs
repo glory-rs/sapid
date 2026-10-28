@@ -6,28 +6,28 @@ use crate::state::Value;
 use glory::render::{Event, EventKind, Role, Semantics};
 use glory::style::{Family, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{cell::Cell, rc::Rc};
 pub struct JsonInput {
     key: String,
     common: Common,
     value: Value<String>,
     field: Option<crate::FieldControl>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
     rows: u16,
     limits: JsonLimits,
     format: JsonFormat,
     formatter: bool,
-    format_label: Lotus<String>,
+    format_label: Vary<String>,
     announce: bool,
     change: Option<Box<dyn FnMut(String)>>,
     commit: Option<Box<dyn FnMut(String)>>,
     validation: Option<Box<dyn FnMut(JsonValidity)>>,
     formatted: Option<Box<dyn FnMut(String)>>,
     format_error: Option<Box<dyn FnMut(JsonError)>>,
-    placeholder: Option<Lotus<String>>,
+    placeholder: Option<Vary<String>>,
 }
 pub fn json_input(key: impl Into<String>) -> JsonInput {
     JsonInput {
@@ -53,11 +53,11 @@ pub fn json_input(key: impl Into<String>) -> JsonInput {
     }
 }
 impl JsonInput {
-    pub fn placeholder(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn placeholder(mut self, value: impl Into<Vary<String>>) -> Self {
         self.placeholder = Some(value.into());
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<String>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -72,7 +72,7 @@ impl JsonInput {
         self.field = Some(value);
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -84,11 +84,11 @@ impl JsonInput {
         self.common.size = value;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
@@ -96,19 +96,19 @@ impl JsonInput {
         self.common.unstyled = true;
         self
     }
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.common.enabled = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
@@ -128,7 +128,7 @@ impl JsonInput {
         self.formatter = value;
         self
     }
-    pub fn format_label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn format_label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.format_label = value.into();
         self
     }

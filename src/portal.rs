@@ -2,7 +2,7 @@
 use crate::composite::{self, Callback, Factory};
 use glory::render::{Descriptor, NodeId, Props, Semantics};
 use glory::ui::{Mounted, Result, WeakScope, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     collections::{BTreeMap, BTreeSet},
@@ -269,7 +269,7 @@ struct State {
     context: PortalContext,
     serial: u64,
     desired: glory::Cage<String>,
-    enabled: Lotus<bool>,
+    enabled: Vary<bool>,
     origin: NodeId,
     content: RefCell<Option<Mounted>>,
     current: Cell<Option<NodeId>>,
@@ -352,12 +352,12 @@ impl State {
 }
 pub struct Portal {
     context: PortalContext,
-    target: Lotus<String>,
-    enabled: Lotus<bool>,
+    target: Vary<String>,
+    enabled: Vary<bool>,
     factory: Option<Factory>,
     lost: Option<Box<dyn FnMut(String)>>,
 }
-pub fn portal(context: &PortalContext, target: impl Into<Lotus<String>>) -> Portal {
+pub fn portal(context: &PortalContext, target: impl Into<Vary<String>>) -> Portal {
     Portal {
         context: context.clone(),
         target: target.into(),
@@ -371,7 +371,7 @@ impl Portal {
         self.factory = Some(Box::new(move || Box::new(factory())));
         self
     }
-    pub fn enabled(mut self, enabled: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, enabled: impl Into<Vary<bool>>) -> Self {
         self.enabled = enabled.into();
         self
     }

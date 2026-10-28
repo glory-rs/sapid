@@ -5,7 +5,7 @@ use glory::style::{
     AspectRatio as Ratio, Display, GridPlacement, GridTrack, GridTracks, Length, Style,
 };
 use glory::ui::{Children, IntoChildren, Result, View, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::collections::HashSet;
 pub const MAX_GRID_ITEMS: usize = 256;
 fn invalid(message: &'static str) -> glory::ui::Error {
@@ -17,15 +17,15 @@ macro_rules! appearance {
             self.common.unstyled = true;
             self
         }
-        pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
             self.common.class = class.into();
             self
         }
-        pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
             self.common.style = style.into();
             self
         }
-        pub fn name(mut self, name: impl Into<Lotus<String>>) -> Self {
+        pub fn name(mut self, name: impl Into<Vary<String>>) -> Self {
             self.common.name = Some(name.into());
             self
         }
@@ -35,9 +35,9 @@ macro_rules! appearance {
         }
     };
 }
-fn configured(common: &mut Common, scope: &Scope, class: &str, base: Lotus<Style>) -> View {
+fn configured(common: &mut Common, scope: &Scope, class: &str, base: Vary<Style>) -> View {
     let (class, custom) = common.appearance(scope, class, Style::new());
-    let style: Lotus<Style> = if base.is_reactive() || custom.is_reactive() {
+    let style: Vary<Style> = if base.is_reactive() || custom.is_reactive() {
         scope.bond(move || merge(base.get(), custom.get())).into()
     } else {
         merge(base.get(), custom.get()).into()
@@ -129,15 +129,15 @@ impl SimpleGrid {
         self.grid = self.grid.unstyled();
         self
     }
-    pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
         self.grid = self.grid.class(class);
         self
     }
-    pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
         self.grid = self.grid.style(style);
         self
     }
-    pub fn name(mut self, name: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, name: impl Into<Vary<String>>) -> Self {
         self.grid = self.grid.name(name);
         self
     }
@@ -394,12 +394,12 @@ impl Widget for RenderedItem {
 }
 pub struct AspectRatio {
     common: Common,
-    ratio: Lotus<f64>,
+    ratio: Vary<f64>,
     width: Length,
     height: Option<Length>,
     children: Children,
 }
-pub fn aspect_ratio(ratio: impl Into<Lotus<f64>>) -> AspectRatio {
+pub fn aspect_ratio(ratio: impl Into<Vary<f64>>) -> AspectRatio {
     AspectRatio {
         common: Common::default(),
         ratio: ratio.into(),

@@ -4,7 +4,7 @@ use crate::{Size, Theme, TypographyContext, TypographyRole};
 use glory::render::{Direction, Environment, LanguageTag, MotionPreference, NodeId, Semantics};
 use glory::style::{Family, Style};
 use glory::ui::{Children, IntoChildren, Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::sync::{Arc, OnceLock};
 
 pub const MAX_LOCALE_TEXT_BYTES: usize = 1024;
@@ -234,8 +234,8 @@ type Content = Box<dyn FnMut(UiEnvironmentContext) -> Children>;
 pub struct ThemeProvider {
     context: UiEnvironmentContext,
     theme_style: bool,
-    class: Lotus<String>,
-    style: Lotus<Style>,
+    class: Vary<String>,
+    style: Vary<Style>,
     node_ref: Option<Cage<Option<NodeId>>>,
     content: Option<Content>,
     children: Option<Children>,
@@ -291,11 +291,11 @@ impl ThemeProvider {
         self.context.motion = motion;
         self
     }
-    pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
         self.class = class.into();
         self
     }
-    pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
         self.style = style.into();
         self
     }

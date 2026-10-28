@@ -1,5 +1,5 @@
 use glory::Scope;
-use glory::core::Lotus;
+use glory::core::Vary;
 use glory::render::{Change, Event, EventKind, Patch};
 use glory::ui::{Result, Widget};
 
@@ -9,12 +9,12 @@ use crate::state::{Dirty, Value};
 pub struct Checkbox {
     common: Common,
     value: Value<bool>,
-    label: Lotus<String>,
+    label: Vary<String>,
     on_change: Option<Box<dyn FnMut(bool)>>,
     field: Option<crate::FieldControl>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
 }
 
 pub fn checkbox() -> Checkbox {
@@ -39,26 +39,26 @@ impl Checkbox {
         self.field = Some(field);
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
 
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
 
     /// A controlled source: events propose changes without writing this source.
-    pub fn checked(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn checked(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.value.source = Some(value.into());
         self
     }

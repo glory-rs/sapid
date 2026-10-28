@@ -3,7 +3,7 @@ use crate::appearance::{Common, configure, observe};
 use glory::render::{Event, EventKind, FocusMode, ImageStatus, NodeId};
 use glory::style::{Display, Length, Limit, ObjectFit, Overflow, Position, Style};
 use glory::ui::{IntoChildren, Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 pub const MAX_IMAGE_SOURCE_BYTES: usize = 4096;
 pub(crate) fn validate_source(source: &str) -> Result {
@@ -24,8 +24,8 @@ struct Selection {
 type Completion = Option<Box<dyn FnMut(u64)>>;
 pub struct Image {
     common: Common,
-    source: Lotus<String>,
-    alternative: Option<Lotus<String>>,
+    source: Vary<String>,
+    alternative: Option<Vary<String>>,
     decorative: bool,
     fallback: Option<String>,
     fit: Option<ObjectFit>,
@@ -34,7 +34,7 @@ pub struct Image {
     loaded: Completion,
     failed: Completion,
 }
-pub fn image(source: impl Into<Lotus<String>>) -> Image {
+pub fn image(source: impl Into<Vary<String>>) -> Image {
     Image {
         common: Common::default(),
         source: source.into(),
@@ -58,11 +58,11 @@ macro_rules! appearance {
             self.common.unstyled = true;
             self
         }
-        pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.class = value.into();
             self
         }
-        pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
             self.common.style = value.into();
             self
         }
@@ -82,11 +82,11 @@ macro_rules! appearance {
 }
 impl Image {
     appearance!();
-    pub fn source(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn source(mut self, value: impl Into<Vary<String>>) -> Self {
         self.source = value.into();
         self
     }
-    pub fn alt(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn alt(mut self, value: impl Into<Vary<String>>) -> Self {
         self.alternative = Some(value.into());
         self.decorative = false;
         self
@@ -105,7 +105,7 @@ impl Image {
         self.fit = Some(value);
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -287,7 +287,7 @@ pub struct BackgroundImage {
     height: Option<Length>,
     children: glory::ui::Children,
 }
-pub fn background_image(source: impl Into<Lotus<String>>) -> BackgroundImage {
+pub fn background_image(source: impl Into<Vary<String>>) -> BackgroundImage {
     BackgroundImage {
         common: Common::default(),
         image: Some(image(source).decorative().unstyled().fit(ObjectFit::Cover)),
@@ -298,7 +298,7 @@ pub fn background_image(source: impl Into<Lotus<String>>) -> BackgroundImage {
 }
 impl BackgroundImage {
     appearance!();
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }

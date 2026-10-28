@@ -37,13 +37,13 @@ pub enum NotificationCloseReason {
     Replaced,
     Cleared,
 }
-type NotificationAction = (glory::Lotus<String>, Box<dyn FnMut()>);
+type NotificationAction = (glory::Vary<String>, Box<dyn FnMut()>);
 /// A standalone live message with a real optional action and independent close.
 pub struct Notification {
     inner: crate::Alert,
     theme: Theme,
     unstyled: bool,
-    class: glory::Lotus<String>,
+    class: glory::Vary<String>,
     action: Option<NotificationAction>,
 }
 pub fn notification(key: impl Into<String>) -> Notification {
@@ -56,15 +56,15 @@ pub fn notification(key: impl Into<String>) -> Notification {
     }
 }
 impl Notification {
-    pub fn title(mut self, value: impl Into<glory::Lotus<String>>) -> Self {
+    pub fn title(mut self, value: impl Into<glory::Vary<String>>) -> Self {
         self.inner = self.inner.title(value);
         self
     }
-    pub fn content(mut self, value: impl Into<glory::Lotus<String>>) -> Self {
+    pub fn content(mut self, value: impl Into<glory::Vary<String>>) -> Self {
         self.inner = self.inner.content(value);
         self
     }
-    pub fn visible(mut self, value: impl Into<glory::Lotus<bool>>) -> Self {
+    pub fn visible(mut self, value: impl Into<glory::Vary<bool>>) -> Self {
         self.inner = self.inner.visible(value);
         self
     }
@@ -72,7 +72,7 @@ impl Notification {
         self.inner = self.inner.closable(value);
         self
     }
-    pub fn close_label(mut self, value: impl Into<glory::Lotus<String>>) -> Self {
+    pub fn close_label(mut self, value: impl Into<glory::Vary<String>>) -> Self {
         self.inner = self.inner.close_label(value);
         self
     }
@@ -82,7 +82,7 @@ impl Notification {
     }
     pub fn action(
         mut self,
-        label: impl Into<glory::Lotus<String>>,
+        label: impl Into<glory::Vary<String>>,
         callback: impl FnMut() + 'static,
     ) -> Self {
         self.action = Some((label.into(), Box::new(callback)));
@@ -101,15 +101,15 @@ impl Notification {
         self.inner = self.inner.announcement(value);
         self
     }
-    pub fn class(mut self, value: impl Into<glory::Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<glory::Vary<String>>) -> Self {
         self.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<glory::Lotus<glory::style::Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<glory::Vary<glory::style::Style>>) -> Self {
         self.inner = self.inner.style(value);
         self
     }
-    pub fn name(mut self, value: impl Into<glory::Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<glory::Vary<String>>) -> Self {
         self.inner = self.inner.name(value);
         self
     }

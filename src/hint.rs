@@ -9,7 +9,7 @@ use glory::render::{
 };
 use glory::style::{BoxShadow, Edges, Length, Shadow, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 use crate::appearance::{Common, configure, observe};
 use crate::composite::{self, Callback, ContentPolicy, Factory};
@@ -48,7 +48,7 @@ impl FloatingTarget {
     pub fn node_ref(&self) -> Cage<Option<NodeId>> {
         self.reference
     }
-    fn metadata(&self, mut base: Semantics, button: bool) -> Lotus<Option<Box<Semantics>>> {
+    fn metadata(&self, mut base: Semantics, button: bool) -> Vary<Option<Box<Semantics>>> {
         let (Some(scope), Some(state)) = (self.scope.upgrade(), self.state.upgrade()) else {
             self.conflict.set(true);
             return None.into();
@@ -139,8 +139,8 @@ struct Hint {
     key: String,
     kind: Kind,
     common: Common,
-    label: Lotus<String>,
-    text: Lotus<String>,
+    label: Vary<String>,
+    text: Vary<String>,
     open: Value<bool>,
     change: Option<Box<dyn FnMut(bool)>>,
     dismiss: Option<Box<dyn FnMut(DismissReason)>>,
@@ -195,7 +195,7 @@ pub fn hover_card(key: impl Into<String>) -> HoverCard {
 macro_rules! hint_api {
     ($name:ident) => {
         impl $name {
-            pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+            pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
                 self.inner.label = value.into();
                 self
             }
@@ -207,19 +207,19 @@ macro_rules! hint_api {
                 self.inner.common.size = value;
                 self
             }
-            pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+            pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
                 self.inner.common.class = value.into();
                 self
             }
-            pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+            pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
                 self.inner.common.style = value.into();
                 self
             }
-            pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+            pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
                 self.inner.common.enabled = value.into();
                 self
             }
-            pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+            pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
                 self.inner.common.name = Some(value.into());
                 self
             }
@@ -235,7 +235,7 @@ macro_rules! hint_api {
                 self.inner.target_ref = Some(value);
                 self
             }
-            pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+            pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
                 self.inner.open.source = Some(value.into());
                 self
             }
@@ -306,7 +306,7 @@ macro_rules! hint_api {
 hint_api!(Tooltip);
 hint_api!(HoverCard);
 impl Tooltip {
-    pub fn text(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn text(mut self, value: impl Into<Vary<String>>) -> Self {
         self.inner.text = value.into();
         self
     }
@@ -332,8 +332,8 @@ struct State {
     open: Control<bool>,
     changed: Callback<bool>,
     dismissed: Callback<DismissReason>,
-    visible: Lotus<bool>,
-    enabled: Lotus<bool>,
+    visible: Vary<bool>,
+    enabled: Vary<bool>,
     activity: Cage<(u8, bool, bool)>,
     pending: Rc<OwnerDelay>,
     open_delay: Option<DelayFactory>,
@@ -416,7 +416,7 @@ impl Hint {
         let source = control.source.clone();
         let enabled = self.common.enabled.clone();
         let active_enabled = enabled.clone();
-        let visible: Lotus<bool> = owner
+        let visible: Vary<bool> = owner
             .bond(move || source.get() && active_enabled.get())
             .into();
         let state = Rc::new(State {

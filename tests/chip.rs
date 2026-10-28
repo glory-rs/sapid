@@ -159,7 +159,7 @@ fn multiple_chip_field_requires_any_enabled_selection_and_preserves_readonly_dis
             .unwrap()
     );
 }
-fn app_enabled(disabled: glory::Cage<bool>) -> glory::Lotus<bool> {
+fn app_enabled(disabled: glory::Cage<bool>) -> glory::Vary<bool> {
     disabled.map(|disabled| !disabled).into()
 }
 #[test]

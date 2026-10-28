@@ -8,7 +8,7 @@ use glory::render::{
 };
 use glory::style::{Display, Edges, FlexDirection, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::rc::Rc;
 
 pub const MAX_STEPPER_STEPS: usize = 128;
@@ -21,8 +21,8 @@ pub enum StepStatus {
 }
 pub struct Step {
     inner: Item,
-    description: Lotus<String>,
-    status: Lotus<Option<StepStatus>>,
+    description: Vary<String>,
+    status: Vary<Option<StepStatus>>,
     optional: bool,
 }
 pub fn step(key: impl Into<String>) -> Step {
@@ -35,12 +35,12 @@ pub fn step(key: impl Into<String>) -> Step {
 }
 impl Step {
     item_methods!();
-    pub fn description(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn description(mut self, value: impl Into<Vary<String>>) -> Self {
         self.description = value.into();
         self
     }
     /// None derives completed/pending from the accepted active step.
-    pub fn status(mut self, value: impl Into<Lotus<Option<StepStatus>>>) -> Self {
+    pub fn status(mut self, value: impl Into<Vary<Option<StepStatus>>>) -> Self {
         self.status = value.into();
         self
     }
@@ -54,12 +54,12 @@ pub struct Stepper {
     key: String,
     steps: Vec<Step>,
     active: Value<usize>,
-    selectable: Lotus<bool>,
-    skip: Lotus<bool>,
+    selectable: Vary<bool>,
+    skip: Vary<bool>,
     orientation: Orientation,
     policy: ContentPolicy,
     completed: Option<Factory>,
-    completed_label: Lotus<String>,
+    completed_label: Vary<String>,
     change: Option<Box<dyn FnMut(usize)>>,
 }
 pub fn stepper(key: impl Into<String>) -> Stepper {
@@ -90,7 +90,7 @@ impl Stepper {
         self
     }
     /// Zero-based; exactly the number of steps represents the completed stage.
-    pub fn active(mut self, value: impl Into<Lotus<usize>>) -> Self {
+    pub fn active(mut self, value: impl Into<Vary<usize>>) -> Self {
         self.active.source = Some(value.into());
         self
     }
@@ -99,12 +99,12 @@ impl Stepper {
         self
     }
     /// Explicit opt-in to selecting step headers. Body controls stay independent.
-    pub fn selectable(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn selectable(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.selectable = value.into();
         self
     }
     /// Permit selecting beyond the immediately following step.
-    pub fn allow_skip(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn allow_skip(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.skip = value.into();
         self
     }
@@ -120,7 +120,7 @@ impl Stepper {
         self.completed = Some(Box::new(move || Box::new(factory())));
         self
     }
-    pub fn completed_label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn completed_label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.completed_label = value.into();
         self
     }
@@ -144,9 +144,9 @@ fn metadata(id: SemanticId, label: SemanticId, hidden: bool) -> Option<Box<Seman
 struct StepPanel {
     id: SemanticId,
     label: SemanticId,
-    open: Lotus<bool>,
+    open: Vary<bool>,
     reference: Cage<Option<NodeId>>,
-    restore: Lotus<Option<NodeId>>,
+    restore: Vary<Option<NodeId>>,
     factory: Option<Factory>,
     policy: ContentPolicy,
     unstyled: bool,
@@ -233,7 +233,7 @@ impl Widget for Stepper {
                 .collect(),
         );
         let refs = references.clone();
-        let restore: Lotus<Option<NodeId>> =
+        let restore: Vary<Option<NodeId>> =
             scope.bond(move || refs[accepted.get()].get()).into();
         if self.common.name.is_none() {
             self.common.name = Some("Progress".into());

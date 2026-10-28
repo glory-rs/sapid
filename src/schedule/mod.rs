@@ -9,7 +9,7 @@ use crate::{
 use glory::render::{DocumentPart, Event, EventKind, NodeId, Role, Semantics};
 use glory::style::{BorderStyle, Display, Edges, FlexDirection, FlexWrap, Length, Style};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{cell::Cell, rc::Rc};
 mod calendar;
 mod resources;
@@ -156,9 +156,9 @@ impl Controller {
 pub struct Schedule {
     common: Common,
     key: String,
-    data: Lotus<ScheduleData>,
+    data: Vary<ScheduleData>,
     selection: Value<Option<ScheduleSelection>>,
-    readonly: Lotus<bool>,
+    readonly: Vary<bool>,
     locale: DateLocale,
     requested: Option<Box<dyn FnMut(ScheduleRequest)>>,
     selected: Option<Box<dyn FnMut(ScheduleSelection)>>,
@@ -171,7 +171,7 @@ pub struct Schedule {
     viewport_height: f64,
     week_start: crate::Weekday,
 }
-pub fn schedule(key: impl Into<String>, data: impl Into<Lotus<ScheduleData>>) -> Schedule {
+pub fn schedule(key: impl Into<String>, data: impl Into<Vary<ScheduleData>>) -> Schedule {
     Schedule {
         common: Common::default(),
         key: key.into(),
@@ -197,25 +197,25 @@ pub type WeekView = Schedule;
 pub type MonthView = Schedule;
 pub type YearView = Schedule;
 pub type MobileMonthView = Schedule;
-pub fn month_view(key: impl Into<String>, data: impl Into<Lotus<ScheduleData>>) -> MonthView {
+pub fn month_view(key: impl Into<String>, data: impl Into<Vary<ScheduleData>>) -> MonthView {
     schedule(key, data).view(ScheduleView::Month)
 }
-pub fn year_view(key: impl Into<String>, data: impl Into<Lotus<ScheduleData>>) -> YearView {
+pub fn year_view(key: impl Into<String>, data: impl Into<Vary<ScheduleData>>) -> YearView {
     schedule(key, data).view(ScheduleView::Year)
 }
 pub fn mobile_month_view(
     key: impl Into<String>,
-    data: impl Into<Lotus<ScheduleData>>,
+    data: impl Into<Vary<ScheduleData>>,
 ) -> MobileMonthView {
     schedule(key, data).view(ScheduleView::MobileMonth)
 }
-pub fn day_view(key: impl Into<String>, data: impl Into<Lotus<ScheduleData>>) -> DayView {
+pub fn day_view(key: impl Into<String>, data: impl Into<Vary<ScheduleData>>) -> DayView {
     schedule(key, data).view(ScheduleView::Day)
 }
-pub fn week_view(key: impl Into<String>, data: impl Into<Lotus<ScheduleData>>) -> WeekView {
+pub fn week_view(key: impl Into<String>, data: impl Into<Vary<ScheduleData>>) -> WeekView {
     schedule(key, data).view(ScheduleView::Week)
 }
-pub fn agenda_view(key: impl Into<String>, data: impl Into<Lotus<ScheduleData>>) -> AgendaView {
+pub fn agenda_view(key: impl Into<String>, data: impl Into<Vary<ScheduleData>>) -> AgendaView {
     schedule(key, data)
 }
 impl Schedule {
@@ -254,7 +254,7 @@ impl Schedule {
         self.viewport_height = value;
         self
     }
-    pub fn selection(mut self, value: impl Into<Lotus<Option<ScheduleSelection>>>) -> Self {
+    pub fn selection(mut self, value: impl Into<Vary<Option<ScheduleSelection>>>) -> Self {
         self.selection.source = Some(value.into());
         self
     }
@@ -262,7 +262,7 @@ impl Schedule {
         self.selection.default = value;
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }

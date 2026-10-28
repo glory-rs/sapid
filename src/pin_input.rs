@@ -12,7 +12,7 @@ use glory::style::{
     BorderStyle, Color, Display, Edges, Family, Length, PointerEvents, Position, Style,
 };
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     rc::Rc,
@@ -174,10 +174,10 @@ pub struct PinInput {
     masked: bool,
     autofill: Option<InputAutofill>,
     field: Option<FieldControl>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
-    form_name: Option<Lotus<String>>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
+    form_name: Option<Vary<String>>,
     changed: Option<Box<dyn FnMut(String)>>,
     committed: Option<Box<dyn FnMut(String)>>,
     completed: Option<Box<dyn FnMut(String)>>,
@@ -223,7 +223,7 @@ impl PinInput {
         self.autofill = Some(hint);
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<String>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -231,19 +231,19 @@ impl PinInput {
         self.value.default = value.into();
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
-    pub fn form_name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn form_name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.form_name = Some(value.into());
         self
     }

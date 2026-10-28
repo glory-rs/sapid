@@ -10,7 +10,7 @@ use glory::render::{
 };
 use glory::style::{Display, FlexDirection, Length, Style};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     rc::Rc,
@@ -262,13 +262,13 @@ impl Controller {
 pub struct TimeInput {
     common: Common,
     key: String,
-    bounds: Lotus<TimeBounds>,
+    bounds: Vary<TimeBounds>,
     value: Value<Option<LocalTime>>,
     field: Option<FieldControl>,
-    form_name: Option<Lotus<String>>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
+    form_name: Option<Vary<String>>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
     format: TimeFormat,
     changed: Option<Box<dyn FnMut(Option<LocalTime>)>>,
     committed: Option<Box<dyn FnMut(Option<LocalTime>)>>,
@@ -295,7 +295,7 @@ pub fn time_input(key: impl Into<String>) -> TimeInput {
 }
 impl TimeInput {
     common_methods!();
-    pub fn value(mut self, v: impl Into<Lotus<Option<LocalTime>>>) -> Self {
+    pub fn value(mut self, v: impl Into<Vary<Option<LocalTime>>>) -> Self {
         self.value.source = Some(v.into());
         self
     }
@@ -310,19 +310,19 @@ impl TimeInput {
         self.field = Some(v);
         self
     }
-    pub fn form_name(mut self, v: impl Into<Lotus<String>>) -> Self {
+    pub fn form_name(mut self, v: impl Into<Vary<String>>) -> Self {
         self.form_name = Some(v.into());
         self
     }
-    pub fn required(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.required = v.into();
         self
     }
-    pub fn readonly(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.readonly = v.into();
         self
     }
-    pub fn invalid(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.invalid = v.into();
         self
     }
@@ -330,7 +330,7 @@ impl TimeInput {
         self.format = format;
         self
     }
-    pub fn bounds(mut self, bounds: impl Into<Lotus<TimeBounds>>) -> Self {
+    pub fn bounds(mut self, bounds: impl Into<Vary<TimeBounds>>) -> Self {
         self.bounds = bounds.into();
         self
     }

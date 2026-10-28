@@ -57,11 +57,10 @@ keys. Semantic keys exclude slash, so this encoding is unambiguous. Empty choice
 has no successful value. These proxies are not focus candidates. Required state
 is semantic; application FormState validation remains explicit.
 
-Native Blitz currently rejects intrinsic Combobox controls explicitly, including
-these two components. Ordinary Tree/FileTree remains supported natively. This
-boundary is tested before model/queue mutations and on direct apply, retaining
-the accepted prefix/query watermark; native layout or keyboard parity for these
-popups is not claimed.
+Current Glory supports both native intrinsic Combobox tree popups. The
+2026-10-29 consumer tests cover four-theme real popup bounds, complete selected
+paths, close/focus return, stable trigger identity and direct-apply/query watermarks.
+OS keyboard and screen-reader client acceptance remain separate.
 
 Current validation:
 
@@ -77,8 +76,8 @@ Current validation:
 - Shared Render Tree six tests and HTML two differential full-shape/clear tests
   pass (`tree-choice-render.log`, `tree-choice-html.log`). Production lib strict
   Clippy passes (`tree-choice-strict.log`).
-- Two native rejection tests pass in `tree-choices-native.log`, covering both
-  components in four themes and direct preflight/prefix/query watermarks.
+- The current native consumer/direct-apply tests pass in `native-final-v2-sync.log`.
+  `tree-choices-native.log` retains the earlier rejection baseline.
 - Browser acceptance passed 21 reports with errors `[]` on Chromium
   `148.0.7778.96` against fixed FORMAT-10 `http://127.0.0.1:8794/web33`:
   `D:/BuildCache/sapid/tree-choices-browser-web33.json` and its matching `.log`.
@@ -100,6 +99,6 @@ adds the actual popup rectangle and deep horizontal reveal assertions. Earlier
 logs and `cascader-mobile-web32-probe.json` are retained. Green dark mobile
 TreeSelect/Cascader screenshots were visually inspected. Native AccessKit also
 verifies unchecked/checked/mixed/clear with stable identity and no selected facet
-(`tree-checked-native-ax.log`); this is separate from native Combobox rejection.
+(`tree-checked-native-ax.log`); this is separate from the current native popup consumer acceptance.
 
 This evidence does not establish OS IME or screen-reader announcements.

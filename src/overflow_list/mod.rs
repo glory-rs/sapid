@@ -10,7 +10,7 @@ use glory::style::{
     Style, WhiteSpace,
 };
 use glory::ui::{Mounted, Result, WeakScope, Widget};
-use glory::{Bond, Cage, Lotus, Scope};
+use glory::{Bond, Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     collections::HashMap,
@@ -36,7 +36,7 @@ fn keys(keys: &[String]) -> Result {
 pub struct OverflowItem {
     key: String,
     content: Option<Factory>,
-    width: Option<Lotus<f64>>,
+    width: Option<Vary<f64>>,
 }
 pub fn overflow_item(key: impl Into<String>) -> OverflowItem {
     OverflowItem {
@@ -52,7 +52,7 @@ impl OverflowItem {
     }
     /// An explicit finite pixel box; percentage/fr sizing is not an intrinsic
     /// measurement policy and is intentionally absent from this API.
-    pub fn width(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn width(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.width = Some(value.into());
         self
     }
@@ -62,15 +62,15 @@ pub struct OverflowList {
     common: Common,
     key: String,
     items: Vec<OverflowItem>,
-    dynamic: Option<(Lotus<Vec<String>>, KeyFactory)>,
+    dynamic: Option<(Vary<Vec<String>>, KeyFactory)>,
     initial: usize,
-    visible: Option<Lotus<usize>>,
+    visible: Option<Vary<usize>>,
     changed: Option<Box<dyn FnMut(usize)>>,
-    gap: Lotus<f64>,
-    label: Lotus<String>,
+    gap: Vary<f64>,
+    label: Vary<String>,
     open: Value<bool>,
     open_changed: Option<Box<dyn FnMut(bool)>>,
-    revision: Lotus<u64>,
+    revision: Vary<u64>,
     popup: bool,
     handle: Option<Cage<Option<OverflowHandle>>>,
 }
@@ -109,7 +109,7 @@ impl OverflowList {
     /// collection to scan/window. Retained keys keep their actual widget Owner.
     pub fn dynamic_items(
         mut self,
-        keys: impl Into<Lotus<Vec<String>>>,
+        keys: impl Into<Vary<Vec<String>>>,
         factory: impl FnMut(&str) -> OverflowItem + 'static,
     ) -> Self {
         self.dynamic = Some((keys.into(), Box::new(factory)));
@@ -120,7 +120,7 @@ impl OverflowList {
         self.initial = value;
         self
     }
-    pub fn visible_count(mut self, value: impl Into<Lotus<usize>>) -> Self {
+    pub fn visible_count(mut self, value: impl Into<Vary<usize>>) -> Self {
         self.visible = Some(value.into());
         self
     }
@@ -128,15 +128,15 @@ impl OverflowList {
         self.changed = Some(Box::new(callback));
         self
     }
-    pub fn gap(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn gap(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.gap = value.into();
         self
     }
-    pub fn overflow_label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn overflow_label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
-    pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(value.into());
         self
     }
@@ -146,7 +146,7 @@ impl OverflowList {
     }
     /// Refresh hidden intrinsic content after its application-owned text/font
     /// inputs change; ordinary visible geometry and container Resize are observed.
-    pub fn measurement_revision(mut self, value: impl Into<Lotus<u64>>) -> Self {
+    pub fn measurement_revision(mut self, value: impl Into<Vary<u64>>) -> Self {
         self.revision = value.into();
         self
     }
@@ -201,7 +201,7 @@ struct Controller {
     visible: Control<usize>,
     open: Control<bool>,
     gap: Cage<f64>,
-    enabled: Lotus<bool>,
+    enabled: Vary<bool>,
     count: Cage<usize>,
     total: Cage<usize>,
     more_visible: Cage<bool>,
@@ -765,7 +765,7 @@ impl Widget for OverflowList {
                     }
                     Ok(())
                 })
-                .map(Lotus::from)
+                .map(Vary::from)
             })
             .transpose()?;
         let mut visible = Value {

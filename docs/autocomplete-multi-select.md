@@ -30,7 +30,7 @@ mounted, bounded declarations. Home, End, Space and ordinary editing remain
 native Input behavior; composition freezes filtering and option commands until
 the terminal composition event. Pointer/touch selection retains the Input focus.
 
-`autocomplete(key).value(Lotus<String>).on_value_change(...)` controls freely
+`autocomplete(key).value(Vary<String>).on_value_change(...)` controls freely
 edited text. `default_value` supplies local initial text. The optional
 `selected_key`/`on_option_select` tracks suggestion identity independently.
 `select_option(key, label).value(text)` inserts `text`, while the label remains
@@ -40,7 +40,7 @@ successful form name/value and native `required`; there is no hidden Select.
 Open Enter accepts a suggestion or commits unmatched text and closes; closed
 Enter retains native form submission. `on_commit` observes text commits.
 
-`multi_select(key).value(Lotus<Vec<String>>).on_value_change(...)` controls
+`multi_select(key).value(Vary<Vec<String>>).on_value_change(...)` controls
 selected known keys. `search`/`on_search_change` independently control the editor;
 defaults apply only to local sources. Choosing an option toggles its key, proposes
 an empty search and keeps the popup open. Accepted values drive real

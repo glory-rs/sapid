@@ -27,10 +27,9 @@
   不在控件里注入脚本。hydration 不替换控件身份，保留用户已改变的 checked 值。
 - classic stream 保留用户脏 checked/indeterminate；Radio 的原生同名邻居隐式取消也进入
   整组保护，避免随后 server patch 擦除用户已作出的单选。
-- Blitz 支持 Switch 的原生 checked 与 AccessKit Switch 角色。固定版本引擎/宿主尚无
-  完整 mixed 控制值与 radio 单向选择协议，因此 Mixed 和 Radio 在 descriptor preflight、
-  direct apply 逐操作入口都明确拒绝。拒绝保留成功前缀与查询 applied 水位。
-  原生明确拒绝不代表跨平台运行验收通过。
+- 新版 Blitz/Glory 支持真实 mixed indeterminate 和互斥 radio。2026-10-29 四主题
+  消费端验证 Mixed 转 Checked、Radio/SegmentedControl/单选 Chip 的受控选择、只读
+  与物理控件身份；历史拒绝记录已被本次通过的回归取代。OS 输入及读屏另行验收。
 
 ## 可复查证据
 

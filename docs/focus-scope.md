@@ -16,7 +16,7 @@ focus_scope()
     .fill(content)
 ```
 
-`.configuration(Lotus<FocusScopeConfig>)` accepts all five flags together and
+`.configuration(Vary<FocusScopeConfig>)` accepts all five flags together and
 optional named `initial_focus` and `return_focus` relations. Individual builder
 setters override the corresponding configuration field. Controlled inputs remain
 read-only. Inactive scopes keep their content and ordinary document Tab order.

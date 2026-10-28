@@ -4,7 +4,7 @@ use glory::style::{
     Align, BorderStyle, Color, Display, Edges, FlexDirection, Justify, Length, Overflow, Style,
 };
 use glory::ui::{Children, IntoChildren, Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 
 use crate::appearance::{Common, configure, observe};
 use crate::state::Value;
@@ -23,15 +23,15 @@ macro_rules! action_methods {
             self.common.unstyled = true;
             self
         }
-        pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
             self.common.class = class.into();
             self
         }
-        pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
             self.common.style = style.into();
             self
         }
-        pub fn enabled(mut self, enabled: impl Into<Lotus<bool>>) -> Self {
+        pub fn enabled(mut self, enabled: impl Into<Vary<bool>>) -> Self {
             self.common.enabled = enabled.into();
             self
         }
@@ -267,15 +267,15 @@ impl CloseButton {
         self.inner = self.inner.unstyled();
         self
     }
-    pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
         self.inner = self.inner.class(class);
         self
     }
-    pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
         self.inner = self.inner.style(style);
         self
     }
-    pub fn enabled(mut self, enabled: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, enabled: impl Into<Vary<bool>>) -> Self {
         self.inner = self.inner.enabled(enabled);
         self
     }
@@ -314,7 +314,7 @@ pub struct Burger {
     on_change: Option<Box<dyn FnMut(bool)>>,
     open_name: String,
     close_name: String,
-    animated: Lotus<bool>,
+    animated: Vary<bool>,
     duration_millis: u16,
     controls: Option<SemanticId>,
     presses: Vec<Box<dyn FnMut()>>,
@@ -333,7 +333,7 @@ pub fn burger() -> Burger {
     }
 }
 impl Burger {
-    pub fn animated(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn animated(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.animated = value.into();
         self
     }
@@ -342,7 +342,7 @@ impl Burger {
         self
     }
     action_methods!();
-    pub fn open(mut self, source: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, source: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(source.into());
         self
     }
@@ -552,15 +552,15 @@ impl ButtonGroup {
         self.common.unstyled = true;
         self
     }
-    pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
         self.common.class = class.into();
         self
     }
-    pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
         self.common.style = style.into();
         self
     }
-    pub fn enabled(mut self, enabled: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, enabled: impl Into<Vary<bool>>) -> Self {
         self.common.enabled = enabled.into();
         self
     }
@@ -568,7 +568,7 @@ impl ButtonGroup {
         self.common.node_ref = Some(reference);
         self
     }
-    pub fn name(mut self, name: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, name: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(name.into());
         self
     }

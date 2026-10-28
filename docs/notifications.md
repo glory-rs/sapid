@@ -34,7 +34,8 @@ update 保留同一 row/实际控件身份；dismiss/clear/action 在回调前�
 任务取消及用户 future 析构均在内部借用之外，旧 wake 不能复活已退休消息。
 
 focus 与显式 `handle.pause(bool)` 可暂停计时。可选 `.pause_on_hover(true)`
-需要宿主 PointerWithin，默认 false 以支持原生宿主。只保留当前 live focus/hover
+需要宿主 PointerWithin；默认 false 的策略保持不变。新版 Glory 原生已有该共享协议，
+本组件的专门原生悬停验收仍与默认计时/布局证据区分。只保留当前 live focus/hover
 消息的数字身份，row Owner 清理释放对应暂停，即使退休后没有 terminal focus
 事件。无已完成消息、已访问来源或每帧历史。Toaster 不负责位置，示例用 Affix
 放置在 viewport 角落；也可直接置入普通布局。

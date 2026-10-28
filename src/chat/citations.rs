@@ -5,7 +5,7 @@ use crate::composite;
 use glory::render::{DocumentPart, LinkOpen, TextKind};
 use glory::style::{Display, FlexDirection, Length, Limit, Overflow, Style, WhiteSpace};
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 use std::collections::BTreeSet;
 pub const MAX_CONTEXT_UNITS: u64 = 1_000_000_000_000;
 pub const MAX_SOURCES: usize = 128;
@@ -24,15 +24,15 @@ macro_rules! display_methods {
             self.common.unstyled = true;
             self
         }
-        pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.class = value.into();
             self
         }
-        pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
             self.common.style = value.into();
             self
         }
-        pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.name = Some(value.into());
             self
         }
@@ -120,7 +120,7 @@ impl ContextUsage {
 }
 pub struct Context {
     common: Common,
-    usage: Lotus<ContextUsage>,
+    usage: Vary<ContextUsage>,
 }
 pub fn context() -> Context {
     Context {
@@ -133,7 +133,7 @@ pub fn context() -> Context {
 }
 impl Context {
     display_methods!();
-    pub fn usage(mut self, value: impl Into<Lotus<ContextUsage>>) -> Self {
+    pub fn usage(mut self, value: impl Into<Vary<ContextUsage>>) -> Self {
         self.usage = value.into();
         self
     }
@@ -295,7 +295,7 @@ fn validate_sources(records: &[SourceRecord]) -> Result {
 pub struct Sources {
     common: Common,
     key: String,
-    records: Lotus<Vec<SourceRecord>>,
+    records: Vary<Vec<SourceRecord>>,
     navigate: Option<Box<dyn FnMut(SourceNavigation)>>,
 }
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -317,7 +317,7 @@ pub fn sources(key: impl Into<String>) -> Sources {
 }
 impl Sources {
     display_methods!();
-    pub fn records(mut self, value: impl Into<Lotus<Vec<SourceRecord>>>) -> Self {
+    pub fn records(mut self, value: impl Into<Vary<Vec<SourceRecord>>>) -> Self {
         self.records = value.into();
         self
     }
@@ -459,11 +459,11 @@ impl Widget for Sources {
 }
 pub struct InlineCitation {
     common: Common,
-    source: Lotus<SourceRecord>,
-    label: Lotus<String>,
+    source: Vary<SourceRecord>,
+    label: Vary<String>,
     navigate: Option<Box<dyn FnMut(SourceNavigation)>>,
 }
-pub fn inline_citation(source: impl Into<Lotus<SourceRecord>>) -> InlineCitation {
+pub fn inline_citation(source: impl Into<Vary<SourceRecord>>) -> InlineCitation {
     InlineCitation {
         common: Common::default(),
         source: source.into(),
@@ -473,7 +473,7 @@ pub fn inline_citation(source: impl Into<Lotus<SourceRecord>>) -> InlineCitation
 }
 impl InlineCitation {
     display_methods!();
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }

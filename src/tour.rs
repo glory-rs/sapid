@@ -10,7 +10,7 @@ use glory::render::{
 };
 use glory::style::{Edges, Length, Style};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     collections::BTreeMap,
@@ -198,7 +198,7 @@ struct State {
     context: TourContext,
     steps: Vec<TourStep>,
     current: Control<usize>,
-    input_current: Lotus<usize>,
+    input_current: Vary<usize>,
     open: Control<bool>,
     visible: Cage<bool>,
     changed: Callback<usize>,
@@ -471,7 +471,7 @@ impl Tour {
         }
         self
     }
-    pub fn current(mut self, value: impl Into<Lotus<usize>>) -> Self {
+    pub fn current(mut self, value: impl Into<Vary<usize>>) -> Self {
         self.current.source = Some(value.into());
         self
     }
@@ -479,7 +479,7 @@ impl Tour {
         self.current.default = value;
         self
     }
-    pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(value.into());
         self
     }

@@ -13,7 +13,7 @@ use glory::render::{
 };
 use glory::style::{BorderStyle, Edges, Length, Limit, Style};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     collections::BTreeSet,
@@ -31,19 +31,19 @@ struct Accepted {
 }
 fn admit(
     scope: &Scope,
-    nodes: Lotus<Vec<TreeNode>>,
-    values: Lotus<TreeChoices>,
+    nodes: Vary<Vec<TreeNode>>,
+    values: Vary<TreeChoices>,
     policy: TreeChoicePolicy,
     multiple: bool,
-    columns: Option<Lotus<BTreeSet<String>>>,
+    columns: Option<Vary<BTreeSet<String>>>,
 ) -> Result<Cage<Accepted>> {
     fn read(
-        nodes: &Lotus<Vec<TreeNode>>,
-        values: &Lotus<TreeChoices>,
+        nodes: &Vary<Vec<TreeNode>>,
+        values: &Vary<TreeChoices>,
         policy: TreeChoicePolicy,
         multiple: bool,
         previous: Option<&Accepted>,
-        columns: &Option<Lotus<BTreeSet<String>>>,
+        columns: &Option<Vary<BTreeSet<String>>>,
     ) -> Result<Accepted> {
         let model = nodes.try_with(|nodes| {
             TreeModel::validate(nodes).map_err(error)?;
@@ -101,8 +101,8 @@ struct State {
     accepted: Cage<Accepted>,
     value: Control<TreeChoices>,
     open: Control<bool>,
-    visible: Lotus<bool>,
-    editable: Lotus<bool>,
+    visible: Vary<bool>,
+    editable: Vary<bool>,
     pending: RefCell<Option<TreeChoices>>,
     dirty: Dirty,
     changed: Callback<TreeChoices>,
@@ -195,7 +195,7 @@ impl State {
 pub struct TreeSelect {
     common: Common,
     key: String,
-    nodes: Option<Lotus<Vec<TreeNode>>>,
+    nodes: Option<Vary<Vec<TreeNode>>>,
     value: Value<TreeChoices>,
     open: Value<bool>,
     expanded: Value<BTreeSet<String>>,
@@ -209,10 +209,10 @@ pub struct TreeSelect {
     placeholder: String,
     clearable: bool,
     field: Option<crate::FieldControl>,
-    form_name: Option<Lotus<String>>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
+    form_name: Option<Vary<String>>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
     columns: bool,
 }
 pub fn tree_select(key: impl Into<String>) -> TreeSelect {
@@ -246,11 +246,11 @@ impl TreeSelect {
         self.columns = true;
         self
     }
-    pub fn nodes(mut self, value: impl Into<Lotus<Vec<TreeNode>>>) -> Self {
+    pub fn nodes(mut self, value: impl Into<Vary<Vec<TreeNode>>>) -> Self {
         self.nodes = Some(value.into());
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<TreeChoices>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<TreeChoices>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -258,7 +258,7 @@ impl TreeSelect {
         self.value.default = value;
         self
     }
-    pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(value.into());
         self
     }
@@ -266,7 +266,7 @@ impl TreeSelect {
         self.open.default = value;
         self
     }
-    pub fn expanded(mut self, value: impl Into<Lotus<BTreeSet<String>>>) -> Self {
+    pub fn expanded(mut self, value: impl Into<Vary<BTreeSet<String>>>) -> Self {
         self.expanded.source = Some(value.into());
         self
     }
@@ -317,19 +317,19 @@ impl TreeSelect {
         self.field = Some(value);
         self
     }
-    pub fn form_name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn form_name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.form_name = Some(value.into());
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
@@ -372,12 +372,12 @@ impl Widget for TreeSelect {
         );
         let meta = metadata.clone();
         let enabled_for_edit = enabled.clone();
-        let editable: Lotus<bool> = scope
+        let editable: Vary<bool> = scope
             .bond(move || enabled_for_edit.get() && !meta.get().is_some_and(|s| s.readonly))
             .into();
         let open_source = open.source.clone();
         let edit = editable.clone();
-        let visible: Lotus<bool> = scope.bond(move || open_source.get() && edit.get()).into();
+        let visible: Vary<bool> = scope.bond(move || open_source.get() && edit.get()).into();
         let state = Rc::new(State {
             owner: scope.id(),
             weak: scope.downgrade(),

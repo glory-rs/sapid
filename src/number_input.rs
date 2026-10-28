@@ -8,7 +8,7 @@ use crate::{Decimal, FieldControl, NumberError, NumberLocale, NumberParse, Numbe
 use glory::render::{Event, EventKind, Purpose, RangeCommand, Semantics, SpinValue};
 use glory::style::{Display, FlexDirection, Length, Style};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     rc::Rc,
@@ -96,7 +96,7 @@ impl Controller {
             .source
             .try_with(|v| v.validate().ok().map(|()| v.clone()))?;
         let version = match self.control.source {
-            Lotus::Cage(c) => Some(c.try_version()?),
+            Vary::Cage(c) => Some(c.try_version()?),
             _ => None,
         };
         Ok(value.map(|v| (v, version)))
@@ -291,18 +291,18 @@ impl Controller {
 pub struct NumberInput {
     common: Common,
     value: Value<NumberValue>,
-    min: Lotus<Option<Decimal>>,
-    max: Lotus<Option<Decimal>>,
-    step: Lotus<Decimal>,
-    page: Lotus<Decimal>,
+    min: Vary<Option<Decimal>>,
+    max: Vary<Option<Decimal>>,
+    step: Vary<Decimal>,
+    page: Vary<Decimal>,
     locale: NumberLocale,
     grouping: bool,
     controls: bool,
     field: Option<FieldControl>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
-    form_name: Option<Lotus<String>>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
+    form_name: Option<Vary<String>>,
     changed: Option<Box<dyn FnMut(NumberValue)>>,
     committed: Option<Box<dyn FnMut(NumberValue)>>,
     rejected: Option<Box<dyn FnMut(NumberError)>>,
@@ -330,7 +330,7 @@ pub fn number_input() -> NumberInput {
 }
 impl NumberInput {
     common_methods!();
-    pub fn value(mut self, value: impl Into<Lotus<NumberValue>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<NumberValue>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -338,19 +338,19 @@ impl NumberInput {
         self.value.default = value.into();
         self
     }
-    pub fn min(mut self, value: impl Into<Lotus<Option<Decimal>>>) -> Self {
+    pub fn min(mut self, value: impl Into<Vary<Option<Decimal>>>) -> Self {
         self.min = value.into();
         self
     }
-    pub fn max(mut self, value: impl Into<Lotus<Option<Decimal>>>) -> Self {
+    pub fn max(mut self, value: impl Into<Vary<Option<Decimal>>>) -> Self {
         self.max = value.into();
         self
     }
-    pub fn step(mut self, value: impl Into<Lotus<Decimal>>) -> Self {
+    pub fn step(mut self, value: impl Into<Vary<Decimal>>) -> Self {
         self.step = value.into();
         self
     }
-    pub fn page_step(mut self, value: impl Into<Lotus<Decimal>>) -> Self {
+    pub fn page_step(mut self, value: impl Into<Vary<Decimal>>) -> Self {
         self.page = value.into();
         self
     }
@@ -373,19 +373,19 @@ impl NumberInput {
         self.field = Some(value);
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
-    pub fn form_name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn form_name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.form_name = Some(value.into());
         self
     }
@@ -404,7 +404,7 @@ impl NumberInput {
 }
 impl Widget for NumberInput {
     fn build(&mut self, scope: &Scope) -> Result {
-        // Validate constant text before even cloning its Lotus handle.
+        // Validate constant text before even cloning its Vary handle.
         if let Some(source) = &self.value.source {
             source.try_with(|v| v.validate())?.map_err(|_| invalid())?;
         } else {

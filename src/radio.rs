@@ -7,7 +7,7 @@ use glory::render::{
     Orientation, Patch, Role, SemanticId, Semantics,
 };
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 use crate::appearance::{Common, common_methods, configure, observe};
 use crate::collection::{
@@ -24,7 +24,7 @@ type RadioVisual = Box<dyn FnOnce(glory::ui::Check) -> Box<dyn Widget>>;
 pub struct Radio {
     key: String,
     common: Common,
-    label: Lotus<String>,
+    label: Vary<String>,
     visual: Option<RadioVisual>,
     form_value: Option<String>,
 }
@@ -49,19 +49,19 @@ impl Radio {
         self.visual = Some(Box::new(value));
         self
     }
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.common.enabled = value.into();
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<glory::style::Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<glory::style::Style>>) -> Self {
         self.common.style = value.into();
         self
     }
@@ -81,7 +81,7 @@ impl Radio {
             .push(Box::new(handler));
         self
     }
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
@@ -90,14 +90,14 @@ impl Radio {
 pub struct RadioGroup {
     common: Common,
     key: String,
-    label: Lotus<String>,
+    label: Vary<String>,
     form_name: Option<String>,
     value: Value<String>,
     items: Vec<Radio>,
     field: Option<crate::FieldControl>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
     orientation: Orientation,
     looping: bool,
     direction: Direction,
@@ -131,7 +131,7 @@ impl RadioGroup {
         self.member_gap = value;
         self
     }
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
@@ -141,7 +141,7 @@ impl RadioGroup {
         self.form_name = Some(value.into());
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<String>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -180,15 +180,15 @@ impl RadioGroup {
         self.typeahead = Some(value);
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
@@ -204,9 +204,9 @@ impl RadioGroup {
 struct Selection {
     control: Control<String>,
     keys: Rc<Vec<String>>,
-    enabled: Vec<Lotus<bool>>,
-    root_enabled: Lotus<bool>,
-    readonly: Lotus<bool>,
+    enabled: Vec<Vary<bool>>,
+    root_enabled: Vary<bool>,
+    readonly: Vary<bool>,
     collection: Collection,
     roving: RovingFocus,
     typeahead: RefCell<Option<Typeahead>>,
@@ -274,8 +274,8 @@ struct RegisteredRadio {
     control: Option<Box<dyn Widget>>,
     collection: Collection,
     key: String,
-    enabled: Lotus<bool>,
-    label: Lotus<String>,
+    enabled: Vary<bool>,
+    label: Vary<String>,
     reference: Cage<Option<NodeId>>,
     token: Cage<Option<CollectionMember>>,
 }
@@ -395,7 +395,7 @@ impl Widget for RadioGroup {
             let form_value = item.form_value.take().unwrap_or_else(|| key.clone());
             let flag = item.common.enabled.clone();
             let root = enabled.clone();
-            let member_enabled: Lotus<bool> =
+            let member_enabled: Vary<bool> =
                 scope.bond(move || root.get() && flag.get()).into();
             let member_label = item.label.clone();
             let member_key = item.key.clone();

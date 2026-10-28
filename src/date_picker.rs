@@ -8,7 +8,7 @@ use crate::{
 };
 use glory::render::{Direction, Error};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{cell::Cell, rc::Rc};
 fn invalid() -> glory::ui::Error {
     Error::InvalidProps("invalid finite date picker selection").into()
@@ -83,13 +83,13 @@ impl Controller {
 pub struct DatePicker {
     pub(crate) common: Common,
     key: String,
-    provider: Lotus<DatesProvider>,
+    provider: Vary<DatesProvider>,
     mode: DatePickerMode,
     value: Value<DateSelection>,
     default_set: bool,
-    month: Option<Lotus<YearMonth>>,
+    month: Option<Vary<YearMonth>>,
     default_month: Option<YearMonth>,
-    readonly: Lotus<bool>,
+    readonly: Vary<bool>,
     direction: Direction,
     excluded: Vec<CivilDate>,
     weekdays: u8,
@@ -100,7 +100,7 @@ pub struct DatePicker {
 }
 pub fn date_picker(
     key: impl Into<String>,
-    provider: impl Into<Lotus<DatesProvider>>,
+    provider: impl Into<Vary<DatesProvider>>,
 ) -> DatePicker {
     DatePicker {
         common: Common::default(),
@@ -127,7 +127,7 @@ impl DatePicker {
         self.mode = value;
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<DateSelection>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<DateSelection>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -136,7 +136,7 @@ impl DatePicker {
         self.default_set = true;
         self
     }
-    pub fn month(mut self, value: impl Into<Lotus<YearMonth>>) -> Self {
+    pub fn month(mut self, value: impl Into<Vary<YearMonth>>) -> Self {
         self.month = Some(value.into());
         self
     }
@@ -144,7 +144,7 @@ impl DatePicker {
         self.default_month = Some(value);
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }

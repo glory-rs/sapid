@@ -7,10 +7,10 @@ use glory::render::{
 };
 use glory::style::{BorderStyle, Color, Display, Edges, Length, Overflow, Position, Style};
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 pub struct ColorSwatch {
     common: Common,
-    color: Lotus<Color>,
+    color: Vary<Color>,
     side: f64,
     round: bool,
     interactive: bool,
@@ -18,7 +18,7 @@ pub struct ColorSwatch {
     change: Option<Box<dyn FnMut(bool)>>,
     presses: Vec<Box<dyn FnMut()>>,
 }
-pub fn color_swatch(color: impl Into<Lotus<Color>>) -> ColorSwatch {
+pub fn color_swatch(color: impl Into<Vary<Color>>) -> ColorSwatch {
     ColorSwatch {
         common: Common::default(),
         color: color.into(),
@@ -35,7 +35,7 @@ impl ColorSwatch {
         self.common.theme = value;
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -47,7 +47,7 @@ impl ColorSwatch {
         self.round = value;
         self
     }
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.common.enabled = value.into();
         self
     }
@@ -55,7 +55,7 @@ impl ColorSwatch {
         self.interactive = value;
         self
     }
-    pub fn pressed(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn pressed(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.pressed.get_or_insert_with(Value::default).source = Some(value.into());
         self.interactive = true;
         self
@@ -76,11 +76,11 @@ impl ColorSwatch {
         self.interactive = true;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }

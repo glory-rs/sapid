@@ -2,7 +2,7 @@ use crate::appearance::{Common, configure};
 use glory::render::{DocumentPart, NodeId, SemanticId, Semantics, TextKind};
 use glory::style::{Display, Edges, FlexDirection, Style};
 use glory::ui::{Children, IntoChildren, Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{collections::HashMap, rc::Rc};
 
 pub const MAX_TIMELINE_ITEMS: usize = 256;
@@ -36,11 +36,11 @@ macro_rules! appearance_methods {
             self.common.unstyled = true;
             self
         }
-        pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
             self.common.class = class.into();
             self
         }
-        pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
             self.common.style = style.into();
             self
         }
@@ -54,7 +54,7 @@ pub struct Timeline {
     common: Common,
     key: String,
     items: Vec<TimelineItem>,
-    progress: Lotus<TimelineProgress>,
+    progress: Vary<TimelineProgress>,
     labels: [String; 3],
     level: u8,
 }
@@ -78,7 +78,7 @@ impl Timeline {
         self.common.size = size;
         self
     }
-    pub fn name(mut self, name: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, name: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(name.into());
         self
     }
@@ -94,7 +94,7 @@ impl Timeline {
         crate::document::extend_bounded(&mut self.items, items, MAX_TIMELINE_ITEMS);
         self
     }
-    pub fn progress(mut self, progress: impl Into<Lotus<TimelineProgress>>) -> Self {
+    pub fn progress(mut self, progress: impl Into<Vary<TimelineProgress>>) -> Self {
         self.progress = progress.into();
         self
     }
@@ -226,9 +226,9 @@ pub struct TimelineItem {
     theme_override: Option<crate::Theme>,
     size_override: Option<crate::Size>,
     key: String,
-    title: Lotus<String>,
-    description: Option<Lotus<String>>,
-    timestamp: Option<Lotus<String>>,
+    title: Vary<String>,
+    description: Option<Vary<String>>,
+    timestamp: Option<Vary<String>>,
     marker: Children,
     children: Children,
 }
@@ -255,15 +255,15 @@ impl TimelineItem {
         self.size_override = Some(size);
         self
     }
-    pub fn title(mut self, title: impl Into<Lotus<String>>) -> Self {
+    pub fn title(mut self, title: impl Into<Vary<String>>) -> Self {
         self.title = title.into();
         self
     }
-    pub fn description(mut self, description: impl Into<Lotus<String>>) -> Self {
+    pub fn description(mut self, description: impl Into<Vary<String>>) -> Self {
         self.description = Some(description.into());
         self
     }
-    pub fn timestamp(mut self, timestamp: impl Into<Lotus<String>>) -> Self {
+    pub fn timestamp(mut self, timestamp: impl Into<Vary<String>>) -> Self {
         self.timestamp = Some(timestamp.into());
         self
     }

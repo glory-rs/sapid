@@ -5,7 +5,7 @@ use std::rc::Rc;
 use glory::render::{Action, Event, EventKind, NodeId, Role, SemanticId, Semantics};
 use glory::style::{Display, Edges, FlexDirection, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 pub(crate) mod dynamic;
 
@@ -93,7 +93,7 @@ pub(crate) fn metadata(value: Semantics) -> Option<Box<Semantics>> {
 
 pub(crate) fn form_name(
     scope: &Scope,
-    value: &Option<Lotus<String>>,
+    value: &Option<Vary<String>>,
 ) -> Result<Option<Cage<String>>> {
     value
         .as_ref()
@@ -136,7 +136,7 @@ pub(crate) fn validate_keys(keys: &[String]) -> Result {
 /// only the current value; invalid program updates leave the last valid UI.
 pub(crate) fn validated<T: Clone + PartialEq + 'static>(
     scope: &Scope,
-    source: &Lotus<T>,
+    source: &Vary<T>,
     check: impl Fn(&T) -> Result + 'static,
 ) -> Result<Cage<T>> {
     // This construction sample is not a subscription of an enclosing Each or
@@ -148,7 +148,7 @@ pub(crate) fn validated<T: Clone + PartialEq + 'static>(
         })
     })??;
     let current = scope.cage(initial);
-    // Lotus::Value owns T directly. Clone its source only after validation,
+    // Vary::Value owns T directly. Clone its source only after validation,
     // otherwise even entering this helper could duplicate an oversized value.
     let source = source.clone();
     let weak = scope.downgrade();
@@ -173,12 +173,12 @@ pub(crate) fn validated<T: Clone + PartialEq + 'static>(
 
 pub(crate) struct Members {
     pub references: Vec<Cage<Option<NodeId>>>,
-    pub enabled: Vec<Lotus<bool>>,
-    pub root_enabled: Lotus<bool>,
+    pub enabled: Vec<Vary<bool>>,
+    pub root_enabled: Vary<bool>,
     index: RefCell<HashMap<NodeId, usize>>,
 }
 impl Members {
-    pub fn new(scope: &Scope, items: &[Item], root_enabled: Lotus<bool>) -> Rc<Self> {
+    pub fn new(scope: &Scope, items: &[Item], root_enabled: Vary<bool>) -> Rc<Self> {
         Rc::new(Self {
             references: items
                 .iter()
@@ -245,9 +245,9 @@ pub(crate) struct Panel {
     pub id: SemanticId,
     pub label: SemanticId,
     pub role: Option<Role>,
-    pub open: Lotus<bool>,
+    pub open: Vary<bool>,
     pub trigger: Cage<Option<NodeId>>,
-    pub restore: Option<Lotus<Option<NodeId>>>,
+    pub restore: Option<Vary<Option<NodeId>>>,
     pub reference: Option<Cage<Option<NodeId>>>,
     pub factory: Option<Factory>,
     pub policy: ContentPolicy,
@@ -327,8 +327,8 @@ impl Widget for Panel {
 /// history of visited data. Dynamic large collections remain Glory List's job.
 pub(crate) struct Item {
     pub key: String,
-    pub label: Lotus<String>,
-    pub enabled: Lotus<bool>,
+    pub label: Vary<String>,
+    pub enabled: Vary<bool>,
     pub factory: Option<Factory>,
     pub trigger_content: Option<Factory>,
     pub trigger: Option<Cage<Option<NodeId>>>,
@@ -356,11 +356,11 @@ impl Item {
 
 macro_rules! item_methods {
     () => {
-        pub fn label(mut self, label: impl Into<glory::Lotus<String>>) -> Self {
+        pub fn label(mut self, label: impl Into<glory::Vary<String>>) -> Self {
             self.inner.label = label.into();
             self
         }
-        pub fn enabled(mut self, enabled: impl Into<glory::Lotus<bool>>) -> Self {
+        pub fn enabled(mut self, enabled: impl Into<glory::Vary<bool>>) -> Self {
             self.inner.enabled = enabled.into();
             self
         }
@@ -451,7 +451,7 @@ mod bounded_validation_tests {
     fn oversized_constant_lotus_is_borrowed_without_even_one_clone() {
         let app = glory::App::memory();
         let clones = Rc::new(Cell::new(0));
-        let source = Lotus::Value(Value {
+        let source = Vary::Value(Value {
             length: 1_000_000,
             clones: clones.clone(),
         });

@@ -2,7 +2,7 @@
 use glory::render::{EventKind, NodeId, TextKind};
 use glory::style::{Color, Display, Edges, Family, Overflow, Style, TextOverflow, WhiteSpace};
 use glory::ui::{IntoChildren, Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 use crate::appearance::{Common, configure, merge, observe};
 
@@ -71,11 +71,11 @@ macro_rules! text_methods {
             self.common.unstyled = true;
             self
         }
-        pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.class = value.into();
             self
         }
-        pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
             self.common.style = value.into();
             self
         }
@@ -83,7 +83,7 @@ macro_rules! text_methods {
             self.common.node_ref = Some(value);
             self
         }
-        pub fn content(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn content(mut self, value: impl Into<Vary<String>>) -> Self {
             self.content = value.into();
             self
         }
@@ -108,7 +108,7 @@ macro_rules! text_methods {
             self.metrics.truncate = value;
             self
         }
-        pub fn selectable(mut self, value: impl Into<Lotus<bool>>) -> Self {
+        pub fn selectable(mut self, value: impl Into<Vary<bool>>) -> Self {
             self.selectable = value.into();
             self
         }
@@ -128,11 +128,11 @@ macro_rules! text_methods {
 }
 pub struct Text {
     common: Common,
-    content: Lotus<String>,
+    content: Vary<String>,
     variant: TextVariant,
     inline: bool,
     metrics: Metrics,
-    selectable: Lotus<bool>,
+    selectable: Vary<bool>,
 }
 pub fn text() -> Text {
     Text {
@@ -199,10 +199,10 @@ impl Widget for Text {
 }
 pub struct Title {
     common: Common,
-    content: Lotus<String>,
+    content: Vary<String>,
     level: u8,
     metrics: Metrics,
-    selectable: Lotus<bool>,
+    selectable: Vary<bool>,
 }
 pub fn title(level: u8) -> Title {
     Title {
@@ -215,7 +215,7 @@ pub fn title(level: u8) -> Title {
 }
 impl Title {
     text_methods!();
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -304,11 +304,11 @@ impl Typography {
         self.common.unstyled = true;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }

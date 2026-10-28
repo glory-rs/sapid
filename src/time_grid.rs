@@ -9,7 +9,7 @@ use glory::render::{
 };
 use glory::style::{BorderStyle, Display, Edges, FlexDirection, Length, Position, Style};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{cell::Cell, rc::Rc};
 fn invalid() -> glory::ui::Error {
     glory::render::Error::InvalidProps("invalid finite time grid").into()
@@ -180,9 +180,9 @@ pub struct TimeGrid {
     key: String,
     spec: TimeGridSpec,
     format: TimeFormat,
-    bounds: Lotus<TimeBounds>,
+    bounds: Vary<TimeBounds>,
     value: Value<Option<LocalTime>>,
-    readonly: Lotus<bool>,
+    readonly: Vary<bool>,
     direction: Direction,
     disabled: Vec<LocalTime>,
     changed: Option<Box<dyn FnMut(Option<LocalTime>)>>,
@@ -211,11 +211,11 @@ impl TimeGrid {
         self.format = v;
         self
     }
-    pub fn bounds(mut self, v: impl Into<Lotus<TimeBounds>>) -> Self {
+    pub fn bounds(mut self, v: impl Into<Vary<TimeBounds>>) -> Self {
         self.bounds = v.into();
         self
     }
-    pub fn value(mut self, v: impl Into<Lotus<Option<LocalTime>>>) -> Self {
+    pub fn value(mut self, v: impl Into<Vary<Option<LocalTime>>>) -> Self {
         self.value.source = Some(v.into());
         self
     }
@@ -223,7 +223,7 @@ impl TimeGrid {
         self.value.default = v;
         self
     }
-    pub fn readonly(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.readonly = v.into();
         self
     }

@@ -542,7 +542,7 @@ fn documentation(entry: &'static Entry, theme: Theme, tab: Cage<u8>) -> impl Wid
                     view().class("site-preview").fill(view().class("site-demo").fill(crate::showcase_examples::demo(entry.id, demo_theme.clone()))),
                     view().semantics(Some(Box::new(Semantics { id: Some(SemanticId::new("example-source").expect("static id")), ..Default::default() }))).fill(source(entry, demo_theme.clone(), false)),
                     section_title("composition", "Compose your interface"),
-                    text().class("site-doc-note").content("Use Cage, Bond and Lotus for reactive values. Compose these builders with other Sapid widgets and keep application data in your own model."),
+                    text().class("site-doc-note").content("Use Cage, Bond and Vary for reactive values. Compose these builders with other Sapid widgets and keep application data in your own model."),
                     view().class("site-doc-code").fill(
                         sapid::code_highlight().theme(demo_theme.clone()).language(sapid::CodeLanguage::Rust).source("use glory::prelude::*;\nuse sapid::*;\n\n// Widgets are ordinary Rust builders.\n// Your application chooses Web, SSR or a native host."),
                     ),

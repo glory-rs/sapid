@@ -10,7 +10,7 @@ use glory::render::{
 };
 use glory::style::Length;
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     rc::Rc,
@@ -243,10 +243,10 @@ pub struct MaskInput {
     pattern: MaskPattern,
     value: Value<String>,
     field: Option<FieldControl>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
-    form_name: Option<Lotus<String>>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
+    form_name: Option<Vary<String>>,
     changed: Option<Box<dyn FnMut(String)>>,
     committed: Option<Box<dyn FnMut(String)>>,
     rejected: Option<Box<dyn FnMut(MaskRejection)>>,
@@ -269,7 +269,7 @@ pub fn mask_input(pattern: MaskPattern) -> MaskInput {
 }
 impl MaskInput {
     common_methods!();
-    pub fn value(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<String>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -277,19 +277,19 @@ impl MaskInput {
         self.value.default = value.into();
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
-    pub fn form_name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn form_name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.form_name = Some(value.into());
         self
     }

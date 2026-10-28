@@ -3,15 +3,15 @@ use crate::appearance::{Common, configure, merge};
 use glory::render::{GraphicAnimation, NodeId, Role, Semantics};
 use glory::style::{Display, Length, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 pub struct Spinner {
     common: Common,
     diameter: Option<f64>,
     thickness: f64,
     period: u32,
-    visible: Lotus<bool>,
-    animated: Lotus<bool>,
+    visible: Vary<bool>,
+    animated: Vary<bool>,
 }
 pub fn spinner() -> Spinner {
     Spinner {
@@ -51,7 +51,7 @@ impl Spinner {
         self.period = period;
         self
     }
-    pub fn name(mut self, name: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, name: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(name.into());
         self
     }
@@ -60,11 +60,11 @@ impl Spinner {
         self.common.name = None;
         self
     }
-    pub fn visible(mut self, visible: impl Into<Lotus<bool>>) -> Self {
+    pub fn visible(mut self, visible: impl Into<Vary<bool>>) -> Self {
         self.visible = visible.into();
         self
     }
-    pub fn animated(mut self, animated: impl Into<Lotus<bool>>) -> Self {
+    pub fn animated(mut self, animated: impl Into<Vary<bool>>) -> Self {
         self.animated = animated.into();
         self
     }
@@ -72,11 +72,11 @@ impl Spinner {
         self.common.unstyled = true;
         self
     }
-    pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
         self.common.class = class.into();
         self
     }
-    pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
         self.common.style = style.into();
         self
     }
@@ -140,7 +140,7 @@ impl Widget for Spinner {
             drawing.animation = animated.get().then_some(animation);
             drawing
         };
-        let drawing: Lotus<_> = if self.animated.is_reactive() {
+        let drawing: Vary<_> = if self.animated.is_reactive() {
             scope.bond(drawing).into()
         } else {
             drawing().into()
@@ -165,7 +165,7 @@ impl Widget for Spinner {
                 ..Default::default()
             }))
         };
-        let metadata: Lotus<_> = if self.visible.is_reactive() {
+        let metadata: Vary<_> = if self.visible.is_reactive() {
             scope.bond(metadata).into()
         } else {
             metadata().into()

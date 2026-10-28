@@ -26,10 +26,11 @@ reject; million-item iterators consume only the first 1,025 entries. Only the
 selected record is cloned for a callback. Immutable declared metadata is bounded;
 no catalog/history cache is populated by searching.
 
-Native explicitly rejects the editable Choice facet. It does not replace model
-selection with unrelated buttons. `D:/BuildCache/sapid/chat-actions-native-tests.log`
-tests that rejection while preserving and querying an earlier accepted text
-prefix. `chat-actions-tests.log` includes three model tests: real grouped option
+Current Glory supports the native editable Choice facet. The 2026-10-29
+four-theme native consumer verifies actual editor focus/identity, disabled models,
+controlled refusal and acceptance, business values, pixels and Owner cleanup.
+See `D:/BuildCache/sapid/native-final-v2-sync.log`; older rejection logs describe
+the former adapter boundary. `chat-actions-tests.log` includes three model tests: real grouped option
 metadata/business values, controlled refusal/availability, and declaration/value
 budgets. `chat-model-refusal-baseline.log` records the extra-clear proposal before
 the shared correction; `chat-model-combobox-regressions.log` passes all 26

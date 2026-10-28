@@ -2,7 +2,7 @@
 use glory::render::{Descriptor, DocumentPart, NodeId, Props, TextKind};
 use glory::style::{BorderStyle, Display, Edges, Family, FlexDirection, Style};
 use glory::ui::{Children, IntoChildren, Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 use crate::appearance::{Common, configure};
 
@@ -32,11 +32,11 @@ macro_rules! document_methods {
             self.common.unstyled = true;
             self
         }
-        pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
             self.common.class = class.into();
             self
         }
-        pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
             self.common.style = style.into();
             self
         }
@@ -102,7 +102,7 @@ macro_rules! inline_text {
     ($name:ident,$factory:ident,$kind:expr,$class:literal) => {
         pub struct $name {
             common: Common,
-            content: Lotus<String>,
+            content: Vary<String>,
         }
         pub fn $factory() -> $name {
             $name {
@@ -112,7 +112,7 @@ macro_rules! inline_text {
         }
         impl $name {
             document_methods!();
-            pub fn content(mut self, content: impl Into<Lotus<String>>) -> Self {
+            pub fn content(mut self, content: impl Into<Vary<String>>) -> Self {
                 self.content = content.into();
                 self
             }
@@ -173,7 +173,7 @@ impl KbdKey {
 /// A keyboard hint. Platform selection is explicit; no shortcut is registered.
 pub struct Kbd {
     common: Common,
-    content: Lotus<String>,
+    content: Vary<String>,
     key: Option<KbdKey>,
     platform: KbdPlatform,
 }
@@ -187,7 +187,7 @@ pub fn kbd() -> Kbd {
 }
 impl Kbd {
     document_methods!();
-    pub fn content(mut self, content: impl Into<Lotus<String>>) -> Self {
+    pub fn content(mut self, content: impl Into<Vary<String>>) -> Self {
         self.content = content.into();
         self.key = None;
         self
@@ -234,7 +234,7 @@ impl TextList {
         self.ordered = ordered;
         self
     }
-    pub fn name(mut self, name: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, name: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(name.into());
         self
     }
@@ -410,7 +410,7 @@ pub fn data_list() -> DataList {
 }
 impl DataList {
     document_methods!();
-    pub fn name(mut self, name: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, name: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(name.into());
         self
     }
@@ -457,7 +457,7 @@ pub struct DataListItem {
     common: Common,
     theme_override: Option<crate::Theme>,
     size_override: Option<crate::Size>,
-    term: Lotus<String>,
+    term: Vary<String>,
     children: Children,
 }
 pub fn data_list_item() -> DataListItem {
@@ -471,7 +471,7 @@ pub fn data_list_item() -> DataListItem {
 }
 impl DataListItem {
     document_methods!(theme_override, size_override);
-    pub fn term(mut self, term: impl Into<Lotus<String>>) -> Self {
+    pub fn term(mut self, term: impl Into<Vary<String>>) -> Self {
         self.term = term.into();
         self
     }
@@ -667,8 +667,8 @@ fn highlight_ranges(
 /// Use inside TextListItem for list membership; it never implies selection.
 pub struct Item {
     common: Common,
-    title: Option<Lotus<String>>,
-    description: Option<Lotus<String>>,
+    title: Option<Vary<String>>,
+    description: Option<Vary<String>>,
     media: Children,
     children: Children,
     actions: Children,
@@ -685,11 +685,11 @@ pub fn item() -> Item {
 }
 impl Item {
     document_methods!();
-    pub fn title(mut self, title: impl Into<Lotus<String>>) -> Self {
+    pub fn title(mut self, title: impl Into<Vary<String>>) -> Self {
         self.title = Some(title.into());
         self
     }
-    pub fn description(mut self, description: impl Into<Lotus<String>>) -> Self {
+    pub fn description(mut self, description: impl Into<Vary<String>>) -> Self {
         self.description = Some(description.into());
         self
     }

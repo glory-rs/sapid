@@ -14,7 +14,7 @@ let release = timeline("release")
     .item(timeline_item("ship").title("Ship"));
 ```
 
-`progress(Lotus<TimelineProgress>)` accepts `Pending`, `Active(key)` or `Complete`.
+`progress(Vary<TimelineProgress>)` accepts `Pending`, `Active(key)` or `Complete`.
 Items before the active item read “Completed”, the active item reads “Current”,
 and following items read “Upcoming”. `state_labels` replaces these three text
 alternatives. The current status has theme accent color and stronger weight;

@@ -7,7 +7,7 @@ use glory::render::{
 };
 use glory::style::{Display, FlexDirection, Length, Overflow, Style, WhiteSpace};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     rc::Rc,
@@ -21,11 +21,11 @@ pub enum MarqueeDirection {
 }
 pub struct Marquee {
     common: Common,
-    text: Lotus<String>,
-    paused: Lotus<bool>,
-    animated: Lotus<bool>,
-    period: Lotus<u32>,
-    revision: Lotus<u64>,
+    text: Vary<String>,
+    paused: Vary<bool>,
+    animated: Vary<bool>,
+    period: Vary<u32>,
+    revision: Vary<u64>,
     direction: MarqueeDirection,
     gap: f64,
 }
@@ -54,11 +54,11 @@ impl Marquee {
         self.common.unstyled = true;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
@@ -66,24 +66,24 @@ impl Marquee {
         self.common.node_ref = Some(value);
         self
     }
-    pub fn text(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn text(mut self, value: impl Into<Vary<String>>) -> Self {
         self.text = value.into();
         self
     }
-    pub fn paused(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn paused(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.paused = value.into();
         self
     }
     /// Stop clears current motion; resuming begins a new loop at its start.
-    pub fn animated(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn animated(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.animated = value.into();
         self
     }
-    pub fn period_millis(mut self, value: impl Into<Lotus<u32>>) -> Self {
+    pub fn period_millis(mut self, value: impl Into<Vary<u32>>) -> Self {
         self.period = value.into();
         self
     }
-    pub fn measurement_revision(mut self, value: impl Into<Lotus<u64>>) -> Self {
+    pub fn measurement_revision(mut self, value: impl Into<Vary<u64>>) -> Self {
         self.revision = value.into();
         self
     }
@@ -129,7 +129,7 @@ struct Measure {
     root: Cage<Option<NodeId>>,
     first: Cage<Option<NodeId>>,
     distance: Cage<Option<f64>>,
-    enabled: Lotus<bool>,
+    enabled: Vary<bool>,
     gap: f64,
     next: Cell<u64>,
     batch: RefCell<Option<Batch>>,

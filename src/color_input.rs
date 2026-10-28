@@ -8,7 +8,7 @@ use crate::{
 use glory::render::{Direction, Event, EventKind, NodeId, Semantics};
 use glory::style::Style;
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 const MAX_DRAFT_BYTES: usize = 256;
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ColorValidity {
@@ -41,9 +41,9 @@ pub struct ColorInput {
     common: Common,
     value: Value<String>,
     field: Option<crate::FieldControl>,
-    readonly: Lotus<bool>,
-    required: Lotus<bool>,
-    invalid: Lotus<bool>,
+    readonly: Vary<bool>,
+    required: Vary<bool>,
+    invalid: Vary<bool>,
     open: Value<bool>,
     open_change: Option<Box<dyn FnMut(bool)>>,
     change: Option<Box<dyn FnMut(String)>>,
@@ -76,7 +76,7 @@ pub fn color_input(key: impl Into<String>) -> ColorInput {
     }
 }
 impl ColorInput {
-    pub fn value(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<String>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -96,7 +96,7 @@ impl ColorInput {
         self.validation = Some(Box::new(value));
         self
     }
-    pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(value.into());
         self
     }
@@ -115,7 +115,7 @@ impl ColorInput {
         self.field = Some(value);
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -127,11 +127,11 @@ impl ColorInput {
         self.common.size = value;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
@@ -139,19 +139,19 @@ impl ColorInput {
         self.common.unstyled = true;
         self
     }
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.common.enabled = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }

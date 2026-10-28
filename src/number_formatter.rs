@@ -1,7 +1,7 @@
 //! Explicit finite locale formatting, with no ambient host or Intl dependency.
 use glory::render::{Change, Patch};
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 
 use crate::appearance::{Common, configure};
 
@@ -30,7 +30,7 @@ pub enum NumberFormat {
 /// a rejected reactive update preserves the last accepted rendered text.
 pub struct NumberFormatter {
     common: Common,
-    value: Lotus<f64>,
+    value: Vary<f64>,
     locale: NumberLocale,
     format: NumberFormat,
     min_fraction: Option<u8>,
@@ -61,11 +61,11 @@ impl NumberFormatter {
         self.common.unstyled = true;
         self
     }
-    pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
         self.common.class = class.into();
         self
     }
-    pub fn style(mut self, style: impl Into<Lotus<glory::style::Style>>) -> Self {
+    pub fn style(mut self, style: impl Into<Vary<glory::style::Style>>) -> Self {
         self.common.style = style.into();
         self
     }
@@ -73,7 +73,7 @@ impl NumberFormatter {
         self.common.node_ref = Some(reference);
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.value = value.into();
         self
     }

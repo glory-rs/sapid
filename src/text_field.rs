@@ -1,5 +1,5 @@
 use glory::Scope;
-use glory::core::Lotus;
+use glory::core::Vary;
 use glory::render::{Event, EventKind, Purpose};
 use glory::ui::{Result, Widget};
 
@@ -14,11 +14,11 @@ pub struct TextField {
     on_change: Option<Box<dyn FnMut(String)>>,
     on_commit: Option<Box<dyn FnMut(String)>>,
     pub(crate) field: Option<crate::FieldControl>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
-    extra_error: Option<(glory::render::SemanticId, Lotus<String>)>,
-    placeholder: Option<Lotus<String>>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
+    extra_error: Option<(glory::render::SemanticId, Vary<String>)>,
+    placeholder: Option<Vary<String>>,
     multiline: bool,
 }
 
@@ -41,14 +41,14 @@ pub fn text_field() -> TextField {
 }
 
 impl TextField {
-    pub fn placeholder(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn placeholder(mut self, value: impl Into<Vary<String>>) -> Self {
         self.placeholder = Some(value.into());
         self
     }
     pub(crate) fn additional_error(
         mut self,
         id: glory::render::SemanticId,
-        message: Lotus<String>,
+        message: Vary<String>,
     ) -> Self {
         self.extra_error = Some((id, message));
         self
@@ -61,22 +61,22 @@ impl TextField {
         self.field = Some(field);
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
 
     /// Controlled text. Native edits call on_value_change; the source decides
     /// which value is displayed after that host tick.
-    pub fn value(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<String>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -86,7 +86,7 @@ impl TextField {
         self
     }
 
-    pub fn purpose(mut self, value: impl Into<Lotus<Purpose>>) -> Self {
+    pub fn purpose(mut self, value: impl Into<Vary<Purpose>>) -> Self {
         self.inner = self.inner.take().map(|inner| inner.purpose(value));
         self
     }

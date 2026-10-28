@@ -48,8 +48,7 @@ fn native_suggestion_toolbar_has_real_focus_navigation_payload_source_and_theme_
     ] {
         let host = WindowApp::new();
         host.renderer().set_viewport(1000, 850, 1.).unwrap();
-        host.mount(fixture::model_suggestions_form_with_selector(theme, false))
-            .unwrap();
+        host.mount(fixture::model_suggestions_form(theme)).unwrap();
         observe(&host);
         let app = host.app();
         let first = button(app, "Explain · Application notes");
@@ -104,28 +103,110 @@ fn native_suggestion_toolbar_has_real_focus_navigation_payload_source_and_theme_
     }
 }
 #[test]
-fn native_model_selector_explicitly_rejects_editable_choice_preserving_an_accepted_prefix() {
-    let host = WindowApp::new();
-    let prefix = host.app().scope().cage(None);
-    host.mount(
-        glory::ui::text()
-            .content("Accepted prefix")
-            .node_ref(prefix),
-    )
-    .unwrap();
-    observe(&host);
-    let id = prefix.get().unwrap();
-    let before = query(host.app(), Query::Bounds(id));
-    let error = host
-        .mount(fixture::model_suggestions_form(sapid::Theme::blue_light()))
-        .unwrap_err();
-    assert!(matches!(
-        error,
-        glory::ui::Error::Render(glory::render::Error::Unsupported(
-            "native combobox controls"
-        ))
-    ));
-    assert_eq!(query(host.app(), Query::Bounds(id)), before);
-    host.app().clear().unwrap();
-    assert_eq!(host.app().stats().nodes, 0);
+fn native_model_selector_keeps_editing_identity_controlled_refusal_and_business_values() {
+    use sapid::{ModelRecord, model_selector};
+    use std::cell::Cell;
+    for theme in [
+        sapid::Theme::blue_light(),
+        sapid::Theme::blue_dark(),
+        sapid::Theme::green_light(),
+        sapid::Theme::green_dark(),
+    ] {
+        let host = WindowApp::new();
+        let app = host.app();
+        let selected = app.scope().cage(Some("atlas".to_owned()));
+        let accept = Rc::new(Cell::new(false));
+        let acceptance = accept.clone();
+        let changes = Rc::new(RefCell::new(Vec::new()));
+        let output = changes.clone();
+        let mut boreal = ModelRecord::new("boreal", "South", "Boreal");
+        boreal.value = "south/boreal-v2".into();
+        let mut disabled = ModelRecord::new("retired", "South", "Retired");
+        disabled.available = false;
+        host.mount(
+            model_selector("native-models")
+                .theme(theme)
+                .models([
+                    ModelRecord::new("atlas", "North", "Atlas"),
+                    boreal,
+                    disabled,
+                ])
+                .form_name("model")
+                .default_open(true)
+                .value(selected)
+                .on_change(move |proposal| {
+                    output.borrow_mut().push(proposal.clone());
+                    if acceptance.get() {
+                        selected.revise(|value| *value = proposal.map(|model| model.key));
+                    }
+                }),
+        )
+        .unwrap();
+        observe(&host);
+        let editor = find(app, |node| matches!(node.props, Props::Input(_)));
+        let physical = host
+            .renderer()
+            .engine_id(editor, glory::html::Part::Main)
+            .unwrap();
+        app.scope().action(Action::Focus(editor)).unwrap();
+        app.flush().unwrap();
+        assert!(
+            !app.dispatch(button(app, "Retired"), Event::Activate)
+                .unwrap()
+        );
+        app.dispatch(button(app, "Boreal"), Event::Activate)
+            .unwrap();
+        observe(&host);
+        assert_eq!(selected.get().as_deref(), Some("atlas"));
+        assert_eq!(changes.borrow().len(), 1);
+        assert_eq!(
+            changes.borrow()[0].as_ref().unwrap().value,
+            "south/boreal-v2"
+        );
+        find(
+            app,
+            |node| matches!(node.props, Props::Text(value) if value.content == "Selected model: Atlas (North)"),
+        );
+        accept.set(true);
+        app.dispatch(
+            editor,
+            Event::Choice {
+                from: editor,
+                command: glory::render::ChoiceCommand::OpenFirst,
+            },
+        )
+        .unwrap();
+        observe(&host);
+        app.dispatch(button(app, "Boreal"), Event::Activate)
+            .unwrap();
+        observe(&host);
+        assert_eq!(selected.get().as_deref(), Some("boreal"));
+        let select = find(app, |node| matches!(node.props, Props::Select(_)));
+        let tree = app.tree();
+        let Props::Select(value) = tree.node(select).unwrap().descriptor.view().props else {
+            panic!("select");
+        };
+        assert_eq!(value.selection.keys[0].as_str(), "boreal");
+        drop(tree);
+        assert_eq!(query(app, Query::Focus(editor)), QueryValue::Focus(true));
+        assert_eq!(
+            host.renderer()
+                .engine_id(editor, glory::html::Part::Main)
+                .unwrap(),
+            physical
+        );
+        let mut raster = Raster::new();
+        raster.draw(host.renderer()).unwrap();
+        assert!(
+            raster
+                .pixels()
+                .as_chunks::<4>()
+                .0
+                .iter()
+                .any(|pixel| pixel[3] > 0)
+        );
+        app.clear().unwrap();
+        assert_eq!(app.stats().nodes, 0);
+        assert_eq!(Rc::strong_count(&changes), 1);
+    }
 }

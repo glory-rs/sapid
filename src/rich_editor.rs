@@ -7,7 +7,7 @@ use glory::render::{
 };
 use glory::style::{Display, FlexDirection, Length, Overflow, Style, WhiteSpace};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{cell::RefCell, collections::VecDeque, rc::Rc};
 
 pub const MAX_EDITOR_HISTORY: usize = 32;
@@ -97,7 +97,7 @@ struct State {
     scope: glory::ui::WeakScope,
     node: Cage<Option<NodeId>>,
     owner: glory::core::InstanceId,
-    source: Option<Lotus<Rc<RichDocument>>>,
+    source: Option<Vary<Rc<RichDocument>>>,
     accepted: Cage<Rc<RichDocument>>,
     selection: Cage<RichSelection>,
     accepted_selection: Cage<RichSelection>,
@@ -220,16 +220,16 @@ impl State {
 #[derive(Clone)]
 pub struct EditorController(Rc<State>);
 impl EditorController {
-    pub fn document(&self) -> Lotus<Rc<RichDocument>> {
+    pub fn document(&self) -> Vary<Rc<RichDocument>> {
         self.0.accepted.into()
     }
-    pub fn selection(&self) -> Lotus<RichSelection> {
+    pub fn selection(&self) -> Vary<RichSelection> {
         self.0.selection.into()
     }
-    pub fn composing(&self) -> Lotus<bool> {
+    pub fn composing(&self) -> Vary<bool> {
         self.0.composing.into()
     }
-    pub fn history(&self) -> Lotus<EditorHistory> {
+    pub fn history(&self) -> Vary<EditorHistory> {
         self.0.history.into()
     }
     pub fn format_at(&self, selection: RichSelection, format: RichFormat) -> Result<bool> {
@@ -408,9 +408,9 @@ impl EditorController {
 }
 pub struct RichTextEditor {
     common: Common,
-    source: Option<Lotus<Rc<RichDocument>>>,
+    source: Option<Vary<Rc<RichDocument>>>,
     initial: Rc<RichDocument>,
-    readonly: Lotus<bool>,
+    readonly: Vary<bool>,
     toolbar: bool,
     controller_ref: Option<Cage<Option<EditorController>>>,
     changed: Option<Box<dyn FnMut(Rc<RichDocument>)>>,
@@ -432,7 +432,7 @@ pub fn rich_text_editor() -> RichTextEditor {
 }
 impl RichTextEditor {
     common_methods!();
-    pub fn document(mut self, source: impl Into<Lotus<Rc<RichDocument>>>) -> Self {
+    pub fn document(mut self, source: impl Into<Vary<Rc<RichDocument>>>) -> Self {
         self.source = Some(source.into());
         self
     }
@@ -440,7 +440,7 @@ impl RichTextEditor {
         self.initial = value;
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }

@@ -2,7 +2,7 @@ use crate::appearance::{Common, configure};
 use glory::render::{Orientation, Role, Semantics};
 use glory::style::{Length, Style};
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 
 /// A passive visual boundary; adjustable splitters are a separate interaction.
 pub struct Separator {
@@ -30,15 +30,15 @@ impl Separator {
         self.common.unstyled = true;
         self
     }
-    pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
         self.common.class = class.into();
         self
     }
-    pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
         self.common.style = style.into();
         self
     }
-    pub fn name(mut self, name: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, name: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(name.into());
         self
     }

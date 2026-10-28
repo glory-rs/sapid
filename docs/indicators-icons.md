@@ -9,7 +9,7 @@ space around boundary markers; the content and marker keep separate identities.
 An unnamed dot has no image, status or interactive role. `label(text)` adds an
 ordinary text label (nonempty, at most 32 UTF-8 bytes), and `name(text)` optionally
 names its passive group (nonempty, at most 256 bytes). No live announcement is
-inferred. `visible(Lotus<bool>)` hides only the marker, preserving child controls
+inferred. `visible(Vary<bool>)` hides only the marker, preserving child controls
 and their values. Invalid controlled text leaves the last accepted presentation
 in place and reports an error; recovery preserves identities without writing the
 source. There are no implicit callbacks. Root and marker node references are

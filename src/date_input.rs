@@ -10,7 +10,7 @@ use glory::render::{
 };
 use glory::style::{Display, FlexDirection, Length, Style};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     rc::Rc,
@@ -285,18 +285,18 @@ impl Controller {
 pub struct DateInput {
     common: Common,
     key: String,
-    provider: Lotus<DatesProvider>,
+    provider: Vary<DatesProvider>,
     value: Value<Option<CivilDate>>,
     field: Option<FieldControl>,
-    form_name: Option<Lotus<String>>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
+    form_name: Option<Vary<String>>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
     parser: Parser,
     picker: bool,
-    picker_label: Lotus<String>,
-    picker_title: Lotus<String>,
-    picker_close: Lotus<String>,
+    picker_label: Vary<String>,
+    picker_title: Vary<String>,
+    picker_close: Vary<String>,
     changed: Option<Box<dyn FnMut(Option<CivilDate>)>>,
     committed: Option<Box<dyn FnMut(Option<CivilDate>)>>,
     draft_changed: Option<Box<dyn FnMut(DateInputDraft)>>,
@@ -304,7 +304,7 @@ pub struct DateInput {
 }
 pub fn date_input(
     key: impl Into<String>,
-    provider: impl Into<Lotus<DatesProvider>>,
+    provider: impl Into<Vary<DatesProvider>>,
 ) -> DateInput {
     DateInput {
         common: Common::default(),
@@ -329,7 +329,7 @@ pub fn date_input(
 }
 impl DateInput {
     common_methods!();
-    pub fn value(mut self, v: impl Into<Lotus<Option<CivilDate>>>) -> Self {
+    pub fn value(mut self, v: impl Into<Vary<Option<CivilDate>>>) -> Self {
         self.value.source = Some(v.into());
         self
     }
@@ -344,19 +344,19 @@ impl DateInput {
         self.field = Some(v);
         self
     }
-    pub fn form_name(mut self, v: impl Into<Lotus<String>>) -> Self {
+    pub fn form_name(mut self, v: impl Into<Vary<String>>) -> Self {
         self.form_name = Some(v.into());
         self
     }
-    pub fn required(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.required = v.into();
         self
     }
-    pub fn readonly(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.readonly = v.into();
         self
     }
-    pub fn invalid(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.invalid = v.into();
         self
     }
@@ -364,15 +364,15 @@ impl DateInput {
         self.parser = Rc::new(v);
         self
     }
-    pub fn picker_label(mut self, v: impl Into<Lotus<String>>) -> Self {
+    pub fn picker_label(mut self, v: impl Into<Vary<String>>) -> Self {
         self.picker_label = v.into();
         self
     }
-    pub fn picker_title(mut self, v: impl Into<Lotus<String>>) -> Self {
+    pub fn picker_title(mut self, v: impl Into<Vary<String>>) -> Self {
         self.picker_title = v.into();
         self
     }
-    pub fn picker_close_label(mut self, v: impl Into<Lotus<String>>) -> Self {
+    pub fn picker_close_label(mut self, v: impl Into<Vary<String>>) -> Self {
         self.picker_close = v.into();
         self
     }

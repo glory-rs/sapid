@@ -18,10 +18,10 @@ pub fn menubar_menu(key: impl Into<String>) -> MenubarMenu {
 }
 impl MenubarMenu {
     dropdown_methods! {
-        label(value: impl Into<Lotus<String>>); item(item: impl Into<MenuEntry>);
+        label(value: impl Into<Vary<String>>); item(item: impl Into<MenuEntry>);
         items(items: impl IntoIterator<Item=MenuItem>); radio_group(group:MenuRadioGroup);
         submenu(submenu:MenuSubmenu); separator(key:impl Into<String>);
-        enabled(value:impl Into<Lotus<bool>>);
+        enabled(value:impl Into<Vary<bool>>);
     }
 }
 
@@ -53,7 +53,7 @@ pub fn menubar(key: impl Into<String>) -> Menubar {
 }
 impl Menubar {
     common_methods!();
-    pub fn value(mut self, value: impl Into<Lotus<Option<String>>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<Option<String>>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -135,7 +135,7 @@ pub(super) struct BarState {
     search: RefCell<Typeahead>,
     roots: RefCell<Vec<BarRoot>>,
     owner: glory::core::InstanceId,
-    enabled: Lotus<bool>,
+    enabled: Vary<bool>,
     focus: Cage<Option<BarFocus>>,
 }
 #[derive(Clone, PartialEq, Eq)]
@@ -149,8 +149,8 @@ impl BarState {
         scope: &Scope,
         key: &str,
         reference: Cage<Option<NodeId>>,
-        enabled: Lotus<bool>,
-        label: Lotus<String>,
+        enabled: Vary<bool>,
+        label: Vary<String>,
         state: Rc<MenuState>,
     ) -> Result {
         let member = self
@@ -346,7 +346,7 @@ pub(super) struct BarItem {
     pub owner: SemanticId,
     pub key: String,
     pub state: Weak<BarState>,
-    pub focus: Lotus<FocusMode>,
+    pub focus: Vary<FocusMode>,
 }
 
 impl Widget for Menubar {
@@ -503,7 +503,7 @@ impl Widget for Menubar {
             let selected_key = key.clone();
             let bar_enabled = state.enabled.clone();
             let own_enabled = root.inner.common.enabled.clone();
-            let enabled: Lotus<bool> = scope
+            let enabled: Vary<bool> = scope
                 .bond(move || bar_enabled.get() && own_enabled.get())
                 .into();
             let visible = enabled.clone();

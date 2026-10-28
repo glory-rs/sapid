@@ -10,7 +10,7 @@ use glory::style::{
     BorderStyle, Color, Display, Edges, FlexDirection, Length, Limit, Overflow, Style,
 };
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 use crate::appearance::{Common, common_methods, configure};
 use crate::collection::{
@@ -36,10 +36,10 @@ pub struct Select {
     placeholder: String,
     clearable: bool,
     field: Option<crate::FieldControl>,
-    form_name: Option<Lotus<String>>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
+    form_name: Option<Vary<String>>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
 }
 pub fn select(key: impl Into<String>) -> Select {
     Select {
@@ -62,7 +62,7 @@ pub fn select(key: impl Into<String>) -> Select {
 }
 impl Select {
     common_methods!();
-    pub fn label(mut self, label: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, label: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(label.into());
         self
     }
@@ -73,11 +73,11 @@ impl Select {
         self.field = Some(field);
         self
     }
-    pub fn form_name(mut self, name: impl Into<Lotus<String>>) -> Self {
+    pub fn form_name(mut self, name: impl Into<Vary<String>>) -> Self {
         self.form_name = Some(name.into());
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<Option<String>>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<Option<String>>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -85,7 +85,7 @@ impl Select {
         self.value.default = value;
         self
     }
-    pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(value.into());
         self
     }
@@ -109,15 +109,15 @@ impl Select {
         self.clearable = value;
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
@@ -152,8 +152,8 @@ struct State {
     value: Control<Option<String>>,
     selected: Cage<Option<String>>,
     open: Control<bool>,
-    visible: Lotus<bool>,
-    editable: Lotus<bool>,
+    visible: Vary<bool>,
+    editable: Vary<bool>,
     collection: Collection,
     cursor: RovingFocus,
     typeahead: RefCell<Typeahead>,
@@ -384,14 +384,14 @@ impl Widget for Select {
         );
         let input_meta = metadata.clone();
         let enabled_for_edit = enabled.clone();
-        let editable: Lotus<bool> = scope
+        let editable: Vary<bool> = scope
             .bond(move || {
                 enabled_for_edit.get() && !input_meta.get().is_some_and(|s| s.readonly)
             })
             .into();
         let source = open.source.clone();
         let enabled_for_panel = enabled.clone();
-        let visible: Lotus<bool> = scope
+        let visible: Vary<bool> = scope
             .bond(move || source.get() && enabled_for_panel.get())
             .into();
         let collection = Collection::new(scope, CollectionLimits::default())?;

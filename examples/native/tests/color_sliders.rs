@@ -46,6 +46,7 @@ fn native_hue_and_alpha_four_themes_have_real_color_pixels_and_shared_control_id
         sapid::Theme::green_light(),
         sapid::Theme::green_dark(),
     ] {
+        let checker = theme.checker_dark;
         let host = WindowApp::new();
         let app = host.app();
         let hue = app.scope().cage(None);
@@ -134,7 +135,7 @@ fn native_hue_and_alpha_four_themes_have_real_color_pixels_and_shared_control_id
                 alpha_start.x + alpha_start.width / 2.,
                 alpha_start.y + 0.5,
             ),
-            [192, 192, 192, 255],
+            [checker.0, checker.1, checker.2, checker.3],
         );
         close(
             pixel(

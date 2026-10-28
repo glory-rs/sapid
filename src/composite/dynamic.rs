@@ -1,19 +1,19 @@
 //! Bounded keyed configuration shared by the trigger and panel renderers.
 use super::{Factory, Item};
 use glory::ui::Result;
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{cell::RefCell, collections::HashMap, rc::Rc};
 
 pub(crate) const LIMIT: usize = 256;
 pub(crate) struct Items {
-    pub source: Lotus<Vec<String>>,
+    pub source: Vary<Vec<String>>,
     pub factory: Box<dyn FnMut(&str) -> Item>,
 }
 pub(crate) struct Config {
     _owner: Scope,
     pub key: String,
     pub label: Cage<String>,
-    pub enabled: Lotus<bool>,
+    pub enabled: Vary<bool>,
     pub trigger: Cage<Option<glory::render::NodeId>>,
     pub panel: Cage<Option<glory::render::NodeId>>,
     pub position: Cage<usize>,
@@ -141,8 +141,8 @@ impl FocusRestore {
     pub fn new(
         scope: &Scope,
         configs: Cage<Vec<Rc<Config>>>,
-        preferred: Lotus<Option<String>>,
-        enabled: Lotus<bool>,
+        preferred: Vary<Option<String>>,
+        enabled: Vary<bool>,
     ) -> Self {
         let state = Self {
             observed: scope.cage(None::<String>),

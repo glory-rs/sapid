@@ -6,7 +6,7 @@ use glory::render::{
 };
 use glory::style::Style;
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct AnchorRequest {
@@ -15,10 +15,10 @@ pub struct AnchorRequest {
 }
 pub struct Anchor {
     common: Common,
-    href: Lotus<String>,
-    label: Lotus<String>,
-    open: Lotus<LinkOpen>,
-    current: Lotus<Option<Current>>,
+    href: Vary<String>,
+    label: Vary<String>,
+    open: Vary<LinkOpen>,
+    current: Vary<Option<Current>>,
     semantic_id: Option<SemanticId>,
     navigate: Option<Box<dyn FnMut(AnchorRequest)>>,
 }
@@ -46,15 +46,15 @@ impl Anchor {
         self.common.unstyled = true;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -67,19 +67,19 @@ impl Anchor {
         self
     }
     /// The semantic link destination (Glory calls this Link.target).
-    pub fn href(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn href(mut self, value: impl Into<Vary<String>>) -> Self {
         self.href = value.into();
         self
     }
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
-    pub fn open_in(mut self, value: impl Into<Lotus<LinkOpen>>) -> Self {
+    pub fn open_in(mut self, value: impl Into<Vary<LinkOpen>>) -> Self {
         self.open = value.into();
         self
     }
-    pub fn current(mut self, value: impl Into<Lotus<Option<Current>>>) -> Self {
+    pub fn current(mut self, value: impl Into<Vary<Option<Current>>>) -> Self {
         self.current = value.into();
         self
     }

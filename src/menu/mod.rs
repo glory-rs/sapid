@@ -11,7 +11,7 @@ use glory::render::{
 };
 use glory::style::{Edges, Length};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 use crate::appearance::{Common, common_methods, configure, observe};
 use crate::collection::{
@@ -33,7 +33,7 @@ enum ItemKind {
 pub struct MenuItem {
     common: Common,
     key: String,
-    label: Lotus<String>,
+    label: Vary<String>,
     kind: ItemKind,
     checked: Value<bool>,
     changed: Option<Box<dyn FnMut(bool)>>,
@@ -63,7 +63,7 @@ pub fn menu_checkbox(key: impl Into<String>) -> MenuItem {
 }
 impl MenuItem {
     common_methods!();
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
@@ -75,7 +75,7 @@ impl MenuItem {
         self.close = value;
         self
     }
-    pub fn checked(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn checked(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.checked.source = Some(value.into());
         self.check_configured = true;
         self
@@ -94,11 +94,11 @@ impl MenuItem {
 pub struct MenuRadioItem {
     common: Common,
     key: String,
-    label: Lotus<String>,
+    label: Vary<String>,
 }
 pub fn menu_radio_item(
     key: impl Into<String>,
-    label: impl Into<Lotus<String>>,
+    label: impl Into<Vary<String>>,
 ) -> MenuRadioItem {
     MenuRadioItem {
         common: Common::default(),
@@ -111,7 +111,7 @@ impl MenuRadioItem {
 }
 pub struct MenuRadioGroup {
     key: String,
-    label: Lotus<String>,
+    label: Vary<String>,
     value: Value<String>,
     changed: Option<Box<dyn FnMut(String)>>,
     items: Vec<MenuRadioItem>,
@@ -128,11 +128,11 @@ pub fn menu_radio_group(key: impl Into<String>) -> MenuRadioGroup {
     }
 }
 impl MenuRadioGroup {
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<String>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -157,7 +157,7 @@ impl MenuRadioGroup {
 pub struct MenuSubmenu {
     common: Common,
     key: String,
-    label: Lotus<String>,
+    label: Vary<String>,
     open: Value<bool>,
     changed: Option<Box<dyn FnMut(bool)>>,
     entries: Vec<MenuEntry>,
@@ -176,11 +176,11 @@ pub fn menu_submenu(key: impl Into<String>) -> MenuSubmenu {
 }
 impl MenuSubmenu {
     common_methods!();
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
-    pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(value.into());
         self
     }
@@ -283,7 +283,7 @@ impl From<MenuSubmenu> for MenuEntry {
 pub struct Menu {
     common: Common,
     key: String,
-    label: Lotus<String>,
+    label: Vary<String>,
     open: Value<bool>,
     changed: Option<Box<dyn FnMut(bool)>>,
     entries: Vec<MenuEntry>,
@@ -325,14 +325,14 @@ pub struct DropdownMenu {
 }
 struct ContextConfig {
     target: Box<dyn Widget>,
-    name: Lotus<String>,
+    name: Vary<String>,
     policy: glory::render::ContextEditPolicy,
     reference: Option<Cage<Option<NodeId>>>,
 }
 pub struct ContextMenu {
     inner: Menu,
     target: Option<Box<dyn Widget>>,
-    target_name: Lotus<String>,
+    target_name: Vary<String>,
     policy: glory::render::ContextEditPolicy,
     reference: Option<Cage<Option<NodeId>>>,
 }
@@ -355,11 +355,11 @@ pub fn dropdown_menu(key: impl Into<String>) -> DropdownMenu {
 }
 impl Menu {
     common_methods!();
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
-    pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(value.into());
         self
     }
@@ -440,12 +440,12 @@ macro_rules! dropdown_methods {
 }
 impl DropdownMenu {
     dropdown_methods! {
-        label(value: impl Into<Lotus<String>>); open(value: impl Into<Lotus<bool>>); default_open(value: bool);
+        label(value: impl Into<Vary<String>>); open(value: impl Into<Vary<bool>>); default_open(value: bool);
         on_open_change(callback: impl FnMut(bool) + 'static); item(item: impl Into<MenuEntry>); items(items: impl IntoIterator<Item = MenuItem>);
         radio_group(group: MenuRadioGroup); submenu(submenu: MenuSubmenu); separator(key: impl Into<String>);
         return_focus(id: SemanticId); direction(direction: Direction); loop_focus(looping: bool); typeahead(config: TypeaheadConfig);
-        trigger_ref(reference: Cage<Option<NodeId>>); node_ref(reference: Cage<Option<NodeId>>); class(value: impl Into<Lotus<String>>);
-        name(value: impl Into<Lotus<String>>); style(value: impl Into<Lotus<glory::style::Style>>); enabled(value: impl Into<Lotus<bool>>);
+        trigger_ref(reference: Cage<Option<NodeId>>); node_ref(reference: Cage<Option<NodeId>>); class(value: impl Into<Vary<String>>);
+        name(value: impl Into<Vary<String>>); style(value: impl Into<Vary<glory::style::Style>>); enabled(value: impl Into<Vary<bool>>);
         theme(value: crate::Theme); size(value: crate::Size)
     }
     pub fn unstyled(mut self) -> Self {
@@ -469,7 +469,7 @@ impl ContextMenu {
         self.target = Some(Box::new(widget));
         self
     }
-    pub fn target_name(mut self, name: impl Into<Lotus<String>>) -> Self {
+    pub fn target_name(mut self, name: impl Into<Vary<String>>) -> Self {
         self.target_name = name.into();
         self
     }
@@ -482,12 +482,12 @@ impl ContextMenu {
         self
     }
     dropdown_methods! {
-        label(value: impl Into<Lotus<String>>); open(value: impl Into<Lotus<bool>>);
+        label(value: impl Into<Vary<String>>); open(value: impl Into<Vary<bool>>);
         on_open_change(callback: impl FnMut(bool) + 'static); item(item: impl Into<MenuEntry>); items(items: impl IntoIterator<Item = MenuItem>);
         radio_group(group: MenuRadioGroup); submenu(submenu: MenuSubmenu); separator(key: impl Into<String>);
         direction(direction: Direction); loop_focus(looping: bool); typeahead(config: TypeaheadConfig);
-        node_ref(reference: Cage<Option<NodeId>>); class(value: impl Into<Lotus<String>>);
-        name(value: impl Into<Lotus<String>>); style(value: impl Into<Lotus<glory::style::Style>>); enabled(value: impl Into<Lotus<bool>>);
+        node_ref(reference: Cage<Option<NodeId>>); class(value: impl Into<Vary<String>>);
+        name(value: impl Into<Vary<String>>); style(value: impl Into<Vary<glory::style::Style>>); enabled(value: impl Into<Vary<bool>>);
         theme(value: crate::Theme); size(value: crate::Size)
     }
     pub fn unstyled(mut self) -> Self {
@@ -616,8 +616,8 @@ struct MenuState {
     bar: Option<(String, Weak<bar::BarState>)>,
     open: Control<bool>,
     changed: Callback<bool>,
-    visible: Lotus<bool>,
-    enabled: Lotus<bool>,
+    visible: Vary<bool>,
+    enabled: Vary<bool>,
     collection: Collection,
     roving: RovingFocus,
     search: RefCell<Typeahead>,
@@ -855,17 +855,17 @@ struct Level {
     key: String,
     path: Vec<String>,
     common: Common,
-    label: Lotus<String>,
+    label: Vary<String>,
     open: Value<bool>,
     changed: Option<Box<dyn FnMut(bool)>>,
     entries: Vec<MenuEntry>,
     anchor: SemanticId,
     return_focus: Option<SemanticId>,
-    placement: Lotus<LayerPlacement>,
+    placement: Vary<LayerPlacement>,
     parent: Weak<MenuState>,
     root: Weak<MenuState>,
-    parent_visible: Lotus<bool>,
-    root_enabled: Lotus<bool>,
+    parent_visible: Vary<bool>,
+    root_enabled: Vary<bool>,
     direction: Direction,
     looping: bool,
     typeahead: TypeaheadConfig,
@@ -879,10 +879,10 @@ impl Level {
         let control = self.open.mount(scope);
         let source = control.source.clone();
         let parent = self.parent_visible;
-        let visible: Lotus<bool> = scope.bond(move || source.get() && parent.get()).into();
+        let visible: Vary<bool> = scope.bond(move || source.get() && parent.get()).into();
         let root_enabled = self.root_enabled;
         let own_enabled = self.common.enabled.clone();
-        let enabled: Lotus<bool> = scope
+        let enabled: Vary<bool> = scope
             .bond(move || root_enabled.get() && own_enabled.get())
             .into();
         let collection = Collection::new(
@@ -1054,7 +1054,7 @@ impl Level {
                     let own_enabled = submenu.common.enabled.clone();
                     let parent_visible = visible.clone();
                     let active = state.active_child;
-                    let child_visible: Lotus<bool> = content
+                    let child_visible: Vary<bool> = content
                         .bond(move || {
                             parent_visible.get()
                                 && trigger.get().is_some_and(|node| active.get() == Some(node))
@@ -1281,11 +1281,11 @@ fn mount_member<W: MenuControl>(
     parent: &Common,
     common: &mut Common,
     key: &str,
-    label: Lotus<String>,
+    label: Vary<String>,
     reference: Cage<Option<NodeId>>,
-    own_enabled: Lotus<bool>,
+    own_enabled: Vary<bool>,
     mut semantics: Semantics,
-    expanded: Option<Lotus<bool>>,
+    expanded: Option<Vary<bool>>,
     activation: impl FnMut(Event) + 'static,
 ) -> Result<NodeId> {
     common.theme = parent.theme.clone();
@@ -1306,7 +1306,7 @@ fn mount_member<W: MenuControl>(
     });
     let root = state.enabled.clone();
     let flag = own_enabled;
-    let enabled: Lotus<bool> = owner.bond(move || root.get() && flag.get()).into();
+    let enabled: Vary<bool> = owner.bond(move || root.get() && flag.get()).into();
     semantics.navigation_item = true;
     let metadata = owner.bond(move || {
         let mut metadata = semantics.clone();
@@ -1384,18 +1384,18 @@ fn mount_member<W: MenuControl>(
 trait MenuControl: Widget + Sized {
     fn member(
         self,
-        focus: Lotus<FocusMode>,
-        enabled: Lotus<bool>,
-        semantics: Lotus<Option<Box<Semantics>>>,
+        focus: Vary<FocusMode>,
+        enabled: Vary<bool>,
+        semantics: Vary<Option<Box<Semantics>>>,
         activation: impl FnMut(Event) + 'static,
     ) -> Self;
 }
 impl MenuControl for glory::ui::Button {
     fn member(
         self,
-        focus: Lotus<FocusMode>,
-        enabled: Lotus<bool>,
-        semantics: Lotus<Option<Box<Semantics>>>,
+        focus: Vary<FocusMode>,
+        enabled: Vary<bool>,
+        semantics: Vary<Option<Box<Semantics>>>,
         activation: impl FnMut(Event) + 'static,
     ) -> Self {
         self.focus(focus)
@@ -1407,9 +1407,9 @@ impl MenuControl for glory::ui::Button {
 impl MenuControl for glory::ui::Check {
     fn member(
         self,
-        focus: Lotus<FocusMode>,
-        enabled: Lotus<bool>,
-        semantics: Lotus<Option<Box<Semantics>>>,
+        focus: Vary<FocusMode>,
+        enabled: Vary<bool>,
+        semantics: Vary<Option<Box<Semantics>>>,
         activation: impl FnMut(Event) + 'static,
     ) -> Self {
         self.focus(focus)
@@ -1748,7 +1748,7 @@ impl Widget for Menu {
         let trigger_id = id(&self.key, &[], "trigger")?;
         let context = self.context.take();
         let point = scope.cage(glory::render::ContextPoint::default());
-        let placement: Lotus<LayerPlacement> = if context.is_some() {
+        let placement: Vary<LayerPlacement> = if context.is_some() {
             scope
                 .bond(move || LayerPlacement::ContextPoint(point.get()))
                 .into()

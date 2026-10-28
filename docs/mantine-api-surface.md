@@ -255,13 +255,13 @@
 
 **本地实现：** [../glory/crates/blitz/src/accessibility.rs](../../glory/crates/blitz/src/accessibility.rs)、[../glory/crates/blitz/src/shell.rs](../../glory/crates/blitz/src/shell.rs)、[../glory/crates/html/src/semantics.rs](../../glory/crates/html/src/semantics.rs)、[../glory/crates/render/src/semantics.rs](../../glory/crates/render/src/semantics.rs)、[../glory/crates/web/src/browser/events.rs](../../glory/crates/web/src/browser/events.rs)、[src/checkbox.rs](../src/checkbox.rs)、[src/field.rs](../src/field.rs)、[src/text_field.rs](../src/text_field.rs)
 
-**本地公开入口（同族）：** `add_window`, `app`, `as_str`, `checkbox`, `checked`, `class`, `content`, `control`, `default_checked`, `default_value`, `description`, `disabled`, `enabled`, `error`, `field`, `field_description`, `field_error`, `fieldset`, `fill`, `focus`, `form_name`, `form_value`, `frames`, `invalid`, `key`, `key_with_direction`, `label`, `legend`, `mount`, `mount_with`, `multiline`, `name`, `new`, `node_ref`, `observe`, `on`, `on_checked_change`, `on_commit`, `on_value_change`, `placeholder`, `purpose`, `readonly`, `renderer`, `request_size`, `required`, `run`, `size`, `style`, `text_field`, `theme`, `unstyled`, `value`, `with_config`, `with_limit`, `with_options`, `with_task_limit`
+**本地公开入口（同族）：** `add_window`, `android`, `app`, `as_str`, `checkbox`, `checked`, `class`, `content`, `control`, `default_checked`, `default_value`, `description`, `disabled`, `enabled`, `error`, `field`, `field_description`, `field_error`, `fieldset`, `fill`, `focus`, `form_name`, `form_value`, `frames`, `from_event_loop`, `handle_native_file_event`, `invalid`, `key`, `key_with_direction`, `label`, `legend`, `mount`, `mount_with`, `multiline`, `name`, `new`, `node_ref`, `observe`, `on`, `on_checked_change`, `on_commit`, `on_value_change`, `placeholder`, `purpose`, `readonly`, `renderer`, `request_size`, `required`, `run`, `size`, `style`, `take_event_loop`, `text_field`, `theme`, `unstyled`, `value`, `window_stats`, `with_config`, `with_limit`, `with_options`, `with_task_limit`
 
 **需要语义映射的属性候选：** `radius`
 
 ### FileInput — M:FileInput
 
-来源：[@mantine/core](https://mantine.dev/core/file-input/)；对应 `P10-01`；原生有限能力状态 `rejected`。
+来源：[@mantine/core](https://mantine.dev/core/file-input/)；对应 `P10-01`；原生有限能力状态 `tested`。
 
 **官方 Props / 子部件 Props：** `accept`, `capture`, `clearButtonProps`, `clearSectionMode`, `clearable`, `defaultValue`, `description`, `descriptionProps`, `disabled`, `error`, `errorProps`, `fileInputProps`, `form`, `inputContainer`, `inputSize`, `inputWrapperOrder`, `label`, `labelProps`, `leftSection`, `leftSectionPointerEvents`, `leftSectionProps`, `leftSectionWidth`, `loading`, `loadingPosition`, `multiple`, `name`, `onChange`, `placeholder`, `pointer`, `radius`, `readOnly`, `required`, `resetRef`, `rightSection`, `rightSectionPointerEvents`, `rightSectionProps`, `rightSectionWidth`, `size`, `success`, `successProps`, `value`, `valueComponent`, `withAsterisk`, `withErrorStyles`, `withSuccessStyles`, `wrapperProps`
 
@@ -269,7 +269,7 @@
 
 **本地实现：** [../glory/crates/render/src/files.rs](../../glory/crates/render/src/files.rs)、[../glory/crates/web/src/browser/files.rs](../../glory/crates/web/src/browser/files.rs)、[src/files.rs](../src/files.rs)
 
-**本地公开入口（同族）：** `attachment`, `class`, `clear`, `configuration`, `controller_ref`, `description`, `dropzone`, `enabled`, `file_attachment`, `file_button`, `file_input`, `files`, `files_ref`, `focus`, `label`, `matches`, `name`, `new`, `node_ref`, `on`, `on_files`, `on_result`, `preview`, `preview_in`, `previews`, `read`, `read_in`, `remove`, `size`, `status`, `status_ref`, `style`, `text`, `theme`, `unstyled`, `validate`, `validate_file`, `validate_files`, `validate_node`, `validate_read`, `validate_update`, `value`
+**本地公开入口（同族）：** `attachment`, `class`, `clear`, `configuration`, `controller_ref`, `description`, `dropzone`, `enabled`, `file_attachment`, `file_button`, `file_input`, `files`, `files_ref`, `focus`, `label`, `matches`, `name`, `native_source`, `new`, `node_ref`, `on`, `on_files`, `on_result`, `preview`, `preview_in`, `previews`, `read`, `read_in`, `remove`, `size`, `status`, `status_ref`, `style`, `text`, `theme`, `unstyled`, `validate`, `validate_file`, `validate_files`, `validate_node`, `validate_read`, `validate_update`, `value`
 
 **需要语义映射的属性候选：** `accept`, `capture`, `clearButtonProps`, `clearSectionMode`, `clearable`, `defaultValue`, `descriptionProps`, `disabled`, `error`, `errorProps`, `fileInputProps`, `form`, `inputContainer`, `inputSize`, `inputWrapperOrder`, `labelProps`, `leftSection`, `leftSectionPointerEvents`, `leftSectionProps`, `leftSectionWidth`, `loading`, `loadingPosition`, `multiple`, `onChange`, `placeholder`, `pointer`, `radius`, `readOnly`, `required`, `resetRef`, `rightSection`, `rightSectionPointerEvents`, `rightSectionProps`, `rightSectionWidth`, `success`, `successProps`, `valueComponent`, `withAsterisk`, `withErrorStyles`, `withSuccessStyles`, `wrapperProps`
 
@@ -297,7 +297,7 @@
 
 **本地实现：** [../glory/crates/blitz/src/accessibility.rs](../../glory/crates/blitz/src/accessibility.rs)、[../glory/crates/blitz/src/shell.rs](../../glory/crates/blitz/src/shell.rs)、[../glory/crates/html/src/semantics.rs](../../glory/crates/html/src/semantics.rs)、[../glory/crates/render/src/semantics.rs](../../glory/crates/render/src/semantics.rs)、[../glory/crates/web/src/browser/events.rs](../../glory/crates/web/src/browser/events.rs)、[src/checkbox.rs](../src/checkbox.rs)、[src/field.rs](../src/field.rs)、[src/text_field.rs](../src/text_field.rs)
 
-**本地公开入口（同族）：** `add_window`, `app`, `as_str`, `checkbox`, `checked`, `class`, `content`, `control`, `default_checked`, `default_value`, `description`, `disabled`, `enabled`, `error`, `field`, `field_description`, `field_error`, `fieldset`, `fill`, `focus`, `form_name`, `form_value`, `frames`, `invalid`, `key`, `key_with_direction`, `label`, `legend`, `mount`, `mount_with`, `multiline`, `name`, `new`, `node_ref`, `observe`, `on`, `on_checked_change`, `on_commit`, `on_value_change`, `placeholder`, `purpose`, `readonly`, `renderer`, `request_size`, `required`, `run`, `size`, `style`, `text_field`, `theme`, `unstyled`, `value`, `with_config`, `with_limit`, `with_options`, `with_task_limit`
+**本地公开入口（同族）：** `add_window`, `android`, `app`, `as_str`, `checkbox`, `checked`, `class`, `content`, `control`, `default_checked`, `default_value`, `description`, `disabled`, `enabled`, `error`, `field`, `field_description`, `field_error`, `fieldset`, `fill`, `focus`, `form_name`, `form_value`, `frames`, `from_event_loop`, `handle_native_file_event`, `invalid`, `key`, `key_with_direction`, `label`, `legend`, `mount`, `mount_with`, `multiline`, `name`, `new`, `node_ref`, `observe`, `on`, `on_checked_change`, `on_commit`, `on_value_change`, `placeholder`, `purpose`, `readonly`, `renderer`, `request_size`, `required`, `run`, `size`, `style`, `take_event_loop`, `text_field`, `theme`, `unstyled`, `value`, `window_stats`, `with_config`, `with_limit`, `with_options`, `with_task_limit`
 
 **需要语义映射的属性候选：** `descriptionProps`, `errorProps`, `id`, `inputContainer`, `inputSize`, `inputWrapperOrder`, `labelElement`, `labelProps`, `leftSection`, `leftSectionPointerEvents`, `leftSectionProps`, `leftSectionWidth`, `loading`, `loadingPosition`, `pointer`, `radius`, `rightSection`, `rightSectionPointerEvents`, `rightSectionProps`, `rightSectionWidth`, `rootRef`, `success`, `successProps`, `withAria`, `withAsterisk`, `withErrorStyles`, `withSuccessStyles`, `wrapperProps`
 
@@ -325,13 +325,13 @@
 
 **本地实现：** [../glory/crates/render/src/input_edit.rs](../../glory/crates/render/src/input_edit.rs)、[../glory/crates/render/src/text_selection.rs](../../glory/crates/render/src/text_selection.rs)、[../glory/crates/web/src/browser/input_edit.rs](../../glory/crates/web/src/browser/input_edit.rs)、[src/mask_input.rs](../src/mask_input.rs)、[src/mask_model.rs](../src/mask_model.rs)
 
-**本地公开入口（同族）：** `apply`, `as_str`, `capacity`, `class`, `default_value`, `display`, `display_index`, `enabled`, `field`, `focus`, `form_name`, `format`, `invalid`, `mask_input`, `name`, `new`, `node_ref`, `on`, `on_commit`, `on_reject`, `on_value_change`, `parse`, `parse_display`, `raw`, `raw_index`, `readonly`, `required`, `revision`, `size`, `style`, `theme`, `unstyled`, `validate`, `validate_raw`, `value`
+**本地公开入口（同族）：** `apply`, `as_str`, `byte_range`, `capacity`, `class`, `default_value`, `display`, `display_index`, `enabled`, `field`, `focus`, `form_name`, `format`, `invalid`, `mask_input`, `name`, `new`, `node_ref`, `on`, `on_commit`, `on_reject`, `on_value_change`, `parse`, `parse_display`, `raw`, `raw_index`, `readonly`, `required`, `revision`, `size`, `style`, `theme`, `unstyled`, `validate`, `validate_raw`, `value`
 
 **需要语义映射的属性候选：** `alwaysShowMask`, `autoClear`, `beforeMaskedStateChange`, `description`, `descriptionProps`, `disabled`, `error`, `errorProps`, `inputContainer`, `inputSize`, `inputWrapperOrder`, `label`, `labelProps`, `leftSection`, `leftSectionPointerEvents`, `leftSectionProps`, `leftSectionWidth`, `loading`, `loadingPosition`, `mask`, `modify`, `onChangeRaw`, `onComplete`, `pointer`, `radius`, `resetRef`, `rightSection`, `rightSectionPointerEvents`, `rightSectionProps`, `rightSectionWidth`, `separate`, `showMaskOnFocus`, `slotChar`, `success`, `successProps`, `tokens`, `transform`, `withAsterisk`, `withErrorStyles`, `withSuccessStyles`, `wrapperProps`
 
 ### NativeSelect — M:NativeSelect
 
-来源：[@mantine/core](https://mantine.dev/core/native-select/)；对应 `P4-04`；原生有限能力状态 `rejected`。
+来源：[@mantine/core](https://mantine.dev/core/native-select/)；对应 `P4-04`；原生有限能力状态 `model-only`。
 
 **官方 Props / 子部件 Props：** `data`, `description`, `descriptionProps`, `disabled`, `error`, `errorProps`, `inputContainer`, `inputSize`, `inputWrapperOrder`, `label`, `labelProps`, `leftSection`, `leftSectionPointerEvents`, `leftSectionProps`, `leftSectionWidth`, `loading`, `loadingPosition`, `radius`, `required`, `rightSection`, `rightSectionPointerEvents`, `rightSectionProps`, `rightSectionWidth`, `size`, `success`, `successProps`, `withAsterisk`, `withErrorStyles`, `withSuccessStyles`, `wrapperProps`
 
@@ -387,7 +387,7 @@
 
 ### Radio — M:Radio
 
-来源：[@mantine/core](https://mantine.dev/core/radio/)；对应 `P2-03`；原生有限能力状态 `rejected`。
+来源：[@mantine/core](https://mantine.dev/core/radio/)；对应 `P2-03`；原生有限能力状态 `tested`。
 
 **官方 Props / 子部件 Props：** `autoContrast`, `checked`, `children`, `color`, `defaultValue`, `description`, `descriptionProps`, `disabled`, `error`, `errorProps`, `icon`, `iconColor`, `id`, `inputContainer`, `inputWrapperOrder`, `label`, `labelElement`, `labelPosition`, `labelProps`, `name`, `onChange`, `radius`, `readOnly`, `required`, `rootRef`, `size`, `success`, `successProps`, `value`, `withAsterisk`, `withBorder`, `withErrorStyles`, `wrapperProps`
 
@@ -429,7 +429,7 @@
 
 ### SegmentedControl — M:SegmentedControl
 
-来源：[@mantine/core](https://mantine.dev/core/segmented-control/)；对应 `P2-05`；原生有限能力状态 `rejected`。
+来源：[@mantine/core](https://mantine.dev/core/segmented-control/)；对应 `P2-05`；原生有限能力状态 `tested`。
 
 **官方 Props / 子部件 Props：** `autoContrast`, `color`, `data`, `defaultValue`, `disabled`, `fullWidth`, `name`, `onChange`, `orientation`, `radius`, `readOnly`, `size`, `transitionDuration`, `transitionTimingFunction`, `value`, `withItemsBorders`
 
@@ -499,7 +499,7 @@
 
 ### Autocomplete — M:Autocomplete
 
-来源：[@mantine/core](https://mantine.dev/core/autocomplete/)；对应 `P4-07`；原生有限能力状态 `rejected`。
+来源：[@mantine/core](https://mantine.dev/core/autocomplete/)；对应 `P4-07`；原生有限能力状态 `model-only`。
 
 **官方 Props / 子部件 Props：** `autoSelectOnBlur`, `clearButtonProps`, `clearSectionMode`, `clearable`, `comboboxProps`, `data`, `defaultDropdownOpened`, `defaultValue`, `description`, `descriptionProps`, `disabled`, `dropdownOpened`, `error`, `errorProps`, `filter`, `floatingHeight`, `inputContainer`, `inputSize`, `inputWrapperOrder`, `label`, `labelProps`, `leftSection`, `leftSectionPointerEvents`, `leftSectionProps`, `leftSectionWidth`, `limit`, `loading`, `loadingPosition`, `maxDropdownHeight`, `onChange`, `onClear`, `onDropdownClose`, `onDropdownOpen`, `onOptionSubmit`, `openOnFocus`, `radius`, `renderOption`, `required`, `rightSection`, `rightSectionPointerEvents`, `rightSectionProps`, `rightSectionWidth`, `scrollAreaProps`, `selectFirstOptionOnChange`, `selectFirstOptionOnDropdownOpen`, `size`, `success`, `successProps`, `value`, `withAsterisk`, `withErrorStyles`, `withScrollArea`, `withSuccessStyles`, `wrapperProps`
 
@@ -513,7 +513,7 @@
 
 ### Cascader — M:Cascader
 
-来源：[@mantine/core](https://mantine.dev/core/cascader/)；对应 `P8-05`；原生有限能力状态 `rejected`。
+来源：[@mantine/core](https://mantine.dev/core/cascader/)；对应 `P8-05`；原生有限能力状态 `tested`。
 
 **官方 Props / 子部件 Props：** `allowDeselect`, `changeOnSelect`, `checkIconPosition`, `chevronColor`, `clearButtonProps`, `clearSectionMode`, `clearable`, `closeOnSelect`, `columnWidth`, `comboboxProps`, `data`, `defaultDropdownOpened`, `defaultSearchValue`, `defaultValue`, `description`, `descriptionProps`, `disabled`, `dropdownOpened`, `error`, `errorProps`, `expandTrigger`, `filter`, `formatValue`, `hiddenInputProps`, `inputContainer`, `inputSize`, `inputWrapperOrder`, `label`, `labelProps`, `leftSection`, `leftSectionPointerEvents`, `leftSectionProps`, `leftSectionWidth`, `loading`, `loadingPosition`, `maxDisplayedLevels`, `maxDropdownHeight`, `nextLevelsControlLabel`, `nothingFoundMessage`, `onChange`, `onClear`, `onDropdownClose`, `onDropdownOpen`, `onSearchChange`, `openOnFocus`, `pointer`, `previousLevelsControlLabel`, `radius`, `renderOption`, `renderSearchOption`, `required`, `rightSection`, `rightSectionPointerEvents`, `rightSectionProps`, `rightSectionWidth`, `safeAreaPolygon`, `scrollAreaProps`, `searchValue`, `searchable`, `separator`, `size`, `success`, `successProps`, `value`, `withAsterisk`, `withCheckIcon`, `withColumns`, `withErrorStyles`, `withSuccessStyles`, `wrapperProps`
 
@@ -527,7 +527,7 @@
 
 ### Combobox — M:Combobox
 
-来源：[@mantine/core](https://mantine.dev/core/combobox/)；对应 `P4-06`；原生有限能力状态 `rejected`。
+来源：[@mantine/core](https://mantine.dev/core/combobox/)；对应 `P4-06`；原生有限能力状态 `model-only`。
 
 **官方 Props / 子部件 Props：** `active`, `allowDeselect`, `arrowOffset`, `arrowPosition`, `arrowRadius`, `arrowSize`, `autoComplete`, `checkIconPosition`, `children`, `clickOutsideCapture`, `color`, `comboboxProps`, `data`, `defaultDropdownOpened`, `defaultSearchValue`, `defaultValue`, `disabled`, `dropdownOpened`, `dropdownPadding`, `error`, `filter`, `floatingHeight`, `floatingStrategy`, `form`, `hidden`, `hiddenInputProps`, `hiddenInputValuesDivider`, `hideDetached`, `id`, `inputSize`, `keepMounted`, `keepMountedMode`, `label`, `labelledBy`, `leftSection`, `leftSectionPointerEvents`, `leftSectionProps`, `leftSectionWidth`, `limit`, `loading`, `loadingPosition`, `maxDropdownHeight`, `middlewares`, `multiline`, `multiple`, `name`, `nothingFoundMessage`, `offset`, `onChange`, `onClear`, `onClose`, `onDismiss`, `onDropdownClose`, `onDropdownOpen`, `onEnterTransitionEnd`, `onExitTransitionEnd`, `onOpen`, `onOptionSubmit`, `onPositionChange`, `onSearchChange`, `overlayProps`, `pointer`, `portalProps`, `position`, `preventPositionChangeWhenVisible`, `radius`, `readOnly`, `refProp`, `renderOption`, `required`, `resetSelectionOnOptionHover`, `returnFocus`, `rightSection`, `rightSectionPointerEvents`, `rightSectionProps`, `rightSectionWidth`, `rootRef`, `scrollAreaProps`, `searchValue`, `searchable`, `selectFirstOptionOnDropdownOpen`, `selected`, `shadow`, `size`, `store`, `success`, `targetType`, `transitionProps`, `value`, `valuesDivider`, `width`, `withAlignedLabels`, `withAria`, `withAriaAttributes`, `withArrow`, `withCheckIcon`, `withErrorStyles`, `withExpandedAttribute`, `withKeyboardNavigation`, `withOverlay`, `withScrollArea`, `withSuccessStyles`, `withinPortal`, `wrapperProps`, `zIndex`
 
@@ -555,7 +555,7 @@
 
 ### MultiSelect — M:MultiSelect
 
-来源：[@mantine/core](https://mantine.dev/core/multi-select/)；对应 `P4-08`；原生有限能力状态 `rejected`。
+来源：[@mantine/core](https://mantine.dev/core/multi-select/)；对应 `P4-08`；原生有限能力状态 `model-only`。
 
 **官方 Props / 子部件 Props：** `checkIconPosition`, `chevronColor`, `clearButtonProps`, `clearSearchOnChange`, `clearSectionMode`, `clearable`, `comboboxProps`, `data`, `defaultDropdownOpened`, `defaultSearchValue`, `defaultValue`, `description`, `descriptionProps`, `disabled`, `dropdownOpened`, `error`, `errorProps`, `filter`, `floatingHeight`, `hiddenInputProps`, `hiddenInputValuesDivider`, `hidePickedOptions`, `inputContainer`, `inputSize`, `inputWrapperOrder`, `label`, `labelProps`, `leftSection`, `leftSectionPointerEvents`, `leftSectionProps`, `leftSectionWidth`, `limit`, `loading`, `loadingPosition`, `maxDropdownHeight`, `maxValues`, `nothingFoundMessage`, `onChange`, `onClear`, `onDropdownClose`, `onDropdownOpen`, `onMaxValues`, `onOptionSubmit`, `onRemove`, `onSearchChange`, `openOnFocus`, `pointer`, `radius`, `renderOption`, `renderPill`, `required`, `rightSection`, `rightSectionPointerEvents`, `rightSectionProps`, `rightSectionWidth`, `scrollAreaProps`, `searchValue`, `searchable`, `selectFirstOptionOnChange`, `selectFirstOptionOnDropdownOpen`, `size`, `success`, `successProps`, `value`, `withAlignedLabels`, `withAsterisk`, `withCheckIcon`, `withErrorStyles`, `withPillsReorder`, `withScrollArea`, `withSuccessStyles`, `wrapperProps`
 
@@ -583,7 +583,7 @@
 
 ### PillsInput — M:PillsInput
 
-来源：[@mantine/core](https://mantine.dev/core/pills-input/)；对应 `P4-09`；原生有限能力状态 `rejected`。
+来源：[@mantine/core](https://mantine.dev/core/pills-input/)；对应 `P4-09`；原生有限能力状态 `model-only`。
 
 **官方 Props / 子部件 Props：** `description`, `descriptionProps`, `disabled`, `error`, `errorProps`, `inputContainer`, `inputSize`, `inputWrapperOrder`, `label`, `labelProps`, `leftSection`, `leftSectionPointerEvents`, `leftSectionProps`, `leftSectionWidth`, `loading`, `loadingPosition`, `pointer`, `radius`, `required`, `rightSection`, `rightSectionPointerEvents`, `rightSectionProps`, `rightSectionWidth`, `size`, `success`, `successProps`, `type`, `withAsterisk`, `withErrorStyles`, `withSuccessStyles`, `wrapperProps`
 
@@ -597,7 +597,7 @@
 
 ### Select — M:Select
 
-来源：[@mantine/core](https://mantine.dev/core/select/)；对应 `P4-05`；原生有限能力状态 `rejected`。
+来源：[@mantine/core](https://mantine.dev/core/select/)；对应 `P4-05`；原生有限能力状态 `model-only`。
 
 **官方 Props / 子部件 Props：** `allowDeselect`, `autoSelectOnBlur`, `checkIconPosition`, `chevronColor`, `clearButtonProps`, `clearSectionMode`, `clearable`, `comboboxProps`, `data`, `defaultDropdownOpened`, `defaultSearchValue`, `defaultValue`, `description`, `descriptionProps`, `disabled`, `dropdownOpened`, `error`, `errorProps`, `filter`, `floatingHeight`, `hiddenInputProps`, `inputContainer`, `inputSize`, `inputWrapperOrder`, `label`, `labelProps`, `leftSection`, `leftSectionPointerEvents`, `leftSectionProps`, `leftSectionWidth`, `limit`, `loading`, `loadingPosition`, `maxDropdownHeight`, `nothingFoundMessage`, `onChange`, `onClear`, `onDropdownClose`, `onDropdownOpen`, `onOptionSubmit`, `onSearchChange`, `openOnFocus`, `pointer`, `radius`, `renderOption`, `required`, `rightSection`, `rightSectionPointerEvents`, `rightSectionProps`, `rightSectionWidth`, `scrollAreaProps`, `searchValue`, `searchable`, `selectFirstOptionOnChange`, `selectFirstOptionOnDropdownOpen`, `size`, `success`, `successProps`, `value`, `withAlignedLabels`, `withAsterisk`, `withCheckIcon`, `withErrorStyles`, `withScrollArea`, `withSuccessStyles`, `wrapperProps`
 
@@ -611,7 +611,7 @@
 
 ### TagsInput — M:TagsInput
 
-来源：[@mantine/core](https://mantine.dev/core/tags-input/)；对应 `P4-09`；原生有限能力状态 `rejected`。
+来源：[@mantine/core](https://mantine.dev/core/tags-input/)；对应 `P4-09`；原生有限能力状态 `model-only`。
 
 **官方 Props / 子部件 Props：** `acceptValueOnBlur`, `allowDuplicates`, `clearButtonProps`, `clearSectionMode`, `clearable`, `comboboxProps`, `data`, `defaultDropdownOpened`, `defaultSearchValue`, `defaultValue`, `description`, `descriptionProps`, `disabled`, `dropdownOpened`, `error`, `errorProps`, `filter`, `floatingHeight`, `hiddenInputProps`, `hiddenInputValuesDivider`, `inputContainer`, `inputSize`, `inputWrapperOrder`, `isDuplicate`, `label`, `labelProps`, `leftSection`, `leftSectionPointerEvents`, `leftSectionProps`, `leftSectionWidth`, `limit`, `loading`, `loadingPosition`, `maxDropdownHeight`, `maxTags`, `onChange`, `onClear`, `onDropdownClose`, `onDropdownOpen`, `onDuplicate`, `onMaxTags`, `onOptionSubmit`, `onRemove`, `onSearchChange`, `openOnFocus`, `pointer`, `radius`, `renderOption`, `renderPill`, `required`, `rightSection`, `rightSectionPointerEvents`, `rightSectionProps`, `rightSectionWidth`, `scrollAreaProps`, `searchValue`, `selectFirstOptionOnChange`, `selectFirstOptionOnDropdownOpen`, `size`, `splitChars`, `success`, `successProps`, `value`, `withAsterisk`, `withErrorStyles`, `withPillsReorder`, `withScrollArea`, `withSuccessStyles`, `wrapperProps`
 
@@ -625,7 +625,7 @@
 
 ### TreeSelect — M:TreeSelect
 
-来源：[@mantine/core](https://mantine.dev/core/tree-select/)；对应 `P8-04`；原生有限能力状态 `rejected`。
+来源：[@mantine/core](https://mantine.dev/core/tree-select/)；对应 `P8-04`；原生有限能力状态 `tested`。
 
 **官方 Props / 子部件 Props：** `allowDeselect`, `checkStrictly`, `checkedStrategy`, `chevronAriaLabels`, `chevronColor`, `clearButtonProps`, `clearSearchOnChange`, `clearSectionMode`, `clearable`, `comboboxProps`, `data`, `defaultDropdownOpened`, `defaultExpandAll`, `defaultExpandedValues`, `defaultSearchValue`, `defaultValue`, `description`, `descriptionProps`, `disabled`, `dropdownOpened`, `error`, `errorProps`, `expandOnClick`, `expandedValues`, `filter`, `hiddenInputProps`, `hiddenInputValuesDivider`, `inputContainer`, `inputSize`, `inputWrapperOrder`, `label`, `labelProps`, `leftSection`, `leftSectionPointerEvents`, `leftSectionProps`, `leftSectionWidth`, `loading`, `loadingPosition`, `maxDisplayedValues`, `maxDisplayedValuesContent`, `maxDropdownHeight`, `maxValues`, `mode`, `nothingFoundMessage`, `onChange`, `onClear`, `onDropdownClose`, `onDropdownOpen`, `onExpandedChange`, `onRemove`, `onSearchChange`, `openOnFocus`, `pointer`, `radius`, `renderNode`, `renderPill`, `required`, `rightSection`, `rightSectionPointerEvents`, `rightSectionProps`, `rightSectionWidth`, `scrollAreaProps`, `searchValue`, `searchable`, `size`, `success`, `successProps`, `value`, `withAsterisk`, `withErrorStyles`, `withLines`, `withSuccessStyles`, `wrapperProps`
 
@@ -681,7 +681,7 @@
 
 ### CopyButton — M:CopyButton
 
-来源：[@mantine/core](https://mantine.dev/core/copy-button/)；对应 `P10-03`；原生有限能力状态 `rejected`。
+来源：[@mantine/core](https://mantine.dev/core/copy-button/)；对应 `P10-03`；原生有限能力状态 `tested`。
 
 **官方 Props / 子部件 Props：** `children`, `timeout`, `value`
 
@@ -695,7 +695,7 @@
 
 ### FileButton — M:FileButton
 
-来源：[@mantine/core](https://mantine.dev/core/file-button/)；对应 `P10-01`；原生有限能力状态 `rejected`。
+来源：[@mantine/core](https://mantine.dev/core/file-button/)；对应 `P10-01`；原生有限能力状态 `tested`。
 
 **官方 Props / 子部件 Props：** `accept`, `capture`, `children`, `disabled`, `form`, `inputProps`, `multiple`, `name`, `onChange`, `resetRef`
 
@@ -703,7 +703,7 @@
 
 **本地实现：** [../glory/crates/render/src/files.rs](../../glory/crates/render/src/files.rs)、[../glory/crates/web/src/browser/files.rs](../../glory/crates/web/src/browser/files.rs)、[src/files.rs](../src/files.rs)
 
-**本地公开入口（同族）：** `attachment`, `class`, `clear`, `configuration`, `controller_ref`, `description`, `dropzone`, `enabled`, `file_attachment`, `file_button`, `file_input`, `files`, `files_ref`, `focus`, `label`, `matches`, `name`, `new`, `node_ref`, `on`, `on_files`, `on_result`, `preview`, `preview_in`, `previews`, `read`, `read_in`, `remove`, `size`, `status`, `status_ref`, `style`, `text`, `theme`, `unstyled`, `validate`, `validate_file`, `validate_files`, `validate_node`, `validate_read`, `validate_update`, `value`
+**本地公开入口（同族）：** `attachment`, `class`, `clear`, `configuration`, `controller_ref`, `description`, `dropzone`, `enabled`, `file_attachment`, `file_button`, `file_input`, `files`, `files_ref`, `focus`, `label`, `matches`, `name`, `native_source`, `new`, `node_ref`, `on`, `on_files`, `on_result`, `preview`, `preview_in`, `previews`, `read`, `read_in`, `remove`, `size`, `status`, `status_ref`, `style`, `text`, `theme`, `unstyled`, `validate`, `validate_file`, `validate_files`, `validate_node`, `validate_read`, `validate_update`, `value`
 
 **需要语义映射的属性候选：** `accept`, `capture`, `children`, `disabled`, `form`, `inputProps`, `multiple`, `onChange`, `resetRef`
 
@@ -1087,7 +1087,7 @@
 
 ### Menu — M:Menu
 
-来源：[@mantine/core](https://mantine.dev/core/menu/)；对应 `P4-01`；原生有限能力状态 `rejected`。
+来源：[@mantine/core](https://mantine.dev/core/menu/)；对应 `P4-01`；原生有限能力状态 `model-only`。
 
 **官方 Props / 子部件 Props：** `alignItemsLabels`, `arrowOffset`, `arrowPosition`, `arrowRadius`, `arrowSize`, `checkIcon`, `checked`, `children`, `clearSearchOnClose`, `clickOutsideCapture`, `clickOutsideEvents`, `closeDelay`, `closeMenuOnClick`, `closeOnClickOutside`, `closeOnEscape`, `closeOnItemClick`, `color`, `defaultChecked`, `defaultOpenIndex`, `defaultOpened`, `defaultValue`, `disabled`, `error`, `floatingStrategy`, `hideDetached`, `id`, `inputSize`, `keepMounted`, `keepMountedMode`, `leftSection`, `leftSectionPointerEvents`, `leftSectionProps`, `leftSectionWidth`, `loading`, `loadingPosition`, `longPressDelay`, `loop`, `menuItemTabIndex`, `middlewares`, `multiline`, `offset`, `onChange`, `onClose`, `onDismiss`, `onEnterTransitionEnd`, `onExitTransitionEnd`, `onOpen`, `onOpenChange`, `onPositionChange`, `openDelay`, `openIndex`, `opened`, `overlayProps`, `pointer`, `portalProps`, `position`, `preventPositionChangeWhenVisible`, `radius`, `refProp`, `required`, `returnFocus`, `rightSection`, `rightSectionPointerEvents`, `rightSectionProps`, `rightSectionWidth`, `rootRef`, `safeAreaPolygon`, `shadow`, `size`, `success`, `transitionProps`, `trapFocus`, `trigger`, `value`, `width`, `withAria`, `withArrow`, `withErrorStyles`, `withInitialFocusPlaceholder`, `withOverlay`, `withSuccessStyles`, `withinPortal`, `wrapperProps`, `zIndex`
 
@@ -1101,7 +1101,7 @@
 
 ### Menubar — M:Menubar
 
-来源：[@mantine/core](https://mantine.dev/core/menubar/)；对应 `P4-03`；原生有限能力状态 `rejected`。
+来源：[@mantine/core](https://mantine.dev/core/menubar/)；对应 `P4-03`；原生有限能力状态 `model-only`。
 
 **官方 Props / 子部件 Props：** `children`, `defaultOpenIndex`, `loop`, `onOpenChange`, `openIndex`, `position`, `trigger`
 
@@ -1555,9 +1555,9 @@
 
 **官方功能章节：** Usage；Horizontal orientation；Change transition；Example: nested Collapse components；use-collapse hook
 
-**本地实现：** [../glory/crates/render/src/collapse.rs](../../glory/crates/render/src/collapse.rs)、[../glory/crates/web/src/browser/collapse.rs](../../glory/crates/web/src/browser/collapse.rs)、[src/collapsible/mod.rs](../src/collapsible/mod.rs)
+**本地实现：** [../glory/crates/blitz/src/collapse.rs](../../glory/crates/blitz/src/collapse.rs)、[../glory/crates/render/src/collapse.rs](../../glory/crates/render/src/collapse.rs)、[../glory/crates/web/src/browser/collapse.rs](../../glory/crates/web/src/browser/collapse.rs)、[src/collapsible/mod.rs](../src/collapsible/mod.rs)
 
-**本地公开入口（同族）：** `animated`, `class`, `collapsible`, `content`, `content_policy`, `default_open`, `enabled`, `focus`, `height_transition`, `label`, `name`, `needs_frame`, `node_ref`, `on`, `on_open_change`, `open`, `panel_ref`, `retire`, `size`, `style`, `theme`, `trigger_content`, `trigger_ref`, `unstyled`, `update`, `validate`
+**本地公开入口（同族）：** `animated`, `class`, `collapsible`, `content`, `content_policy`, `default_open`, `enabled`, `focus`, `height_transition`, `is_empty`, `label`, `name`, `needs_frame`, `node_ref`, `on`, `on_open_change`, `open`, `panel_ref`, `ready`, `retire`, `running`, `size`, `style`, `theme`, `trigger_content`, `trigger_ref`, `unstyled`, `update`, `validate`
 
 **需要语义映射的属性候选：** `animateOpacity`, `expanded`, `keepMounted`, `keepMountedMode`, `onTransitionEnd`, `onTransitionStart`, `orientation`, `transitionDuration`, `transitionTimingFunction`
 
@@ -2445,7 +2445,7 @@
 
 ### Spotlight — X:Spotlight
 
-来源：[@mantine/spotlight](https://mantine.dev/x/spotlight/)；对应 `P4-10`；原生有限能力状态 `rejected`。
+来源：[@mantine/spotlight](https://mantine.dev/x/spotlight/)；对应 `P4-10`；原生有限能力状态 `model-only`。
 
 **官方 Props / 子部件 Props：** `actions`, `centered`, `children`, `clearQueryOnClose`, `closeOnActionTrigger`, `closeOnClickOutside`, `closeOnEscape`, `closeSpotlightOnTrigger`, `description`, `dimmedSections`, `disabled`, `error`, `filter`, `forceOpened`, `fullScreen`, `highlightColor`, `highlightQuery`, `id`, `inputSize`, `keepMounted`, `keepMountedMode`, `keywords`, `label`, `leftSection`, `leftSectionPointerEvents`, `leftSectionProps`, `leftSectionWidth`, `limit`, `loading`, `loadingPosition`, `lockScroll`, `maxHeight`, `multiline`, `nothingFound`, `onEnterTransitionEnd`, `onExitTransitionEnd`, `onQueryChange`, `onSpotlightClose`, `onSpotlightOpen`, `overlayProps`, `padding`, `pointer`, `portalProps`, `query`, `radius`, `removeScrollProps`, `required`, `returnFocus`, `rightSection`, `rightSectionPointerEvents`, `rightSectionProps`, `rightSectionWidth`, `rootRef`, `scrollAreaComponent`, `scrollAreaProps`, `scrollable`, `searchProps`, `shadow`, `shortcut`, `size`, `stackId`, `store`, `success`, `tagsToIgnore`, `title`, `transitionProps`, `trapFocus`, `triggerOnContentEditable`, `withAria`, `withErrorStyles`, `withOverlay`, `withSuccessStyles`, `withinPortal`, `wrapperProps`, `xOffset`, `yOffset`, `zIndex`
 
@@ -2487,7 +2487,7 @@
 
 ### Dropzone — X:Dropzone
 
-来源：[@mantine/dropzone](https://mantine.dev/x/dropzone/)；对应 `P10-02`；原生有限能力状态 `rejected`。
+来源：[@mantine/dropzone](https://mantine.dev/x/dropzone/)；对应 `P10-02`；原生有限能力状态 `tested`。
 
 **官方 Props / 子部件 Props：** `accept`, `acceptColor`, `activateOnClick`, `activateOnDrag`, `activateOnKeyboard`, `active`, `autoFocus`, `disabled`, `dragEventsBubbling`, `enablePointerEvents`, `getFilesFromEvent`, `inputProps`, `loaderProps`, `loading`, `maxFiles`, `maxSize`, `multiple`, `name`, `onDragEnter`, `onDragLeave`, `onDragOver`, `onDrop`, `onDropAny`, `onFileDialogCancel`, `onFileDialogOpen`, `onReject`, `openRef`, `portalProps`, `preventDropOnDocument`, `radius`, `rejectColor`, `useFsAccessApi`, `validator`, `withinPortal`, `zIndex`
 
@@ -2495,7 +2495,7 @@
 
 **本地实现：** [../glory/crates/render/src/files.rs](../../glory/crates/render/src/files.rs)、[../glory/crates/web/src/browser/files.rs](../../glory/crates/web/src/browser/files.rs)、[src/files.rs](../src/files.rs)
 
-**本地公开入口（同族）：** `attachment`, `class`, `clear`, `configuration`, `controller_ref`, `description`, `dropzone`, `enabled`, `file_attachment`, `file_button`, `file_input`, `files`, `files_ref`, `focus`, `label`, `matches`, `name`, `new`, `node_ref`, `on`, `on_files`, `on_result`, `preview`, `preview_in`, `previews`, `read`, `read_in`, `remove`, `size`, `status`, `status_ref`, `style`, `text`, `theme`, `unstyled`, `validate`, `validate_file`, `validate_files`, `validate_node`, `validate_read`, `validate_update`, `value`
+**本地公开入口（同族）：** `attachment`, `class`, `clear`, `configuration`, `controller_ref`, `description`, `dropzone`, `enabled`, `file_attachment`, `file_button`, `file_input`, `files`, `files_ref`, `focus`, `label`, `matches`, `name`, `native_source`, `new`, `node_ref`, `on`, `on_files`, `on_result`, `preview`, `preview_in`, `previews`, `read`, `read_in`, `remove`, `size`, `status`, `status_ref`, `style`, `text`, `theme`, `unstyled`, `validate`, `validate_file`, `validate_files`, `validate_node`, `validate_read`, `validate_update`, `value`
 
 **需要语义映射的属性候选：** `accept`, `acceptColor`, `activateOnClick`, `activateOnDrag`, `activateOnKeyboard`, `active`, `autoFocus`, `disabled`, `dragEventsBubbling`, `enablePointerEvents`, `getFilesFromEvent`, `inputProps`, `loaderProps`, `loading`, `maxFiles`, `maxSize`, `multiple`, `onDragEnter`, `onDragLeave`, `onDragOver`, `onDrop`, `onDropAny`, `onFileDialogCancel`, `onFileDialogOpen`, `onReject`, `openRef`, `portalProps`, `preventDropOnDocument`, `radius`, `rejectColor`, `useFsAccessApi`, `validator`, `withinPortal`, `zIndex`
 

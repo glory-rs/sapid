@@ -6,7 +6,7 @@ P4-04 NativeSelect 使用 Glory 的真实 `Props::Select`；HTML/SSR/Web 映射�
 native_select("plan")
     .label("Subscription plan")
     .form_name("plan")
-    .value(selected_key) // Lotus<Option<String>>，键不是业务 value
+    .value(selected_key) // Vary<Option<String>>，键不是业务 value
     .placeholder("Choose a plan")
     .option(select_option("starter", "Starter").value("start-value"))
     .group(select_group("Business")
@@ -14,7 +14,7 @@ native_select("plan")
     .on_value_change(move |proposal| selected_key.revise(|value| *value = proposal));
 ```
 
-`.values(Lotus<Vec<String>>)` / `.default_values(iter)` 选择多选模式；`.multiple(true)` 可显式配置空的本地多选。`.default_value` 提供非受控单选初值。`.rows(1..=64)` 使用原生 size。`.field(...)` 保留 label/description/error/required/invalid/disabled 与业务表单名；`.form_name` 可直接提供提交名称。`.name`/`.label` 是可访问名称，和表单名分开。
+`.values(Vary<Vec<String>>)` / `.default_values(iter)` 选择多选模式；`.multiple(true)` 可显式配置空的本地多选。`.default_value` 提供非受控单选初值。`.rows(1..=64)` 使用原生 size。`.field(...)` 保留 label/description/error/required/invalid/disabled 与业务表单名；`.form_name` 可直接提供提交名称。`.name`/`.label` 是可访问名称，和表单名分开。
 
 选项 key 是唯一的 1–64 字节 ASCII token。label 最多 256 UTF-8 字节、业务 value 最多 4096 字节，所有声明合计最多 128KiB；最多 1024 个 option、32 个不嵌套 optgroup。`.options(iter)`、group 的 `.options(iter)` 和逐项接收都只保留预算加一，不先完整收集未知长度来源。配置超限在创建语义节点前拒绝。选项静态配置由 Rc 共享，选择补丁不复制标签/values。动态替换 options、异步数据源、虚拟化、搜索、可编辑输入不属于 NativeSelect 此批范围。
 

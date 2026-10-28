@@ -4,7 +4,7 @@
 automatic activation after observed focus and manual activation on Enter/Space.
 `orientation(Orientation::{Horizontal,Vertical})`, `direction(Direction::{Ltr,Rtl})`
 and `loop_focus(false)` configure the shared keyboard navigation protocol.
-Labels are reactive `Lotus<String>` values, including localized Unicode labels;
+Labels are reactive `Vary<String>` values, including localized Unicode labels;
 stable ASCII keys are independent from those labels.
 
 ```rust

@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use glory::core::Lotus;
+use glory::core::Vary;
 use glory::render::{Event, EventKind, FocusMode, NodeId};
 use glory::style::Style;
 use glory::{Cage, Scope};
@@ -13,10 +13,10 @@ pub(crate) struct Common {
     pub theme: Theme,
     pub size: Size,
     pub unstyled: bool,
-    pub class: Lotus<String>,
-    pub style: Lotus<Style>,
-    pub name: Option<Lotus<String>>,
-    pub enabled: Lotus<bool>,
+    pub class: Vary<String>,
+    pub style: Vary<Style>,
+    pub name: Option<Vary<String>>,
+    pub enabled: Vary<bool>,
     pub focus: FocusMode,
     pub node_ref: Option<Cage<Option<NodeId>>>,
     pub handlers: Handlers,
@@ -45,7 +45,7 @@ impl Common {
         scope: &Scope,
         class: &str,
         base: Style,
-    ) -> (Lotus<String>, Lotus<Style>) {
+    ) -> (Vary<String>, Vary<Style>) {
         let prefix = format!(
             "{class} {} {}{}",
             self.size.class(),
@@ -151,20 +151,20 @@ macro_rules! common_methods {
             self
         }
         /// Set user classes, appended to the widget's own classes.
-        pub fn class(mut self, value: impl Into<glory::Lotus<String>>) -> Self {
+        pub fn class(mut self, value: impl Into<glory::Vary<String>>) -> Self {
             self.common.class = value.into();
             self
         }
         /// Override supplied declarations, preserving unspecified theme tokens.
-        pub fn style(mut self, value: impl Into<glory::Lotus<glory::style::Style>>) -> Self {
+        pub fn style(mut self, value: impl Into<glory::Vary<glory::style::Style>>) -> Self {
             self.common.style = value.into();
             self
         }
-        pub fn name(mut self, value: impl Into<glory::Lotus<String>>) -> Self {
+        pub fn name(mut self, value: impl Into<glory::Vary<String>>) -> Self {
             self.common.name = Some(value.into());
             self
         }
-        pub fn enabled(mut self, value: impl Into<glory::Lotus<bool>>) -> Self {
+        pub fn enabled(mut self, value: impl Into<glory::Vary<bool>>) -> Self {
             self.common.enabled = value.into();
             self
         }

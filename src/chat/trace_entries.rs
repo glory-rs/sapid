@@ -5,21 +5,21 @@ use crate::appearance::{Common, common_methods};
 use crate::composite::{self, ContentPolicy};
 use crate::state::Value;
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 
 struct Entry {
     key: String,
-    record: Lotus<TraceRecord>,
+    record: Vary<TraceRecord>,
     kind: TraceKind,
     open: Value<bool>,
     changed: Option<Box<dyn FnMut(bool)>>,
     action: Option<Box<dyn FnMut(TraceAction)>>,
-    action_label: Lotus<String>,
+    action_label: Vary<String>,
     policy: ContentPolicy,
     payload_height: f64,
 }
 impl Entry {
-    fn new(key: String, record: Lotus<TraceRecord>, kind: TraceKind) -> Self {
+    fn new(key: String, record: Vary<TraceRecord>, kind: TraceKind) -> Self {
         Self {
             key,
             record,
@@ -35,7 +35,7 @@ impl Entry {
     fn build(&mut self, scope: &Scope, mut common: Common) -> Result {
         // Reject a large constant namespace before duplicating it for the
         // shared renderer. Move the label into that renderer's admission path
-        // as well, rather than cloning an unvalidated Lotus constant.
+        // as well, rather than cloning an unvalidated Vary constant.
         super::traces::validate_presentation(&self.key, self.payload_height)?;
         let kind = self.kind;
         let accepted = composite::validated(scope, &self.record, move |r| {
@@ -102,7 +102,7 @@ macro_rules! entry_widget {
         }
         pub fn $constructor(
             key: impl Into<String>,
-            record: impl Into<Lotus<TraceRecord>>,
+            record: impl Into<Vary<TraceRecord>>,
         ) -> $name {
             $name {
                 common: Common::default(),
@@ -111,7 +111,7 @@ macro_rules! entry_widget {
         }
         impl $name {
             common_methods!();
-            pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+            pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
                 self.entry.open.source = Some(value.into());
                 self
             }
@@ -127,7 +127,7 @@ macro_rules! entry_widget {
                 self.entry.action = Some(Box::new(value));
                 self
             }
-            pub fn action_label(mut self, value: impl Into<Lotus<String>>) -> Self {
+            pub fn action_label(mut self, value: impl Into<Vary<String>>) -> Self {
                 self.entry.action_label = value.into();
                 self
             }

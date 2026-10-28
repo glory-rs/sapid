@@ -59,7 +59,7 @@ pub fn accordion_form(theme: Theme) -> impl Widget {
                         format!("Section {word}")
                     }
                 });
-                let item_enabled: Lotus<bool> = if key == "beta" {
+                let item_enabled: Vary<bool> = if key == "beta" {
                     beta_enabled.into()
                 } else {
                     true.into()

@@ -7,7 +7,7 @@ use glory::render::{
 };
 use glory::style::{Color, Length, PointerEvents, Position, Style};
 use glory::ui::{Children, IntoChildren, Result, WeakScope, Widget};
-use glory::{Bond, Cage, Lotus, Scope};
+use glory::{Bond, Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     collections::BTreeMap,
@@ -61,7 +61,7 @@ struct Controller {
     next_target: Cell<u64>,
     pulse: Cage<()>,
     active: Cage<Option<String>>,
-    visible: Lotus<bool>,
+    visible: Vary<bool>,
     snapshot: Cage<Snapshot>,
     pending: Cage<usize>,
     task: Cell<Option<glory::core::TaskToken>>,
@@ -303,8 +303,8 @@ pub struct FloatingIndicatorTarget {
     context: FloatingIndicatorContext,
     key: String,
     children: Children,
-    class: Lotus<String>,
-    style: Lotus<Style>,
+    class: Vary<String>,
+    style: Vary<Style>,
     reference: Option<Cage<Option<NodeId>>>,
 }
 pub fn floating_indicator_target(
@@ -325,11 +325,11 @@ impl FloatingIndicatorTarget {
         self.children = value.into_children();
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.style = value.into();
         self
     }
@@ -412,12 +412,12 @@ type Content = Box<dyn FnMut(FloatingIndicatorContext) -> Box<dyn Widget>>;
 pub struct FloatingIndicator {
     common: Common,
     key: String,
-    active: Lotus<Option<String>>,
-    visible: Lotus<bool>,
-    animated: Lotus<bool>,
-    duration: Lotus<u16>,
-    revision: Lotus<u64>,
-    color: Option<Lotus<Color>>,
+    active: Vary<Option<String>>,
+    visible: Vary<bool>,
+    animated: Vary<bool>,
+    duration: Vary<u16>,
+    revision: Vary<u64>,
+    color: Option<Vary<Color>>,
     thickness: f64,
     content: Option<Content>,
     reference: Option<Cage<Option<FloatingIndicatorContext>>>,
@@ -448,11 +448,11 @@ impl FloatingIndicator {
         self.common.unstyled = true;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
@@ -460,27 +460,27 @@ impl FloatingIndicator {
         self.common.node_ref = Some(value);
         self
     }
-    pub fn active(mut self, value: impl Into<Lotus<Option<String>>>) -> Self {
+    pub fn active(mut self, value: impl Into<Vary<Option<String>>>) -> Self {
         self.active = value.into();
         self
     }
-    pub fn visible(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn visible(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.visible = value.into();
         self
     }
-    pub fn animated(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn animated(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.animated = value.into();
         self
     }
-    pub fn duration(mut self, value: impl Into<Lotus<u16>>) -> Self {
+    pub fn duration(mut self, value: impl Into<Vary<u16>>) -> Self {
         self.duration = value.into();
         self
     }
-    pub fn measurement_revision(mut self, value: impl Into<Lotus<u64>>) -> Self {
+    pub fn measurement_revision(mut self, value: impl Into<Vary<u64>>) -> Self {
         self.revision = value.into();
         self
     }
-    pub fn color(mut self, value: impl Into<Lotus<Color>>) -> Self {
+    pub fn color(mut self, value: impl Into<Vary<Color>>) -> Self {
         self.color = Some(value.into());
         self
     }

@@ -1,7 +1,7 @@
 //! Host-owned submit/reset requests, with application-owned validation and I/O.
 use glory::render::{Event, EventKind, FieldPart, FormAction, FormControl, NodeId, Semantics};
 use glory::ui::{IntoChildren, Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 
 use crate::appearance::{Common, common_methods, configure, observe};
 use crate::composite::{self, Callback, Observers};
@@ -121,7 +121,7 @@ impl Widget for Form {
 pub struct FormButton {
     common: Common,
     action: FormAction,
-    label: Lotus<String>,
+    label: Vary<String>,
     entry: Option<FormControl>,
 }
 pub fn submit_button() -> FormButton {
@@ -140,7 +140,7 @@ fn form_button(action: FormAction, label: &str) -> FormButton {
 }
 impl FormButton {
     common_methods!();
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }

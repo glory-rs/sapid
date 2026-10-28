@@ -5,7 +5,7 @@ use crate::composite::{self, Callback};
 use glory::render::{Event, EventKind, GraphicPoint, GraphicProps, PathCommand};
 use glory::style::{Color, Length, Style};
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 use std::{collections::BTreeSet, rc::Rc};
 #[derive(Clone, Debug, PartialEq)]
 pub struct LegendItem {
@@ -60,8 +60,8 @@ fn admit(items: &[LegendItem], hidden: &BTreeSet<String>) -> Result<Rc<LegendMod
 }
 pub struct Legend {
     common: Common,
-    items: Lotus<Vec<LegendItem>>,
-    hidden: Option<Lotus<BTreeSet<String>>>,
+    items: Vary<Vec<LegendItem>>,
+    hidden: Option<Vary<BTreeSet<String>>>,
     default_hidden: BTreeSet<String>,
     change: Option<Box<dyn FnMut(BTreeSet<String>)>>,
 }
@@ -76,11 +76,11 @@ pub fn legend() -> Legend {
 }
 impl Legend {
     common_methods!();
-    pub fn items(mut self, value: impl Into<Lotus<Vec<LegendItem>>>) -> Self {
+    pub fn items(mut self, value: impl Into<Vary<Vec<LegendItem>>>) -> Self {
         self.items = value.into();
         self
     }
-    pub fn hidden(mut self, value: impl Into<Lotus<BTreeSet<String>>>) -> Self {
+    pub fn hidden(mut self, value: impl Into<Vary<BTreeSet<String>>>) -> Self {
         self.hidden = Some(value.into());
         self
     }
@@ -233,8 +233,8 @@ impl Widget for Legend {
 /// invented zero value. Native hosts retain their explicit Tooltip limitation.
 pub struct Tooltip {
     inner: Option<crate::Tooltip>,
-    point: Lotus<Option<ChartPointDetails>>,
-    enabled: Lotus<bool>,
+    point: Vary<Option<ChartPointDetails>>,
+    enabled: Vary<bool>,
 }
 pub fn tooltip(key: impl Into<String>) -> Tooltip {
     Tooltip {
@@ -244,11 +244,11 @@ pub fn tooltip(key: impl Into<String>) -> Tooltip {
     }
 }
 impl Tooltip {
-    pub fn point(mut self, value: impl Into<Lotus<Option<ChartPointDetails>>>) -> Self {
+    pub fn point(mut self, value: impl Into<Vary<Option<ChartPointDetails>>>) -> Self {
         self.point = value.into();
         self
     }
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.enabled = value.into();
         self
     }
@@ -260,11 +260,11 @@ impl Tooltip {
         self.inner = self.inner.map(crate::Tooltip::unstyled);
         self
     }
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.inner = self.inner.map(|inner| inner.label(value));
         self
     }
-    pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.inner = self.inner.map(|inner| inner.open(value));
         self
     }

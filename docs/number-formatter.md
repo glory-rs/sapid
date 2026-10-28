@@ -1,6 +1,6 @@
 # NumberFormatter
 
-`number_formatter().value(source)` displays a read-only `Lotus<f64>` value.
+`number_formatter().value(source)` displays a read-only `Vary<f64>` value.
 The source remains numeric and is never modified by formatting. The component
 uses one ordinary semantic Text node, with no editable control, live region,
 network request, clock or implicit browser internationalization API.

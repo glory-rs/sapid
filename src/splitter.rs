@@ -8,7 +8,7 @@ use glory::render::{
 };
 use glory::style::{Display, Edges, FlexDirection, Length, Overflow, Style};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     rc::Rc,
@@ -289,8 +289,8 @@ pub struct Splitter {
     common: Common,
     key: String,
     value: Value<f64>,
-    min: Lotus<f64>,
-    max: Lotus<f64>,
+    min: Vary<f64>,
+    max: Vary<f64>,
     step: f64,
     axis: Orientation,
     thickness: f64,
@@ -326,7 +326,7 @@ pub fn splitter(key: impl Into<String>) -> Splitter {
 }
 impl Splitter {
     crate::appearance::common_methods!();
-    pub fn value(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -334,11 +334,11 @@ impl Splitter {
         self.value.default = value;
         self
     }
-    pub fn min(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn min(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.min = value.into();
         self
     }
-    pub fn max(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn max(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.max = value.into();
         self
     }
@@ -414,7 +414,7 @@ impl Widget for Splitter {
         let min = self.min.clone();
         let max = self.max.clone();
         let enabled = self.common.enabled.clone();
-        let raw: Lotus<Snapshot> = scope
+        let raw: Vary<Snapshot> = scope
             .bond(move || Snapshot {
                 value: source.get(),
                 min: min.get(),
@@ -621,7 +621,7 @@ fn build_handle(
     controller: Rc<Controller>,
     first: SemanticId,
     id: SemanticId,
-    name: Lotus<String>,
+    name: Vary<String>,
 ) -> Result {
     let accepted = controller.accepted;
     let axis = controller.axis;

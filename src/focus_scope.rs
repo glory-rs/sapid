@@ -4,11 +4,11 @@ use glory::render::{FocusMode, NodeId, SemanticId, Semantics};
 pub use glory::render::{FocusScopeConfig, MAX_FOCUS_SCOPE_NODES, MAX_FOCUS_SCOPES};
 use glory::style::Style;
 use glory::ui::{Children, IntoChildren, Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 pub struct FocusScope {
-    configuration: Lotus<FocusScopeConfig>,
-    active: Option<Lotus<bool>>,
+    configuration: Vary<FocusScopeConfig>,
+    active: Option<Vary<bool>>,
     loop_tab: Option<bool>,
     contain_focus: Option<bool>,
     auto_focus: Option<bool>,
@@ -16,8 +16,8 @@ pub struct FocusScope {
     initial_focus: Option<SemanticId>,
     return_focus: Option<SemanticId>,
     id: Option<SemanticId>,
-    class: Lotus<String>,
-    style: Lotus<Style>,
+    class: Vary<String>,
+    style: Vary<Style>,
     node_ref: Option<Cage<Option<NodeId>>>,
     content: Option<Children>,
 }
@@ -39,11 +39,11 @@ pub fn focus_scope() -> FocusScope {
     }
 }
 impl FocusScope {
-    pub fn configuration(mut self, configuration: impl Into<Lotus<FocusScopeConfig>>) -> Self {
+    pub fn configuration(mut self, configuration: impl Into<Vary<FocusScopeConfig>>) -> Self {
         self.configuration = configuration.into();
         self
     }
-    pub fn active(mut self, active: impl Into<Lotus<bool>>) -> Self {
+    pub fn active(mut self, active: impl Into<Vary<bool>>) -> Self {
         self.active = Some(active.into());
         self
     }
@@ -75,11 +75,11 @@ impl FocusScope {
         self.id = Some(id);
         self
     }
-    pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
         self.class = class.into();
         self
     }
-    pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
         self.style = style.into();
         self
     }

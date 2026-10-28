@@ -34,7 +34,7 @@ mod fixture {
             });
             let doc=toc_document(ctx.clone(),"article").theme(theme.clone()).name("Guide document").offset(8.).style(Style::new().height(Length::Px(180.)).width(Length::Percent(100.))).content(move|ctx|{
    let t=t.clone();each(keys,|key|key.clone(),move|key,index|{
-    let key=key.get();let level=match key.as_str(){"nested"=>3,"details"=>2,_=>1};let heading_label:Lotus<String>=match key.as_str(){"overview"=>"Overview".into(),"nested"=>label.into(),"details"=>"Details".into(),_=>"Finish".into()};
+    let key=key.get();let level=match key.as_str(){"nested"=>3,"details"=>2,_=>1};let heading_label:Vary<String>=match key.as_str(){"overview"=>"Overview".into(),"nested"=>label.into(),"details"=>"Details".into(),_=>"Finish".into()};
     glory::ui::view().class(format!("toc-section toc-section-{key}")).style(Style::new().height(Length::Px(220.))).fill(toc_heading(ctx.clone(),key,level).theme(t.clone()).content(heading_label).order(index.map(|value|*value as u32))).fill(sapid::text().theme(t.clone()).content("A registered live section. Scroll the guide or follow its actual section link."))
    })
   });

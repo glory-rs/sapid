@@ -6,7 +6,7 @@
   does not mean full upstream feature parity; do not mark empty builders done.
 
 - Use handwritten Rust builders implementing Glory `Widget`; keep `Cage`,
-  `Bond`, and `Lotus`. Host selection belongs to the application.
+  `Bond`, and `Vary`. Host selection belongs to the application.
 - The current development dependency is the sibling `../glory` checkout.
   Preserve unrelated changes there. Keep browser/SSR/native types outside
   widget state and use existing semantic controls rather than HTML wrappers.

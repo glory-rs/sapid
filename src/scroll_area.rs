@@ -7,7 +7,7 @@ use glory::render::{
 };
 use glory::style::{Length, Overflow, Style};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Bond, Cage, Lotus, Scope};
+use glory::{Bond, Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     collections::VecDeque,
@@ -263,15 +263,15 @@ macro_rules! methods {
             self.common.unstyled = true;
             self
         }
-        pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.class = value.into();
             self
         }
-        pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
             self.common.style = value.into();
             self
         }
-        pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.name = Some(value.into());
             self
         }

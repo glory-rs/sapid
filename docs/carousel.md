@@ -85,18 +85,18 @@ Rust evidence under `D:/BuildCache/sapid`:
   intent, release, configuration cancellation and editor exclusion.
 - `carousel-native-debug0.log`: two native tests; all four themes use the real native engine and
   CPU pixels, finite window boxes, retained editor identity, physical focus and
-  resized viewport bounds. The second verifies explicit native hover refusal and
+  resized viewport bounds. The current second test verifies real native hover cancellation/resume and
   actual injected-clock polling/cancellation through WindowApp.observe. Builds
   use DEV/TEST_DEBUG=0 and INCREMENTAL=0. This does not prove OS touch gestures.
 - `carousel-fixture-ssr.log`: fixture first shape has seven main slide bodies,
   deterministic counters and the real finite swipe metadata.
 
-Native default paging/keyboard/mouse and explicit injected-clock operation do
-not imply native hover observations. Native currently rejects PointerWithin;
-an autoplay caller must explicitly choose `pause_on_hover(false)` for that host.
-Focus and explicit/source pause remain available. No automatic fallback changes
-the requested policy. No OS touch or assistive-technology announcement claim is
-made from headless geometry tests.
+Current Glory delivers native PointerWithin from actual mouse/pen boundaries.
+The default hover-pause policy is supported; `pause_on_hover(false)` is an explicit
+application choice. The 2026-10-29 native test moves a real engine pointer, rejects
+a stale timer wake while hovered, resumes after leaving, and checks explicit
+pause cancellation. See `native-final-v2-sync.log`. These headless protocol and
+geometry tests do not establish OS touch or assistive-technology announcements.
 
 Web38's original strict run failed the first keyboard assertion, preserved in
 `carousel-browser-web38.json` and `carousel-actual-web38.log`. Diagnosis found

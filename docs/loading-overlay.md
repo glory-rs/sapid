@@ -3,7 +3,7 @@
 `overlay().fill(content)` adds a decorative local shade over retained content.
 Its mask has no accessible role/name, busy state or interaction controller and
 uses typed pointer-events None. The content remains operable with pointer,
-keyboard and assistive technology. `visible(Lotus<bool>)` hides only the shade.
+keyboard and assistive technology. `visible(Vary<bool>)` hides only the shade.
 
 `loading_overlay(loading).fill(content)` is an explicit busy region. The same
 controlled source drives the parent's busy metadata, the retained content's

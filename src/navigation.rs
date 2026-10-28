@@ -6,7 +6,7 @@ use crate::{AnchorRequest, ContentPolicy};
 use glory::render::{Current, Event, EventKind, Role, Semantics};
 use glory::style::{Display, FlexDirection, Style};
 use glory::ui::{IntoChildren, Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 
 pub const MAX_BREADCRUMB_ITEMS: usize = 128;
 pub const MAX_PAGINATION_WINDOW_ITEMS: usize = 35;
@@ -25,15 +25,15 @@ macro_rules! navigation_methods {
             self.common.unstyled = true;
             self
         }
-        pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.class = value.into();
             self
         }
-        pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
             self.common.style = value.into();
             self
         }
-        pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.name = Some(value.into());
             self
         }
@@ -141,8 +141,8 @@ pub struct Pagination {
     common: Common,
     key: String,
     page: Value<u64>,
-    total: Lotus<Option<u64>>,
-    has_next: Lotus<bool>,
+    total: Vary<Option<u64>>,
+    has_next: Vary<bool>,
     siblings: u8,
     boundaries: u8,
     change: Option<Box<dyn FnMut(u64)>>,
@@ -164,11 +164,11 @@ pub fn pagination(key: impl Into<String>) -> Pagination {
 }
 impl Pagination {
     navigation_methods!();
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.common.enabled = value.into();
         self
     }
-    pub fn page(mut self, value: impl Into<Lotus<u64>>) -> Self {
+    pub fn page(mut self, value: impl Into<Vary<u64>>) -> Self {
         self.page.source = Some(value.into());
         self
     }
@@ -176,11 +176,11 @@ impl Pagination {
         self.page.default = value;
         self
     }
-    pub fn total(mut self, value: impl Into<Lotus<Option<u64>>>) -> Self {
+    pub fn total(mut self, value: impl Into<Vary<Option<u64>>>) -> Self {
         self.total = value.into();
         self
     }
-    pub fn has_next(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn has_next(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.has_next = value.into();
         self
     }
@@ -383,12 +383,12 @@ impl Widget for Pagination {
 
 pub struct BreadcrumbItem {
     key: String,
-    label: Lotus<String>,
-    href: Option<Lotus<String>>,
+    label: Vary<String>,
+    href: Option<Vary<String>>,
 }
 pub fn breadcrumb_item(
     key: impl Into<String>,
-    label: impl Into<Lotus<String>>,
+    label: impl Into<Vary<String>>,
 ) -> BreadcrumbItem {
     BreadcrumbItem {
         key: key.into(),
@@ -397,7 +397,7 @@ pub fn breadcrumb_item(
     }
 }
 impl BreadcrumbItem {
-    pub fn href(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn href(mut self, value: impl Into<Vary<String>>) -> Self {
         self.href = Some(value.into());
         self
     }
@@ -406,7 +406,7 @@ pub struct Breadcrumbs {
     common: Common,
     key: String,
     items: Vec<BreadcrumbItem>,
-    current: Option<Lotus<String>>,
+    current: Option<Vary<String>>,
     max_items: usize,
     expanded: Value<bool>,
     change: Option<Box<dyn FnMut(bool)>>,
@@ -428,7 +428,7 @@ impl Breadcrumbs {
         self.items = items.into_iter().take(MAX_BREADCRUMB_ITEMS + 1).collect();
         self
     }
-    pub fn current(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn current(mut self, value: impl Into<Vary<String>>) -> Self {
         self.current = Some(value.into());
         self
     }
@@ -436,7 +436,7 @@ impl Breadcrumbs {
         self.max_items = value;
         self
     }
-    pub fn expanded(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn expanded(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.expanded.source = Some(value.into());
         self
     }
@@ -613,10 +613,10 @@ impl Widget for Breadcrumbs {
 pub struct NavLink {
     common: Common,
     key: String,
-    href: Lotus<String>,
-    label: Lotus<String>,
-    current: Lotus<bool>,
-    highlighted: Lotus<bool>,
+    href: Vary<String>,
+    label: Vary<String>,
+    current: Vary<bool>,
+    highlighted: Vary<bool>,
     expanded: Value<bool>,
     change: Option<Box<dyn FnMut(bool)>>,
     navigate: Option<Box<dyn FnMut(AnchorRequest)>>,
@@ -640,24 +640,24 @@ pub fn nav_link(key: impl Into<String>) -> NavLink {
 }
 impl NavLink {
     navigation_methods!();
-    pub fn href(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn href(mut self, value: impl Into<Vary<String>>) -> Self {
         self.href = value.into();
         self
     }
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
-    pub fn current(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn current(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.current = value.into();
         self
     }
     /// Presentation only. This does not claim selection or browser visit state.
-    pub fn highlighted(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn highlighted(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.highlighted = value.into();
         self
     }
-    pub fn expanded(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn expanded(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.expanded.source = Some(value.into());
         self
     }

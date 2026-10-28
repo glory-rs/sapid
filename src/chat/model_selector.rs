@@ -3,7 +3,7 @@ use crate::appearance::{Common, common_methods, configure};
 use crate::composite::{self, Callback};
 use crate::state::Value;
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 use std::rc::Rc;
 pub const MAX_MODEL_CHOICES: usize = 1024;
 pub const MAX_MODEL_PROVIDERS: usize = 32;
@@ -42,10 +42,10 @@ pub struct ModelSelector {
     explicit_search: bool,
     open: Value<bool>,
     field: Option<crate::FieldControl>,
-    form_name: Option<Lotus<String>>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
+    form_name: Option<Vary<String>>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
     changed: Option<Box<dyn FnMut(Option<ModelRecord>)>>,
     searched: Option<Box<dyn FnMut(String)>>,
     opened: Option<Box<dyn FnMut(bool)>>,
@@ -92,7 +92,7 @@ impl ModelSelector {
         }
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<Option<String>>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<Option<String>>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -100,7 +100,7 @@ impl ModelSelector {
         self.value.default = value;
         self
     }
-    pub fn search(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn search(mut self, value: impl Into<Vary<String>>) -> Self {
         self.search.source = Some(value.into());
         self.explicit_search = true;
         self
@@ -110,7 +110,7 @@ impl ModelSelector {
         self.explicit_search = true;
         self
     }
-    pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(value.into());
         self
     }
@@ -118,19 +118,19 @@ impl ModelSelector {
         self.open.default = value;
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
-    pub fn form_name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn form_name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.form_name = Some(value.into());
         self
     }

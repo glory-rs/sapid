@@ -6,7 +6,7 @@ use glory::render::{
 };
 use glory::style::{Length, Style};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Bond, Cage, Lotus, Scope};
+use glory::{Bond, Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     collections::BTreeMap,
@@ -425,8 +425,8 @@ pub struct TocHeading {
     context: TocContext,
     key: String,
     level: u8,
-    order: Lotus<u32>,
-    content: Lotus<String>,
+    order: Vary<u32>,
+    content: Vary<String>,
     common: Common,
 }
 pub fn toc_heading(context: TocContext, key: impl Into<String>, level: u8) -> TocHeading {
@@ -440,11 +440,11 @@ pub fn toc_heading(context: TocContext, key: impl Into<String>, level: u8) -> To
     }
 }
 impl TocHeading {
-    pub fn content(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn content(mut self, value: impl Into<Vary<String>>) -> Self {
         self.content = value.into();
         self
     }
-    pub fn order(mut self, value: impl Into<Lotus<u32>>) -> Self {
+    pub fn order(mut self, value: impl Into<Vary<u32>>) -> Self {
         self.order = value.into();
         self
     }
@@ -456,11 +456,11 @@ impl TocHeading {
         self.common.size = value;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
@@ -629,7 +629,7 @@ impl TocDocument {
         self.offset = value;
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -637,11 +637,11 @@ impl TocDocument {
         self.common.theme = value;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
@@ -760,7 +760,7 @@ struct NavState {
     theme: crate::Theme,
     size: crate::Size,
     unstyled: bool,
-    current: Lotus<Option<SemanticId>>,
+    current: Vary<Option<SemanticId>>,
 }
 impl NavState {
     fn remove_order(&self, id: &SemanticId, parent: &Option<SemanticId>) {
@@ -999,7 +999,7 @@ pub struct TableOfContents {
     context: TocContext,
     key: String,
     common: Common,
-    current: Option<Lotus<Option<SemanticId>>>,
+    current: Option<Vary<Option<SemanticId>>>,
 }
 pub fn table_of_contents(context: TocContext, key: impl Into<String>) -> TableOfContents {
     TableOfContents {
@@ -1010,11 +1010,11 @@ pub fn table_of_contents(context: TocContext, key: impl Into<String>) -> TableOf
     }
 }
 impl TableOfContents {
-    pub fn current(mut self, value: impl Into<Lotus<Option<SemanticId>>>) -> Self {
+    pub fn current(mut self, value: impl Into<Vary<Option<SemanticId>>>) -> Self {
         self.current = Some(value.into());
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -1026,11 +1026,11 @@ impl TableOfContents {
         self.common.size = value;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }

@@ -4,7 +4,7 @@ use glory::style::{
     Align, BorderStyle, BoxShadow, Display, Edges, FlexDirection, Length, Shadow, Style,
 };
 use glory::ui::{Children, IntoChildren, Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 use crate::appearance::{Common, configure, observe};
 use crate::state::Value;
@@ -23,11 +23,11 @@ macro_rules! display_methods {
             self.common.unstyled = true;
             self
         }
-        pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
             self.common.class = class.into();
             self
         }
-        pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
             self.common.style = style.into();
             self
         }
@@ -102,7 +102,7 @@ pub enum BadgeVariant {
 /// A passive text label. It has no implicit status/live-region behavior.
 pub struct Badge {
     common: Common,
-    content: Lotus<String>,
+    content: Vary<String>,
     variant: BadgeVariant,
 }
 pub fn badge() -> Badge {
@@ -114,7 +114,7 @@ pub fn badge() -> Badge {
 }
 impl Badge {
     display_methods!();
-    pub fn content(mut self, content: impl Into<Lotus<String>>) -> Self {
+    pub fn content(mut self, content: impl Into<Vary<String>>) -> Self {
         self.content = content.into();
         self
     }
@@ -164,7 +164,7 @@ impl Widget for Badge {
 /// is never written; on_remove proposes dismissal. Hidden content keeps identity.
 pub struct Pill {
     common: Common,
-    content: Lotus<String>,
+    content: Vary<String>,
     visible: Value<bool>,
     remove_label: Option<String>,
     on_remove: Option<Box<dyn FnMut()>>,
@@ -185,7 +185,7 @@ pub fn pill() -> Pill {
 }
 impl Pill {
     display_methods!();
-    pub fn content(mut self, content: impl Into<Lotus<String>>) -> Self {
+    pub fn content(mut self, content: impl Into<Vary<String>>) -> Self {
         self.content = content.into();
         self
     }
@@ -194,7 +194,7 @@ impl Pill {
         self.remove_label = Some(label.into());
         self
     }
-    pub fn visible(mut self, source: impl Into<Lotus<bool>>) -> Self {
+    pub fn visible(mut self, source: impl Into<Vary<bool>>) -> Self {
         self.visible.source = Some(source.into());
         self
     }
@@ -202,7 +202,7 @@ impl Pill {
         self.visible.default = visible;
         self
     }
-    pub fn enabled(mut self, enabled: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, enabled: impl Into<Vary<bool>>) -> Self {
         self.common.enabled = enabled.into();
         self
     }
@@ -336,7 +336,7 @@ impl Paper {
         self.shadow = Some(shadow);
         self
     }
-    pub fn name(mut self, name: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, name: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(name.into());
         self
     }
@@ -353,8 +353,8 @@ impl Widget for Paper {
 /// A passive card with ordered header, title/description, body and footer slots.
 pub struct Card {
     common: Common,
-    title: Option<Lotus<String>>,
-    description: Option<Lotus<String>>,
+    title: Option<Vary<String>>,
+    description: Option<Vary<String>>,
     level: u8,
     header: Children,
     body: Children,
@@ -377,11 +377,11 @@ pub fn card() -> Card {
 }
 impl Card {
     display_methods!();
-    pub fn title(mut self, title: impl Into<Lotus<String>>) -> Self {
+    pub fn title(mut self, title: impl Into<Vary<String>>) -> Self {
         self.title = Some(title.into());
         self
     }
-    pub fn description(mut self, description: impl Into<Lotus<String>>) -> Self {
+    pub fn description(mut self, description: impl Into<Vary<String>>) -> Self {
         self.description = Some(description.into());
         self
     }
@@ -409,7 +409,7 @@ impl Card {
         self.shadow = Some(shadow);
         self
     }
-    pub fn name(mut self, name: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, name: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(name.into());
         self
     }
@@ -474,8 +474,8 @@ fn validate_level(level: u8) -> Result {
 /// Ordinary empty content, without unsolicited alert/live announcements.
 pub struct EmptyState {
     common: Common,
-    title: Lotus<String>,
-    description: Option<Lotus<String>>,
+    title: Vary<String>,
+    description: Option<Vary<String>>,
     level: u8,
     illustration: Children,
     actions: Children,
@@ -494,11 +494,11 @@ pub fn empty_state() -> EmptyState {
 }
 impl EmptyState {
     display_methods!();
-    pub fn title(mut self, title: impl Into<Lotus<String>>) -> Self {
+    pub fn title(mut self, title: impl Into<Vary<String>>) -> Self {
         self.title = title.into();
         self
     }
-    pub fn description(mut self, description: impl Into<Lotus<String>>) -> Self {
+    pub fn description(mut self, description: impl Into<Vary<String>>) -> Self {
         self.description = Some(description.into());
         self
     }

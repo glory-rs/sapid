@@ -15,7 +15,7 @@ select("region")
     .on_value_change(move |proposal| selected_key.revise(|value| *value = proposal));
 ```
 
-`.default_value(Option<String>)` 和 `.default_open(bool)` 提供本地状态；`.value(Lotus<Option<String>>)`、`.open(Lotus<bool>)` 只提出 typed 回调建议，不写业务源。选中 key、显示 label 和提交 value 独立。活动项由共享 mounted collection 管理，不会在方向键移动时自动提交。开启或关闭被控制器拒绝时，实际 expanded、active-descendant、选中样式和成功值遵从当前业务源。非法程序源先借用验证，再读取有限值；后续非法更新保留最后有效 UI。
+`.default_value(Option<String>)` 和 `.default_open(bool)` 提供本地状态；`.value(Vary<Option<String>>)`、`.open(Vary<bool>)` 只提出 typed 回调建议，不写业务源。选中 key、显示 label 和提交 value 独立。活动项由共享 mounted collection 管理，不会在方向键移动时自动提交。开启或关闭被控制器拒绝时，实际 expanded、active-descendant、选中样式和成功值遵从当前业务源。非法程序源先借用验证，再读取有限值；后续非法更新保留最后有效 UI。
 
 单次配置最多 1024 个 option、32 个不嵌套分组、128KiB 声明数据；key 为 1–64 字节 ASCII token，label 最多 256 字节，业务 value 最多 4096 字节。接收 iterator 只消费预算加一，不完整收集未知长度来源。选项配置通过 Rc 共享，移动和 patch 不复制完整配置。此组件挂载全部有限选项，不声称虚拟化或无限数据支持。
 

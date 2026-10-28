@@ -6,7 +6,7 @@ use std::pin::Pin;
 use std::rc::{Rc, Weak};
 
 use glory::core::{AccessError, TaskToken};
-use glory::{Bond, Cage, Lotus, Scope};
+use glory::{Bond, Cage, Scope, Vary};
 
 pub type ValidationErrors = Vec<String>;
 pub type ValidationFuture = Pin<Box<dyn Future<Output = ValidationErrors>>>;
@@ -120,7 +120,7 @@ pub struct FieldOptions<T: 'static> {
     validator: Option<Validator<T>>,
     async_validator: Option<AsyncValidator<T>>,
     reset: Option<Rc<dyn Fn()>>,
-    disabled: Lotus<bool>,
+    disabled: Vary<bool>,
     name: Option<String>,
     encoder: Option<Encoder<T>>,
 }
@@ -139,7 +139,7 @@ impl<T> Default for FieldOptions<T> {
 impl<T> FieldOptions<T> {
     /// Add a composite's validation gate without discarding application disabling.
     #[cfg(feature = "chat")]
-    pub(crate) fn gate_disabled(mut self, scope: &Scope, gate: Lotus<bool>) -> Self {
+    pub(crate) fn gate_disabled(mut self, scope: &Scope, gate: Vary<bool>) -> Self {
         let disabled = self.disabled;
         self.disabled = scope.bond(move || disabled.get() || gate.get()).into();
         self
@@ -161,7 +161,7 @@ impl<T> FieldOptions<T> {
         self.reset = Some(Rc::new(callback));
         self
     }
-    pub fn disabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn disabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.disabled = value.into();
         self
     }

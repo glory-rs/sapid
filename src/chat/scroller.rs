@@ -4,7 +4,7 @@ use glory::render::{NodeId, SemanticId};
 use glory::style::{Display, FlexDirection, Length, Style};
 use glory::ui::list::{List, ListStats};
 use glory::ui::{Children, IntoChildren, Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{cell::Cell, rc::Rc};
 
 pub const MAX_MESSAGE_ROWS: usize = 256;
@@ -54,7 +54,7 @@ impl MessageScrollerHandle {
         self.inner.scope()?;
         Ok(self.inner.status.try_get()?)
     }
-    pub fn status_source(&self) -> Result<Lotus<MessageScrollStatus>> {
+    pub fn status_source(&self) -> Result<Vary<MessageScrollStatus>> {
         self.inner.scope()?;
         Ok(self.inner.status.into())
     }
@@ -132,7 +132,7 @@ pub struct MessageScroller {
 /// Only mounted-window indices and one focused key are read. `locate` must be
 /// an indexed lookup, rather than a scan of the application message source.
 pub fn message_scroller<W: Widget>(
-    count: impl Into<Lotus<usize>>,
+    count: impl Into<Vary<usize>>,
     key: impl Fn(usize) -> SemanticId + 'static,
     locate: impl Fn(&SemanticId) -> Option<usize> + 'static,
     render: impl FnMut(Cage<usize>, SemanticId) -> W + 'static,
@@ -153,7 +153,7 @@ pub fn message_scroller<W: Widget>(
 impl MessageScroller {
     /// Accessible name of the actual windowed list, independently of any
     /// surrounding Chat/Terminal group.
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -181,7 +181,7 @@ impl MessageScroller {
         self.following = value;
         self
     }
-    pub fn revision(mut self, value: impl Into<Lotus<u64>>) -> Self {
+    pub fn revision(mut self, value: impl Into<Vary<u64>>) -> Self {
         self.list = self.list.take().map(|list| list.revision(value));
         self
     }
@@ -197,11 +197,11 @@ impl MessageScroller {
         self.common.theme = value;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
@@ -326,11 +326,11 @@ impl Chat {
         self.common.theme = value;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }

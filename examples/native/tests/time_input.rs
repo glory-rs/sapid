@@ -223,9 +223,7 @@ fn native_twelve_hour_chinese_seconds_readonly_disabled_and_unstyled_keep_real_e
     edit(app, id, "01:02:03 下午", 11, 11, InputEditIntent::Replace);
     app.settle(16).unwrap();
     assert_eq!(value.get(), Some(time("13:02:03")));
-    let before = app.stats();
-    let error = app
-        .scope()
+    app.scope()
         .set_input_selection(
             id,
             TextSelection {
@@ -234,14 +232,12 @@ fn native_twelve_hour_chinese_seconds_readonly_disabled_and_unstyled_keep_real_e
                 direction: SelectionDirection::Backward,
             },
         )
-        .unwrap_err();
-    assert!(matches!(
-        error,
-        glory::ui::Error::Render(glory::render::Error::Unsupported(
-            "exact selection currently requires ASCII input text"
-        ))
-    ));
-    assert_eq!(app.stats(), before);
+        .unwrap();
+    app.flush().unwrap();
+    assert_eq!(
+        query(app, Query::Selection(id)),
+        QueryValue::Selection { start: 9, end: 11 }
+    );
     ro.revise(|v| *v = true);
     app.settle(16).unwrap();
     edit(app, id, "02:03:04 下午", 11, 11, InputEditIntent::Replace);

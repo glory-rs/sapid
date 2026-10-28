@@ -1,7 +1,7 @@
 # Accordion
 
 `accordion(namespace).items(keys, factory)` mounts a bounded dynamic keyed
-sequence. `keys` is `Lotus<Vec<String>>`; `factory` returns an `AccordionItem`
+sequence. `keys` is `Vary<Vec<String>>`; `factory` returns an `AccordionItem`
 with the same key. Static `.item(...)` remains available and cannot be mixed
 with `.items(...)`. A sequence may be empty and contains at most 256 unique
 ASCII semantic keys of at most 64 bytes. Keys validate before cloning or calling

@@ -4,7 +4,7 @@ use crate::composite;
 use glory::render::{DocumentPart, NodeId, SemanticId, Semantics, TableMetadata};
 use glory::style::{BorderStyle, Edges, Length, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::collections::BTreeSet;
 mod model;
 pub use model::{MAX_TABLE_CELLS, MAX_TABLE_COLUMNS, MAX_TABLE_ROWS};
@@ -36,7 +36,7 @@ pub enum TableCellKind {
 pub struct TableCell {
     key: String,
     kind: TableCellKind,
-    text: Lotus<String>,
+    text: Vary<String>,
     content: Option<Factory>,
     span: model::Span,
     common: Common,
@@ -78,11 +78,11 @@ macro_rules! appearance {
             self.size = Some(value);
             self
         }
-        pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.class = value.into();
             self
         }
-        pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
             self.common.style = value.into();
             self
         }
@@ -98,7 +98,7 @@ macro_rules! appearance {
 }
 impl TableCell {
     appearance!();
-    pub fn text(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn text(mut self, value: impl Into<Vary<String>>) -> Self {
         self.text = value.into();
         self.content = None;
         self
@@ -187,7 +187,7 @@ impl TableSection {
 pub struct Table {
     key: String,
     common: Common,
-    caption: Option<Lotus<String>>,
+    caption: Option<Vary<String>>,
     sections: Vec<TableSection>,
     striped: bool,
     bordered: bool,
@@ -203,7 +203,7 @@ pub fn table(key: impl Into<String>) -> Table {
     }
 }
 impl Table {
-    pub fn caption(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn caption(mut self, value: impl Into<Vary<String>>) -> Self {
         self.caption = Some(value.into());
         self
     }
@@ -250,15 +250,15 @@ impl Table {
         self.common.size = value;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }

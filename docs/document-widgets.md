@@ -17,7 +17,7 @@ does not modify business values or input selection/revisions.
 `code().content(source)` renders inline code with a monospace face and a themed
 soft surface. It does not tokenize a language or register a copy action.
 `mark().content(source)` renders real marked text with independent theme colors.
-Both accept reactive Lotus<String> sources and patch the existing Text node.
+Both accept reactive Vary<String> sources and patch the existing Text node.
 
 `kbd().content(source)` renders a keyboard hint. Alternatively,
 `kbd().platform(KbdPlatform::Mac).key(KbdKey::Meta)` displays `Command`.

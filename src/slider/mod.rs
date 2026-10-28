@@ -10,7 +10,7 @@ use glory::render::{
 };
 use glory::style::{Edges, Length, Position, Style};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use mapping::Mapping;
 use std::{
     cell::{Cell, RefCell},
@@ -180,7 +180,7 @@ impl Controller {
     fn source_stamp(&self) -> Result<(f64, Option<u64>)> {
         let value = self.control.source.try_get()?;
         let version = match self.control.source {
-            Lotus::Cage(source) => Some(source.try_version()?),
+            Vary::Cage(source) => Some(source.try_version()?),
             _ => None,
         };
         Ok((value, version))
@@ -380,23 +380,23 @@ pub struct Slider {
     key: String,
     common: Common,
     value: Value<f64>,
-    min: Lotus<f64>,
-    max: Lotus<f64>,
-    step: Lotus<f64>,
-    page: Option<Lotus<f64>>,
-    text: Lotus<Option<String>>,
+    min: Vary<f64>,
+    max: Vary<f64>,
+    step: Vary<f64>,
+    page: Option<Vary<f64>>,
+    text: Vary<Option<String>>,
     axis: Orientation,
     direction: Direction,
     field: Option<FieldControl>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
     inherit_theme: bool,
     inherit_size: bool,
     changed: Option<Box<dyn FnMut(f64)>>,
     committed: Option<Box<dyn FnMut(f64)>>,
     track_content: Option<Box<dyn Widget>>,
-    thumb_color: Option<Lotus<glory::style::Color>>,
+    thumb_color: Option<Vary<glory::style::Color>>,
     mapping: Mapping,
     default_text: bool,
 }
@@ -439,7 +439,7 @@ impl Slider {
         self.track_content = Some(Box::new(value));
         self
     }
-    pub(crate) fn thumb_color(mut self, value: impl Into<Lotus<glory::style::Color>>) -> Self {
+    pub(crate) fn thumb_color(mut self, value: impl Into<Vary<glory::style::Color>>) -> Self {
         self.thumb_color = Some(value.into());
         self
     }
@@ -457,19 +457,19 @@ impl Slider {
         self.common.unstyled = true;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.common.enabled = value.into();
         self
     }
@@ -485,7 +485,7 @@ impl Slider {
             .push(Box::new(callback));
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -493,23 +493,23 @@ impl Slider {
         self.value.default = value;
         self
     }
-    pub fn min(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn min(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.min = value.into();
         self
     }
-    pub fn max(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn max(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.max = value.into();
         self
     }
-    pub fn step(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn step(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.step = value.into();
         self
     }
-    pub fn page_step(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn page_step(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.page = Some(value.into());
         self
     }
-    pub fn value_text(mut self, value: impl Into<Lotus<Option<String>>>) -> Self {
+    pub fn value_text(mut self, value: impl Into<Vary<Option<String>>>) -> Self {
         self.text = value.into();
         self.default_text = false;
         self
@@ -526,15 +526,15 @@ impl Slider {
         self.field = Some(value);
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
@@ -614,7 +614,7 @@ impl Widget for Slider {
             let step = step.try_get()?;
             let page = page
                 .as_ref()
-                .map_or(Ok((step * 10.0).min(1e12)), Lotus::try_get)?;
+                .map_or(Ok((step * 10.0).min(1e12)), Vary::try_get)?;
             let mut snapshot = Snapshot {
                 range: SliderValue {
                     range: RangeValue {
@@ -917,7 +917,7 @@ impl Widget for Slider {
                     });
                 }
                 if !unstyled || preview.is_some() {
-                    style.background = Some(preview.as_ref().map_or(thumb_color, Lotus::get));
+                    style.background = Some(preview.as_ref().map_or(thumb_color, Vary::get));
                 }
                 if !unstyled {
                     style.border_color = Some(fill_color);
@@ -966,7 +966,7 @@ fn draw_angle(
     parent: &Scope,
     state: Cage<Snapshot>,
     theme: crate::Theme,
-    preview: Option<Lotus<glory::style::Color>>,
+    preview: Option<Vary<glory::style::Color>>,
     unstyled: bool,
 ) -> Result {
     use glory::render::{GraphicPoint, GraphicProps, GraphicStroke, PathCommand};
@@ -1034,7 +1034,7 @@ fn draw_angle(
                 width: 100.,
                 height: 100.,
                 commands: circle(50. + 40. * radians.sin(), 50. - 40. * radians.cos(), 5.),
-                fill: Some(preview.as_ref().map_or(theme.surface, Lotus::get)),
+                fill: Some(preview.as_ref().map_or(theme.surface, Vary::get)),
                 stroke: Some(GraphicStroke {
                     color: accent,
                     width: 2.,

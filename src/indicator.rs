@@ -3,7 +3,7 @@ use crate::appearance::{Common, configure};
 use glory::render::{NodeId, Semantics};
 use glory::style::{Align, Display, Edges, Justify, Length, Position, Style, WhiteSpace};
 use glory::ui::{Children, IntoChildren, Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum IndicatorPosition {
@@ -38,8 +38,8 @@ pub struct Indicator {
     common: Common,
     position: IndicatorPosition,
     diameter: f64,
-    visible: Lotus<bool>,
-    label: Option<Lotus<String>>,
+    visible: Vary<bool>,
+    label: Option<Vary<String>>,
     children: Children,
     marker_ref: Option<Cage<Option<NodeId>>>,
 }
@@ -63,12 +63,12 @@ impl Indicator {
         self.common.unstyled = true;
         self
     }
-    pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
         self.common.class = class.into();
         self
     }
     /// Styles the content wrapper. The anchored marker keeps its own geometry.
-    pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
         self.common.style = style.into();
         self
     }
@@ -81,7 +81,7 @@ impl Indicator {
         self
     }
     /// An optional passive marker name; this does not make a live region.
-    pub fn name(mut self, name: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, name: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(name.into());
         self
     }
@@ -94,12 +94,12 @@ impl Indicator {
         self.diameter = diameter;
         self
     }
-    pub fn visible(mut self, visible: impl Into<Lotus<bool>>) -> Self {
+    pub fn visible(mut self, visible: impl Into<Vary<bool>>) -> Self {
         self.visible = visible.into();
         self
     }
     /// Optional nonempty label, at most 32 UTF-8 bytes. A dot has no text.
-    pub fn label(mut self, label: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, label: impl Into<Vary<String>>) -> Self {
         self.label = Some(label.into());
         self
     }
@@ -117,7 +117,7 @@ fn valid_text(value: &str, max: usize) -> Result {
     }
     Ok(())
 }
-fn accepted_text(scope: &Scope, source: Lotus<String>, max: usize) -> Result<Lotus<String>> {
+fn accepted_text(scope: &Scope, source: Vary<String>, max: usize) -> Result<Vary<String>> {
     let initial = source.try_with(|value| valid_text(value, max).map(|()| value.clone()))??;
     if !source.is_reactive() {
         return Ok(initial.into());

@@ -6,7 +6,7 @@ use crate::composite::{self, Callback, Observers};
 use glory::render::{DocumentPart, Event, EventKind, Role, TextKind};
 use glory::style::{Display, Edges, Family, Length, Limit, Overflow, Style, WhiteSpace};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{cell::Cell, rc::Rc};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -18,7 +18,7 @@ struct State {
     owner: glory::core::InstanceId,
     live: Cell<bool>,
     accepted: Cage<StackTraceData>,
-    enabled: Lotus<bool>,
+    enabled: Vary<bool>,
     requested: Callback<StackLocationRequest>,
     observers: Observers,
     interactive: bool,
@@ -48,11 +48,11 @@ impl State {
 }
 pub struct StackTrace {
     common: Common,
-    data: Lotus<StackTraceData>,
+    data: Vary<StackTraceData>,
     requested: Option<Box<dyn FnMut(StackLocationRequest)>>,
     payload_height: f64,
 }
-pub fn stack_trace(data: impl Into<Lotus<StackTraceData>>) -> StackTrace {
+pub fn stack_trace(data: impl Into<Vary<StackTraceData>>) -> StackTrace {
     StackTrace {
         common: Common::default(),
         data: data.into(),

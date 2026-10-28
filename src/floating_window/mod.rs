@@ -9,7 +9,7 @@ use glory::render::{
 };
 use glory::style::{Edges, Length, Limit, Overflow, Style};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     rc::{Rc, Weak},
@@ -56,9 +56,9 @@ struct State {
     owner: glory::core::InstanceId,
     weak: WeakScope,
     bounds: Control<WindowBounds>,
-    input_bounds: Lotus<WindowBounds>,
+    input_bounds: Vary<WindowBounds>,
     open: Control<bool>,
-    enabled: Lotus<bool>,
+    enabled: Vary<bool>,
     limits: WindowLimits,
     step: f64,
     reference: Cage<Option<NodeId>>,
@@ -353,7 +353,7 @@ impl Pad {
 pub struct FloatingWindow {
     common: Common,
     key: String,
-    title: Lotus<String>,
+    title: Vary<String>,
     bounds: Value<WindowBounds>,
     open: Value<bool>,
     limits: WindowLimits,
@@ -391,11 +391,11 @@ pub fn floating_window(key: impl Into<String>) -> FloatingWindow {
 }
 impl FloatingWindow {
     common_methods!();
-    pub fn title(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn title(mut self, value: impl Into<Vary<String>>) -> Self {
         self.title = value.into();
         self
     }
-    pub fn bounds(mut self, value: impl Into<Lotus<WindowBounds>>) -> Self {
+    pub fn bounds(mut self, value: impl Into<Vary<WindowBounds>>) -> Self {
         self.bounds.source = Some(value.into());
         self
     }
@@ -403,7 +403,7 @@ impl FloatingWindow {
         self.bounds.default = value;
         self
     }
-    pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(value.into());
         self
     }

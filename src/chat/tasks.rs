@@ -5,7 +5,7 @@ use crate::composite::{self, Callback};
 use glory::render::{DocumentPart, Semantics, TextKind};
 use glory::style::{Edges, Length, Limit, Overflow, Style, WhiteSpace};
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 use std::collections::BTreeSet;
 pub const MAX_PLAN_TASKS: usize = 128;
 pub const MAX_PLAN_BYTES: usize = 131072;
@@ -160,10 +160,10 @@ pub struct TaskRequest {
 pub struct Task {
     common: Common,
     namespace: String,
-    data: Lotus<TaskRecord>,
+    data: Vary<TaskRecord>,
     action: Option<Box<dyn FnMut(TaskRequest)>>,
 }
-pub fn task(namespace: impl Into<String>, data: impl Into<Lotus<TaskRecord>>) -> Task {
+pub fn task(namespace: impl Into<String>, data: impl Into<Vary<TaskRecord>>) -> Task {
     Task {
         common: Common::default(),
         namespace: namespace.into(),
@@ -310,7 +310,7 @@ impl Widget for Task {
 pub struct Plan {
     common: Common,
     namespace: String,
-    data: Lotus<PlanData>,
+    data: Vary<PlanData>,
     queue: bool,
     action: Option<Box<dyn FnMut(TaskRequest)>>,
 }
@@ -332,7 +332,7 @@ pub fn queue(namespace: impl Into<String>) -> Queue {
 }
 impl Plan {
     common_methods!();
-    pub fn data(mut self, value: impl Into<Lotus<PlanData>>) -> Self {
+    pub fn data(mut self, value: impl Into<Vary<PlanData>>) -> Self {
         self.data = value.into();
         self
     }

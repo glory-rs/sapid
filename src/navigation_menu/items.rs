@@ -7,7 +7,7 @@ macro_rules! common {
             self.context = Some(value);
             self
         }
-        pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
             self.label = value.into();
             self
         }
@@ -25,15 +25,15 @@ macro_rules! common {
             self.common.unstyled = true;
             self
         }
-        pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.class = value.into();
             self
         }
-        pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
             self.common.style = value.into();
             self
         }
-        pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.name = Some(value.into());
             self
         }
@@ -57,10 +57,10 @@ pub struct NavigationMenuLink {
     common: Common,
     inherit_theme: bool,
     inherit_size: bool,
-    label: Lotus<String>,
-    href: Lotus<String>,
-    open: Lotus<LinkOpen>,
-    current: Lotus<Option<Current>>,
+    label: Vary<String>,
+    href: Vary<String>,
+    open: Vary<LinkOpen>,
+    current: Vary<Option<Current>>,
     navigate: Option<Box<dyn FnMut(crate::AnchorRequest)>>,
 }
 pub fn navigation_menu_link(key: impl Into<String>) -> NavigationMenuLink {
@@ -79,15 +79,15 @@ pub fn navigation_menu_link(key: impl Into<String>) -> NavigationMenuLink {
 }
 impl NavigationMenuLink {
     common!();
-    pub fn href(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn href(mut self, value: impl Into<Vary<String>>) -> Self {
         self.href = value.into();
         self
     }
-    pub fn open_in(mut self, value: impl Into<Lotus<LinkOpen>>) -> Self {
+    pub fn open_in(mut self, value: impl Into<Vary<LinkOpen>>) -> Self {
         self.open = value.into();
         self
     }
-    pub fn current(mut self, value: impl Into<Lotus<Option<Current>>>) -> Self {
+    pub fn current(mut self, value: impl Into<Vary<Option<Current>>>) -> Self {
         self.current = value.into();
         self
     }
@@ -102,7 +102,7 @@ pub struct NavigationMenuPanel {
     common: Common,
     inherit_theme: bool,
     inherit_size: bool,
-    label: Lotus<String>,
+    label: Vary<String>,
     content: Option<Factory>,
     panel_ref: Option<Cage<Option<NodeId>>>,
 }
@@ -120,7 +120,7 @@ pub fn navigation_menu_panel(key: impl Into<String>) -> NavigationMenuPanel {
 }
 impl NavigationMenuPanel {
     common!();
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.common.enabled = value.into();
         self
     }

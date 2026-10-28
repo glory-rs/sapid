@@ -9,7 +9,7 @@ use glory::render::{
 };
 use glory::style::{BorderStyle, Edges, Length, Overflow, PointerEvents, Position, Style};
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 pub use model::{MAX_RATING_COUNT, RatingPrecision};
 
 pub struct Rating {
@@ -21,9 +21,9 @@ pub struct Rating {
     value: Value<f64>,
     form_name: Option<String>,
     field: Option<crate::FieldControl>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
     direction: Direction,
     on_change: Option<Box<dyn FnMut(f64)>>,
     display_only: bool,
@@ -66,7 +66,7 @@ impl Rating {
         self.clearable = value;
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -78,15 +78,15 @@ impl Rating {
         self.form_name = Some(value.into());
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }

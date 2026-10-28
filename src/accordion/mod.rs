@@ -1,6 +1,6 @@
 use glory::render::{Direction, Event, EventKind, Orientation, Role, Semantics};
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 use std::collections::HashSet;
 use std::rc::Rc;
 
@@ -75,7 +75,7 @@ impl Accordion {
     /// A bounded keyed sequence; factories run once per newly mounted key.
     pub fn items(
         mut self,
-        keys: impl Into<Lotus<Vec<String>>>,
+        keys: impl Into<Vary<Vec<String>>>,
         mut factory: impl FnMut(&str) -> AccordionItem + 'static,
     ) -> Self {
         self.dynamic = Some(composite::dynamic::Items {
@@ -88,7 +88,7 @@ impl Accordion {
         self.direction = direction;
         self
     }
-    pub fn open(mut self, value: impl Into<Lotus<Vec<String>>>) -> Self {
+    pub fn open(mut self, value: impl Into<Vary<Vec<String>>>) -> Self {
         self.open.source = Some(value.into());
         self
     }

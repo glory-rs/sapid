@@ -5,7 +5,7 @@ use glory::render::{
 };
 use glory::style::{Align, BorderStyle, Color, Display, Edges, Justify, Length, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum Icon {
@@ -24,11 +24,11 @@ pub enum ThemeIconVariant {
 }
 pub struct ThemeIcon {
     common: Common,
-    icon: Lotus<Icon>,
+    icon: Vary<Icon>,
     variant: ThemeIconVariant,
     color: Option<Color>,
 }
-pub fn theme_icon(icon: impl Into<Lotus<Icon>>) -> ThemeIcon {
+pub fn theme_icon(icon: impl Into<Vary<Icon>>) -> ThemeIcon {
     ThemeIcon {
         common: Common::default(),
         icon: icon.into(),
@@ -57,11 +57,11 @@ impl ThemeIcon {
         self.color = Some(color);
         self
     }
-    pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
         self.common.class = class.into();
         self
     }
-    pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
         self.common.style = style.into();
         self
     }
@@ -70,7 +70,7 @@ impl ThemeIcon {
         self
     }
     /// Supply an accessible image alternative. Omit for a decorative icon.
-    pub fn name(mut self, name: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, name: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(name.into());
         self
     }
@@ -160,7 +160,7 @@ impl Widget for ThemeIcon {
                         scope.report_error(error);
                     }
                 });
-                Some(Lotus::from(accepted))
+                Some(Vary::from(accepted))
             } else {
                 Some(initial.into())
             }
@@ -204,7 +204,7 @@ impl Widget for ThemeIcon {
         };
         let color = self.color.unwrap_or(color);
         let icon = self.icon.clone();
-        let reactive = icon.is_reactive() || accepted.as_ref().is_some_and(Lotus::is_reactive);
+        let reactive = icon.is_reactive() || accepted.as_ref().is_some_and(Vary::is_reactive);
         let drawing = move || GraphicProps {
             width: 24.,
             height: 24.,
@@ -214,10 +214,10 @@ impl Widget for ThemeIcon {
                 width: 2.,
                 cap: StrokeCap::Round,
             }),
-            alternative: accepted.as_ref().map(Lotus::get),
+            alternative: accepted.as_ref().map(Vary::get),
             ..Default::default()
         };
-        let drawing: Lotus<GraphicProps> = if reactive {
+        let drawing: Vary<GraphicProps> = if reactive {
             scope.bond(drawing).into()
         } else {
             drawing().into()

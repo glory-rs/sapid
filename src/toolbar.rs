@@ -4,13 +4,13 @@ use crate::composite;
 use glory::render::{Direction, Event, EventKind, Orientation, Role, Semantics};
 use glory::style::{BorderStyle, Display, Edges, FlexDirection, FlexWrap, Length, Style};
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 
 pub const MAX_TOOLBAR_ACTIONS: usize = 128;
 pub const MAX_TOOLBAR_GROUPS: usize = 32;
 pub struct ToolbarGroup {
     key: String,
-    name: Option<Lotus<String>>,
+    name: Option<Vary<String>>,
     buttons: Vec<crate::Button>,
 }
 pub fn toolbar_group(key: impl Into<String>) -> ToolbarGroup {
@@ -21,7 +21,7 @@ pub fn toolbar_group(key: impl Into<String>) -> ToolbarGroup {
     }
 }
 impl ToolbarGroup {
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.name = Some(value.into());
         self
     }
@@ -45,7 +45,7 @@ pub struct Toolbar {
     orientation: Orientation,
     direction: Direction,
     looping: bool,
-    visible: Lotus<bool>,
+    visible: Vary<bool>,
 }
 pub fn toolbar(key: impl Into<String>) -> Toolbar {
     let common = Common {
@@ -75,7 +75,7 @@ impl Toolbar {
         crate::document::extend_bounded(&mut self.groups, value, MAX_TOOLBAR_GROUPS);
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -87,19 +87,19 @@ impl Toolbar {
         self.common.size = value;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.common.enabled = value.into();
         self
     }
-    pub fn visible(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn visible(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.visible = value.into();
         self
     }
@@ -304,10 +304,10 @@ impl Widget for Toolbar {
 
 pub struct ActionBar {
     toolbar: Toolbar,
-    count: Lotus<usize>,
-    visible: Option<Lotus<bool>>,
+    count: Vary<usize>,
+    visible: Option<Vary<bool>>,
     clear: Option<Box<dyn FnMut()>>,
-    clear_label: Lotus<String>,
+    clear_label: Vary<String>,
 }
 pub fn action_bar(key: impl Into<String>) -> ActionBar {
     ActionBar {
@@ -323,11 +323,11 @@ impl ActionBar {
         self.toolbar = self.toolbar.group(value);
         self
     }
-    pub fn selected_count(mut self, value: impl Into<Lotus<usize>>) -> Self {
+    pub fn selected_count(mut self, value: impl Into<Vary<usize>>) -> Self {
         self.count = value.into();
         self
     }
-    pub fn visible(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn visible(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.visible = Some(value.into());
         self
     }
@@ -335,11 +335,11 @@ impl ActionBar {
         self.clear = Some(Box::new(value));
         self
     }
-    pub fn clear_label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn clear_label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.clear_label = value.into();
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.toolbar = self.toolbar.name(value);
         self
     }
@@ -351,11 +351,11 @@ impl ActionBar {
         self.toolbar = self.toolbar.size(value);
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.toolbar = self.toolbar.class(value);
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.toolbar = self.toolbar.style(value);
         self
     }

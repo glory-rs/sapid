@@ -5,13 +5,13 @@ use crate::state::Value;
 use glory::render::{Change, Event, EventKind, NodeId, Patch, Semantics};
 use glory::style::{Length, Limit, Overflow, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 pub const MAX_SPOILER_BYTES: usize = 65536;
 pub struct Spoiler {
     common: Common,
     key: String,
-    content: Lotus<String>,
+    content: Vary<String>,
     expanded: Value<bool>,
     max_height: f64,
     more: String,
@@ -36,7 +36,7 @@ pub fn spoiler(key: impl Into<String>) -> Spoiler {
 }
 impl Spoiler {
     common_methods!();
-    pub fn content(mut self, content: impl Into<Lotus<String>>) -> Self {
+    pub fn content(mut self, content: impl Into<Vary<String>>) -> Self {
         self.content = content.into();
         self
     }
@@ -44,7 +44,7 @@ impl Spoiler {
         self.max_height = height;
         self
     }
-    pub fn expanded(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn expanded(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.expanded.source = Some(value.into());
         self
     }

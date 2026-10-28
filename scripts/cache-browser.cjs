@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const http = require('node:http');
 const path = require('node:path');
 const { chromium } = require(process.env.GLORY_PLAYWRIGHT || process.env.SAPID_PLAYWRIGHT || 'D:/Works/glory-rs/glory/tests/playwright/node_modules/playwright');
-process.env.TEMP = process.env.TMP = 'D:/BuildCache/site-cache-tests/tmp';
+process.env.TEMP = process.env.TMP = 'D:/BuildCache/sapid/tmp/site-cache-tests';
 fs.mkdirSync(process.env.TEMP, { recursive: true });
 const directory = path.resolve(process.argv[2]);
 const manifest = JSON.parse(fs.readFileSync(path.join(directory, 'asset-manifest.json')));

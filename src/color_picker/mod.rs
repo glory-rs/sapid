@@ -8,7 +8,7 @@ use crate::{
 use glory::render::{Direction, DragCapture, Event, EventKind, NodeId, Role, Semantics};
 use glory::style::{Color, Length, PointerEvents, Position, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::rc::Rc;
 mod pad;
 const CELLS: usize = 16;
@@ -29,8 +29,8 @@ pub(super) struct PickerState {
     owner: glory::core::InstanceId,
     control: Control<Hsva>,
     accepted: Cage<Hsva>,
-    enabled: Lotus<bool>,
-    readonly: Lotus<bool>,
+    enabled: Vary<bool>,
+    readonly: Vary<bool>,
     direction: Direction,
     change: Callback<Hsva>,
     commit: Callback<Hsva>,
@@ -87,7 +87,7 @@ pub struct ColorPicker {
     key: String,
     common: Common,
     value: Value<Hsva>,
-    readonly: Lotus<bool>,
+    readonly: Vary<bool>,
     direction: Direction,
     alpha: bool,
     side: f64,
@@ -111,7 +111,7 @@ pub fn color_picker(key: impl Into<String>) -> ColorPicker {
     }
 }
 impl ColorPicker {
-    pub fn value(mut self, value: impl Into<Lotus<Hsva>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<Hsva>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -127,7 +127,7 @@ impl ColorPicker {
         self.commit = Some(Box::new(value));
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -139,11 +139,11 @@ impl ColorPicker {
         self.common.size = value;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
@@ -151,11 +151,11 @@ impl ColorPicker {
         self.common.unstyled = true;
         self
     }
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.common.enabled = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
@@ -191,7 +191,7 @@ fn surface(color: Color) -> Style {
         ..Style::new()
     }
 }
-fn channel(state: Rc<PickerState>, scope: &Scope, index: u8) -> Lotus<f64> {
+fn channel(state: Rc<PickerState>, scope: &Scope, index: u8) -> Vary<f64> {
     scope
         .bond(move || {
             let value = state.current();

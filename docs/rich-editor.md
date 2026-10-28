@@ -28,7 +28,7 @@ unstyled retains required editor geometry.
 query the actual host selection; only one current query is retained and a newer
 command cancels it. Explicit `format_at`/`insert_at` accept validated UTF-16
 ranges. `undo`, `redo`, and uncontrolled `reset` operate on accepted documents.
-The `document`, `selection`, `composing` and `history` outputs are Lotus handles.
+The `document`, `selection`, `composing` and `history` outputs are Vary handles.
 Selection is the last observed range, not a claim that pixels were displayed.
 A retired controller returns a typed error and cannot affect a replacement Owner.
 

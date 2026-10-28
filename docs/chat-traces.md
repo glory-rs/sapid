@@ -50,7 +50,7 @@ retaining a history. The same full key and parent preserve a mounted row when
 title/status/payload changes. Moving a record to another parent or removing it
 retires its row Owner. Empty forests display an explicit empty message.
 
-Expansion uses `.expanded(Lotus<TraceExpansion>)` or local
+Expansion uses `.expanded(Vary<TraceExpansion>)` or local
 `.default_expanded(...)`. `on_expand_change(TraceToggle)` proposes the key,
 requested open state and finite expanded set. Controlled sources are read-only;
 refusal preserves accepted UI. External source updates are silent. Local

@@ -8,7 +8,7 @@ use glory::style::{
     Display, FlexDirection, FlexWrap, Length, Limit, ObjectFit, Overflow, Style,
 };
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{collections::BTreeSet, rc::Rc};
 pub const MAX_LIGHTBOX_IMAGES: usize = 128;
 pub const MAX_LIGHTBOX_METADATA_BYTES: usize = 262_144;
@@ -142,16 +142,16 @@ impl Model {
 }
 pub struct Lightbox {
     key: String,
-    images: Lotus<Vec<LightboxImage>>,
+    images: Vary<Vec<LightboxImage>>,
     view: Value<LightboxView>,
     open: Value<bool>,
     label: String,
     title: String,
     theme: crate::Theme,
     unstyled: bool,
-    enabled: Lotus<bool>,
-    class: Lotus<String>,
-    style: Lotus<Style>,
+    enabled: Vary<bool>,
+    class: Vary<String>,
+    style: Vary<Style>,
     panel: Option<Cage<Option<NodeId>>>,
     trigger: Option<Cage<Option<NodeId>>>,
     changed: Option<Box<dyn FnMut(LightboxView)>>,
@@ -177,11 +177,11 @@ pub fn lightbox(key: impl Into<String>) -> Lightbox {
     }
 }
 impl Lightbox {
-    pub fn images(mut self, value: impl Into<Lotus<Vec<LightboxImage>>>) -> Self {
+    pub fn images(mut self, value: impl Into<Vary<Vec<LightboxImage>>>) -> Self {
         self.images = value.into();
         self
     }
-    pub fn view(mut self, value: impl Into<Lotus<LightboxView>>) -> Self {
+    pub fn view(mut self, value: impl Into<Vary<LightboxView>>) -> Self {
         self.view.source = Some(value.into());
         self
     }
@@ -189,7 +189,7 @@ impl Lightbox {
         self.view.default = value;
         self
     }
-    pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(value.into());
         self
     }
@@ -213,15 +213,15 @@ impl Lightbox {
         self.unstyled = true;
         self
     }
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.enabled = value.into();
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.style = value.into();
         self
     }
@@ -246,10 +246,10 @@ impl Lightbox {
 struct State {
     owner: glory::core::InstanceId,
     model: Cage<Rc<Model>>,
-    images: Lotus<Vec<LightboxImage>>,
+    images: Vary<Vec<LightboxImage>>,
     view: crate::state::Control<LightboxView>,
-    open: Lotus<bool>,
-    enabled: Lotus<bool>,
+    open: Vary<bool>,
+    enabled: Vary<bool>,
     changed: Callback<LightboxView>,
 }
 impl State {

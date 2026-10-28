@@ -86,8 +86,9 @@ ASCII selection/caret, stable engine identity and input-background raster pixels
 The second checks twelve-hour Chinese seconds in the actual editor, unstyled
 small dimensions, readonly, disabled focus rejection and Owner cleanup. The first
 non-ASCII exact-selection attempt is preserved in
-`time-input-native-first-selection-boundary.log`; the final test explicitly checks
-its typed refusal and unchanged UI stats.
+`time-input-native-first-selection-boundary.log` as historical evidence. Current
+Glory accepts the Chinese UTF-16 range 9..11 with backward direction; the
+2026-10-29 consumer reads back the actual range and retains the same editor.
 
 The original browser suite passed **12/12**, errors `[]`, with Chromium
 **148.0.7778.96** against fixed FORMAT-10

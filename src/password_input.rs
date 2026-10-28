@@ -1,6 +1,6 @@
 use glory::render::Purpose;
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 
 use crate::state::Value;
 use crate::text_input::text_input_methods;
@@ -27,7 +27,7 @@ pub fn password_input() -> PasswordInput {
 }
 impl PasswordInput {
     text_input_methods!();
-    pub fn visible(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn visible(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.visible.source = Some(value.into());
         self
     }

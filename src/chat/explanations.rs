@@ -5,7 +5,7 @@ use crate::composite::{self, ContentPolicy};
 use glory::render::{DocumentPart, TextKind};
 use glory::style::{Edges, Length, Limit, Overflow, Style, WhiteSpace};
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 use std::collections::BTreeSet;
 pub const MAX_EXPLANATION_STEPS: usize = 64;
 pub const MAX_EXPLANATION_BYTES: usize = 65536;
@@ -113,9 +113,9 @@ impl PublicExplanation {
 pub struct Reasoning {
     common: Common,
     key: String,
-    data: Lotus<PublicExplanation>,
+    data: Vary<PublicExplanation>,
     ordered: bool,
-    open: Option<Lotus<bool>>,
+    open: Option<Vary<bool>>,
     default_open: bool,
     on_open: Option<Box<dyn FnMut(bool)>>,
     policy: ContentPolicy,
@@ -140,11 +140,11 @@ pub fn chain_of_thought(key: impl Into<String>) -> Reasoning {
 }
 impl Reasoning {
     common_methods!();
-    pub fn data(mut self, value: impl Into<Lotus<PublicExplanation>>) -> Self {
+    pub fn data(mut self, value: impl Into<Vary<PublicExplanation>>) -> Self {
         self.data = value.into();
         self
     }
-    pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.open = Some(value.into());
         self
     }

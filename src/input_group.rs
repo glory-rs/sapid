@@ -1,6 +1,6 @@
 use glory::style::{Align, Display, FlexDirection, Length, Style};
 use glory::ui::{Children, IntoChildren, Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 
 use crate::appearance::{Common, configure};
 
@@ -18,11 +18,11 @@ macro_rules! section_methods {
             self.common.unstyled = true;
             self
         }
-        pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.class = value.into();
             self
         }
-        pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
             self.common.style = value.into();
             self
         }
@@ -103,7 +103,7 @@ impl Widget for InputGroup {
 /// Text before/after an input. It is content, never an implicit label or tab stop.
 pub struct InputAddon {
     common: Common,
-    content: Lotus<String>,
+    content: Vary<String>,
 }
 pub fn input_addon() -> InputAddon {
     InputAddon {
@@ -113,7 +113,7 @@ pub fn input_addon() -> InputAddon {
 }
 impl InputAddon {
     section_methods!();
-    pub fn content(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn content(mut self, value: impl Into<Vary<String>>) -> Self {
         self.content = value.into();
         self
     }

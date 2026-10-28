@@ -3,7 +3,7 @@ use crate::{FieldControl, Size, Slider, Theme};
 use glory::render::{Direction, Event, EventKind, NodeId};
 use glory::style::Style;
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus};
+use glory::{Cage, Vary};
 /// Degrees are finite in 0..=360. Both endpoint values share the top position;
 /// arithmetic only wraps after crossing the endpoint, preserving Home/End.
 pub struct AngleSlider {
@@ -15,7 +15,7 @@ pub fn angle_slider(key: impl Into<String>) -> AngleSlider {
     }
 }
 impl AngleSlider {
-    pub fn value(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.inner = self.inner.value(value);
         self
     }
@@ -23,15 +23,15 @@ impl AngleSlider {
         self.inner = self.inner.default_value(value);
         self
     }
-    pub fn step(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn step(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.inner = self.inner.step(value);
         self
     }
-    pub fn page_step(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn page_step(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.inner = self.inner.page_step(value);
         self
     }
-    pub fn value_text(mut self, value: impl Into<Lotus<Option<String>>>) -> Self {
+    pub fn value_text(mut self, value: impl Into<Vary<Option<String>>>) -> Self {
         self.inner = self.inner.value_text(value);
         self
     }
@@ -47,31 +47,31 @@ impl AngleSlider {
         self.inner = self.inner.unstyled();
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.inner = self.inner.name(value);
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.inner = self.inner.class(value);
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.inner = self.inner.style(value);
         self
     }
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.inner = self.inner.enabled(value);
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.inner = self.inner.readonly(value);
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.inner = self.inner.required(value);
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.inner = self.inner.invalid(value);
         self
     }

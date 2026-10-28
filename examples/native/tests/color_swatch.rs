@@ -33,6 +33,16 @@ fn rgba_preview_has_real_checker_alpha_pixels_and_updates_same_native_graphic() 
         sapid::Theme::green_light(),
         sapid::Theme::green_dark(),
     ] {
+        let dark = theme.checker_dark;
+        let light = theme.checker_light;
+        let over_red = |Color(r, g, b, _)| {
+            [
+                (128. + f64::from(r) * 127. / 255.).round() as u8,
+                (f64::from(g) * 127. / 255.).round() as u8,
+                (f64::from(b) * 127. / 255.).round() as u8,
+                255,
+            ]
+        };
         let host = WindowApp::new();
         let app = host.app();
         let color = app.scope().cage(Color(255, 0, 0, 128));
@@ -61,7 +71,7 @@ fn rgba_preview_has_real_checker_alpha_pixels_and_updates_same_native_graphic() 
                 rect.x + rect.width * 0.125,
                 rect.y + rect.height * 0.125,
             ),
-            [224, 96, 96, 255],
+            over_red(dark),
         );
         close(
             pixel(
@@ -69,7 +79,7 @@ fn rgba_preview_has_real_checker_alpha_pixels_and_updates_same_native_graphic() 
                 rect.x + rect.width * 0.375,
                 rect.y + rect.height * 0.125,
             ),
-            [255, 127, 127, 255],
+            over_red(light),
         );
         let hit = host.renderer().inspect(|doc| {
             doc.hit(
@@ -94,7 +104,7 @@ fn rgba_preview_has_real_checker_alpha_pixels_and_updates_same_native_graphic() 
                 rect.x + rect.width * 0.125,
                 rect.y + rect.height * 0.125,
             ),
-            [192, 192, 192, 255],
+            [dark.0, dark.1, dark.2, dark.3],
         );
         close(
             pixel(
@@ -102,7 +112,7 @@ fn rgba_preview_has_real_checker_alpha_pixels_and_updates_same_native_graphic() 
                 rect.x + rect.width * 0.375,
                 rect.y + rect.height * 0.125,
             ),
-            [255, 255, 255, 255],
+            [light.0, light.1, light.2, light.3],
         );
         assert_eq!(
             host.renderer()

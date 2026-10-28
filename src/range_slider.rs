@@ -11,7 +11,7 @@ use glory::render::{
 };
 use glory::style::{Edges, Length, Position, Style};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     rc::Rc,
@@ -329,7 +329,7 @@ impl Controller {
     fn stamp(&self) -> Result<([f64; 2], Option<u64>)> {
         let value = self.control.source.try_get()?;
         let version = match self.control.source {
-            Lotus::Cage(source) => Some(source.try_version()?),
+            Vary::Cage(source) => Some(source.try_version()?),
             _ => None,
         };
         Ok((value, version))
@@ -551,20 +551,20 @@ pub struct RangeSlider {
     key: String,
     common: Common,
     value: Value<[f64; 2]>,
-    min: Lotus<f64>,
-    max: Lotus<f64>,
-    step: Lotus<f64>,
-    page: Option<Lotus<f64>>,
-    gap: Lotus<f64>,
-    names: Lotus<[String; 2]>,
-    text: Lotus<[Option<String>; 2]>,
+    min: Vary<f64>,
+    max: Vary<f64>,
+    step: Vary<f64>,
+    page: Option<Vary<f64>>,
+    gap: Vary<f64>,
+    names: Vary<[String; 2]>,
+    text: Vary<[Option<String>; 2]>,
     axis: Orientation,
     direction: Direction,
     collision: RangeCollision,
     field: Option<FieldControl>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
     inherit_theme: bool,
     inherit_size: bool,
     thumbs: [Option<Cage<Option<NodeId>>>; 2],
@@ -602,7 +602,7 @@ pub fn range_slider(key: impl Into<String>) -> RangeSlider {
 }
 macro_rules! source_method {
     ($name:ident,$field:ident,$ty:ty) => {
-        pub fn $name(mut self, value: impl Into<Lotus<$ty>>) -> Self {
+        pub fn $name(mut self, value: impl Into<Vary<$ty>>) -> Self {
             self.$field = value.into();
             self
         }
@@ -623,19 +623,19 @@ impl RangeSlider {
         self.common.unstyled = true;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.common.enabled = value.into();
         self
     }
@@ -647,7 +647,7 @@ impl RangeSlider {
         self.thumbs[thumb.index()] = Some(value);
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<[f64; 2]>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<[f64; 2]>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -655,7 +655,7 @@ impl RangeSlider {
         self.value.default = value;
         self
     }
-    pub fn page_step(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn page_step(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.page = Some(value.into());
         self
     }
@@ -751,7 +751,7 @@ impl Widget for RangeSlider {
             let step = step.try_get()?;
             let page = page
                 .as_ref()
-                .map_or(Ok((step * 10.).min(1e12)), Lotus::try_get)?;
+                .map_or(Ok((step * 10.).min(1e12)), Vary::try_get)?;
             let mut state = Snapshot {
                 values: source.try_get()?,
                 min: min.try_get()?,

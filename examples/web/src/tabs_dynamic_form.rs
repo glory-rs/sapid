@@ -56,7 +56,7 @@ pub fn tabs_dynamic_form(theme: Theme) -> impl Widget {
                         format!("Section {word}")
                     }
                 });
-                let enabled: Lotus<bool> = if key == "beta" {
+                let enabled: Vary<bool> = if key == "beta" {
                     beta_enabled.into()
                 } else {
                     true.into()

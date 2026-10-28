@@ -8,7 +8,7 @@ use glory::style::{
     Display, Edges, Family, FlexDirection, Length, Limit, Overflow, Style, WhiteSpace,
 };
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{cell::Cell, collections::BTreeSet, rc::Rc};
 fn invalid(message: &'static str) -> glory::ui::Error {
     glory::render::Error::InvalidProps(message).into()
@@ -64,7 +64,7 @@ struct State {
     next: Cell<u64>,
     accepted: Cage<TraceData>,
     expanded: Control<TraceExpansion>,
-    enabled: Lotus<bool>,
+    enabled: Vary<bool>,
     changed: Callback<TraceToggle>,
     action: Callback<TraceAction>,
     observers: Observers,
@@ -139,15 +139,15 @@ impl State {
 pub struct Trace {
     common: Common,
     key: String,
-    data: Lotus<TraceData>,
+    data: Vary<TraceData>,
     expanded: Value<TraceExpansion>,
     changed: Option<Box<dyn FnMut(TraceToggle)>>,
     action: Option<Box<dyn FnMut(TraceAction)>>,
-    action_label: Lotus<String>,
+    action_label: Vary<String>,
     policy: ContentPolicy,
     payload_height: f64,
 }
-pub fn trace(key: impl Into<String>, data: impl Into<Lotus<TraceData>>) -> Trace {
+pub fn trace(key: impl Into<String>, data: impl Into<Vary<TraceData>>) -> Trace {
     Trace {
         common: Common::default(),
         key: key.into(),
@@ -165,7 +165,7 @@ impl Trace {
     pub(super) fn replace_common(&mut self, common: Common) {
         self.common = common;
     }
-    pub fn expanded(mut self, value: impl Into<Lotus<TraceExpansion>>) -> Self {
+    pub fn expanded(mut self, value: impl Into<Vary<TraceExpansion>>) -> Self {
         self.expanded.source = Some(value.into());
         self
     }
@@ -181,7 +181,7 @@ impl Trace {
         self.action = Some(Box::new(value));
         self
     }
-    pub fn action_label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn action_label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.action_label = value.into();
         self
     }

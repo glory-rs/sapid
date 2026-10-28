@@ -3,7 +3,7 @@
 use glory::render::{Event, EventKind, Semantics, SheetConfig};
 use glory::style::{Align, Color, Display, FlexWrap, Length, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 use crate::composite::{self, Callback};
 use crate::state::Control;
@@ -86,7 +86,7 @@ pub(crate) struct Accepted {
 }
 pub(crate) fn mount(
     scope: &Scope,
-    options: &Lotus<DrawerSnaps>,
+    options: &Vary<DrawerSnaps>,
     control: &Control<usize>,
 ) -> Result<Cage<Accepted>> {
     let initial = control.source.try_get()?;

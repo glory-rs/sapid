@@ -3,21 +3,21 @@ use crate::appearance::{Common, configure};
 use glory::render::{NodeId, Semantics};
 use glory::style::{Align, Color, Display, Justify, Length, PointerEvents, Position, Style};
 use glory::ui::{Children, IntoChildren, Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 struct Shade {
     common: Common,
-    visible: Lotus<bool>,
+    visible: Vary<bool>,
     loading: bool,
     opacity: f64,
     color: Option<Color>,
-    label: Lotus<String>,
+    label: Vary<String>,
     children: Children,
     mask_ref: Option<Cage<Option<NodeId>>>,
     content_ref: Option<Cage<Option<NodeId>>>,
 }
 impl Shade {
-    fn new(loading: bool, visible: Lotus<bool>) -> Self {
+    fn new(loading: bool, visible: Vary<bool>) -> Self {
         Self {
             common: Common::default(),
             visible,
@@ -38,7 +38,7 @@ pub struct LoadingOverlay(Shade);
 pub fn overlay() -> Overlay {
     Overlay(Shade::new(false, true.into()))
 }
-pub fn loading_overlay(loading: impl Into<Lotus<bool>>) -> LoadingOverlay {
+pub fn loading_overlay(loading: impl Into<Vary<bool>>) -> LoadingOverlay {
     LoadingOverlay(Shade::new(true, loading.into()))
 }
 macro_rules! common {
@@ -52,16 +52,16 @@ macro_rules! common {
                 self.0.common.unstyled = true;
                 self
             }
-            pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+            pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
                 self.0.common.class = class.into();
                 self
             }
-            pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+            pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
                 self.0.common.style = style.into();
                 self
             }
             /// Optional name for the containing content region, not for the mask.
-            pub fn name(mut self, name: impl Into<Lotus<String>>) -> Self {
+            pub fn name(mut self, name: impl Into<Vary<String>>) -> Self {
                 self.0.common.name = Some(name.into());
                 self
             }
@@ -101,18 +101,18 @@ macro_rules! common {
 common!(Overlay);
 common!(LoadingOverlay);
 impl Overlay {
-    pub fn visible(mut self, visible: impl Into<Lotus<bool>>) -> Self {
+    pub fn visible(mut self, visible: impl Into<Vary<bool>>) -> Self {
         self.0.visible = visible.into();
         self
     }
 }
 impl LoadingOverlay {
-    pub fn loading(mut self, loading: impl Into<Lotus<bool>>) -> Self {
+    pub fn loading(mut self, loading: impl Into<Vary<bool>>) -> Self {
         self.0.visible = loading.into();
         self
     }
     /// Localized status text announced by the independent retained spinner.
-    pub fn label(mut self, label: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, label: impl Into<Vary<String>>) -> Self {
         self.0.label = label.into();
         self
     }

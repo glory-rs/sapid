@@ -5,7 +5,7 @@ use glory::render::{
 };
 use glory::style::{Edges, Length, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 use crate::appearance::Common;
 use crate::composite::{self, Callback, ContentPolicy, Factory, Observers};
@@ -30,10 +30,10 @@ struct Overlay {
     key: String,
     common: Common,
     kind: &'static str,
-    label: Lotus<String>,
-    title: Option<Lotus<String>>,
-    description: Option<Lotus<String>>,
-    close_label: Lotus<String>,
+    label: Vary<String>,
+    title: Option<Vary<String>>,
+    description: Option<Vary<String>>,
+    close_label: Vary<String>,
     show_close: bool,
     show_trigger: bool,
     open: Value<bool>,
@@ -46,13 +46,13 @@ struct Overlay {
     trigger: Option<Cage<Option<NodeId>>>,
     panel: Option<Cage<Option<NodeId>>>,
     config: Layer,
-    snaps: Option<Lotus<crate::DrawerSnaps>>,
+    snaps: Option<Vary<crate::DrawerSnaps>>,
     snap: Value<usize>,
     snap_change: Option<Box<dyn FnMut(usize)>>,
-    confirm_label: Lotus<String>,
+    confirm_label: Vary<String>,
     confirm: Option<Box<dyn FnMut(())>>,
     cancel: Option<Box<dyn FnMut(AlertCancelReason)>>,
-    confirm_enabled: Lotus<bool>,
+    confirm_enabled: Vary<bool>,
     confirm_variant: crate::ButtonVariant,
 }
 impl Overlay {
@@ -121,7 +121,7 @@ macro_rules! overlay {
         }
         impl $name {
             /// Controlled input; changes are proposals delivered to the callback.
-            pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+            pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
                 self.inner.open.source = Some(value.into());
                 self
             }
@@ -129,19 +129,19 @@ macro_rules! overlay {
                 self.inner.open.default = value;
                 self
             }
-            pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+            pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
                 self.inner.label = value.into();
                 self
             }
-            pub fn title(mut self, value: impl Into<Lotus<String>>) -> Self {
+            pub fn title(mut self, value: impl Into<Vary<String>>) -> Self {
                 self.inner.title = Some(value.into());
                 self
             }
-            pub fn description(mut self, value: impl Into<Lotus<String>>) -> Self {
+            pub fn description(mut self, value: impl Into<Vary<String>>) -> Self {
                 self.inner.description = Some(value.into());
                 self
             }
-            pub fn close_label(mut self, value: impl Into<Lotus<String>>) -> Self {
+            pub fn close_label(mut self, value: impl Into<Vary<String>>) -> Self {
                 self.inner.close_label = value.into();
                 self
             }
@@ -208,15 +208,15 @@ macro_rules! overlay {
                 self.inner.panel = Some(value);
                 self
             }
-            pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+            pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
                 self.inner.common.class = value.into();
                 self
             }
-            pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+            pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
                 self.inner.common.name = Some(value.into());
                 self
             }
-            pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+            pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
                 self.inner.common.style = value.into();
                 self
             }
@@ -232,7 +232,7 @@ macro_rules! overlay {
                 self.inner.common.unstyled = true;
                 self
             }
-            pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+            pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
                 self.inner.common.enabled = value.into();
                 self
             }
@@ -290,7 +290,7 @@ macro_rules! managed_focus {
 }
 managed_focus!(Dialog, Drawer, Popover, AlertDialog);
 impl AlertDialog {
-    pub fn confirm_enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn confirm_enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.inner.confirm_enabled = value.into();
         self
     }
@@ -298,11 +298,11 @@ impl AlertDialog {
         self.inner.confirm_variant = value;
         self
     }
-    pub fn confirm_label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn confirm_label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.inner.confirm_label = value.into();
         self
     }
-    pub fn cancel_label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn cancel_label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.inner.close_label = value.into();
         self
     }
@@ -321,11 +321,11 @@ impl Drawer {
         self.inner.snaps = Some(crate::DrawerSnaps::new(points).into());
         self
     }
-    pub fn snap_config(mut self, options: impl Into<Lotus<crate::DrawerSnaps>>) -> Self {
+    pub fn snap_config(mut self, options: impl Into<Vary<crate::DrawerSnaps>>) -> Self {
         self.inner.snaps = Some(options.into());
         self
     }
-    pub fn snap_index(mut self, value: impl Into<Lotus<usize>>) -> Self {
+    pub fn snap_index(mut self, value: impl Into<Vary<usize>>) -> Self {
         self.inner.snap.source = Some(value.into());
         self
     }

@@ -1,7 +1,7 @@
 use glory::render::{FieldPart, FormControl, SemanticId, Semantics};
 use glory::style::{BorderStyle, Edges};
 use glory::ui::{IntoChildren, Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 use crate::appearance::{Common, common_methods, configure};
 use crate::composite;
@@ -15,21 +15,21 @@ pub struct FieldControl {
     label: Option<SemanticId>,
     description: Option<SemanticId>,
     error_id: Option<SemanticId>,
-    error: Lotus<String>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
-    disabled: Lotus<bool>,
+    error: Vary<String>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
+    disabled: Vary<bool>,
     pub(crate) theme: crate::Theme,
     pub(crate) size: crate::Size,
     pub(crate) unstyled: bool,
 }
 impl FieldControl {
-    pub(crate) fn readonly_state(&self, scope: &Scope, readonly: Lotus<bool>) -> Lotus<bool> {
+    pub(crate) fn readonly_state(&self, scope: &Scope, readonly: Vary<bool>) -> Vary<bool> {
         let inherited = self.readonly.clone();
         scope.bond(move || readonly.get() || inherited.get()).into()
     }
-    pub(crate) fn enabled(&self, scope: &Scope, enabled: Lotus<bool>) -> Lotus<bool> {
+    pub(crate) fn enabled(&self, scope: &Scope, enabled: Vary<bool>) -> Vary<bool> {
         let disabled = self.disabled.clone();
         scope.bond(move || enabled.get() && !disabled.get()).into()
     }
@@ -37,10 +37,10 @@ impl FieldControl {
         &self,
         scope: &Scope,
         named: bool,
-        required: Lotus<bool>,
-        readonly: Lotus<bool>,
-        invalid: Lotus<bool>,
-    ) -> Lotus<Option<Box<Semantics>>> {
+        required: Vary<bool>,
+        readonly: Vary<bool>,
+        invalid: Vary<bool>,
+    ) -> Vary<Option<Box<Semantics>>> {
         let field = self.clone();
         scope
             .bond(move || {
@@ -64,11 +64,11 @@ impl FieldControl {
 type ControlFactory = Box<dyn FnMut(FieldControl) -> Box<dyn Widget>>;
 fn accepted_form_control(
     scope: &Scope,
-    name: Option<Lotus<String>>,
-    value: Option<Lotus<String>>,
+    name: Option<Vary<String>>,
+    value: Option<Vary<String>>,
 ) -> Result<Option<Cage<FormControl>>> {
     let Some(name) = name else { return Ok(None) };
-    fn read(name: &Lotus<String>, value: &Option<Lotus<String>>) -> Result<FormControl> {
+    fn read(name: &Vary<String>, value: &Option<Vary<String>>) -> Result<FormControl> {
         name.try_with(|name| {
             if name.len() > 256 || name.contains(['\0', '\r', '\n']) {
                 return Err(glory::render::Error::InvalidProps(
@@ -97,10 +97,10 @@ fn accepted_form_control(
             }
         })?
     }
-    // Raw Lotus values move into the observer; invalid strings are checked by
+    // Raw Vary values move into the observer; invalid strings are checked by
     // borrow before either name/value is cloned into the accepted pair.
     let accepted = scope.cage(read(&name, &value)?);
-    if !name.is_reactive() && !value.as_ref().is_some_and(Lotus::is_reactive) {
+    if !name.is_reactive() && !value.as_ref().is_some_and(Vary::is_reactive) {
         return Ok(Some(accepted));
     }
     let weak = scope.downgrade();
@@ -122,14 +122,14 @@ fn accepted_form_control(
 pub struct Field {
     key: String,
     common: Common,
-    form_name: Option<Lotus<String>>,
-    form_value: Option<Lotus<String>>,
-    label: Option<Lotus<String>>,
-    description: Option<Lotus<String>>,
-    error: Option<Lotus<String>>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
+    form_name: Option<Vary<String>>,
+    form_value: Option<Vary<String>>,
+    label: Option<Vary<String>>,
+    description: Option<Vary<String>>,
+    error: Option<Vary<String>>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
     control: Option<ControlFactory>,
 }
 pub fn field(key: impl Into<String>) -> Field {
@@ -150,36 +150,36 @@ pub fn field(key: impl Into<String>) -> Field {
 impl Field {
     common_methods!();
     /// Successful-control name, independent of accessible labels and names.
-    pub fn form_name(mut self, name: impl Into<Lotus<String>>) -> Self {
+    pub fn form_name(mut self, name: impl Into<Vary<String>>) -> Self {
         self.form_name = Some(name.into());
         self
     }
     /// Explicit Check value. Input values always come from their InputProps.
-    pub fn form_value(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn form_value(mut self, value: impl Into<Vary<String>>) -> Self {
         self.form_value = Some(value.into());
         self
     }
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = Some(value.into());
         self
     }
-    pub fn description(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn description(mut self, value: impl Into<Vary<String>>) -> Self {
         self.description = Some(value.into());
         self
     }
-    pub fn error(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn error(mut self, value: impl Into<Vary<String>>) -> Self {
         self.error = Some(value.into());
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
@@ -283,8 +283,8 @@ pub struct Label {
     common: Common,
     id: SemanticId,
     target: SemanticId,
-    content: Lotus<String>,
-    required: Lotus<bool>,
+    content: Vary<String>,
+    required: Vary<bool>,
 }
 pub fn label(id: SemanticId, target: SemanticId) -> Label {
     label_part(id, target)
@@ -300,11 +300,11 @@ fn label_part(id: SemanticId, target: SemanticId) -> Label {
 }
 impl Label {
     common_methods!();
-    pub fn content(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn content(mut self, value: impl Into<Vary<String>>) -> Self {
         self.content = value.into();
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
@@ -343,7 +343,7 @@ impl Widget for Label {
 pub struct Description {
     common: Common,
     id: SemanticId,
-    content: Lotus<String>,
+    content: Vary<String>,
     error: bool,
 }
 pub struct FieldError(Description);
@@ -366,13 +366,13 @@ pub fn field_error(id: SemanticId) -> FieldError {
 }
 impl Description {
     common_methods!();
-    pub fn content(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn content(mut self, value: impl Into<Vary<String>>) -> Self {
         self.content = value.into();
         self
     }
 }
 impl FieldError {
-    pub fn content(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn content(mut self, value: impl Into<Vary<String>>) -> Self {
         self.0.content = value.into();
         self
     }
@@ -428,8 +428,8 @@ impl Widget for Description {
 pub struct Fieldset {
     common: Common,
     key: String,
-    legend: Lotus<String>,
-    disabled: Lotus<bool>,
+    legend: Vary<String>,
+    disabled: Vary<bool>,
     children: Option<glory::ui::Children>,
 }
 pub fn fieldset(key: impl Into<String>) -> Fieldset {
@@ -443,11 +443,11 @@ pub fn fieldset(key: impl Into<String>) -> Fieldset {
 }
 impl Fieldset {
     common_methods!();
-    pub fn legend(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn legend(mut self, value: impl Into<Vary<String>>) -> Self {
         self.legend = value.into();
         self
     }
-    pub fn disabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn disabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.disabled = value.into();
         self
     }
@@ -523,10 +523,10 @@ pub(crate) fn control_metadata(
     scope: &Scope,
     field: Option<&FieldControl>,
     named: bool,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
-) -> Lotus<Option<Box<Semantics>>> {
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
+) -> Vary<Option<Box<Semantics>>> {
     if let Some(field) = field {
         return field.metadata(scope, named, required, readonly, invalid);
     }

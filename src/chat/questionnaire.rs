@@ -7,7 +7,7 @@ use crate::{
     SubmitToken, Theme,
 };
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{cell::RefCell, rc::Rc};
 
 pub const MAX_QUESTIONNAIRE_STEPS: usize = 16;
@@ -33,7 +33,7 @@ trait QuestionFactory {
         &mut self,
         scope: &Scope,
         form: &FormState,
-        gate: Lotus<bool>,
+        gate: Vary<bool>,
         prefix: &str,
         appearance: (Theme, crate::Size, bool),
         states: &mut Vec<glory::Bond<FormFieldState>>,
@@ -111,7 +111,7 @@ impl<T: 'static> QuestionFactory for Question<T> {
         &mut self,
         scope: &Scope,
         form: &FormState,
-        gate: Lotus<bool>,
+        gate: Vary<bool>,
         prefix: &str,
         appearance: (Theme, crate::Size, bool),
         states: &mut Vec<glory::Bond<FormFieldState>>,
@@ -231,7 +231,7 @@ impl Questionnaire {
         }
         self
     }
-    pub fn active(mut self, value: impl Into<Lotus<usize>>) -> Self {
+    pub fn active(mut self, value: impl Into<Vary<usize>>) -> Self {
         self.active.source = Some(value.into());
         self
     }
@@ -253,7 +253,7 @@ impl Questionnaire {
 struct Questions {
     questions: Vec<Box<dyn QuestionFactory>>,
     form: FormState,
-    gate: Lotus<bool>,
+    gate: Vary<bool>,
     prefix: String,
     appearance: (Theme, crate::Size, bool),
     states: Rc<RefCell<Vec<Vec<glory::Bond<FormFieldState>>>>>,

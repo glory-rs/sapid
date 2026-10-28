@@ -7,7 +7,7 @@ use glory::style::{
     Display, Edges, FlexDirection, FlexWrap, Length, Limit, Overflow, Style, WhiteSpace,
 };
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 
 fn surface(common: &Common) -> Style {
     let mut style = common.theme.label(common.size);
@@ -67,7 +67,7 @@ fn container(common: &mut Common, scope: &Scope, class: &str) -> glory::ui::View
 pub struct Confirmation {
     common: Common,
     key: String,
-    data: Lotus<ConfirmationData>,
+    data: Vary<ConfirmationData>,
     labels: ConfirmationLabels,
     decision: Option<Box<dyn FnMut(ConfirmationRequest)>>,
 }
@@ -85,7 +85,7 @@ pub fn confirmation(key: impl Into<String>) -> Confirmation {
 }
 impl Confirmation {
     common_methods!();
-    pub fn data(mut self, value: impl Into<Lotus<ConfirmationData>>) -> Self {
+    pub fn data(mut self, value: impl Into<Vary<ConfirmationData>>) -> Self {
         self.data = value.into();
         self
     }
@@ -200,7 +200,7 @@ impl Widget for Confirmation {
 pub struct Checkpoint {
     common: Common,
     key: String,
-    data: Lotus<CheckpointData>,
+    data: Vary<CheckpointData>,
     labels: CheckpointLabels,
     restore: Option<Box<dyn FnMut(CheckpointRequest)>>,
 }
@@ -218,7 +218,7 @@ pub fn checkpoint(key: impl Into<String>) -> Checkpoint {
 }
 impl Checkpoint {
     common_methods!();
-    pub fn data(mut self, value: impl Into<Lotus<CheckpointData>>) -> Self {
+    pub fn data(mut self, value: impl Into<Vary<CheckpointData>>) -> Self {
         self.data = value.into();
         self
     }

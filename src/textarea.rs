@@ -30,7 +30,7 @@ impl Textarea {
     pub(crate) fn additional_error(
         mut self,
         id: glory::render::SemanticId,
-        message: glory::Lotus<String>,
+        message: glory::Vary<String>,
     ) -> Self {
         self.input = self.input.additional_error(id, message);
         self

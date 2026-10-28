@@ -6,7 +6,7 @@ use glory::style::{
     Color, Display, Edges, Family, FlexDirection, Length, Overflow, Style, WhiteSpace,
 };
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::rc::Rc;
 
 #[derive(Clone, PartialEq, Eq)]
@@ -72,8 +72,8 @@ fn prepare(
 }
 struct Config {
     common: Common,
-    source: Lotus<String>,
-    language: Lotus<CodeLanguage>,
+    source: Vary<String>,
+    language: Vary<CodeLanguage>,
     numbers: bool,
     start: u32,
     highlighted: Vec<usize>,
@@ -123,11 +123,11 @@ macro_rules! methods {
                 self.config.common.unstyled = true;
                 self
             }
-            pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+            pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
                 self.config.common.class = value.into();
                 self
             }
-            pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+            pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
                 self.config.common.style = value.into();
                 self
             }
@@ -135,15 +135,15 @@ macro_rules! methods {
                 self.config.common.node_ref = Some(value);
                 self
             }
-            pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+            pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
                 self.config.common.name = Some(value.into());
                 self
             }
-            pub fn source(mut self, value: impl Into<Lotus<String>>) -> Self {
+            pub fn source(mut self, value: impl Into<Vary<String>>) -> Self {
                 self.config.source = value.into();
                 self
             }
-            pub fn language(mut self, value: impl Into<Lotus<CodeLanguage>>) -> Self {
+            pub fn language(mut self, value: impl Into<Vary<CodeLanguage>>) -> Self {
                 self.config.language = value.into();
                 self
             }

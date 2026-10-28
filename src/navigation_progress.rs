@@ -134,7 +134,7 @@ impl NavigationProgress {
         self.ready = Some(Box::new(callback));
         self
     }
-    pub fn name(mut self, value: impl Into<glory::Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<glory::Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -142,11 +142,11 @@ impl NavigationProgress {
         self.common.theme = value;
         self
     }
-    pub fn class(mut self, value: impl Into<glory::Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<glory::Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<glory::Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<glory::Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }

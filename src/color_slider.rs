@@ -5,7 +5,7 @@ use crate::{composite, state::Value};
 use glory::render::{Direction, Event, EventKind};
 use glory::style::{Color, Length, Overflow, PointerEvents, Position, Style};
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 
 pub const MAX_COLOR_SLIDER_KEY_BYTES: usize = 58;
 const HUE_SEGMENTS: usize = 120;
@@ -20,15 +20,15 @@ struct ColorSlider {
     common: Common,
     channel: Channel,
     value: Value<f64>,
-    step: Lotus<f64>,
-    page: Option<Lotus<f64>>,
-    color: Lotus<Color>,
+    step: Vary<f64>,
+    page: Option<Vary<f64>>,
+    color: Vary<Color>,
     direction: Direction,
     field: Option<crate::FieldControl>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
-    text: Option<Lotus<Option<String>>>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
+    text: Option<Vary<Option<String>>>,
     change: Option<Box<dyn FnMut(f64)>>,
     commit: Option<Box<dyn FnMut(f64)>>,
 }
@@ -65,7 +65,7 @@ pub fn alpha_slider(key: impl Into<String>) -> AlphaSlider {
 }
 macro_rules! methods {
     () => {
-        pub fn value(mut self, value: impl Into<Lotus<f64>>) -> Self {
+        pub fn value(mut self, value: impl Into<Vary<f64>>) -> Self {
             self.0.value.source = Some(value.into());
             self
         }
@@ -73,15 +73,15 @@ macro_rules! methods {
             self.0.value.default = value;
             self
         }
-        pub fn step(mut self, value: impl Into<Lotus<f64>>) -> Self {
+        pub fn step(mut self, value: impl Into<Vary<f64>>) -> Self {
             self.0.step = value.into();
             self
         }
-        pub fn page_step(mut self, value: impl Into<Lotus<f64>>) -> Self {
+        pub fn page_step(mut self, value: impl Into<Vary<f64>>) -> Self {
             self.0.page = Some(value.into());
             self
         }
-        pub fn value_text(mut self, value: impl Into<Lotus<Option<String>>>) -> Self {
+        pub fn value_text(mut self, value: impl Into<Vary<Option<String>>>) -> Self {
             self.0.text = Some(value.into());
             self
         }
@@ -100,11 +100,11 @@ macro_rules! methods {
             self.0.common.size = value;
             self
         }
-        pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
             self.0.common.class = value.into();
             self
         }
-        pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
             self.0.common.style = value.into();
             self
         }
@@ -112,23 +112,23 @@ macro_rules! methods {
             self.0.common.unstyled = true;
             self
         }
-        pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
             self.0.common.name = Some(value.into());
             self
         }
-        pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+        pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
             self.0.common.enabled = value.into();
             self
         }
-        pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+        pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
             self.0.required = value.into();
             self
         }
-        pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+        pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
             self.0.readonly = value.into();
             self
         }
-        pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+        pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
             self.0.invalid = value.into();
             self
         }
@@ -165,7 +165,7 @@ impl HueSlider {
 impl AlphaSlider {
     methods!();
     /// Base RGB; its alpha is ignored because the slider owns that channel.
-    pub fn color(mut self, value: impl Into<Lotus<Color>>) -> Self {
+    pub fn color(mut self, value: impl Into<Vary<Color>>) -> Self {
         self.0.color = value.into();
         self
     }
@@ -193,7 +193,7 @@ fn surface(color: Color) -> Style {
 struct Trail {
     checker: [Color; 2],
     channel: Channel,
-    color: Lotus<Color>,
+    color: Vary<Color>,
     direction: Direction,
 }
 impl Widget for Trail {

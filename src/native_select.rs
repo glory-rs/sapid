@@ -6,7 +6,7 @@ use glory::render::{
     SemanticId,
 };
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 
 use crate::appearance::{Common, common_methods, configure, observe};
 use crate::composite;
@@ -100,10 +100,10 @@ pub struct NativeSelect {
     rows: Option<u16>,
     placeholder: String,
     field: Option<crate::FieldControl>,
-    form_name: Option<Lotus<String>>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
+    form_name: Option<Vary<String>>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
 }
 pub fn native_select(key: impl Into<String>) -> NativeSelect {
     NativeSelect {
@@ -127,7 +127,7 @@ pub fn native_select(key: impl Into<String>) -> NativeSelect {
 }
 impl NativeSelect {
     common_methods!();
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -138,20 +138,20 @@ impl NativeSelect {
         self.field = Some(field);
         self
     }
-    pub fn form_name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn form_name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.form_name = Some(value.into());
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
     /// HTML select has no readonly mode; true is rejected before host mutation.
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
@@ -167,11 +167,11 @@ impl NativeSelect {
         self.multiple = value;
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<Option<String>>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<Option<String>>>) -> Self {
         self.single.source = Some(value.into());
         self
     }
-    pub fn values(mut self, value: impl Into<Lotus<Vec<String>>>) -> Self {
+    pub fn values(mut self, value: impl Into<Vary<Vec<String>>>) -> Self {
         self.multiple = true;
         self.many.source = Some(value.into());
         self
@@ -295,7 +295,7 @@ impl Widget for NativeSelect {
         let many = self
             .multiple
             .then(|| std::mem::take(&mut self.many).mount(scope));
-        let selection: Lotus<Vec<String>> = if let Some(control) = &single {
+        let selection: Vary<Vec<String>> = if let Some(control) = &single {
             let validate = config.clone();
             let accepted = composite::validated(scope, &control.source, move |value| {
                 if let Some(value) = value {

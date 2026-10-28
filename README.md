@@ -10,7 +10,7 @@ Mantine 全组件 API/功能对照与实施记录见 [181 项差异报告](docs/
 完整 Props 与本地入口见 [API 索引](docs/mantine-api-surface.md)。组件清单的 done 不表示上游 API 全兼容。
 
 Composable widgets for Glory, written with Rust builders and the public
-`Cage` / `Bond` / `Lotus` reactive model. Applications select their host; Sapid
+`Cage` / `Bond` / `Vary` reactive model. Applications select their host; Sapid
 does not install a browser runtime, stylesheet, font loader, or native engine.
 
 The frozen catalogue covers **268 upstream entries in 149 completed work items**.
@@ -60,6 +60,11 @@ the detailed host evidence and original acceptance fixtures.
 
 It targets the current semantic Glory checkout in the sibling `../glory`
 directory. Publishing and a standalone versioned Glory dependency are pending.
+The current integration follows Glory's new `main` branch: reactive property
+sources use `Vary<T>`, and native examples pin the same engine revisions as Glory.
+The deployment manifest locks the exact tested Glory commit. Sapid builders
+continue to implement `glory::ui::Widget`; Glory's separate `display` HTML API
+does not replace the semantic controls used for input, SSR and native hosts.
 
 Full widget comparison and completed work records:
 [widgets roadmap](docs/widgets-roadmap.md), with a
@@ -130,7 +135,7 @@ Further APIs and exact acceptance boundaries:
 - [Adapter capabilities and actual host evidence](docs/adapter-capabilities.md).
 
 Input controls support `name`, `enabled`, `focus`, `node_ref`, `on`, `theme`,
-`size`, `class`, `style`, and `unstyled`. Dynamic values use `Lotus` where the
+`size`, `class`, `style`, and `unstyled`. Dynamic values use `Vary` where the
 underlying declaration is reactive; theme, size, focus and multiline are mount
 configuration. A TextField needs a Field label or accessible `name`; Checkbox's `label` uses
 Glory's associated native checkbox label. `name` explicitly overrides that name.
@@ -361,7 +366,7 @@ panel whose focus was outside does not request focus.
 Accordion accepts statically configured, uniquely keyed items with `label`,
 `enabled`, `content`, `trigger_ref`, and `panel_ref`. Single-open mode is the
 default; `multiple(true)` permits several open keys. `open(...)` takes
-`Lotus<Vec<String>>`; `default_open(["key"])` initializes local state. Unknown,
+`Vary<Vec<String>>`; `default_open(["key"])` initializes local state. Unknown,
 duplicate or disallowed selections produce typed errors and preserve the last
 valid UI. `collapsible(false)` requires one open item for a nonempty collection;
 its sole open header remains focusable with semantic activation disabled.

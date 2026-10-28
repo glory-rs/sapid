@@ -1,5 +1,5 @@
 use glory::Scope;
-use glory::core::Lotus;
+use glory::core::Vary;
 use glory::render::EventKind;
 use glory::ui::{Children, IntoChildren, Result, Widget};
 
@@ -20,9 +20,9 @@ pub struct Button {
     inner: Option<glory::ui::Button>,
     common: Common,
     variant: ButtonVariant,
-    loading: Lotus<bool>,
+    loading: Vary<bool>,
     toolbar: Option<Box<dyn ToolbarHooks>>,
-    label: Lotus<String>,
+    label: Vary<String>,
     body: Option<Children>,
     left: Option<Children>,
     right: Option<Children>,
@@ -45,7 +45,7 @@ trait ToolbarHooks {
         inner: glory::ui::Button,
         handlers: &mut crate::appearance::Handlers,
     ) -> glory::ui::Button;
-    fn register(self: Box<Self>, scope: &Scope, enabled: Lotus<bool>) -> Result;
+    fn register(self: Box<Self>, scope: &Scope, enabled: Vary<bool>) -> Result;
 }
 
 pub fn button() -> Button {
@@ -98,7 +98,7 @@ impl Button {
         scope: &Scope,
         theme: crate::Theme,
         size: crate::Size,
-        enabled: Lotus<bool>,
+        enabled: Vary<bool>,
         unstyled: bool,
         layout: glory::style::Style,
     ) -> Self {
@@ -121,7 +121,7 @@ impl Button {
         self
     }
 
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
@@ -146,7 +146,7 @@ impl Button {
 
     /// Loading disables native activation. The application supplies any loading
     /// label/status content; no timer, spinner, or live announcement is implied.
-    pub fn loading(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn loading(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.loading = value.into();
         self
     }
@@ -240,7 +240,7 @@ impl Widget for Button {
         let loading = self.loading.clone();
         let reactive = enabled.is_reactive() || loading.is_reactive();
         let effective = move || enabled.get() && !loading.get();
-        let enabled: Lotus<bool> = if reactive {
+        let enabled: Vary<bool> = if reactive {
             scope.bond(effective).into()
         } else {
             effective().into()
@@ -366,7 +366,7 @@ impl ToolbarHooks for ToolbarItem {
             observe(&mut observers, owner, event);
         })
     }
-    fn register(self: Box<Self>, scope: &Scope, enabled: Lotus<bool>) -> Result {
+    fn register(self: Box<Self>, scope: &Scope, enabled: Vary<bool>) -> Result {
         let member = self.collection.register(
             scope,
             self.key,

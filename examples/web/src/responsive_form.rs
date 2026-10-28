@@ -1,6 +1,6 @@
 use glory::style::{Align, Length, Style};
 use glory::ui::{Widget, widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 use sapid::{ResponsiveValues, Theme};
 
 fn five<T>(base: T, small: T, medium: T, large: T, extra_large: T) -> ResponsiveValues<T> {
@@ -9,7 +9,7 @@ fn five<T>(base: T, small: T, medium: T, large: T, extra_large: T) -> Responsive
 pub fn responsive_form(theme: Theme) -> impl Widget {
     widget(move |scope: &Scope| {
         let width = scope.cage(500.);
-        let custom: Lotus<Style> = width
+        let custom: Vary<Style> = width
             .map(|width| Style::new().width(Length::Px(*width)))
             .into();
         let responsive = sapid::responsive_root(500.)

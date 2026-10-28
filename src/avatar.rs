@@ -5,7 +5,7 @@ use glory::style::{
     Align, BorderStyle, Display, Edges, Justify, Length, ObjectFit, Overflow, Style, WhiteSpace,
 };
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::collections::HashSet;
 pub const MAX_AVATAR_GROUP_ITEMS: usize = 64;
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
@@ -26,7 +26,7 @@ fn valid_text(value: &str, max: usize) -> Result {
         Ok(())
     }
 }
-fn text_source(scope: &Scope, source: Lotus<String>, max: usize) -> Result<Lotus<String>> {
+fn text_source(scope: &Scope, source: Vary<String>, max: usize) -> Result<Vary<String>> {
     let initial = source.try_with(|value| valid_text(value, max).map(|()| value.clone()))??;
     if !source.is_reactive() {
         return Ok(initial.into());
@@ -64,11 +64,11 @@ macro_rules! appearance {
             self.common.unstyled = true;
             self
         }
-        pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.class = value.into();
             self
         }
-        pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
             self.common.style = value.into();
             self
         }
@@ -82,16 +82,16 @@ pub struct Avatar {
     common: Common,
     theme: Option<crate::Theme>,
     size: Option<crate::Size>,
-    name: Lotus<String>,
-    fallback: Lotus<String>,
+    name: Vary<String>,
+    fallback: Vary<String>,
     shape: AvatarShape,
     id: Option<SemanticId>,
     overlap: Option<f64>,
-    source: Option<Lotus<String>>,
+    source: Option<Vary<String>>,
     loaded: Option<Box<dyn FnMut(u64)>>,
     failed: Option<Box<dyn FnMut(u64)>>,
 }
-pub fn avatar(name: impl Into<Lotus<String>>) -> Avatar {
+pub fn avatar(name: impl Into<Vary<String>>) -> Avatar {
     Avatar {
         common: Common::default(),
         theme: None,
@@ -126,16 +126,16 @@ impl Avatar {
         self.size = Some(value);
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.name = value.into();
         self
     }
     /// Explicit fallback text; no guessed locale-dependent initials.
-    pub fn fallback(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn fallback(mut self, value: impl Into<Vary<String>>) -> Self {
         self.fallback = value.into();
         self
     }
-    pub fn source(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn source(mut self, value: impl Into<Vary<String>>) -> Self {
         self.source = Some(value.into());
         self
     }
@@ -304,7 +304,7 @@ impl AvatarGroup {
         self.common.size = value;
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }

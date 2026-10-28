@@ -40,8 +40,8 @@ struct ResourceController {
     live: Cell<bool>,
     accepted: Cage<ResourceScheduleData>,
     flags: Cage<Flags>,
-    enabled: Lotus<bool>,
-    readonly: Lotus<bool>,
+    enabled: Vary<bool>,
+    readonly: Vary<bool>,
     selection: Control<Option<ScheduleSelection>>,
     view: ResourceScheduleView,
     step: u16,
@@ -412,9 +412,9 @@ impl ResourceController {
 pub struct ResourceSchedule {
     common: Common,
     key: String,
-    data: Lotus<ResourceScheduleData>,
+    data: Vary<ResourceScheduleData>,
     selection: Value<Option<ScheduleSelection>>,
-    readonly: Lotus<bool>,
+    readonly: Vary<bool>,
     view: ResourceScheduleView,
     time: ScheduleTimeWindow,
     direction: glory::render::Direction,
@@ -431,7 +431,7 @@ pub struct ResourceSchedule {
 }
 pub fn resources_schedule(
     key: impl Into<String>,
-    data: impl Into<Lotus<ResourceScheduleData>>,
+    data: impl Into<Vary<ResourceScheduleData>>,
 ) -> ResourceSchedule {
     ResourceSchedule {
         common: Common::default(),
@@ -459,19 +459,19 @@ pub type ResourcesWeekView = ResourceSchedule;
 pub type ResourcesMonthView = ResourceSchedule;
 pub fn resources_day_view(
     key: impl Into<String>,
-    data: impl Into<Lotus<ResourceScheduleData>>,
+    data: impl Into<Vary<ResourceScheduleData>>,
 ) -> ResourcesDayView {
     resources_schedule(key, data)
 }
 pub fn resources_week_view(
     key: impl Into<String>,
-    data: impl Into<Lotus<ResourceScheduleData>>,
+    data: impl Into<Vary<ResourceScheduleData>>,
 ) -> ResourcesWeekView {
     resources_schedule(key, data).view(ResourceScheduleView::Week)
 }
 pub fn resources_month_view(
     key: impl Into<String>,
-    data: impl Into<Lotus<ResourceScheduleData>>,
+    data: impl Into<Vary<ResourceScheduleData>>,
 ) -> ResourcesMonthView {
     resources_schedule(key, data)
         .view(ResourceScheduleView::Month)
@@ -521,7 +521,7 @@ impl ResourceSchedule {
         self.viewport_ref = Some(value);
         self
     }
-    pub fn selection(mut self, value: impl Into<Lotus<Option<ScheduleSelection>>>) -> Self {
+    pub fn selection(mut self, value: impl Into<Vary<Option<ScheduleSelection>>>) -> Self {
         self.selection.source = Some(value.into());
         self
     }
@@ -529,7 +529,7 @@ impl ResourceSchedule {
         self.selection.default = value;
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }

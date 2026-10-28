@@ -10,7 +10,7 @@ use glory::style::{
     BorderStyle, Display, Edges, FlexDirection, Length, Limit, Overflow, Style,
 };
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{cell::Cell, rc::Rc};
 mod model;
 pub use model::{MAX_CAROUSEL_COUNT, MAX_CAROUSEL_OVERSCAN};
@@ -22,7 +22,7 @@ fn invalid(message: &'static str) -> glory::ui::Error {
 
 pub struct Carousel {
     common: Common,
-    count: Lotus<usize>,
+    count: Vary<usize>,
     current: Value<usize>,
     looping: bool,
     overscan: usize,
@@ -31,7 +31,7 @@ pub struct Carousel {
     changed: Option<Box<dyn FnMut(usize)>>,
     slide: Option<Factory>,
     delay: Option<DelayFactory>,
-    paused: Lotus<bool>,
+    paused: Vary<bool>,
     hover_pause: bool,
 }
 pub fn carousel() -> Carousel {
@@ -56,11 +56,11 @@ pub fn carousel() -> Carousel {
 }
 impl Carousel {
     common_methods!();
-    pub fn count(mut self, value: impl Into<Lotus<usize>>) -> Self {
+    pub fn count(mut self, value: impl Into<Vary<usize>>) -> Self {
         self.count = value.into();
         self
     }
-    pub fn current(mut self, value: impl Into<Lotus<usize>>) -> Self {
+    pub fn current(mut self, value: impl Into<Vary<usize>>) -> Self {
         self.current.source = Some(value.into());
         self
     }
@@ -103,7 +103,7 @@ impl Carousel {
         self.delay = Some(Rc::new(delay));
         self
     }
-    pub fn paused(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn paused(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.paused = value.into();
         self
     }
@@ -119,7 +119,7 @@ struct Controller {
     owner: glory::core::InstanceId,
     page: Cage<Page>,
     control: Control<usize>,
-    enabled: Lotus<bool>,
+    enabled: Vary<bool>,
     changed: Callback<usize>,
     root: Cage<Option<NodeId>>,
     extent: Cell<Option<f64>>,

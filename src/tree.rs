@@ -14,7 +14,7 @@ use glory::style::{
     Align, BorderStyle, Display, Edges, FlexDirection, Length, Overflow, Style,
 };
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{
     cell::RefCell,
     collections::{BTreeMap, BTreeSet},
@@ -33,7 +33,7 @@ fn selection(value: &BTreeSet<String>, mode: TreeSelectionMode) -> Result {
     }
     Ok(())
 }
-fn accept_model(scope: &Scope, source: Lotus<Vec<TreeNode>>) -> Result<Cage<Rc<TreeModel>>> {
+fn accept_model(scope: &Scope, source: Vary<Vec<TreeNode>>) -> Result<Cage<Rc<TreeModel>>> {
     let read = || {
         source.try_with(|nodes| {
             TreeModel::validate(nodes).map_err(error)?;
@@ -109,7 +109,7 @@ struct State {
     expanded: SetControl,
     selected: SetControl,
     mode: TreeSelectionMode,
-    enabled: Lotus<bool>,
+    enabled: Vary<bool>,
     logical: Cage<Option<String>>,
     physical: Cage<Option<String>>,
     mounted: RefCell<Mounted>,
@@ -375,11 +375,11 @@ impl State {
         Ok(())
     }
 }
-type LabelFactory = Rc<RefCell<Box<dyn FnMut(Lotus<TreeNode>) -> Box<dyn Widget>>>>;
+type LabelFactory = Rc<RefCell<Box<dyn FnMut(Vary<TreeNode>) -> Box<dyn Widget>>>>;
 pub struct Tree {
     common: Common,
     key: String,
-    source: Option<Lotus<Vec<TreeNode>>>,
+    source: Option<Vary<Vec<TreeNode>>>,
     expanded: Value<BTreeSet<String>>,
     selected: Value<BTreeSet<String>>,
     expand_changed: Option<Box<dyn FnMut(BTreeSet<String>)>>,
@@ -393,7 +393,7 @@ pub struct Tree {
     height: Option<f64>,
     label: Option<LabelFactory>,
     file_icons: bool,
-    checked: Option<Lotus<BTreeMap<String, glory::render::TreeCheckState>>>,
+    checked: Option<Vary<BTreeMap<String, glory::render::TreeCheckState>>>,
     intent: Option<Box<dyn FnMut(String)>>,
     popup: Option<TreePopup>,
     columns: bool,
@@ -401,7 +401,7 @@ pub struct Tree {
 pub(crate) struct TreePopup {
     pub id: glory::render::SemanticId,
     pub labelled_by: glory::render::SemanticId,
-    pub hidden: Lotus<bool>,
+    pub hidden: Vary<bool>,
     pub layer: glory::render::Layer,
 }
 pub fn tree(key: impl Into<String>) -> Tree {
@@ -438,11 +438,11 @@ pub fn file_tree(
 }
 impl Tree {
     common_methods!();
-    pub fn nodes(mut self, source: impl Into<Lotus<Vec<TreeNode>>>) -> Self {
+    pub fn nodes(mut self, source: impl Into<Vary<Vec<TreeNode>>>) -> Self {
         self.source = Some(source.into());
         self
     }
-    pub fn expanded(mut self, source: impl Into<Lotus<BTreeSet<String>>>) -> Self {
+    pub fn expanded(mut self, source: impl Into<Vary<BTreeSet<String>>>) -> Self {
         self.expanded.source = Some(source.into());
         self
     }
@@ -450,7 +450,7 @@ impl Tree {
         self.expanded.default = value;
         self
     }
-    pub fn selected(mut self, source: impl Into<Lotus<BTreeSet<String>>>) -> Self {
+    pub fn selected(mut self, source: impl Into<Vary<BTreeSet<String>>>) -> Self {
         self.selected.source = Some(source.into());
         self
     }
@@ -466,7 +466,7 @@ impl Tree {
     /// unchecked; list selection metadata is omitted when this facet is used.
     pub fn checked(
         mut self,
-        source: impl Into<Lotus<BTreeMap<String, glory::render::TreeCheckState>>>,
+        source: impl Into<Vary<BTreeMap<String, glory::render::TreeCheckState>>>,
     ) -> Self {
         self.checked = Some(source.into());
         self
@@ -530,7 +530,7 @@ impl Tree {
     }
     pub fn render_label<W: Widget>(
         mut self,
-        mut render: impl FnMut(Lotus<TreeNode>) -> W + 'static,
+        mut render: impl FnMut(Vary<TreeNode>) -> W + 'static,
     ) -> Self {
         self.label = Some(Rc::new(RefCell::new(Box::new(move |node| {
             Box::new(render(node))
@@ -747,7 +747,7 @@ impl Widget for Tree {
         } else {
             custom
         };
-        let style: Lotus<Style> = if columns {
+        let style: Vary<Style> = if columns {
             scope
                 .bond(move || {
                     let count =

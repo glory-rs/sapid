@@ -5,7 +5,7 @@ use glory::style::{
     Align, Display, Edges, FlexDirection, FlexWrap, Justify, Length, Limit, Style,
 };
 use glory::ui::{Children, IntoChildren, Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 macro_rules! methods {
     () => {
@@ -22,15 +22,15 @@ macro_rules! methods {
             self.layout.common.unstyled = true;
             self
         }
-        pub fn class(mut self, class: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, class: impl Into<Vary<String>>) -> Self {
             self.layout.common.class = class.into();
             self
         }
-        pub fn style(mut self, style: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, style: impl Into<Vary<Style>>) -> Self {
             self.layout.common.style = style.into();
             self
         }
-        pub fn name(mut self, name: impl Into<Lotus<String>>) -> Self {
+        pub fn name(mut self, name: impl Into<Vary<String>>) -> Self {
             self.layout.common.name = Some(name.into());
             self
         }
@@ -95,7 +95,7 @@ impl Layout {
         }
         // Keep structure even in unstyled mode. Explicit Style remains reactive.
         let (class, custom) = self.common.appearance(scope, self.class, Style::new());
-        let style: Lotus<Style> = if custom.is_reactive() {
+        let style: Vary<Style> = if custom.is_reactive() {
             scope.bond(move || merge(base.clone(), custom.get())).into()
         } else {
             merge(base, custom.get()).into()

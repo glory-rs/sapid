@@ -32,7 +32,7 @@ Blitz 当前明确拒绝 NewContext；普通 Current 链接及其应用请求在
 或应用显式 Patch 链接时，不会发出与当前已接受节点不一致的导航请求。
 
 Anchor 提供统一 theme/size/unstyled/class/style/name/focus/node_ref/on，以及响应式 href、label 和
-open_in，以及 `.current(Lotus<Option<Current>>)` 当前 page/step 位置语义（参见 `navigation.md`）。
+open_in，以及 `.current(Vary<Option<Current>>)` 当前 page/step 位置语义（参见 `navigation.md`）。
 默认采用主题链接颜色，unstyled 保留显式样式和导航语义。外部源变化静默；Owner 退休后
 释放回调和引用，不保存访问地址历史。URI 策略、路由、下载、网络与实际跨窗口行为仍归应用及宿主。
 

@@ -4,12 +4,12 @@ use crate::composite;
 use glory::render::{GraphicProps, NodeId, Semantics};
 use glory::style::{Display, Length, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 pub struct Skeleton {
     common: Common,
-    width: Lotus<Length>,
-    height: Lotus<f64>,
-    loading: Lotus<bool>,
+    width: Vary<Length>,
+    height: Vary<f64>,
+    loading: Vary<bool>,
     radius: f64,
 }
 pub fn skeleton() -> Skeleton {
@@ -22,15 +22,15 @@ pub fn skeleton() -> Skeleton {
     }
 }
 impl Skeleton {
-    pub fn width(mut self, value: impl Into<Lotus<Length>>) -> Self {
+    pub fn width(mut self, value: impl Into<Vary<Length>>) -> Self {
         self.width = value.into();
         self
     }
-    pub fn height(mut self, value: impl Into<Lotus<f64>>) -> Self {
+    pub fn height(mut self, value: impl Into<Vary<f64>>) -> Self {
         self.height = value.into();
         self
     }
-    pub fn loading(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn loading(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.loading = value.into();
         self
     }
@@ -45,7 +45,7 @@ impl Skeleton {
         self
     }
     /// Names the busy region. Its graphic remains explicitly decorative.
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
@@ -53,11 +53,11 @@ impl Skeleton {
         self.common.theme = value;
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }

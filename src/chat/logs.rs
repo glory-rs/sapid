@@ -7,7 +7,7 @@ use glory::style::{
     Display, Edges, Family, FlexDirection, FlexWrap, Length, Limit, Overflow, Style, WhiteSpace,
 };
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::rc::Rc;
 
 pub const MAX_OUTPUT_RECORDS: usize = 1_000_000_000;
@@ -242,12 +242,12 @@ impl OutputHandle {
 pub struct OutputWindow {
     common: Common,
     namespace: String,
-    count: Lotus<usize>,
-    counts: Option<Lotus<TestCounts>>,
+    count: Vary<usize>,
+    counts: Option<Vary<TestCounts>>,
     key: Rc<dyn Fn(usize) -> u64>,
     locate: Rc<dyn Fn(u64) -> Option<usize>>,
     source: Source,
-    revision: Lotus<u64>,
+    revision: Vary<u64>,
     height: f64,
     estimate: f64,
     row_limit: usize,
@@ -263,7 +263,7 @@ pub type TestResults = OutputWindow;
 /// window plus one retained focused record is sampled, never the whole source.
 pub fn terminal(
     namespace: impl Into<String>,
-    count: impl Into<Lotus<usize>>,
+    count: impl Into<Vary<usize>>,
     key: impl Fn(usize) -> u64 + 'static,
     locate: impl Fn(u64) -> Option<usize> + 'static,
     read: impl Fn(usize) -> LogRecord + 'static,
@@ -291,7 +291,7 @@ pub fn terminal(
 /// verification is performed. The indexed source must agree with their sum.
 pub fn test_results(
     namespace: impl Into<String>,
-    counts: impl Into<Lotus<TestCounts>>,
+    counts: impl Into<Vary<TestCounts>>,
     key: impl Fn(usize) -> u64 + 'static,
     locate: impl Fn(u64) -> Option<usize> + 'static,
     read: impl Fn(usize) -> TestCase + 'static,
@@ -306,7 +306,7 @@ pub fn test_results(
 }
 impl OutputWindow {
     common_methods!();
-    pub fn revision(mut self, value: impl Into<Lotus<u64>>) -> Self {
+    pub fn revision(mut self, value: impl Into<Vary<u64>>) -> Self {
         self.revision = value.into();
         self
     }
@@ -347,10 +347,10 @@ struct OutputRow {
     namespace: String,
     source: Source,
     locate: Rc<dyn Fn(u64) -> Option<usize>>,
-    count: Lotus<usize>,
+    count: Vary<usize>,
     index: Cage<usize>,
     key: u64,
-    revision: Lotus<u64>,
+    revision: Vary<u64>,
     theme: crate::Theme,
     unstyled: bool,
 }
@@ -469,7 +469,7 @@ impl Widget for OutputWindow {
         } else {
             None
         };
-        let count: Lotus<usize> = if let Some(summary) = summary {
+        let count: Vary<usize> = if let Some(summary) = summary {
             scope
                 .bond(move || summary.with(|v| v.total().expect("validated test counts")))
                 .into()

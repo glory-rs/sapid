@@ -17,7 +17,7 @@ use glory::render::{
 };
 use glory::style::{Display, Edges, FlexDirection, Length, Limit, Overflow, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 pub const MAX_COMMAND_ACTIONS: usize = 256;
 pub const MAX_COMMAND_GROUPS: usize = 32;
@@ -206,14 +206,14 @@ type Loader = Rc<dyn Fn(String) -> LoadFuture>;
 pub struct Command {
     common: Common,
     key: String,
-    label: Lotus<String>,
+    label: Vary<String>,
     open: Value<bool>,
     query: Value<String>,
     opened: Option<Box<dyn FnMut(bool)>>,
     searched: Option<Box<dyn FnMut(String)>>,
     action: Option<Box<dyn FnMut(String)>>,
     ready: Option<Box<dyn FnMut(CommandHandle)>>,
-    results: Option<Lotus<CommandResponse>>,
+    results: Option<Vary<CommandResponse>>,
     declarations: CommandResults,
     overflow: bool,
     declared_bytes: usize,
@@ -242,11 +242,11 @@ pub fn spotlight(key: impl Into<String>) -> Command {
 }
 impl Command {
     common_methods!();
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
-    pub fn open(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(value.into());
         self
     }
@@ -254,7 +254,7 @@ impl Command {
         self.open.default = value;
         self
     }
-    pub fn search(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn search(mut self, value: impl Into<Vary<String>>) -> Self {
         self.query.source = Some(value.into());
         self
     }
@@ -324,7 +324,7 @@ impl Command {
         }
         self
     }
-    pub fn results(mut self, value: impl Into<Lotus<CommandResponse>>) -> Self {
+    pub fn results(mut self, value: impl Into<Vary<CommandResponse>>) -> Self {
         self.results = Some(value.into());
         self
     }
@@ -420,17 +420,17 @@ struct Runtime {
     opened: Callback<bool>,
     searched: Callback<String>,
     action: Callback<String>,
-    enabled: Lotus<bool>,
+    enabled: Vary<bool>,
     composing: Cage<bool>,
     shortcut: Cell<Option<NodeId>>,
     query_accepted: Cage<String>,
-    snapshot: Lotus<Snapshot>,
+    snapshot: Vary<Snapshot>,
     collection: Collection,
     cursor: RovingFocus,
     dirty: Dirty,
     resource: Option<Resource>,
     request: Cage<u64>,
-    readiness: Lotus<bool>,
+    readiness: Vary<bool>,
     filter: bool,
     key: String,
 }
@@ -563,12 +563,12 @@ impl Runtime {
 fn snapshot(
     scope: &Scope,
     query: Cage<String>,
-    active: Lotus<bool>,
-    response: Option<Lotus<CommandResponse>>,
+    active: Vary<bool>,
+    response: Option<Vary<CommandResponse>>,
     loader: Option<Loader>,
     declarations: CommandResults,
     request: Cage<u64>,
-) -> Result<(Lotus<Snapshot>, Option<Resource>)> {
+) -> Result<(Vary<Snapshot>, Option<Resource>)> {
     if let Some(loader) = loader {
         let load_active = active.clone();
         let resource: Resource = scope.owner().resource(

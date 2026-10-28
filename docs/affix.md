@@ -6,7 +6,7 @@ host's typed layout; it does not run a measurement or scroll-following loop.
 The default viewport mode uses `Position::Fixed` with a 16px right/bottom offset.
 `AffixOffset` chooses exactly one horizontal side (`Left` or `Right`) and one
 vertical side (`Top` or `Bottom`). Values are finite pixels within +/-1,000,000.
-Offsets and visibility accept `Lotus` sources. Applications may derive offsets
+Offsets and visibility accept `Vary` sources. Applications may derive offsets
 from an explicit `ShellLayout` or another host-driven source; Affix does not
 install an implicit global breakpoint service. SSR uses those same explicit
 initial values, then normal bindings apply the application's measured updates.

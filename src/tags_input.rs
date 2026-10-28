@@ -8,7 +8,7 @@ use glory::render::{
 };
 use glory::style::{Display, FlexDirection, FlexWrap, Limit, Overflow, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::rc::Rc;
 
 pub const MAX_TAGS_INPUT_VALUES: usize = 256;
@@ -131,11 +131,11 @@ pub struct TagsInput {
     removed: Option<Box<dyn FnMut(String)>>,
     rejected: Option<Box<dyn FnMut(TagRejection)>>,
     field: Option<crate::FieldControl>,
-    form_name: Option<Lotus<String>>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
-    placeholder: Option<Lotus<String>>,
+    form_name: Option<Vary<String>>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
+    placeholder: Option<Vary<String>>,
 }
 pub fn tags_input(key: impl Into<String>) -> TagsInput {
     TagsInput {
@@ -161,7 +161,7 @@ pub fn tags_input(key: impl Into<String>) -> TagsInput {
     }
 }
 impl TagsInput {
-    pub fn placeholder(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn placeholder(mut self, value: impl Into<Vary<String>>) -> Self {
         self.placeholder = Some(value.into());
         self
     }
@@ -170,11 +170,11 @@ impl TagsInput {
         self.pills = true;
         self
     }
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
-    pub fn state(mut self, value: impl Into<Lotus<TagsInputState>>) -> Self {
+    pub fn state(mut self, value: impl Into<Vary<TagsInputState>>) -> Self {
         self.state.source = Some(value.into());
         self
     }
@@ -221,19 +221,19 @@ impl TagsInput {
         self.field = Some(value);
         self
     }
-    pub fn form_name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn form_name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.form_name = Some(value.into());
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
@@ -244,7 +244,7 @@ struct Controller {
     accepted: Cage<TagsInputState>,
     settings: Settings,
     composing: Cage<bool>,
-    editable: Lotus<bool>,
+    editable: Vary<bool>,
     dirty: Dirty,
     changed: Callback<TagsInputState>,
     committed: Callback<Vec<String>>,
@@ -426,7 +426,7 @@ impl Widget for TagsInput {
         );
         let editable_enabled = enabled.clone();
         let editable_metadata = metadata.clone();
-        let editable: Lotus<bool> = scope
+        let editable: Vary<bool> = scope
             .bond(move || {
                 editable_enabled.get()
                     && !editable_metadata.get().is_some_and(|value| value.readonly)

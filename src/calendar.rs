@@ -12,7 +12,7 @@ use glory::style::{
     Align, BorderStyle, Display, Edges, FlexDirection, Justify, Length, Position, Style,
 };
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     rc::Rc,
@@ -46,7 +46,7 @@ struct Controller {
     accepted: Cage<Snapshot>,
     value: Control<Option<CivilDate>>,
     month: Control<YearMonth>,
-    provider: Lotus<DatesProvider>,
+    provider: Vary<DatesProvider>,
     excluded: Vec<CivilDate>,
     weekdays: u8,
     allow_deselect: bool,
@@ -310,12 +310,12 @@ impl Controller {
 pub struct Calendar {
     pub(crate) common: Common,
     key: String,
-    provider: Lotus<DatesProvider>,
+    provider: Vary<DatesProvider>,
     value: Value<Option<CivilDate>>,
-    projection: Option<Lotus<DateSelection>>,
-    month: Option<Lotus<YearMonth>>,
+    projection: Option<Vary<DateSelection>>,
+    month: Option<Vary<YearMonth>>,
     default_month: Option<YearMonth>,
-    readonly: Lotus<bool>,
+    readonly: Vary<bool>,
     direction: Direction,
     excluded: Vec<CivilDate>,
     weekdays: u8,
@@ -324,7 +324,7 @@ pub struct Calendar {
     changed: Option<Box<dyn FnMut(Option<CivilDate>)>>,
     month_changed: Option<Box<dyn FnMut(YearMonth)>>,
 }
-pub fn calendar(key: impl Into<String>, provider: impl Into<Lotus<DatesProvider>>) -> Calendar {
+pub fn calendar(key: impl Into<String>, provider: impl Into<Vary<DatesProvider>>) -> Calendar {
     Calendar {
         common: Common::default(),
         key: key.into(),
@@ -345,7 +345,7 @@ pub fn calendar(key: impl Into<String>, provider: impl Into<Lotus<DatesProvider>
 }
 pub fn mini_calendar(
     key: impl Into<String>,
-    provider: impl Into<Lotus<DatesProvider>>,
+    provider: impl Into<Vary<DatesProvider>>,
 ) -> Calendar {
     let mut c = calendar(key, provider);
     c.common.size = crate::Size::ExtraSmall;
@@ -356,12 +356,12 @@ impl Calendar {
     common_methods!();
     pub(crate) fn selection_projection(
         mut self,
-        value: impl Into<Lotus<DateSelection>>,
+        value: impl Into<Vary<DateSelection>>,
     ) -> Self {
         self.projection = Some(value.into());
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<Option<CivilDate>>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<Option<CivilDate>>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -369,7 +369,7 @@ impl Calendar {
         self.value.default = value;
         self
     }
-    pub fn month(mut self, value: impl Into<Lotus<YearMonth>>) -> Self {
+    pub fn month(mut self, value: impl Into<Vary<YearMonth>>) -> Self {
         self.month = Some(value.into());
         self
     }
@@ -377,7 +377,7 @@ impl Calendar {
         self.default_month = Some(value);
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
@@ -468,7 +468,7 @@ impl Widget for Calendar {
             let month = month_source.get();
             let selection = projection
                 .as_ref()
-                .map_or_else(|| DateSelection::Single(value_source.get()), Lotus::get);
+                .map_or_else(|| DateSelection::Single(value_source.get()), Vary::get);
             Snapshot {
                 provider,
                 month,

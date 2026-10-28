@@ -6,7 +6,7 @@ use crate::composite::{self, Callback};
 use glory::render::{Event, EventKind, FocusMode, PointerPhase};
 use glory::style::{AspectRatio, Display, Edges, Length, Overflow, Position, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::rc::Rc;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -79,13 +79,13 @@ fn bounded_options(value: &CartesianOptions) -> Result<CartesianOptions> {
 pub struct Chart {
     common: Common,
     key: String,
-    data: Lotus<ChartData>,
-    options: Option<Lotus<CartesianOptions>>,
+    data: Vary<ChartData>,
+    options: Option<Vary<CartesianOptions>>,
     default_options: CartesianOptions,
     kind: Option<CartesianKind>,
     frame: ChartFrame,
     palette: Option<ChartTheme>,
-    selection: Option<Lotus<Option<ChartSelection>>>,
+    selection: Option<Vary<Option<ChartSelection>>>,
     changed: Option<Box<dyn FnMut(CartesianOptions)>>,
     selected: Option<Box<dyn FnMut(Option<ChartSelection>)>>,
     show_table: bool,
@@ -127,11 +127,11 @@ pub fn composite_chart(key: impl Into<String>) -> Chart {
 }
 impl Chart {
     common_methods!();
-    pub fn data(mut self, value: impl Into<Lotus<ChartData>>) -> Self {
+    pub fn data(mut self, value: impl Into<Vary<ChartData>>) -> Self {
         self.data = value.into();
         self
     }
-    pub fn options(mut self, value: impl Into<Lotus<CartesianOptions>>) -> Self {
+    pub fn options(mut self, value: impl Into<Vary<CartesianOptions>>) -> Self {
         self.options = Some(value.into());
         self
     }
@@ -151,7 +151,7 @@ impl Chart {
         self.palette = Some(value);
         self
     }
-    pub fn selection(mut self, value: impl Into<Lotus<Option<ChartSelection>>>) -> Self {
+    pub fn selection(mut self, value: impl Into<Vary<Option<ChartSelection>>>) -> Self {
         self.selection = Some(value.into());
         self
     }
@@ -191,7 +191,7 @@ struct State {
     controlled_options: bool,
     selection: Cage<Option<ChartSelection>>,
     controlled_selection: bool,
-    enabled: Lotus<bool>,
+    enabled: Vary<bool>,
     changed: Callback<CartesianOptions>,
     selected: Callback<Option<ChartSelection>>,
 }

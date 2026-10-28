@@ -1,6 +1,6 @@
 use glory::render::{Direction, Event, EventKind, FocusMode, Orientation, Role, Semantics};
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 use std::cell::Cell;
 use std::rc::Rc;
 
@@ -80,7 +80,7 @@ impl Tabs {
     /// newly admitted key under its short Owner; retained keys keep state.
     pub fn tabs(
         mut self,
-        keys: impl Into<Lotus<Vec<String>>>,
+        keys: impl Into<Vary<Vec<String>>>,
         mut factory: impl FnMut(&str) -> Tab + 'static,
     ) -> Self {
         self.dynamic = Some(composite::dynamic::Items {
@@ -93,7 +93,7 @@ impl Tabs {
         self.direction = direction;
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<String>>) -> Self {
         self.value.source = Some(value.into());
         self
     }

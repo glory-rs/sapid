@@ -25,7 +25,7 @@ the existing real Menu tree, including intrinsic checkbox/radio items, nested
 menus and cancellable submenu delay. A Toolbar or arbitrary interactive View
 does not stand in for these roles.
 
-`value(Lotus<Option<String>>)` is the sole root source: None closes all roots,
+`value(Vary<Option<String>>)` is the sole root source: None closes all roots,
 Some(key) opens one declared root. `default_value` supplies only local state;
 `on_value_change` proposes the whole optional key. Refused switching keeps the
 old menu and roving entry. Acceptance is rechecked after callbacks and before

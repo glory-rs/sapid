@@ -7,16 +7,16 @@ use crate::state::{Control, Value};
 use glory::render::{DocumentPart, EventKind, TextKind};
 use glory::style::{Display, Edges, Family, Style};
 use glory::ui::{Result, Widget};
-use glory::{Bond, Cage, Lotus, Scope};
+use glory::{Bond, Cage, Scope, Vary};
 use std::{cell::Cell, collections::HashSet, rc::Rc};
 mod tree_mode;
 
 pub struct JsonViewer {
     common: Common,
     key: String,
-    source: Lotus<String>,
+    source: Vary<String>,
     expanded: Value<Vec<String>>,
-    search: Lotus<String>,
+    search: Vary<String>,
     limits: JsonViewLimits,
     change: Option<Box<dyn FnMut(Vec<String>)>>,
     copy: Option<crate::CopyButton>,
@@ -50,12 +50,12 @@ impl JsonViewer {
         self.tree_navigation = value;
         self
     }
-    pub fn source(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn source(mut self, value: impl Into<Vary<String>>) -> Self {
         self.source = value.into();
         self
     }
     /// JSON pointers. Empty string names the root; unknown paths preserve intent.
-    pub fn expanded(mut self, value: impl Into<Lotus<Vec<String>>>) -> Self {
+    pub fn expanded(mut self, value: impl Into<Vary<Vec<String>>>) -> Self {
         self.expanded.source = Some(value.into());
         self
     }
@@ -64,7 +64,7 @@ impl JsonViewer {
         crate::document::extend_bounded(&mut self.expanded.default, value, MAX_JSON_VIEW_NODES);
         self
     }
-    pub fn search(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn search(mut self, value: impl Into<Vary<String>>) -> Self {
         self.search = value.into();
         self
     }
@@ -139,7 +139,7 @@ struct State {
     theme: crate::Theme,
     size: crate::Size,
     unstyled: bool,
-    enabled: Lotus<bool>,
+    enabled: Vary<bool>,
 }
 struct Search {
     matches: HashSet<String>,

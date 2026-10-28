@@ -14,11 +14,11 @@ Props 表包括同页子部件的公开属性；继承的原生 HTML 属性和�
 快照记录 4,659 个按文档条目计数的 Props 字段与其类型；不同条目的同名字段重复计数，不是同等数量的缺失功能。
 历史宿主证据沿用 capability-matrix，新增功能的当前运行证据单列，未逐个重验所有上游功能组合。
 
-Rust 的 Widget、Cage/Bond/Lotus、Owner 和有限宿主协议保持不变；不移植 React hooks、任意 DOM/ARIA 注入、
+Rust 的 Widget、Cage/Bond/Vary、Owner 和有限宿主协议保持不变；不移植 React hooks、任意 DOM/ARIA 注入、
 polymorphic component、任意 Recharts/Tiptap/Embla 插件或全局 provider。通用尺寸、颜色、圆角等可通过 typed Style/Theme 组合，
 不因缺少同名便捷 prop 就重复建立状态。原生支持、浏览器协议和实际 OS/读屏验收分别记账。
 
-部分 theme/size/variant、声明预算与组合策略属于挂载期配置，并非所有 Mantine prop 都可直接传 Lotus。
+部分 theme/size/variant、声明预算与组合策略属于挂载期配置，并非所有 Mantine prop 都可直接传 Vary。
 响应式值/禁用/只读等按各 builder 明确暴露的绑定工作；Style 组合不等于已提供上游同名动态 API，也不以重建节点冒充原位更新。
 
 ## 按报告执行的批次

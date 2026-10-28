@@ -9,7 +9,7 @@ use crate::{
 use glory::render::{NodeId, Role};
 use glory::style::{Align, Display, FlexDirection, Length, Style};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{cell::Cell, rc::Rc};
 fn invalid() -> glory::ui::Error {
     glory::render::Error::InvalidProps("invalid finite segmented time picker").into()
@@ -254,14 +254,14 @@ pub struct TimePicker {
     common: Common,
     key: String,
     format: TimeFormat,
-    bounds: Lotus<TimeBounds>,
+    bounds: Vary<TimeBounds>,
     value: Value<Option<LocalTime>>,
-    readonly: Lotus<bool>,
-    reset_epoch: Lotus<u64>,
-    required: Lotus<bool>,
-    invalid: Lotus<bool>,
+    readonly: Vary<bool>,
+    reset_epoch: Vary<u64>,
+    required: Vary<bool>,
+    invalid: Vary<bool>,
     field: Option<FieldControl>,
-    form_name: Option<Lotus<String>>,
+    form_name: Option<Vary<String>>,
     grid: Option<TimeGridSpec>,
     disabled: Vec<LocalTime>,
     references: [Option<Cage<Option<NodeId>>>; 3],
@@ -296,7 +296,7 @@ pub fn time_picker(key: impl Into<String>) -> TimePicker {
 }
 impl TimePicker {
     common_methods!();
-    pub(crate) fn reset_epoch(mut self, v: impl Into<Lotus<u64>>) -> Self {
+    pub(crate) fn reset_epoch(mut self, v: impl Into<Vary<u64>>) -> Self {
         self.reset_epoch = v.into();
         self
     }
@@ -304,11 +304,11 @@ impl TimePicker {
         self.format = v;
         self
     }
-    pub fn bounds(mut self, v: impl Into<Lotus<TimeBounds>>) -> Self {
+    pub fn bounds(mut self, v: impl Into<Vary<TimeBounds>>) -> Self {
         self.bounds = v.into();
         self
     }
-    pub fn value(mut self, v: impl Into<Lotus<Option<LocalTime>>>) -> Self {
+    pub fn value(mut self, v: impl Into<Vary<Option<LocalTime>>>) -> Self {
         self.value.source = Some(v.into());
         self
     }
@@ -316,15 +316,15 @@ impl TimePicker {
         self.value.default = v;
         self
     }
-    pub fn readonly(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.readonly = v.into();
         self
     }
-    pub fn required(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.required = v.into();
         self
     }
-    pub fn invalid(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.invalid = v.into();
         self
     }
@@ -336,7 +336,7 @@ impl TimePicker {
         self
     }
     /// Produces explicit `_hour`, `_minute` and optional `_second` successful names.
-    pub fn form_name(mut self, v: impl Into<Lotus<String>>) -> Self {
+    pub fn form_name(mut self, v: impl Into<Vary<String>>) -> Self {
         self.form_name = Some(v.into());
         self
     }

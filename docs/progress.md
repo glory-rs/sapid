@@ -1,7 +1,7 @@
 # Read-only progress
 
 `progress(value)`, `ring_progress(value)` and `semi_circle_progress(value)` share
-one controlled, read-only model. A value is a `Lotus<f64>` in the inclusive range
+one controlled, read-only model. A value is a `Vary<f64>` in the inclusive range
 configured by `range(min,max)` (default 0..=100). Bounds must be finite and strictly
 increasing. The minimum takes zero visual progress and the maximum takes full
 progress. Even a finite range spanning -f64::MAX..=f64::MAX computes its fraction
@@ -11,7 +11,7 @@ silently clamped.
 `name(text)` provides the localized accessible name (default "Progress").
 `value_text(text)` optionally supplies a localized value alternative. Names are
 nonempty and at most 256 UTF-8 bytes; value text is nonempty and at most 1024.
-`indeterminate(Lotus<bool>)` omits the numeric current value without inventing
+`indeterminate(Vary<bool>)` omits the numeric current value without inventing
 zero. Its static partial shape communicates unknown progress without promising
 animation. The numeric source remains finite and within range while unknown.
 These widgets do not register range, pointer, keyboard or click handlers and do

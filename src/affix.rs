@@ -5,7 +5,7 @@ use glory::core::InstanceId;
 use glory::render::{Event, EventKind, FocusMode, NodeId, Semantics};
 use glory::style::{Length, Overflow, Position, Style};
 use glory::ui::{IntoChildren, Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum AffixHorizontal {
@@ -116,15 +116,15 @@ macro_rules! appearance_methods {
             self.common.unstyled = true;
             self
         }
-        pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.class = value.into();
             self
         }
-        pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
             self.common.style = value.into();
             self
         }
-        pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.name = Some(value.into());
             self
         }
@@ -151,9 +151,9 @@ pub struct Affix {
     key: String,
     common: Common,
     target: Target,
-    offset: Lotus<AffixOffset>,
+    offset: Vary<AffixOffset>,
     explicit_offset: bool,
-    visible: Lotus<bool>,
+    visible: Vary<bool>,
     children: Option<glory::ui::Children>,
 }
 pub fn affix(key: impl Into<String>) -> Affix {
@@ -169,12 +169,12 @@ pub fn affix(key: impl Into<String>) -> Affix {
 }
 impl Affix {
     appearance_methods!();
-    pub fn offset(mut self, value: impl Into<Lotus<AffixOffset>>) -> Self {
+    pub fn offset(mut self, value: impl Into<Vary<AffixOffset>>) -> Self {
         self.offset = value.into();
         self.explicit_offset = true;
         self
     }
-    pub fn visible(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn visible(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.visible = value.into();
         self
     }

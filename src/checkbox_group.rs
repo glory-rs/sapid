@@ -5,7 +5,7 @@ use std::rc::Rc;
 
 use glory::render::{FieldPart, Semantics};
 use glory::ui::{Result, Widget};
-use glory::{Lotus, Scope};
+use glory::{Scope, Vary};
 
 use crate::appearance::{Common, common_methods, configure, observe};
 use crate::composite::{self, Callback};
@@ -17,10 +17,10 @@ pub const MAX_CHECKBOX_GROUP_ITEMS: usize = 1024;
 
 pub struct CheckboxItem {
     key: String,
-    label: Lotus<String>,
-    enabled: Lotus<bool>,
+    label: Vary<String>,
+    enabled: Vary<bool>,
 }
-pub fn checkbox_item(key: impl Into<String>, label: impl Into<Lotus<String>>) -> CheckboxItem {
+pub fn checkbox_item(key: impl Into<String>, label: impl Into<Vary<String>>) -> CheckboxItem {
     CheckboxItem {
         key: key.into(),
         label: label.into(),
@@ -28,7 +28,7 @@ pub fn checkbox_item(key: impl Into<String>, label: impl Into<Lotus<String>>) ->
     }
 }
 impl CheckboxItem {
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.enabled = value.into();
         self
     }
@@ -37,15 +37,15 @@ impl CheckboxItem {
 pub struct CheckboxGroup {
     key: String,
     common: Common,
-    label: Lotus<String>,
-    all_label: Option<Lotus<String>>,
+    label: Vary<String>,
+    all_label: Option<Vary<String>>,
     value: Value<Vec<String>>,
     items: Vec<CheckboxItem>,
     on_change: Option<Box<dyn FnMut(Vec<String>)>>,
     field: Option<crate::FieldControl>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
 }
 pub fn checkbox_group(key: impl Into<String>) -> CheckboxGroup {
     CheckboxGroup {
@@ -71,27 +71,27 @@ impl CheckboxGroup {
         self.field = Some(field);
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
-    pub fn select_all_label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn select_all_label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.all_label = Some(value.into());
         self
     }
-    pub fn selected(mut self, value: impl Into<Lotus<Vec<String>>>) -> Self {
+    pub fn selected(mut self, value: impl Into<Vary<Vec<String>>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -246,7 +246,7 @@ impl Widget for CheckboxGroup {
         }))
         .fill(legend);
         if let Some(label) = self.all_label.take() {
-            let source: Lotus<Vec<String>> = selected.into();
+            let source: Vary<Vec<String>> = selected.into();
             let all_items = items.clone();
             let state = scope.bond(move || {
                 let selected = source.get();
@@ -321,7 +321,7 @@ impl Widget for CheckboxGroup {
             root = root.fill(all);
         }
         for (index, item) in items.iter().enumerate() {
-            let source: Lotus<Vec<String>> = selected.into();
+            let source: Vary<Vec<String>> = selected.into();
             let key = item.key.clone();
             let checked = scope.bond(move || source.with(|selected| selected.contains(&key)));
             let enabled = enabled.clone();

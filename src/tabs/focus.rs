@@ -2,7 +2,7 @@
 use crate::composite::dynamic::Config;
 use glory::render::{Action, NodeId, Query, QueryToken};
 use glory::ui::Result;
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::rc::Rc;
 
 #[derive(Clone, Copy)]
@@ -18,8 +18,8 @@ impl FocusRestore {
     pub fn new(
         scope: &Scope,
         configs: Cage<Vec<Rc<Config>>>,
-        preferred: Lotus<Option<String>>,
-        enabled: Lotus<bool>,
+        preferred: Vary<Option<String>>,
+        enabled: Vary<bool>,
     ) -> Self {
         let state = Self {
             observed: scope.cage(None::<String>),

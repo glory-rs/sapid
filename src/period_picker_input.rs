@@ -9,7 +9,7 @@ use crate::{
 use glory::render::{Direction, FormControl, NodeId};
 use glory::style::{Align, Display, FlexDirection, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 #[derive(Clone, Copy, PartialEq)]
 struct Snapshot<T: DatePeriod> {
     value: PeriodSelection<T>,
@@ -20,24 +20,24 @@ struct Snapshot<T: DatePeriod> {
 pub struct PeriodPickerInput<T: DatePeriod> {
     common: Common,
     key: String,
-    provider: Lotus<DatesProvider>,
+    provider: Vary<DatesProvider>,
     mode: DatePickerMode,
     value: Value<PeriodSelection<T>>,
     default_set: bool,
     open: Value<bool>,
-    readonly: Lotus<bool>,
-    required: Lotus<bool>,
-    invalid: Lotus<bool>,
+    readonly: Vary<bool>,
+    required: Vary<bool>,
+    invalid: Vary<bool>,
     field: Option<FieldControl>,
-    form_name: Option<Lotus<String>>,
+    form_name: Option<Vary<String>>,
     direction: Direction,
     excluded: Vec<T>,
     deselect: bool,
-    year: Option<Lotus<CivilYear>>,
+    year: Option<Vary<CivilYear>>,
     default_year: Option<CivilYear>,
-    trigger_label: Lotus<String>,
-    title: Lotus<String>,
-    close_label: Lotus<String>,
+    trigger_label: Vary<String>,
+    title: Vary<String>,
+    close_label: Vary<String>,
     trigger_ref: Option<Cage<Option<NodeId>>>,
     panel_ref: Option<Cage<Option<NodeId>>>,
     grid_ref: Option<Cage<Option<NodeId>>>,
@@ -50,19 +50,19 @@ pub type MonthPickerInput = PeriodPickerInput<YearMonth>;
 pub type YearPickerInput = PeriodPickerInput<CivilYear>;
 pub fn month_picker_input(
     key: impl Into<String>,
-    provider: impl Into<Lotus<DatesProvider>>,
+    provider: impl Into<Vary<DatesProvider>>,
 ) -> MonthPickerInput {
     period_input(key, provider)
 }
 pub fn year_picker_input(
     key: impl Into<String>,
-    provider: impl Into<Lotus<DatesProvider>>,
+    provider: impl Into<Vary<DatesProvider>>,
 ) -> YearPickerInput {
     period_input(key, provider)
 }
 fn period_input<T: DatePeriod>(
     key: impl Into<String>,
-    provider: impl Into<Lotus<DatesProvider>>,
+    provider: impl Into<Vary<DatesProvider>>,
 ) -> PeriodPickerInput<T> {
     PeriodPickerInput {
         common: Common::default(),
@@ -110,7 +110,7 @@ impl<T: DatePeriod> PeriodPickerInput<T> {
         self.mode = v;
         self
     }
-    pub fn value(mut self, v: impl Into<Lotus<PeriodSelection<T>>>) -> Self {
+    pub fn value(mut self, v: impl Into<Vary<PeriodSelection<T>>>) -> Self {
         self.value.source = Some(v.into());
         self
     }
@@ -119,7 +119,7 @@ impl<T: DatePeriod> PeriodPickerInput<T> {
         self.default_set = true;
         self
     }
-    pub fn open(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(v.into());
         self
     }
@@ -127,15 +127,15 @@ impl<T: DatePeriod> PeriodPickerInput<T> {
         self.open.default = v;
         self
     }
-    pub fn readonly(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.readonly = v.into();
         self
     }
-    pub fn required(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.required = v.into();
         self
     }
-    pub fn invalid(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.invalid = v.into();
         self
     }
@@ -147,7 +147,7 @@ impl<T: DatePeriod> PeriodPickerInput<T> {
         self
     }
     /// Explicit ISO successful-control name, independent of the accessible name.
-    pub fn form_name(mut self, v: impl Into<Lotus<String>>) -> Self {
+    pub fn form_name(mut self, v: impl Into<Vary<String>>) -> Self {
         self.form_name = Some(v.into());
         self
     }
@@ -172,7 +172,7 @@ impl<T: DatePeriod> PeriodPickerInput<T> {
         self.deselect = v;
         self
     }
-    pub fn year(mut self, v: impl Into<Lotus<CivilYear>>) -> Self {
+    pub fn year(mut self, v: impl Into<Vary<CivilYear>>) -> Self {
         self.year = Some(v.into());
         self
     }
@@ -180,15 +180,15 @@ impl<T: DatePeriod> PeriodPickerInput<T> {
         self.default_year = Some(v);
         self
     }
-    pub fn trigger_label(mut self, v: impl Into<Lotus<String>>) -> Self {
+    pub fn trigger_label(mut self, v: impl Into<Vary<String>>) -> Self {
         self.trigger_label = v.into();
         self
     }
-    pub fn title(mut self, v: impl Into<Lotus<String>>) -> Self {
+    pub fn title(mut self, v: impl Into<Vary<String>>) -> Self {
         self.title = v.into();
         self
     }
-    pub fn close_label(mut self, v: impl Into<Lotus<String>>) -> Self {
+    pub fn close_label(mut self, v: impl Into<Vary<String>>) -> Self {
         self.close_label = v.into();
         self
     }

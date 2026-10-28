@@ -5,7 +5,7 @@ use std::rc::Rc;
 use glory::render::{Event, EventKind, FocusMode, NodeId, Orientation, Role, Semantics};
 use glory::style::{Display, FlexDirection, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 use crate::appearance::{Common, common_methods, configure, merge, observe};
 use crate::composite::{self, Callback, Observers};
@@ -16,7 +16,7 @@ pub const MAX_TOGGLE_GROUP_ITEMS: usize = 1024;
 pub struct Toggle {
     common: Common,
     value: Value<bool>,
-    label: Lotus<String>,
+    label: Vary<String>,
     on_change: Option<Box<dyn FnMut(bool)>>,
 }
 pub fn toggle() -> Toggle {
@@ -29,11 +29,11 @@ pub fn toggle() -> Toggle {
 }
 impl Toggle {
     common_methods!();
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
-    pub fn pressed(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn pressed(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -46,7 +46,7 @@ impl Toggle {
         self
     }
 }
-fn appearance(common: &Common, scope: &Scope, pressed: Lotus<bool>) -> Lotus<Style> {
+fn appearance(common: &Common, scope: &Scope, pressed: Vary<bool>) -> Vary<Style> {
     let theme = common.theme.clone();
     let size = common.size;
     let unstyled = common.unstyled;
@@ -130,7 +130,7 @@ pub enum ToggleMode {
 pub struct ToggleItem {
     key: String,
     common: Common,
-    label: Lotus<String>,
+    label: Vary<String>,
 }
 pub fn toggle_item(key: impl Into<String>) -> ToggleItem {
     let key = key.into();
@@ -141,23 +141,23 @@ pub fn toggle_item(key: impl Into<String>) -> ToggleItem {
     }
 }
 impl ToggleItem {
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
-    pub fn name(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.name = Some(value.into());
         self
     }
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.common.enabled = value.into();
         self
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.common.class = value.into();
         self
     }
-    pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
         self.common.style = value.into();
         self
     }
@@ -206,7 +206,7 @@ impl ToggleGroup {
         self.mode = value;
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<Vec<String>>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<Vec<String>>>) -> Self {
         self.value.source = Some(value.into());
         self
     }
@@ -245,8 +245,8 @@ struct GroupControl {
     control: Control<Vec<String>>,
     keys: Rc<Vec<String>>,
     mode: ToggleMode,
-    flags: Vec<Lotus<bool>>,
-    root_enabled: Lotus<bool>,
+    flags: Vec<Vary<bool>>,
+    root_enabled: Vary<bool>,
     references: Rc<Vec<Cage<Option<NodeId>>>>,
     callback: Callback<Vec<String>>,
     owner: glory::core::InstanceId,

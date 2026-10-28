@@ -6,7 +6,7 @@ use glory::style::{
     WhiteSpace,
 };
 use glory::ui::{Children, IntoChildren, Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 pub const MAX_MESSAGE_BODY_BYTES: usize = 64 * 1024;
 pub const MAX_MESSAGE_QUOTE_BYTES: usize = 4096;
@@ -155,11 +155,11 @@ macro_rules! appearance {
             self.common.unstyled = true;
             self
         }
-        pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+        pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
             self.common.class = value.into();
             self
         }
-        pub fn style(mut self, value: impl Into<Lotus<Style>>) -> Self {
+        pub fn style(mut self, value: impl Into<Vary<Style>>) -> Self {
             self.common.style = value.into();
             self
         }
@@ -171,9 +171,9 @@ macro_rules! appearance {
 }
 pub struct Bubble {
     common: Common,
-    text: Lotus<String>,
+    text: Vary<String>,
 }
-pub fn bubble(text: impl Into<Lotus<String>>) -> Bubble {
+pub fn bubble(text: impl Into<Vary<String>>) -> Bubble {
     Bubble {
         common: Common::default(),
         text: text.into(),
@@ -234,11 +234,11 @@ impl Widget for Bubble {
 }
 pub struct Marker {
     common: Common,
-    target: Lotus<SemanticId>,
-    label: Lotus<String>,
+    target: Vary<SemanticId>,
+    label: Vary<String>,
     navigate: Option<Box<dyn FnMut(crate::AnchorRequest)>>,
 }
-pub fn marker(target: impl Into<Lotus<SemanticId>>) -> Marker {
+pub fn marker(target: impl Into<Vary<SemanticId>>) -> Marker {
     Marker {
         common: Common::default(),
         target: target.into(),
@@ -248,7 +248,7 @@ pub fn marker(target: impl Into<Lotus<SemanticId>>) -> Marker {
 }
 impl Marker {
     appearance!();
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
@@ -286,10 +286,10 @@ impl Widget for Marker {
 pub struct Message {
     common: Common,
     id: std::result::Result<SemanticId, glory::render::Error>,
-    data: Lotus<MessageData>,
+    data: Vary<MessageData>,
     actions: Option<Children>,
 }
-pub fn message(key: impl AsRef<str>, data: impl Into<Lotus<MessageData>>) -> Message {
+pub fn message(key: impl AsRef<str>, data: impl Into<Vary<MessageData>>) -> Message {
     Message {
         common: Common::default(),
         id: message_id(key),

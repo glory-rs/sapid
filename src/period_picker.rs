@@ -14,7 +14,7 @@ use glory::style::{
     Align, BorderStyle, Display, Edges, FlexDirection, Justify, Length, Position, Style,
 };
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{
     cell::{Cell, RefCell},
     rc::Rc,
@@ -112,7 +112,7 @@ struct Controller<T: DatePeriod> {
     weak: WeakScope,
     live: Cell<bool>,
     accepted: Cage<Snapshot<T>>,
-    provider: Lotus<DatesProvider>,
+    provider: Vary<DatesProvider>,
     value: Control<PeriodSelection<T>>,
     page: Control<CivilYear>,
     excluded: Vec<T>,
@@ -386,13 +386,13 @@ impl<T: DatePeriod> Controller<T> {
 pub struct PeriodPicker<T: DatePeriod> {
     pub(crate) common: Common,
     key: String,
-    provider: Lotus<DatesProvider>,
+    provider: Vary<DatesProvider>,
     mode: DatePickerMode,
     value: Value<PeriodSelection<T>>,
     default_set: bool,
-    page: Option<Lotus<CivilYear>>,
+    page: Option<Vary<CivilYear>>,
     default_page: Option<CivilYear>,
-    readonly: Lotus<bool>,
+    readonly: Vary<bool>,
     direction: Direction,
     excluded: Vec<T>,
     deselect: bool,
@@ -404,7 +404,7 @@ pub type MonthPicker = PeriodPicker<YearMonth>;
 pub type YearPicker = PeriodPicker<CivilYear>;
 pub(crate) fn period_picker<T: DatePeriod>(
     key: impl Into<String>,
-    provider: impl Into<Lotus<DatesProvider>>,
+    provider: impl Into<Vary<DatesProvider>>,
 ) -> PeriodPicker<T> {
     PeriodPicker {
         common: Common::default(),
@@ -426,13 +426,13 @@ pub(crate) fn period_picker<T: DatePeriod>(
 }
 pub fn month_picker(
     key: impl Into<String>,
-    provider: impl Into<Lotus<DatesProvider>>,
+    provider: impl Into<Vary<DatesProvider>>,
 ) -> MonthPicker {
     period_picker(key, provider)
 }
 pub fn year_picker(
     key: impl Into<String>,
-    provider: impl Into<Lotus<DatesProvider>>,
+    provider: impl Into<Vary<DatesProvider>>,
 ) -> YearPicker {
     period_picker(key, provider)
 }
@@ -442,7 +442,7 @@ impl<T: DatePeriod> PeriodPicker<T> {
         self.mode = v;
         self
     }
-    pub fn value(mut self, v: impl Into<Lotus<PeriodSelection<T>>>) -> Self {
+    pub fn value(mut self, v: impl Into<Vary<PeriodSelection<T>>>) -> Self {
         self.value.source = Some(v.into());
         self
     }
@@ -452,7 +452,7 @@ impl<T: DatePeriod> PeriodPicker<T> {
         self
     }
     /// Month view's year, or any year inside the visible ten-year view.
-    pub fn year(mut self, v: impl Into<Lotus<CivilYear>>) -> Self {
+    pub fn year(mut self, v: impl Into<Vary<CivilYear>>) -> Self {
         self.page = Some(v.into());
         self
     }
@@ -460,7 +460,7 @@ impl<T: DatePeriod> PeriodPicker<T> {
         self.default_page = Some(v);
         self
     }
-    pub fn readonly(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.readonly = v.into();
         self
     }

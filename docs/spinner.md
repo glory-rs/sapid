@@ -17,7 +17,7 @@ Sizes use the shared ExtraSmall/Small/Medium/Large/ExtraLarge labels with
 12/16/24/32/40 pixel diameters. Explicit diameter is 8..=128 pixels, stroke
 thickness is 1..=64 and at most half the diameter, and rotation periods are
 16..=60000 milliseconds. Names are nonempty and at most 256 UTF-8 bytes.
-`visible(Lotus<bool>)` hides the retained indicator. `animated(Lotus<bool>)`
+`visible(Vary<bool>)` hides the retained indicator. `animated(Vary<bool>)`
 can opt out of rotation; it cannot override a reduced-motion host preference.
 Theme, unstyled, custom class/style and node references follow the other passive
 components. Unstyled retains visible path content and essential geometry.

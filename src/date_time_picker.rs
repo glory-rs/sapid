@@ -10,7 +10,7 @@ use crate::{
 use glory::render::{Direction, NodeId, Role};
 use glory::style::{Display, FlexDirection};
 use glory::ui::{Result, WeakScope, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 use std::{cell::Cell, rc::Rc};
 fn invalid() -> glory::ui::Error {
     glory::render::Error::InvalidProps("invalid finite date/time picker configuration").into()
@@ -83,7 +83,7 @@ impl Controller {
     }
     fn stamp(&self) -> Result<(Option<LocalDateTime>, Option<u64>)> {
         let version = match &self.control.source {
-            Lotus::Cage(c) => Some(c.try_version()?),
+            Vary::Cage(c) => Some(c.try_version()?),
             _ => None,
         };
         Ok((self.control.source.try_get()?, version))
@@ -262,13 +262,13 @@ impl Controller {
 pub struct InlineDateTimePicker {
     pub(crate) common: Common,
     key: String,
-    provider: Lotus<DatesProvider>,
+    provider: Vary<DatesProvider>,
     policy: DateTimePolicy,
     value: Value<Option<LocalDateTime>>,
-    bounds: Lotus<DateTimeBounds>,
-    revision: Lotus<u64>,
+    bounds: Vary<DateTimeBounds>,
+    revision: Vary<u64>,
     format: TimeFormat,
-    readonly: Lotus<bool>,
+    readonly: Vary<bool>,
     field: Option<FieldControl>,
     direction: Direction,
     grid: Option<TimeGridSpec>,
@@ -282,7 +282,7 @@ pub struct InlineDateTimePicker {
 }
 pub fn inline_date_time_picker(
     key: impl Into<String>,
-    provider: impl Into<Lotus<DatesProvider>>,
+    provider: impl Into<Vary<DatesProvider>>,
     policy: DateTimePolicy,
 ) -> InlineDateTimePicker {
     InlineDateTimePicker {
@@ -309,7 +309,7 @@ pub fn inline_date_time_picker(
 }
 impl InlineDateTimePicker {
     common_methods!();
-    pub fn value(mut self, v: impl Into<Lotus<Option<LocalDateTime>>>) -> Self {
+    pub fn value(mut self, v: impl Into<Vary<Option<LocalDateTime>>>) -> Self {
         self.value.source = Some(v.into());
         self
     }
@@ -317,13 +317,13 @@ impl InlineDateTimePicker {
         self.value.default = v;
         self
     }
-    pub fn bounds(mut self, v: impl Into<Lotus<DateTimeBounds>>) -> Self {
+    pub fn bounds(mut self, v: impl Into<Vary<DateTimeBounds>>) -> Self {
         self.bounds = v.into();
         self
     }
     /// An explicit application revision resets drafts, even for an equal civil value,
     /// and reevaluates resolver rules. Applications must not wrap this counter.
-    pub fn reset_revision(mut self, v: impl Into<Lotus<u64>>) -> Self {
+    pub fn reset_revision(mut self, v: impl Into<Vary<u64>>) -> Self {
         self.revision = v.into();
         self
     }
@@ -331,7 +331,7 @@ impl InlineDateTimePicker {
         self.format = v;
         self
     }
-    pub fn readonly(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.readonly = v.into();
         self
     }

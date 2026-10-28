@@ -57,8 +57,8 @@ try {
         Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-blitz', '--features', 'accesskit,raster', '--all-targets', '--', '-D', 'warnings')
         Confirm-Target 'examples/native/Cargo.toml'
         Invoke-Cargo -Arguments @('fmt', '--manifest-path', 'examples/native/Cargo.toml', '--', '--check')
-        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', 'examples/native/Cargo.toml', '--', '--test-threads=1')
-        Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', 'examples/native/Cargo.toml', '--all-targets', '--', '-D', 'warnings')
+        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', 'examples/native/Cargo.toml', '--all-features', '--', '--test-threads=1')
+        Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', 'examples/native/Cargo.toml', '--all-features', '--all-targets', '--', '-D', 'warnings')
         $env:CARGO_TARGET_DIR = "$taskBuild/target"
         $env:CARGO_BUILD_JOBS = '2'
         $env:TEMP = "$taskBuild/tmp"
@@ -74,11 +74,10 @@ try {
         Invoke-Cargo -Arguments @('build', '--locked', '--manifest-path', $manifest, '--lib', '--target', 'wasm32-unknown-unknown')
         & $Bindgen "$taskBuild/target/wasm32-unknown-unknown/debug/sapid_web_example.wasm" --target web --out-dir "$taskBuild/web"
         if ($LASTEXITCODE -ne 0) { throw 'wasm-bindgen failed' }
-        Copy-Item -LiteralPath examples/web/index.html -Destination "$taskBuild/web/index.html"
-        Copy-Item -LiteralPath examples/web/composites.html -Destination "$taskBuild/web/composites.html"
-        Copy-Item -LiteralPath examples/web/overlays.html -Destination "$taskBuild/web/overlays.html"
-        Copy-Item -LiteralPath examples/web/fields.html -Destination "$taskBuild/web/fields.html"
-        foreach($page in @('trace','stack-trace','confirmation','rich-editor','tasks','output','public-explanations','citations','lightbox','messages','message-scroller','model-suggestions','questionnaire','prompt','files','carousel','charts','cartesian','polar-charts','point-charts','shape-charts','matrix-charts','range-charts','hierarchy-charts','gallery','environment','responsive','portal','portal-missing','focus-scope','focus-scope-document','choices','forms','display','actions','document','toggles','layout','typography','timeline','spoiler','navigation','grid','menu','context-menu','menubar','command','stepper','visually-hidden','avatar','shell','hints','image','buttons','scroll-area','alerts','graphics','native-select','progress','modals','notifications','toolbar','accordion','tabs-dynamic','collapse-motion','overflow-list','floating-indicator','color-swatch','color-sliders','color-picker','sheet','choice-extras','tags','json-input','combobox','loading-overlay','select','spinner','navigation-progress','splitter','affix','navigation-menu','slider','range-slider','angle-slider','rating','number-input','pin-input','mask-input','calendar','date-picker','date-input','period-picker','time-input','time-picker','date-time-picker','schedule','schedule-timeline','schedule-calendar','resource-schedule','copy-button','floating-window','tree','tree-select','cascader','tour','popover-placement','table-of-contents','table','data-table','data-table-server','translation','code','layer-document','floating-indicator')) {Copy-Item -LiteralPath "examples/web/$page.html" -Destination "$taskBuild/web/$page.html"}
+        # Include every static entry, including newly added acceptance pages.
+        foreach ($entry in Get-ChildItem -LiteralPath examples/web -File -Filter '*.html') {
+            Copy-Item -LiteralPath $entry.FullName -Destination "$taskBuild/web/$($entry.Name)"
+        }
         Copy-Item -LiteralPath ../glory/crates/web/src/stream.js -Destination "$taskBuild/web/glory-stream.js"
         New-Item -ItemType Directory -Force -Path "$taskBuild/web/assets" | Out-Null
         Copy-Item -Path examples/web/assets/* -Destination "$taskBuild/web/assets"

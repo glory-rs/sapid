@@ -11,7 +11,7 @@ fn item(
     collection: &Collection,
     key: &str,
     label: &str,
-    enabled: glory::Lotus<bool>,
+    enabled: glory::Vary<bool>,
 ) -> (glory::Scope, sapid::CollectionMember, NodeId) {
     let owner = app.scope().child().unwrap();
     let reference = owner.cage(None);

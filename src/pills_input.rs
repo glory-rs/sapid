@@ -4,7 +4,7 @@ use crate::{FieldControl, Size, Theme};
 use glory::render::{Event, EventKind, FocusMode, NodeId, TagSeparators};
 use glory::style::Style;
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 pub struct PillsInput {
     inner: TagsInput,
@@ -25,20 +25,20 @@ macro_rules! forward {
 impl PillsInput {
     forward!(theme, Theme);
     forward!(size, Size);
-    forward!(class, impl Into<Lotus<String>>);
-    forward!(style, impl Into<Lotus<Style>>);
-    forward!(name, impl Into<Lotus<String>>);
-    forward!(placeholder, impl Into<Lotus<String>>);
-    forward!(label, impl Into<Lotus<String>>);
-    forward!(enabled, impl Into<Lotus<bool>>);
+    forward!(class, impl Into<Vary<String>>);
+    forward!(style, impl Into<Vary<Style>>);
+    forward!(name, impl Into<Vary<String>>);
+    forward!(placeholder, impl Into<Vary<String>>);
+    forward!(label, impl Into<Vary<String>>);
+    forward!(enabled, impl Into<Vary<bool>>);
     forward!(focus, FocusMode);
     forward!(node_ref, Cage<Option<NodeId>>);
     forward!(field, FieldControl);
-    forward!(form_name, impl Into<Lotus<String>>);
-    forward!(required, impl Into<Lotus<bool>>);
-    forward!(readonly, impl Into<Lotus<bool>>);
-    forward!(invalid, impl Into<Lotus<bool>>);
-    forward!(state, impl Into<Lotus<TagsInputState>>);
+    forward!(form_name, impl Into<Vary<String>>);
+    forward!(required, impl Into<Vary<bool>>);
+    forward!(readonly, impl Into<Vary<bool>>);
+    forward!(invalid, impl Into<Vary<bool>>);
+    forward!(state, impl Into<Vary<TagsInputState>>);
     forward!(default_value, Vec<String>);
     forward!(default_search, impl Into<String>);
     forward!(max_tags, usize);

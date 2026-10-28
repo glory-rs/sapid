@@ -1,14 +1,14 @@
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 
-use glory::core::Lotus;
+use glory::core::Vary;
 use glory::ui::Result;
 use glory::{Cage, Scope};
 
 /// Configuration has exactly one source of truth. Defaults never switch a
 /// controlled widget back to local ownership, regardless of setter order.
 pub(crate) struct Value<T: 'static> {
-    pub source: Option<Lotus<T>>,
+    pub source: Option<Vary<T>>,
     pub default: T,
 }
 
@@ -41,7 +41,7 @@ impl<T: Clone> Value<T> {
 
 #[derive(Clone)]
 pub(crate) struct Control<T: 'static> {
-    pub source: Lotus<T>,
+    pub source: Vary<T>,
     local: Option<Cage<T>>,
 }
 

@@ -872,7 +872,7 @@
       "name": "MixedCheckbox / CheckboxGroup",
       "status": "done",
       "sources": [],
-      "work": "真实三态indeterminate与有限CheckboxGroup全选/禁用保留；Web脏接管/stream已验证。纯无JS SSR记录三态；Blitz明确拒绝Mixed，保留成功前缀与查询水位。",
+      "work": "MixedCheckbox/CheckboxGroup 保留真实三态与有限全选/禁用策略；新版 Glory 原生已支持 indeterminate。四主题消费端验证 Mixed 转 Checked、真实引擎属性与 Owner 清理。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -893,7 +893,10 @@
           "examples/web/choice-acceptance.js (10 reports; zero errors)",
           "D:/BuildCache/sapid/choices-browser-results.json",
           "../glory/crates/blitz/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)",
-          "../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name"
+          "../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name",
+          "examples/native/tests/choices.rs",
+          "D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)",
+          "docs/glory-main-migration-2026-10-29.md"
         ]
       }
     },
@@ -940,7 +943,7 @@
         "M:Radio",
         "S:Radio Group"
       ],
-      "work": "真实Radio/RadioGroup、single Tab、方向/Home/End、禁用与整组受控恢复；native name与successful name须一致；Web/adoption/stream保护脏同组，Blitz明确拒绝Radio。",
+      "work": "真实 RadioGroup、单 Tab、方向/Home/End、整组受控恢复与 Web/adoption/stream 已实现；新版 Glory 原生 Radio 已连接，四主题消费端验证实际 checked、选择、只读和物理身份。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -961,7 +964,10 @@
           "examples/web/choice-acceptance.js (10 reports; zero errors)",
           "D:/BuildCache/sapid/choices-browser-results.json",
           "../glory/crates/blitz/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)",
-          "../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name"
+          "../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name",
+          "examples/native/tests/choices.rs",
+          "D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)",
+          "docs/glory-main-migration-2026-10-29.md"
         ]
       }
     },
@@ -1004,7 +1010,7 @@
       "sources": [
         "M:SegmentedControl"
       ],
-      "work": "SegmentedControl复用真实单选值模型，水平默认/有限items、单Tab与受控拒绝；未冒用Tabs面板语义，原生沿用Radio拒绝。",
+      "work": "SegmentedControl 复用真实 RadioGroup 与单值控制器；四主题原生受控选择、只读及物理身份已验证，不引入 Tabs 面板语义。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -1025,7 +1031,10 @@
           "examples/web/choice-acceptance.js (10 reports; zero errors)",
           "D:/BuildCache/sapid/choices-browser-results.json",
           "../glory/crates/blitz/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)",
-          "../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name"
+          "../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name",
+          "examples/native/tests/choices.rs",
+          "D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)",
+          "docs/glory-main-migration-2026-10-29.md"
         ]
       }
     },
@@ -1037,7 +1046,7 @@
       "sources": [
         "M:Chip"
       ],
-      "work": "Chip真实Checkbox、ChipGroup单选Radio/多选Checkbox，接入受控值、Field、禁用与有限集合；Web/SSR验收通过，原生Radio明确拒绝而Checkbox可用。",
+      "work": "Chip 使用真实 Checkbox，ChipGroup 按单选 Radio/多选 Checkbox 分别实现；Web/SSR 与原生均有消费端证据，新增四主题单选受控选择、只读与物理身份。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -1047,7 +1056,10 @@
         "tests": [
           "tests/chip.rs",
           "examples/web/choice-acceptance.js",
-          "D:/BuildCache/sapid/choices-browser-results.json"
+          "D:/BuildCache/sapid/choices-browser-results.json",
+          "examples/native/tests/choices.rs",
+          "D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)",
+          "docs/glory-main-migration-2026-10-29.md"
         ]
       }
     },
@@ -2074,7 +2086,7 @@
         "M:Tooltip",
         "S:Tooltip"
       ],
-      "work": "被动Tooltip角色与稳定描述、hover/focus、可取消Owner延迟及Escape已实现；不抢焦点/禁止交互后代，Web实际AX、dirty接管与classicstream通过，原生Layer和PointerWithin驱动明确拒绝。",
+      "work": "被动Tooltip角色与稳定描述、hover/focus、可取消Owner延迟及Escape已实现；不抢焦点/禁止交互后代，Web实际AX、dirty接管与classicstream通过，原生 Tooltip Layer 仍明确拒绝；新版 Glory 的共享 PointerWithin 已接通，不能把 Layer 拒绝等同于缺少指针边界驱动。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -2890,7 +2902,7 @@
       "sources": [
         "M:Rating"
       ],
-      "work": "Whole/Half离散Rating、真正RadioGroup/Check radio、clear数值0、受控拒绝/Field/数值成功值和被动display_only已实现。11组件+2模型+3原生+Chromium148实际10项通过；原生交互Radio保持明确Unsupported，display_only有四主题真实半星像素证据。",
+      "work": "Whole/Half Rating、真实 RadioGroup、数值成功值、受控/Field 与 display_only 已实现；新版 Glory 原生交互/只读 Radio 支持，四主题实际 checked、稳定身份、半星像素和 direct-apply 水位验证通过。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -2904,7 +2916,10 @@
           "examples/native/tests/rating.rs (3 passed)",
           "examples/web/rating-acceptance.js",
           "D:/BuildCache/sapid/rating-native.log",
-          "D:/BuildCache/sapid/rating-browser.json (10 passed, Chromium 148.0.7778.96)"
+          "D:/BuildCache/sapid/rating-browser.json (10 passed, Chromium 148.0.7778.96)",
+          "examples/native/tests/rating.rs",
+          "D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)",
+          "docs/glory-main-migration-2026-10-29.md"
         ]
       }
     },
@@ -3197,7 +3212,7 @@
       "sources": [
         "M:TreeSelect"
       ],
-      "work": "复用 Tree 和 Combobox，路径值与多选/半选策略。",
+      "work": "TreeSelect 复用 Tree/Combobox 与完整路径值、多选/半选策略；新版 Glory 原生树弹层已连接，四主题消费端验证真实几何、选择、关闭恢复焦点与触发器身份。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -3208,7 +3223,7 @@
           "../glory/crates/render/src/choice.rs",
           "../glory/crates/render/src/tree.rs",
           "docs/tree-choices.md",
-          "完整路径与配对admission；真实Combobox+Tree popup；TreeSelect多选/父半选/叶子策略；Cascader真实Grid分列和单祖先链/懒加载。Native组合控件明确拒绝，独立Tree仍受支持。"
+          "完整路径与配对admission；真实Combobox+Tree popup；TreeSelect多选/父半选/叶子策略；Cascader真实Grid分列和单祖先链/懒加载。原生组合控件已接通，当前验证见 2026-10-29 迁移记录。"
         ],
         "tests": [
           "tests/tree_selects.rs (7 passed)",
@@ -3224,7 +3239,9 @@
           "D:/BuildCache/sapid/tree-choices-browser-web33.json (21 reports: 10 TreeSelect, 11 Cascader; zero errors)",
           "D:/BuildCache/sapid/tree-choices-browser-web33.log",
           "D:/BuildCache/sapid/web33-source/source-hashes.json (immutable production and acceptance sources)",
-          "D:/BuildCache/sapid/tree-choices-final-strict.log"
+          "D:/BuildCache/sapid/tree-choices-final-strict.log",
+          "D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)",
+          "docs/glory-main-migration-2026-10-29.md"
         ]
       }
     },
@@ -3236,7 +3253,7 @@
       "sources": [
         "M:Cascader"
       ],
-      "work": "分列路径选择、懒加载、返回/展开导航。",
+      "work": "Cascader 保留分列路径、展开/返回与懒加载；新版 Glory 原生树弹层已连接，四主题消费端验证真实几何、路径选择、焦点返回与触发器身份。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -3247,7 +3264,7 @@
           "../glory/crates/render/src/choice.rs",
           "../glory/crates/render/src/tree.rs",
           "docs/tree-choices.md",
-          "完整路径与配对admission；真实Combobox+Tree popup；TreeSelect多选/父半选/叶子策略；Cascader真实Grid分列和单祖先链/懒加载。Native组合控件明确拒绝，独立Tree仍受支持。"
+          "完整路径与配对admission；真实Combobox+Tree popup；TreeSelect多选/父半选/叶子策略；Cascader真实Grid分列和单祖先链/懒加载。原生组合控件已接通，当前验证见 2026-10-29 迁移记录。"
         ],
         "tests": [
           "tests/tree_selects.rs (7 passed)",
@@ -3263,7 +3280,9 @@
           "D:/BuildCache/sapid/tree-choices-browser-web33.json (21 reports: 10 TreeSelect, 11 Cascader; zero errors)",
           "D:/BuildCache/sapid/tree-choices-browser-web33.log",
           "D:/BuildCache/sapid/web33-source/source-hashes.json (immutable production and acceptance sources)",
-          "D:/BuildCache/sapid/tree-choices-final-strict.log"
+          "D:/BuildCache/sapid/tree-choices-final-strict.log",
+          "D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)",
+          "docs/glory-main-migration-2026-10-29.md"
         ]
       }
     },
@@ -3449,7 +3468,7 @@
         "D:TimeInput",
         "D:TimeValue"
       ],
-      "work": "小时/分/秒、12/24h、空值和本地化展示。",
+      "work": "TimeInput/TimeValue 保留小时/分/秒、12/24h、空值与本地化；新版 Glory 原生支持中文 UTF-16 精确选区，真实编辑器、只读/禁用、身份与像素已验证。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -3467,7 +3486,10 @@
           "D:/BuildCache/sapid/time-input-browser-web31.json (12 passed, zero errors)",
           "D:/BuildCache/sapid/dates-browser-web31.log (sequential original browser log)",
           "D:/BuildCache/sapid/time-input-native.log",
-          "D:/BuildCache/sapid/time-input-clippy.log"
+          "D:/BuildCache/sapid/time-input-clippy.log",
+          "examples/native/tests/time_input.rs",
+          "D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)",
+          "docs/glory-main-migration-2026-10-29.md"
         ]
       }
     },
@@ -3646,7 +3668,7 @@
         "X:Carousel",
         "S:Carousel"
       ],
-      "work": "按索引最多7个短Owner、百万count不扫描源的真实轮播；受控页/RTL键盘、独立修订Swipe与轴意图/多指取消、注入宿主时钟autoplay及hover/focus/manual暂停；四主题CSR/adoption/Native实际验收。",
+      "work": "索引轮播最多七个短 Owner、百万 count 不扫描源；受控页、RTL/Swipe、注入时钟与暂停协议已实现。新版 Glory 原生真实鼠标悬停可取消当前时钟，离开恢复；四主题几何/像素与清理验证保留。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -3661,7 +3683,9 @@
           "examples/web/carousel-acceptance.js",
           "D:/BuildCache/sapid/carousel-browser-web39.json (9 original reports, zero errors)",
           "D:/BuildCache/sapid/carousel-native-debug0.log",
-          "D:/BuildCache/sapid/carousel-native-clippy-final.log"
+          "D:/BuildCache/sapid/carousel-native-clippy-final.log",
+          "D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)",
+          "docs/glory-main-migration-2026-10-29.md"
         ]
       }
     },
@@ -4307,7 +4331,7 @@
       "sources": [
         "A:Model Selector"
       ],
-      "work": "1024模型/32 provider组/128KiB显式业务catalog，真实Field/Combobox/Search/Listbox，accepted model与独立query明确分开，受控拒绝不多发None提案、readonly/禁用/当前值与Owner清理；不嵌服务/价格清单，Native editableChoice明确拒绝保prefix，Web43实际通过。",
+      "work": "有限显式模型/provider catalog、真实 Combobox/Search/Listbox、独立 accepted model/query 与受控拒绝已实现；新版 Glory 原生 editable Choice 已连接，四主题消费端验证业务值、拒绝/接受、编辑器焦点/身份与像素。",
       "baseline_at_snapshot": false,
       "evidence": {
         "implementation": [
@@ -4322,7 +4346,9 @@
           "D:/BuildCache/sapid/chat-actions-tests.log",
           "D:/BuildCache/sapid/chat-actions-native-tests.log",
           "D:/BuildCache/sapid/chat-actions-final-strict.log",
-          "D:/BuildCache/sapid/model-suggestions-browser-web43-accepted.json (12 combined reports, zero errors; native disabled/AX and host-frame focus assertions corrected, frozen original failures retained)"
+          "D:/BuildCache/sapid/model-suggestions-browser-web43-accepted.json (12 combined reports, zero errors; native disabled/AX and host-frame focus assertions corrected, frozen original failures retained)",
+          "D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)",
+          "docs/glory-main-migration-2026-10-29.md"
         ]
       }
     },

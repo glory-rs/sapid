@@ -17,8 +17,8 @@ let panel = drawer("preview")
 ```
 
 `snap_points(iter)` is a convenience for static points and the default
-640 px/180 ms/dismissible configuration. `snap_config(Lotus<DrawerSnaps>)` permits
-validated program changes. `snap_index(Lotus<usize>)` is read-only controlled
+640 px/180 ms/dismissible configuration. `snap_config(Vary<DrawerSnaps>)` permits
+validated program changes. `snap_index(Vary<usize>)` is read-only controlled
 state; `default_snap` supplies local state otherwise. `on_snap_change` proposes
 an index. Internal acceptance precedes that callback and generic Sheet observers.
 The existing open source/callback controls gesture dismissal; `on_dismiss`

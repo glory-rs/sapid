@@ -7,7 +7,7 @@ use glory::render::{Role, TextKind};
 use model::{Draft, Layer, Target, ThemeRecord};
 use sapid::{ColorScheme, Hsva, Theme};
 
-fn copy(class: &str, value: impl Into<Lotus<String>>) -> impl Widget {
+fn copy(class: &str, value: impl Into<Vary<String>>) -> impl Widget {
     text().class(class.to_owned()).content(value)
 }
 fn section(title: &str) -> impl Widget {

@@ -233,8 +233,8 @@ type Factory = Box<dyn FnMut(ResponsiveContext) -> Children>;
 pub struct ResponsiveRoot {
     initial_width: f64,
     breakpoints: Breakpoints,
-    style: glory::Lotus<Style>,
-    class: glory::Lotus<String>,
+    style: glory::Vary<Style>,
+    class: glory::Vary<String>,
     reference: Option<Cage<Option<NodeId>>>,
     context_ref: Option<Cage<Option<ResponsiveContext>>>,
     content: Option<Factory>,
@@ -256,11 +256,11 @@ impl ResponsiveRoot {
         self.breakpoints = value;
         self
     }
-    pub fn style(mut self, value: impl Into<glory::Lotus<Style>>) -> Self {
+    pub fn style(mut self, value: impl Into<glory::Vary<Style>>) -> Self {
         self.style = value.into();
         self
     }
-    pub fn class(mut self, value: impl Into<glory::Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<glory::Vary<String>>) -> Self {
         self.class = value.into();
         self
     }

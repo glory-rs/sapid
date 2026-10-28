@@ -9,7 +9,7 @@ use crate::{
 use glory::render::{Direction, FormControl, NodeId};
 use glory::style::{Align, Display, FlexDirection, Style};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 #[derive(Clone, Copy, PartialEq)]
 struct Snapshot {
     value: DateSelection,
@@ -20,25 +20,25 @@ struct Snapshot {
 pub struct DatePickerInput {
     common: Common,
     key: String,
-    provider: Lotus<DatesProvider>,
+    provider: Vary<DatesProvider>,
     mode: DatePickerMode,
     value: Value<DateSelection>,
     default_set: bool,
     open: Value<bool>,
-    readonly: Lotus<bool>,
-    required: Lotus<bool>,
-    invalid: Lotus<bool>,
+    readonly: Vary<bool>,
+    required: Vary<bool>,
+    invalid: Vary<bool>,
     field: Option<FieldControl>,
-    form_name: Option<Lotus<String>>,
+    form_name: Option<Vary<String>>,
     direction: Direction,
     excluded: Vec<CivilDate>,
     weekdays: u8,
     deselect: bool,
-    month: Option<Lotus<YearMonth>>,
+    month: Option<Vary<YearMonth>>,
     default_month: Option<YearMonth>,
-    trigger_label: Lotus<String>,
-    title: Lotus<String>,
-    close_label: Lotus<String>,
+    trigger_label: Vary<String>,
+    title: Vary<String>,
+    close_label: Vary<String>,
     trigger_ref: Option<Cage<Option<NodeId>>>,
     panel_ref: Option<Cage<Option<NodeId>>>,
     calendar_ref: Option<Cage<Option<NodeId>>>,
@@ -49,7 +49,7 @@ pub struct DatePickerInput {
 }
 pub fn date_picker_input(
     key: impl Into<String>,
-    provider: impl Into<Lotus<DatesProvider>>,
+    provider: impl Into<Vary<DatesProvider>>,
 ) -> DatePickerInput {
     DatePickerInput {
         common: Common::default(),
@@ -88,7 +88,7 @@ impl DatePickerInput {
         self.mode = v;
         self
     }
-    pub fn value(mut self, v: impl Into<Lotus<DateSelection>>) -> Self {
+    pub fn value(mut self, v: impl Into<Vary<DateSelection>>) -> Self {
         self.value.source = Some(v.into());
         self
     }
@@ -97,7 +97,7 @@ impl DatePickerInput {
         self.default_set = true;
         self
     }
-    pub fn open(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn open(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.open.source = Some(v.into());
         self
     }
@@ -105,15 +105,15 @@ impl DatePickerInput {
         self.open.default = v;
         self
     }
-    pub fn readonly(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.readonly = v.into();
         self
     }
-    pub fn required(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.required = v.into();
         self
     }
-    pub fn invalid(mut self, v: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, v: impl Into<Vary<bool>>) -> Self {
         self.invalid = v.into();
         self
     }
@@ -125,7 +125,7 @@ impl DatePickerInput {
         self
     }
     /// Explicit ISO successful-control name, independent of the accessible name.
-    pub fn form_name(mut self, v: impl Into<Lotus<String>>) -> Self {
+    pub fn form_name(mut self, v: impl Into<Vary<String>>) -> Self {
         self.form_name = Some(v.into());
         self
     }
@@ -154,7 +154,7 @@ impl DatePickerInput {
         self.deselect = v;
         self
     }
-    pub fn month(mut self, v: impl Into<Lotus<YearMonth>>) -> Self {
+    pub fn month(mut self, v: impl Into<Vary<YearMonth>>) -> Self {
         self.month = Some(v.into());
         self
     }
@@ -162,15 +162,15 @@ impl DatePickerInput {
         self.default_month = Some(v);
         self
     }
-    pub fn trigger_label(mut self, v: impl Into<Lotus<String>>) -> Self {
+    pub fn trigger_label(mut self, v: impl Into<Vary<String>>) -> Self {
         self.trigger_label = v.into();
         self
     }
-    pub fn title(mut self, v: impl Into<Lotus<String>>) -> Self {
+    pub fn title(mut self, v: impl Into<Vary<String>>) -> Self {
         self.title = v.into();
         self
     }
-    pub fn close_label(mut self, v: impl Into<Lotus<String>>) -> Self {
+    pub fn close_label(mut self, v: impl Into<Vary<String>>) -> Self {
         self.close_label = v.into();
         self
     }

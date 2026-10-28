@@ -1,8 +1,8 @@
 use glory::blitz::{Raster, Renderer, shell::WindowApp};
 use glory::prelude::*;
 use glory::render::{
-    CheckMode, CheckProps, Descriptor, Error, FormControl, Input, Mutation, NodeId, NodeIds,
-    Props, Query, QueryToken, QueryValue, Rect, Render, RuntimeId, SemanticId, Semantics,
+    CheckMode, CheckProps, Descriptor, FormControl, Input, Mutation, NodeId, NodeIds, Props,
+    Query, QueryToken, QueryValue, Rect, Render, RuntimeId, SemanticId, Semantics,
 };
 use std::{cell::RefCell, rc::Rc};
 fn bounds(app: &App, id: NodeId) -> Rect {
@@ -134,24 +134,93 @@ fn native_display_rating_four_themes_paints_exact_half_star_pixels_with_stable_i
     }
 }
 #[test]
-fn native_interactive_and_readonly_rating_keep_the_explicit_radio_rejection() {
-    for readonly in [false, true] {
-        let host = WindowApp::new();
-        let error = host
-            .mount(sapid::rating("interactive").readonly(readonly))
-            .unwrap_err();
-        assert!(
-            matches!(
-                error,
-                glory::ui::Error::Render(Error::Unsupported("native radio groups"))
-            ),
-            "{error:?}"
-        );
-        host.app().clear().unwrap();
+fn native_interactive_and_readonly_rating_keep_radio_state_identity_and_focus() {
+    for theme in [
+        sapid::Theme::blue_light(),
+        sapid::Theme::blue_dark(),
+        sapid::Theme::green_light(),
+        sapid::Theme::green_dark(),
+    ] {
+        for readonly in [false, true] {
+            let host = WindowApp::new();
+            let app = host.app();
+            let value = app.scope().cage(2.5);
+            host.mount(
+                sapid::rating("interactive")
+                    .theme(theme.clone())
+                    .precision(sapid::RatingPrecision::Half)
+                    .value(value)
+                    .readonly(readonly)
+                    .on_value_change(move |next| value.revise(|old| *old = next)),
+            )
+            .unwrap();
+            app.settle(16).unwrap();
+            let tree = app.tree();
+            let mut pending = tree.roots().to_vec();
+            let node = loop {
+                let id = pending.pop().expect("rating radio");
+                let node = tree.node(id).unwrap();
+                if matches!(node.descriptor.view().props, Props::Check(_))
+                    && node.descriptor.view().name.as_deref() == Some("3 of 5")
+                {
+                    break id;
+                }
+                pending.extend(&node.children);
+            };
+            drop(tree);
+            let physical = host
+                .renderer()
+                .engine_id(node, glory::html::Part::Control)
+                .unwrap();
+            assert_eq!(
+                app.dispatch(node, glory::render::Event::CheckedChanged(true))
+                    .unwrap(),
+                !readonly
+            );
+            app.settle(16).unwrap();
+            assert_eq!(value.get(), if readonly { 2.5 } else { 3. });
+            assert_eq!(
+                host.renderer().inspect(|doc| doc
+                    .get_node(physical)
+                    .unwrap()
+                    .element_data()
+                    .unwrap()
+                    .checkbox_input_checked()
+                    .unwrap()),
+                !readonly
+            );
+            app.scope()
+                .action(glory::render::Action::Focus(node))
+                .unwrap();
+            app.flush().unwrap();
+            app.request(Query::Focus(node), |reply| {
+                assert_eq!(reply.unwrap(), QueryValue::Focus(true));
+            })
+            .unwrap();
+            app.pump().unwrap();
+            value.revise(|old| *old = 4.);
+            app.settle(16).unwrap();
+            assert_eq!(
+                host.renderer()
+                    .engine_id(node, glory::html::Part::Control)
+                    .unwrap(),
+                physical
+            );
+            assert!(!host.renderer().inspect(|doc| {
+                doc.get_node(physical)
+                    .unwrap()
+                    .element_data()
+                    .unwrap()
+                    .checkbox_input_checked()
+                    .unwrap()
+            }));
+            app.clear().unwrap();
+            assert!(app.tree().is_empty());
+        }
     }
 }
 #[test]
-fn native_radio_preflight_and_direct_rejection_preserve_prefix_query_watermark() {
+fn native_radio_preflight_and_direct_apply_keep_the_same_protocol_and_query_watermark() {
     let runtime = RuntimeId::new();
     let mut ids = NodeIds::new(runtime);
     let first = ids.allocate();
@@ -170,10 +239,7 @@ fn native_radio_preflight_and_direct_rejection_preserve_prefix_query_watermark()
         }),
         ..Default::default()
     }));
-    assert_eq!(
-        host.preflight(radio.view(), None),
-        Err(Error::Unsupported("native radio groups"))
-    );
+    assert_eq!(host.preflight(radio.view(), None), Ok(()));
     assert_eq!(
         host.apply(&[
             Mutation::Create {
@@ -189,11 +255,12 @@ fn native_radio_preflight_and_direct_rejection_preserve_prefix_query_watermark()
                 id: radio_id,
                 node: Box::new(radio)
             }
-        ]),
-        Err(Error::Unsupported("native radio groups"))
+        ])
+        .map(|_| ()),
+        Ok(())
     );
-    assert_eq!(host.stats().nodes, 1);
-    assert_eq!(host.stats().applied, 2);
+    assert_eq!(host.stats().nodes, 2);
+    assert_eq!(host.stats().applied, 3);
     host.request(Query::Bounds(first), QueryToken(7341))
         .unwrap();
     let mut inputs = Vec::new();
@@ -201,7 +268,7 @@ fn native_radio_preflight_and_direct_rejection_preserve_prefix_query_watermark()
     assert!(matches!(
         inputs.as_slice(),
         [Input::Response {
-            applied: 2,
+            applied: 3,
             token: QueryToken(7341),
             result: Ok(QueryValue::Bounds(_))
         }]

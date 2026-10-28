@@ -3,11 +3,11 @@ use crate::appearance::{Common, common_methods};
 use crate::state::Value;
 use glory::render::{Event, EventKind, FocusMode, NodeId, Orientation};
 use glory::ui::{Result, Widget};
-use glory::{Cage, Lotus, Scope};
+use glory::{Cage, Scope, Vary};
 
 pub struct Chip {
     inner: Option<crate::Checkbox>,
-    class: Lotus<String>,
+    class: Vary<String>,
 }
 pub fn chip() -> Chip {
     Chip {
@@ -29,20 +29,20 @@ impl Chip {
     pub fn unstyled(self) -> Self {
         self.map(crate::Checkbox::unstyled)
     }
-    pub fn class(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn class(mut self, value: impl Into<Vary<String>>) -> Self {
         self.class = value.into();
         self
     }
-    pub fn style(self, value: impl Into<Lotus<glory::style::Style>>) -> Self {
+    pub fn style(self, value: impl Into<Vary<glory::style::Style>>) -> Self {
         self.map(|chip| chip.style(value))
     }
-    pub fn name(self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn name(self, value: impl Into<Vary<String>>) -> Self {
         self.map(|chip| chip.name(value))
     }
-    pub fn label(self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(self, value: impl Into<Vary<String>>) -> Self {
         self.map(|chip| chip.label(value))
     }
-    pub fn enabled(self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(self, value: impl Into<Vary<bool>>) -> Self {
         self.map(|chip| chip.enabled(value))
     }
     pub fn focus(self, value: FocusMode) -> Self {
@@ -57,16 +57,16 @@ impl Chip {
     pub fn field(self, value: crate::FieldControl) -> Self {
         self.map(|chip| chip.field(value))
     }
-    pub fn required(self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(self, value: impl Into<Vary<bool>>) -> Self {
         self.map(|chip| chip.required(value))
     }
-    pub fn readonly(self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(self, value: impl Into<Vary<bool>>) -> Self {
         self.map(|chip| chip.readonly(value))
     }
-    pub fn invalid(self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(self, value: impl Into<Vary<bool>>) -> Self {
         self.map(|chip| chip.invalid(value))
     }
-    pub fn checked(self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn checked(self, value: impl Into<Vary<bool>>) -> Self {
         self.map(|chip| chip.checked(value))
     }
     pub fn default_checked(self, value: bool) -> Self {
@@ -96,10 +96,10 @@ pub enum ChipMode {
 
 pub struct ChipItem {
     key: String,
-    label: Lotus<String>,
-    enabled: Lotus<bool>,
+    label: Vary<String>,
+    enabled: Vary<bool>,
 }
-pub fn chip_item(key: impl Into<String>, label: impl Into<Lotus<String>>) -> ChipItem {
+pub fn chip_item(key: impl Into<String>, label: impl Into<Vary<String>>) -> ChipItem {
     ChipItem {
         key: key.into(),
         label: label.into(),
@@ -107,7 +107,7 @@ pub fn chip_item(key: impl Into<String>, label: impl Into<Lotus<String>>) -> Chi
     }
 }
 impl ChipItem {
-    pub fn enabled(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn enabled(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.enabled = value.into();
         self
     }
@@ -117,12 +117,12 @@ pub struct ChipGroup {
     key: String,
     common: Common,
     mode: ChipMode,
-    label: Lotus<String>,
+    label: Vary<String>,
     items: Vec<ChipItem>,
     field: Option<crate::FieldControl>,
-    required: Lotus<bool>,
-    readonly: Lotus<bool>,
-    invalid: Lotus<bool>,
+    required: Vary<bool>,
+    readonly: Vary<bool>,
+    invalid: Vary<bool>,
     single: Value<String>,
     multiple: Value<Vec<String>>,
     single_configured: bool,
@@ -155,7 +155,7 @@ impl ChipGroup {
         self.mode = value;
         self
     }
-    pub fn label(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn label(mut self, value: impl Into<Vary<String>>) -> Self {
         self.label = value.into();
         self
     }
@@ -178,19 +178,19 @@ impl ChipGroup {
         self.field = Some(field);
         self
     }
-    pub fn required(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn required(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.required = value.into();
         self
     }
-    pub fn readonly(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn readonly(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.readonly = value.into();
         self
     }
-    pub fn invalid(mut self, value: impl Into<Lotus<bool>>) -> Self {
+    pub fn invalid(mut self, value: impl Into<Vary<bool>>) -> Self {
         self.invalid = value.into();
         self
     }
-    pub fn value(mut self, value: impl Into<Lotus<String>>) -> Self {
+    pub fn value(mut self, value: impl Into<Vary<String>>) -> Self {
         self.single.source = Some(value.into());
         self.single_configured = true;
         self
@@ -200,7 +200,7 @@ impl ChipGroup {
         self.single_configured = true;
         self
     }
-    pub fn values(mut self, value: impl Into<Lotus<Vec<String>>>) -> Self {
+    pub fn values(mut self, value: impl Into<Vary<Vec<String>>>) -> Self {
         self.multiple.source = Some(value.into());
         self.multiple_configured = true;
         self
