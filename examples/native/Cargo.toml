@@ -13,10 +13,10 @@ clipboard = ["glory/blitz-clipboard", "dep:blitz-traits", "dep:blitz-dom"]
 [dependencies]
 sapid = { path = "../..", features = ["json", "code", "dates", "charts", "chat"] }
 glory = { path = "../../../glory/crates/glory", default-features = false, features = ["html", "blitz-accesskit", "blitz-raster"] }
-blitz-traits = { git = "https://github.com/glory-rs/blitz", rev = "ee125981e0e5a217e758be5c470df23cdd9e2fc3", version = "=0.3.0-beta.4", default-features = false, optional = true }
-blitz-dom = { git = "https://github.com/glory-rs/blitz", rev = "ee125981e0e5a217e758be5c470df23cdd9e2fc3", version = "=0.3.0-beta.4", default-features = false, optional = true }
+blitz-traits = { git = "https://github.com/glory-rs/blitz", rev = "ae532b0e4d3b4e54c804d17d181b176246a64771", version = "=0.3.0-beta.4", default-features = false, optional = true }
+blitz-dom = { git = "https://github.com/glory-rs/blitz", rev = "ae532b0e4d3b4e54c804d17d181b176246a64771", version = "=0.3.0-beta.4", default-features = false, optional = true }
 
-winit = { git = "https://github.com/glory-rs/winit", rev = "3b6f5a09697acb936567af64e53c915b0b1a2af9", version = "=0.31.0-beta.4", optional = true }
+winit = { git = "https://github.com/glory-rs/winit", rev = "d93f6db0c70fc2e1ffc10db4ff51961f0da7ea81", version = "=0.31.0-beta.4", optional = true }
 
 [lints.rust]
 unsafe_code = "forbid"

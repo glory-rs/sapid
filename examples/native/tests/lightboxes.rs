@@ -1,3 +1,5 @@
+#[path = "../../web/src/assets.rs"]
+mod assets;
 #[path = "../../web/src/lightbox_form.rs"]
 mod fixture;
 use glory::{
