@@ -48,17 +48,33 @@ async function withClipboardLock(run) {
     fs.renameSync(temporary, destination);
   }
   async function worker(workerId) {
-    let browser, processed = 0;
+    let browser, processed = 0, diagnostics = [];
+    async function launchBrowser() {
+      const browser = await chromium.launch({ headless: true, executablePath: process.env.SAPID_CHROME });
+      const newContext = browser.newContext.bind(browser);
+      browser.newContext = async (...args) => {
+        const context = await newContext(...args);
+        context.on('page', page => {
+          const record = value => { if (diagnostics.length < 100) diagnostics.push(value); };
+          page.on('pageerror', error => record({ type: 'pageerror', url: page.url(), message: error.message }));
+          page.on('requestfailed', request => record({ type: 'requestfailed', url: request.url(), message: request.failure()?.errorText }));
+          page.on('response', response => { if (response.status() >= 400) record({ type: 'response', url: response.url(), status: response.status() }); });
+        });
+        return context;
+      };
+      return browser;
+    }
     try {
-      browser = await chromium.launch({ headless: true, executablePath: process.env.SAPID_CHROME });
+      browser = await launchBrowser();
       versions.add(browser.version());
       while (cursor < suites.length) {
         const index = cursor++, file = suites[index];
         if (processed && processed % 16 === 0) {
-          await browser.close(); browser = await chromium.launch({ headless: true, executablePath: process.env.SAPID_CHROME });
+          await browser.close(); browser = await launchBrowser();
           versions.add(browser.version());
         }
         const source = fs.readFileSync(path.join(sourceRoot, file), 'utf8');
+        diagnostics = [];
         const run = async () => {
           console.log(`Worker ${workerId}: ${index + 1}/${suites.length} ${file}`);
           const page = await browser.newPage();
@@ -68,7 +84,7 @@ async function withClipboardLock(run) {
             const result = await acceptance(page);
             return { file, reports: result.reports, errors: result.errors.map(error => `${file}: ${error}`) };
           } catch (error) {
-            return { file, reports: [], errors: [`${file} at ${page.url()}: ${error.stack || error}`] };
+            return { file, reports: [], errors: [`${file} at ${page.url()}: ${error.stack || error}\nBrowser diagnostics: ${JSON.stringify(diagnostics)}`] };
           } finally { await page.close(); }
         };
         results[index] = await (/clipboard|copy/i.test(source) ? withClipboardLock(run) : run());

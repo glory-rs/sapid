@@ -9,6 +9,10 @@ on:
         description: Immutable source ref to validate
         required: false
         type: string
+      acceptance_ref:
+        description: Immutable browser acceptance harness revision
+        required: false
+        type: string
 permissions:
   contents: read
 jobs:
@@ -25,6 +29,7 @@ jobs:
       npm_config_cache: D:/BuildCache/sapid/npm
       PLAYWRIGHT_BROWSERS_PATH: D:/BuildCache/sapid/browsers
       SAPID_PLAYWRIGHT: D:/BuildCache/sapid/browser/node_modules/playwright
+      SAPID_BROWSER_RUNNER: ${{ inputs.acceptance_ref && '../acceptance/scripts/browser.cjs' || 'scripts/browser.cjs' }}
       CARGO_INCREMENTAL: '0'
       CARGO_PROFILE_DEV_DEBUG: '0'
       CARGO_PROFILE_TEST_DEBUG: '0'
@@ -86,6 +91,24 @@ jobs:
         run: ./scripts/check.ps1 -Web -Native
       - name: Mixed DSL hydration and native acceptance
         run: ./scripts/check-dsl.ps1 -Browser -Native -Bindgen D:/BuildCache/sapid/tools/bin/wasm-bindgen.exe
+      - name: Check out the independently versioned browser harness
+        if: inputs.acceptance_ref != ''
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ inputs.acceptance_ref }}
+          path: acceptance
+          sparse-checkout: |
+            scripts/browser.cjs
+            examples/web
+          sparse-checkout-cone-mode: false
+      - name: Record acceptance provenance
+        run: |
+          $harness = if (Test-Path ../acceptance/.git) { git -C ../acceptance rev-parse HEAD } else { git rev-parse HEAD }
+          @{
+            product_commit = (git rev-parse HEAD)
+            glory_commit = (git -C ../glory rev-parse HEAD)
+            acceptance_commit = $harness
+          } | ConvertTo-Json | Set-Content D:/BuildCache/sapid/browser-provenance.json
       - name: Actual widget browser acceptance
         run: |
           $fixture = Start-Process python -ArgumentList @('-m','http.server','8794','--bind','127.0.0.1','--directory','D:/BuildCache/sapid/web') -WindowStyle Hidden -PassThru
@@ -96,7 +119,17 @@ jobs:
               catch { Start-Sleep -Seconds 1 }
             }
             if (-not $ready) { throw 'Browser fixture did not start' }
-            node scripts/browser.cjs --jobs=2
+            node $env:SAPID_BROWSER_RUNNER --jobs=1
             if ($LASTEXITCODE) { throw 'Widget browser acceptance failed' }
           }
           finally { Stop-Process -Id $fixture.Id -ErrorAction SilentlyContinue }
+      - name: Preserve browser acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sapid-browser-acceptance
+          path: |
+            D:/BuildCache/sapid/browser-results.json
+            D:/BuildCache/sapid/browser-progress.json
+            D:/BuildCache/sapid/browser-provenance.json
+          if-no-files-found: ignore
