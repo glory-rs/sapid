@@ -14,7 +14,9 @@ async function runTranslationAcceptance(page) {
     await page.goto(`${base}/${hydrate?`translation-hydrate-${hue}-${scheme}.html`:`translation.html?theme=${hue}&scheme=${scheme}`}`);await page.waitForFunction(()=>window.ready===true);await turn();
     const start=await x();assert(!await active(),`${mode}: first appearance animated`);
     await focus().fill('Kept 🎯 motion selection');await focus().focus();await focus().evaluate(element=>element.setSelectionRange(2,9));const editor=await focus().elementHandle(),identity=await cube().elementHandle();
-    await command('Move forty');await page.waitForTimeout(100);const middle=await x();assert(middle>start+1&&middle<start+39&&await active(),`${mode}: missing actual intermediate transform`);
+    // Sample the animation in-page from activation, so protocol latency cannot
+    // move a later snapshot beyond the intermediate frame being tested.
+    const middle=await cube().evaluate((element,start)=>new Promise((resolve,reject)=>{let frames=0;const sample=()=>{const position=element.getBoundingClientRect().x,running=element.getAnimations().some(animation=>animation.playState==='running');if(position>start+1&&position<start+39&&running)return resolve({position,running});if(++frames===120)return reject(Error('missing actual intermediate transform'));requestAnimationFrame(sample)};[...document.querySelectorAll('button')].find(button=>button.textContent==='Move forty').click();requestAnimationFrame(sample)}),start);assert(middle.position>start+1&&middle.position<start+39&&middle.running,`${mode}: missing actual intermediate transform`);
     await command('Toggle translation pause');await turn();const paused=await x();await page.waitForTimeout(140);assert(Math.abs(await x()-paused)<0.05,`${mode}: pause lost phase`);
     await command('Observe translation bounds');await page.waitForFunction(()=>document.querySelector('.translation-query-status')?.textContent!=='Not observed');
     const query=Number((await page.locator('.translation-query-status').textContent()).split(',')[0]);assert(Math.abs(query-await x())<0.1,`${mode}: physical Bounds disagree with current translated ink`);
