@@ -31,10 +31,10 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
     let dismissals = scope.cage(0);
     let widget = view().fill((
         button().label("Before placement"),
-        each(
-            scope.bond(move || vec![case.get()]),
-            |case| case.revision,
-            move |row, _| {
+        each(scope.bond(move || vec![case.get()]))
+            .key(|case| case.revision)
+            .children(move |entry| {
+                let row = entry.value;
                 let theme = theme.clone();
                 widget(move |_scope| {
                     let config = row.get();
@@ -87,8 +87,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                         )
                         .show_in(_scope)
                 })
-            },
-        ),
+            }),
         text().class("placement-status").content(
             scope.bond(move || format!("open:{} dismissals:{}", open.get(), dismissals.get())),
         ),

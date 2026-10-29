@@ -108,6 +108,16 @@ pub fn code_highlight() -> CodeHighlight {
         config: Config::new(CodeLanguage::Rust),
     }
 }
+impl Default for CodeBlock {
+    fn default() -> Self {
+        code_block()
+    }
+}
+impl Default for CodeHighlight {
+    fn default() -> Self {
+        code_highlight()
+    }
+}
 macro_rules! methods {
     ($name:ident) => {
         impl $name {
@@ -319,36 +329,39 @@ fn build(config: &mut Config, scope: &Scope) -> Result {
                 shrink: Some(0.),
                 ..Style::new()
             })
-            .fill(glory::ui::each(
-                spans,
-                |value| value.0,
-                move |span, _| {
-                    let theme = theme.clone();
-                    glory::ui::widget(move |scope| {
+            .fill(
+                glory::ui::each(spans)
+                    .key(|value| value.0)
+                    .children(move |entry| {
+                        let span = entry.value;
                         let theme = theme.clone();
-                        glory::ui::text()
-                            .kind(TextKind::Code)
-                            .selectable(true)
-                            .class("sapid-code-token")
-                            .content(
-                                scope.bond(move || span.with(|(_, value)| value.text.clone())),
-                            )
-                            .style(scope.bond(move || {
-                                span.with(|(_, value)| Style {
-                                    color: if unstyled {
-                                        None
-                                    } else {
-                                        color(&theme, value.kind)
-                                    },
-                                    background: (!unstyled && value.highlighted)
-                                        .then_some(theme.accent_soft),
-                                    ..Style::new()
-                                })
-                            }))
-                            .show_in(scope)
-                    })
-                },
-            ))
+                        glory::ui::widget(move |scope| {
+                            let theme = theme.clone();
+                            glory::ui::text()
+                                .kind(TextKind::Code)
+                                .selectable(true)
+                                .class("sapid-code-token")
+                                .content(
+                                    scope.bond(move || {
+                                        span.with(|(_, value)| value.text.clone())
+                                    }),
+                                )
+                                .style(scope.bond(move || {
+                                    span.with(|(_, value)| Style {
+                                        color: if unstyled {
+                                            None
+                                        } else {
+                                            color(&theme, value.kind)
+                                        },
+                                        background: (!unstyled && value.highlighted)
+                                            .then_some(theme.accent_soft),
+                                        ..Style::new()
+                                    })
+                                }))
+                                .show_in(scope)
+                        })
+                    }),
+            )
             // A zero-width inline box gives a terminal LF a real following
             // line. Chromium otherwise omits it from rendered selections,
             // even though the DOM Range contains the exact source bytes.

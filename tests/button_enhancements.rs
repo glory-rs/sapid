@@ -181,18 +181,17 @@ fn sections_preserve_label_identity_and_exclude_adornment_text_from_the_button_n
 fn section_validation_owns_its_dependency_inside_keyed_construction_and_keeps_typed_errors() {
     let app = App::memory();
     let rows = app.scope().cage(vec!["Save".to_owned()]);
-    app.mount(each(
-        rows,
-        |_| 0u8,
-        |item, _| {
+    app.mount(each(rows).key(|_| 0u8).children(|__each_row| {
+        let item = __each_row.value;
+        {
             widget(move |scope| {
                 button()
                     .label(scope.bond(move || item.get()))
                     .left_section(text().content("★"))
                     .show_in(scope)
             })
-        },
-    ))
+        }
+    }))
     .unwrap();
     let stable = label(&app);
     rows.revise(|r| r[0] = "Changed".into());
@@ -203,18 +202,21 @@ fn section_validation_owns_its_dependency_inside_keyed_construction_and_keeps_ty
     );
     let app = App::memory();
     let error = app
-        .mount(each(
-            vec!["Invalid".to_owned()],
-            |_| 0u8,
-            |item, _| {
-                widget(move |scope| {
-                    button()
-                        .label(scope.bond(move || item.get()))
-                        .left_section(view())
-                        .show_in(scope)
-                })
-            },
-        ))
+        .mount(
+            each(vec!["Invalid".to_owned()])
+                .key(|_| 0u8)
+                .children(|__each_row| {
+                    let item = __each_row.value;
+                    {
+                        widget(move |scope| {
+                            button()
+                                .label(scope.bond(move || item.get()))
+                                .left_section(view())
+                                .show_in(scope)
+                        })
+                    }
+                }),
+        )
         .unwrap_err();
     assert!(
         matches!(

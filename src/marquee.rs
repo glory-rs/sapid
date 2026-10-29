@@ -465,3 +465,9 @@ impl Widget for Marquee {
         Ok(())
     }
 }
+
+impl Default for Marquee {
+    fn default() -> Self {
+        marquee()
+    }
+}

@@ -341,3 +341,9 @@ impl Widget for ChipGroup {
         }
     }
 }
+
+impl Default for Chip {
+    fn default() -> Self {
+        chip()
+    }
+}

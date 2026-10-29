@@ -221,3 +221,9 @@ impl Widget for NavigationProgress {
         Ok(())
     }
 }
+
+impl Default for NavigationProgress {
+    fn default() -> Self {
+        navigation_progress()
+    }
+}

@@ -39,11 +39,9 @@ pub(super) fn preview_panel(state: EditorState, theme: Theme) -> impl Widget {
                 })
                 .collect::<Vec<_>>(),
         );
-        let samples = each(
-            ticks,
-            |value| *value,
-            move |_, _| sample(draft, mode, clicks, name, checked),
-        );
+        let samples = each(ticks)
+            .key(|value| *value)
+            .children(move |__each_row| sample(draft, mode, clicks, name, checked));
         let contrast = view().class("studio-contrast").fill(
             [
                 ("Text / canvas", 0),

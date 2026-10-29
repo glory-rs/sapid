@@ -15,6 +15,12 @@ fn page(template: &str, html: &str) -> String {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let directory =
         std::path::PathBuf::from(std::env::args().nth(1).ok_or("output directory")?);
+    let dsl =
+        glory::ssr::snapshot(sapid_web_example::dsl::fixture::demo(sapid::Theme::light()))?;
+    std::fs::write(
+        directory.join("dsl-hydrate.html"),
+        page(include_str!("../../dsl.html"), &dsl.html),
+    )?;
     for hue_name in ["blue", "green"] {
         for (scheme_name, scheme) in [
             ("light", sapid::ColorScheme::Light),

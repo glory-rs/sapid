@@ -153,3 +153,9 @@ impl Widget for Switch {
         Ok(())
     }
 }
+
+impl Default for Switch {
+    fn default() -> Self {
+        switch()
+    }
+}

@@ -625,3 +625,9 @@ impl Widget for NumberInput {
         Ok(())
     }
 }
+
+impl Default for NumberInput {
+    fn default() -> Self {
+        number_input()
+    }
+}

@@ -250,3 +250,9 @@ pub(crate) fn format_number(
         }
     })
 }
+
+impl Default for NumberFormatter {
+    fn default() -> Self {
+        number_formatter()
+    }
+}

@@ -13,6 +13,26 @@ Composable widgets for Glory, written with Rust builders and the public
 `Cage` / `Bond` / `Vary` reactive model. Applications select their host; Sapid
 does not install a browser runtime, stylesheet, font loader, or native engine.
 
+Glory's opt-in `dsl` feature uses the same `Widget` implementation:
+
+```rust,ignore
+use sapid::Button;
+glory::view! { <Button label="Save"/> }
+glory::view! { <sapid::Button label="Save"/> }
+glory::view! { <{sapid::button()} label="Save"/> }
+```
+
+Tags use `Default` and existing builder methods. Widgets with required constructor
+arguments use `init={sapid::action_icon("Refresh")}` followed by their ordinary
+properties. Children use `.fill(...)`; custom `#[glory::component]` functions also
+generate Widgets. No second component implementation or DSL registration is
+needed. Existing functions returning `impl Widget` use `<{button(args)}/>`;
+pass settings as arguments when the opaque return type hides builder methods.
+Mixed HTML/Widget trees also use Glory's standard SSR snapshot, browser
+launch/hydration and native Widget hosts. Raw elements retain sparse template
+state rather than acquiring one semantic Widget per element. The same mixed
+tree also supports incremental SSR and final hydration through Glory's stream host.
+
 The frozen catalogue covers **268 upstream entries in 149 completed work items**.
 Each item records its finite implementation, tests and adapter boundaries in the
 [roadmap](docs/widgets-roadmap.md) and [capability ledger](docs/widget-capabilities.md).
@@ -62,9 +82,15 @@ It targets the current semantic Glory checkout in the sibling `../glory`
 directory. Publishing and a standalone versioned Glory dependency are pending.
 The current integration follows Glory's new `main` branch: reactive property
 sources use `Vary<T>`, and native examples pin the same engine revisions as Glory.
-The deployment manifest locks the exact tested Glory commit. Sapid builders
-continue to implement `glory::ui::Widget`; Glory's separate `display` HTML API
-does not replace the semantic controls used for input, SSR and native hosts.
+The deployment manifest locks the exact tested Glory commit. Sapid builders and
+Glory's `view!` DSL implement the same `Widget` interface. Mix raw HTML with
+`<sapid::Button />`, imported `<Button />` and `<{factory(args)}/>` on standard
+browser, SSR, hydration, incremental stream and native hosts. See the
+[DSL guide](docs/dsl.md) and [shared example](examples/fixtures/dsl_demo.rs); run
+`./scripts/check-dsl.ps1 -Browser -Native` for focused host checks.
+`Each` also uses one API for vectors/Vary and KeyedList:
+`each(values).key(key).children(factory)` or `each(members).children(factory)`,
+matching the DSL's `each`, `key`, `children` and `seed` attributes.
 
 Full widget comparison and completed work records:
 [widgets roadmap](docs/widgets-roadmap.md), with a

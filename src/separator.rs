@@ -108,3 +108,9 @@ impl Widget for Separator {
         root.show_in(scope)
     }
 }
+
+impl Default for Separator {
+    fn default() -> Self {
+        separator()
+    }
+}

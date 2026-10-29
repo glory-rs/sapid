@@ -188,3 +188,9 @@ impl Widget for Anchor {
         Ok(())
     }
 }
+
+impl Default for Anchor {
+    fn default() -> Self {
+        anchor()
+    }
+}

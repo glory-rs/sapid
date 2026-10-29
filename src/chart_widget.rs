@@ -518,10 +518,10 @@ fn build_plot(
     }
     let labels =
         plot.bond(move || model.with(|m| (0..m.scene.labels.len()).collect::<Vec<_>>()));
-    glory::ui::each(
-        labels,
-        |index| *index,
-        move |index, _| {
+    glory::ui::each(labels)
+        .key(|index| *index)
+        .children(move |entry| {
+            let index = entry.value;
             let index = index.get_untracked();
             glory::ui::widget(move |scope| {
                 let style = scope.bond(move || {
@@ -554,9 +554,8 @@ fn build_plot(
                     }))
                     .show_in(scope)
             })
-        },
-    )
-    .show_in(&plot)?;
+        })
+        .show_in(&plot)?;
     let paths = plot.bond(move || {
         model.with(|m| {
             m.scene
@@ -566,10 +565,10 @@ fn build_plot(
                 .collect::<Vec<_>>()
         })
     });
-    glory::ui::each(
-        paths,
-        |key| key.clone(),
-        move |key, _| {
+    glory::ui::each(paths)
+        .key(|key| key.clone())
+        .children(move |entry| {
+            let key = entry.value;
             let key = key.get_untracked();
             glory::ui::widget(move |scope| {
                 let key = key.clone();
@@ -596,9 +595,8 @@ fn build_plot(
                     )
                     .show_in(scope)
             })
-        },
-    )
-    .show_in(&plot)?;
+        })
+        .show_in(&plot)?;
     let state = state.clone();
     let keys = plot.bond(move || {
         model.with(|m| {
@@ -609,10 +607,10 @@ fn build_plot(
                 .collect::<Vec<_>>()
         })
     });
-    glory::ui::each(
-        keys,
-        |key| (key.series.clone(), key.category.clone()),
-        move |key, _| {
+    glory::ui::each(keys)
+        .key(|key| (key.series.clone(), key.category.clone()))
+        .children(move |entry| {
+            let key = entry.value;
             let key = key.get_untracked();
             let state = state.clone();
             glory::ui::widget(move |scope| {
@@ -681,9 +679,8 @@ fn build_plot(
                 }
                 button.show_in(scope)
             })
-        },
-    )
-    .show_in(&plot)?;
+        })
+        .show_in(&plot)?;
     scope.retain(plot)?;
     Ok(())
 }
@@ -700,10 +697,10 @@ fn build_legend(scope: &Scope, state: &State, theme: crate::Theme, unstyled: boo
                 .collect::<Vec<_>>()
         })
     });
-    glory::ui::each(
-        keys,
-        |key| key.clone(),
-        move |key, _| {
+    glory::ui::each(keys)
+        .key(|key| key.clone())
+        .children(move |entry| {
+            let key = entry.value;
             let key = key.get_untracked();
             let state = state.clone();
             let theme = theme.clone();
@@ -765,9 +762,8 @@ fn build_legend(scope: &Scope, state: &State, theme: crate::Theme, unstyled: boo
                 }
                 button.show_in(scope)
             })
-        },
-    )
-    .show_in(scope)
+        })
+        .show_in(scope)
 }
 fn build_table(
     scope: &Scope,
@@ -783,46 +779,48 @@ fn build_table(
     glory::ui::view()
         .class("sapid-chart-data-table")
         .style(Style::new().overflow_x(Overflow::Auto))
-        .fill(glory::ui::each(
-            values,
-            |revision| *revision,
-            move |_, _| {
-                let data = model.with(|m| m.data.clone());
-                let key = key.clone();
-                let theme = theme.clone();
-                glory::ui::widget(move |scope| {
-                    let mut header = crate::table_row("head")
-                        .cell(crate::table_header_cell("category").text("Category"));
-                    for (j, s) in data.series.iter().enumerate() {
-                        header = header.cell(
-                            crate::table_header_cell(format!("s{j}")).text(s.label.clone()),
-                        );
-                    }
-                    let mut body = crate::table_body();
-                    for (i, c) in data.categories.iter().enumerate() {
-                        let mut row = crate::table_row(format!("r{i}"))
-                            .cell(crate::table_row_header("category").text(c.label.clone()));
+        .fill(
+            glory::ui::each(values)
+                .key(|revision| *revision)
+                .children(move |__each_row| {
+                    let data = model.with(|m| m.data.clone());
+                    let key = key.clone();
+                    let theme = theme.clone();
+                    glory::ui::widget(move |scope| {
+                        let mut header = crate::table_row("head")
+                            .cell(crate::table_header_cell("category").text("Category"));
                         for (j, s) in data.series.iter().enumerate() {
-                            row = row.cell(
-                                crate::table_cell(format!("s{j}")).text(
-                                    s.values[i]
-                                        .map_or_else(|| "No value".into(), |v| v.to_string()),
-                                ),
+                            header = header.cell(
+                                crate::table_header_cell(format!("s{j}")).text(s.label.clone()),
                             );
                         }
-                        body = body.row(row);
-                    }
-                    let mut table = crate::table(key.clone())
-                        .theme(theme.clone())
-                        .caption("Chart data")
-                        .head(crate::table_head().row(header))
-                        .body(body);
-                    if unstyled {
-                        table = table.unstyled();
-                    }
-                    table.show_in(scope)
-                })
-            },
-        ))
+                        let mut body = crate::table_body();
+                        for (i, c) in data.categories.iter().enumerate() {
+                            let mut row = crate::table_row(format!("r{i}")).cell(
+                                crate::table_row_header("category").text(c.label.clone()),
+                            );
+                            for (j, s) in data.series.iter().enumerate() {
+                                row =
+                                    row.cell(crate::table_cell(format!("s{j}")).text(
+                                        s.values[i].map_or_else(
+                                            || "No value".into(),
+                                            |v| v.to_string(),
+                                        ),
+                                    ));
+                            }
+                            body = body.row(row);
+                        }
+                        let mut table = crate::table(key.clone())
+                            .theme(theme.clone())
+                            .caption("Chart data")
+                            .head(crate::table_head().row(header))
+                            .body(body);
+                        if unstyled {
+                            table = table.unstyled();
+                        }
+                        table.show_in(scope)
+                    })
+                }),
+        )
         .show_in(scope)
 }

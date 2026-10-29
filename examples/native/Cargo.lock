@@ -1246,6 +1246,8 @@ dependencies = [
  "glory-render",
  "glory-style",
  "glory-ui",
+ "glory-view-macros",
+ "glory-web",
 ]
 
 [[package]]
@@ -1314,6 +1316,30 @@ dependencies = [
  "glory-core",
  "glory-render",
  "glory-style",
+]
+
+[[package]]
+name = "glory-view-macros"
+version = "0.3.1"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.119",
+]
+
+[[package]]
+name = "glory-web"
+version = "0.3.1"
+dependencies = [
+ "futures-util",
+ "glory-core",
+ "glory-html",
+ "glory-render",
+ "glory-ui",
+ "js-sys",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
 ]
 
 [[package]]

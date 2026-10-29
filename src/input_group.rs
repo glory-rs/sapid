@@ -164,3 +164,21 @@ impl Widget for InputSection {
         root.fill(children).show_in(scope)
     }
 }
+
+impl Default for InputGroup {
+    fn default() -> Self {
+        input_group()
+    }
+}
+
+impl Default for InputAddon {
+    fn default() -> Self {
+        input_addon()
+    }
+}
+
+impl Default for InputSection {
+    fn default() -> Self {
+        input_section()
+    }
+}

@@ -188,103 +188,116 @@ impl Widget for RollingNumber {
                 white_space: Some(WhiteSpace::NoWrap),
                 ..Style::new()
             })
-            .fill(glory::ui::each(
-                keys,
-                move |index| *index,
-                move |index, _| {
-                    let index = index.get();
-                    let paused = paused.clone();
-                    let animated = animated.clone();
-                    glory::ui::widget(move |scope| {
-                        let character = scope.bond(move || {
-                            formatted.with(|value| value.chars().nth(index).unwrap_or(' '))
-                        });
-                        let digit = scope.bond(move || character.get().is_ascii_digit());
+            .fill(
+                glory::ui::each(keys)
+                    .key(move |index| *index)
+                    .children(move |entry| {
+                        let index = entry.value;
+                        let index = index.get();
                         let paused = paused.clone();
                         let animated = animated.clone();
-                        glory::ui::when(digit, move || {
+                        glory::ui::widget(move |scope| {
+                            let character = scope.bond(move || {
+                                formatted.with(|value| value.chars().nth(index).unwrap_or(' '))
+                            });
+                            let digit = scope.bond(move || character.get().is_ascii_digit());
                             let paused = paused.clone();
                             let animated = animated.clone();
-                            glory::ui::widget(move |scope| {
+                            glory::ui::when(digit, move || {
                                 let paused = paused.clone();
                                 let animated = animated.clone();
-                                let metadata = scope.bond(move || {
-                                    Some(Box::new(Semantics {
-                                        inert: true,
-                                        translation: Some(TranslationMotion {
-                                            kind: TranslationKind::To {
-                                                target: TranslationOffset::new(
-                                                    0.,
-                                                    -line
-                                                        * f64::from(
-                                                            character
-                                                                .get()
-                                                                .to_digit(10)
-                                                                .unwrap_or(0),
-                                                        ),
-                                                ),
-                                                duration_millis: if animated.get() {
-                                                    duration.get()
-                                                } else {
-                                                    0
+                                glory::ui::widget(move |scope| {
+                                    let paused = paused.clone();
+                                    let animated = animated.clone();
+                                    let metadata = scope.bond(move || {
+                                        Some(Box::new(Semantics {
+                                            inert: true,
+                                            translation: Some(TranslationMotion {
+                                                kind: TranslationKind::To {
+                                                    target: TranslationOffset::new(
+                                                        0.,
+                                                        -line
+                                                            * f64::from(
+                                                                character
+                                                                    .get()
+                                                                    .to_digit(10)
+                                                                    .unwrap_or(0),
+                                                            ),
+                                                    ),
+                                                    duration_millis: if animated.get() {
+                                                        duration.get()
+                                                    } else {
+                                                        0
+                                                    },
                                                 },
-                                            },
-                                            paused: paused.get(),
-                                        }),
-                                        ..Default::default()
-                                    }))
-                                });
-                                glory::ui::view()
-                                    .class("sapid-rolling-number-digit")
-                                    .style(
-                                        Style::new()
-                                            .width(Length::Ch(1.))
-                                            .height(Length::Px(line))
-                                            .overflow_x(Overflow::Hidden)
-                                            .overflow_y(Overflow::Hidden),
-                                    )
-                                    .fill(
-                                        glory::ui::view()
-                                            .class("sapid-rolling-number-reel")
-                                            .semantics(metadata)
-                                            .style(Style::new().width(Length::Ch(1.)))
-                                            .fill(
-                                                (0..10)
-                                                    .map(move |number| {
-                                                        glory::ui::text()
-                                                            .content(number.to_string())
-                                                            .style(Style {
-                                                                display: Some(Display::Block),
-                                                                line_height: Some(line),
-                                                                ..Style::new()
-                                                                    .width(Length::Ch(1.))
-                                                                    .height(Length::Px(line))
-                                                            })
-                                                    })
-                                                    .collect::<Vec<_>>(),
-                                            ),
-                                    )
-                                    .show_in(scope)
+                                                paused: paused.get(),
+                                            }),
+                                            ..Default::default()
+                                        }))
+                                    });
+                                    glory::ui::view()
+                                        .class("sapid-rolling-number-digit")
+                                        .style(
+                                            Style::new()
+                                                .width(Length::Ch(1.))
+                                                .height(Length::Px(line))
+                                                .overflow_x(Overflow::Hidden)
+                                                .overflow_y(Overflow::Hidden),
+                                        )
+                                        .fill(
+                                            glory::ui::view()
+                                                .class("sapid-rolling-number-reel")
+                                                .semantics(metadata)
+                                                .style(Style::new().width(Length::Ch(1.)))
+                                                .fill(
+                                                    (0..10)
+                                                        .map(move |number| {
+                                                            glory::ui::text()
+                                                                .content(number.to_string())
+                                                                .style(Style {
+                                                                    display: Some(
+                                                                        Display::Block,
+                                                                    ),
+                                                                    line_height: Some(line),
+                                                                    ..Style::new()
+                                                                        .width(Length::Ch(1.))
+                                                                        .height(Length::Px(
+                                                                            line,
+                                                                        ))
+                                                                })
+                                                        })
+                                                        .collect::<Vec<_>>(),
+                                                ),
+                                        )
+                                        .show_in(scope)
+                                })
                             })
-                        })
-                        .otherwise(move || {
-                            glory::ui::widget(move |scope| {
-                                glory::ui::text()
-                                    .class("sapid-rolling-number-literal")
-                                    .content(scope.bond(move || character.get().to_string()))
-                                    .style(Style {
-                                        line_height: Some(line),
-                                        ..Style::new().height(Length::Px(line))
-                                    })
-                                    .show_in(scope)
+                            .otherwise(move || {
+                                glory::ui::widget(move |scope| {
+                                    glory::ui::text()
+                                        .class("sapid-rolling-number-literal")
+                                        .content(
+                                            scope.bond(move || character.get().to_string()),
+                                        )
+                                        .style(Style {
+                                            line_height: Some(line),
+                                            ..Style::new().height(Length::Px(line))
+                                        })
+                                        .show_in(scope)
+                                })
                             })
+                            .show_in(scope)
                         })
-                        .show_in(scope)
-                    })
-                },
-            ))
+                    }),
+            )
             .show_in(&area)?;
         scope.retain(area)?;
         Ok(())
+    }
+}
+
+impl Default for RollingNumber {
+    fn default() -> Self {
+        rolling_number()
     }
 }

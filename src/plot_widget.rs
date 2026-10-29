@@ -355,29 +355,26 @@ impl Widget for Plot {
                     .gap(12.)
                     .flex_wrap(glory::style::FlexWrap::Wrap),
             )
-            .fill(glory::ui::each(
-                stops,
-                |i| *i,
-                move |i, _| {
-                    let i = i.get_untracked();
-                    glory::ui::widget(move |scope| {
-                        glory::ui::graphic()
-                            .class("sapid-plot-scale-swatch")
-                            .drawing(scope.bond(move || {
-                                model.with(|m| {
-                                    crate::chart_aux::swatch(m.scene.scale_legend[i].color)
-                                })
-                            }))
-                            .style(Style::new().width(Length::Px(12.)).height(Length::Px(12.)))
-                            .show_in(scope)?;
-                        glory::ui::text()
-                            .content(scope.bond(move || {
-                                model.with(|m| m.scene.scale_legend[i].value.to_string())
-                            }))
-                            .show_in(scope)
-                    })
-                },
-            ))
+            .fill(glory::ui::each(stops).key(|i| *i).children(move |entry| {
+                let i = entry.value;
+                let i = i.get_untracked();
+                glory::ui::widget(move |scope| {
+                    glory::ui::graphic()
+                        .class("sapid-plot-scale-swatch")
+                        .drawing(scope.bond(move || {
+                            model.with(|m| {
+                                crate::chart_aux::swatch(m.scene.scale_legend[i].color)
+                            })
+                        }))
+                        .style(Style::new().width(Length::Px(12.)).height(Length::Px(12.)))
+                        .show_in(scope)?;
+                    glory::ui::text()
+                        .content(scope.bond(move || {
+                            model.with(|m| m.scene.scale_legend[i].value.to_string())
+                        }))
+                        .show_in(scope)
+                })
+            }))
             .show_in(&area)?;
         if self.show_legend {
             build_legend(
@@ -522,10 +519,10 @@ fn build_drawing(
                 .collect::<Vec<_>>()
         })
     });
-    glory::ui::each(
-        keys,
-        |key| key.clone(),
-        move |key, _| {
+    glory::ui::each(keys)
+        .key(|key| key.clone())
+        .children(move |entry| {
+            let key = entry.value;
             let key = key.get_untracked();
             glory::ui::widget(move |scope| {
                 let key = key.clone();
@@ -544,15 +541,14 @@ fn build_drawing(
                     )
                     .show_in(scope)
             })
-        },
-    )
-    .show_in(&area)?;
+        })
+        .show_in(&area)?;
     let labels =
         area.bond(move || model.with(|m| (0..m.scene.labels.len()).collect::<Vec<_>>()));
-    glory::ui::each(
-        labels,
-        |i| *i,
-        move |index, _| {
+    glory::ui::each(labels)
+        .key(|i| *i)
+        .children(move |entry| {
+            let index = entry.value;
             let i = index.get_untracked();
             glory::ui::widget(move |scope| {
                 glory::ui::text()
@@ -580,15 +576,14 @@ fn build_drawing(
                     }))
                     .show_in(scope)
             })
-        },
-    )
-    .show_in(&area)?;
+        })
+        .show_in(&area)?;
     let ranges =
         area.bond(move || model.with(|m| (0..m.scene.ranges.len()).collect::<Vec<_>>()));
-    glory::ui::each(
-        ranges,
-        |i| *i,
-        move |index, _| {
+    glory::ui::each(ranges)
+        .key(|i| *i)
+        .children(move |entry| {
+            let index = entry.value;
             let i = index.get_untracked();
             glory::ui::widget(move |scope| {
                 glory::ui::view()
@@ -616,9 +611,8 @@ fn build_drawing(
                     }))
                     .show_in(scope)
             })
-        },
-    )
-    .show_in(&area)?;
+        })
+        .show_in(&area)?;
     let keys = area.bond(move || {
         model.with(|m| {
             m.scene
@@ -629,10 +623,10 @@ fn build_drawing(
         })
     });
     let state = state.clone();
-    glory::ui::each(
-        keys,
-        |key| key.clone(),
-        move |key, _| {
+    glory::ui::each(keys)
+        .key(|key| key.clone())
+        .children(move |entry| {
+            let key = entry.value;
             let key = key.get_untracked();
             let state = state.clone();
             glory::ui::widget(move |scope| {
@@ -695,9 +689,8 @@ fn build_drawing(
                 }
                 button.show_in(scope)
             })
-        },
-    )
-    .show_in(&area)?;
+        })
+        .show_in(&area)?;
     scope.retain(area)?;
     Ok(())
 }
@@ -713,10 +706,10 @@ fn build_legend(scope: &Scope, state: &State, theme: crate::Theme, unstyled: boo
         })
     });
     let state = state.clone();
-    glory::ui::each(
-        keys,
-        |k| k.clone(),
-        move |key, _| {
+    glory::ui::each(keys)
+        .key(|k| k.clone())
+        .children(move |entry| {
+            let key = entry.value;
             let key = key.get_untracked();
             let state = state.clone();
             let theme = theme.clone();
@@ -773,9 +766,8 @@ fn build_legend(scope: &Scope, state: &State, theme: crate::Theme, unstyled: boo
                 }
                 button.show_in(scope)
             })
-        },
-    )
-    .show_in(scope)
+        })
+        .show_in(scope)
 }
 fn build_tables(
     scope: &Scope,
@@ -789,45 +781,47 @@ fn build_tables(
     glory::ui::view()
         .class("sapid-plot-tables")
         .style(Style::new().overflow_x(Overflow::Auto))
-        .fill(glory::ui::each(
-            revisions,
-            |r| *r,
-            move |_, _| {
-                let tables = glory::core::untracked(|| model.with(|m| m.tables.clone()));
-                let namespace = namespace.clone();
-                let theme = theme.clone();
-                glory::ui::widget(move |scope| {
-                    for (index, data) in tables.iter().enumerate() {
-                        let mut header = crate::table_row("head");
-                        for (i, label) in data.columns.iter().enumerate() {
-                            header = header
-                                .cell(crate::table_header_cell(format!("c{i}")).text(*label));
-                        }
-                        let mut body = crate::table_body();
-                        for (i, values) in data.rows.iter().enumerate() {
-                            let mut row = crate::table_row(format!("r{i}"));
-                            for (j, value) in values.iter().enumerate() {
-                                row = row.cell(if j == 0 {
-                                    crate::table_row_header(format!("c{j}")).text(value.clone())
-                                } else {
-                                    crate::table_cell(format!("c{j}")).text(value.clone())
-                                });
+        .fill(
+            glory::ui::each(revisions)
+                .key(|r| *r)
+                .children(move |__each_row| {
+                    let tables = glory::core::untracked(|| model.with(|m| m.tables.clone()));
+                    let namespace = namespace.clone();
+                    let theme = theme.clone();
+                    glory::ui::widget(move |scope| {
+                        for (index, data) in tables.iter().enumerate() {
+                            let mut header = crate::table_row("head");
+                            for (i, label) in data.columns.iter().enumerate() {
+                                header = header.cell(
+                                    crate::table_header_cell(format!("c{i}")).text(*label),
+                                );
                             }
-                            body = body.row(row);
+                            let mut body = crate::table_body();
+                            for (i, values) in data.rows.iter().enumerate() {
+                                let mut row = crate::table_row(format!("r{i}"));
+                                for (j, value) in values.iter().enumerate() {
+                                    row = row.cell(if j == 0 {
+                                        crate::table_row_header(format!("c{j}"))
+                                            .text(value.clone())
+                                    } else {
+                                        crate::table_cell(format!("c{j}")).text(value.clone())
+                                    });
+                                }
+                                body = body.row(row);
+                            }
+                            let mut table = crate::table(format!("{namespace}-data-{index}"))
+                                .caption(data.caption.clone())
+                                .theme(theme.clone())
+                                .head(crate::table_head().row(header))
+                                .body(body);
+                            if unstyled {
+                                table = table.unstyled();
+                            }
+                            table.show_in(scope)?;
                         }
-                        let mut table = crate::table(format!("{namespace}-data-{index}"))
-                            .caption(data.caption.clone())
-                            .theme(theme.clone())
-                            .head(crate::table_head().row(header))
-                            .body(body);
-                        if unstyled {
-                            table = table.unstyled();
-                        }
-                        table.show_in(scope)?;
-                    }
-                    Ok(())
-                })
-            },
-        ))
+                        Ok(())
+                    })
+                }),
+        )
         .show_in(scope)
 }

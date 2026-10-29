@@ -490,18 +490,19 @@ impl Widget for Schedule {
         let size = self.common.size;
         let unstyled = self.common.unstyled;
         let s = state.clone();
-        glory::ui::each(
-            groups,
-            |day| day.date,
-            move |day, _| AgendaDayWidget {
-                day,
-                state: s.clone(),
-                theme: theme.clone(),
-                size,
-                unstyled,
-            },
-        )
-        .show_in(&content)?;
+        glory::ui::each(groups)
+            .key(|day| day.date)
+            .children(move |entry| {
+                let day = entry.value;
+                AgendaDayWidget {
+                    day,
+                    state: s.clone(),
+                    theme: theme.clone(),
+                    size,
+                    unstyled,
+                }
+            })
+            .show_in(&content)?;
         if matches!(view, ScheduleView::Day | ScheduleView::Week) {
             timeline::build(
                 &content,
@@ -663,18 +664,19 @@ impl Widget for AgendaDayWidget {
         let theme = self.theme.clone();
         let size = self.size;
         let unstyled = self.unstyled;
-        glory::ui::each(
-            day.map(|day| day.rows.clone()),
-            |row| (row.key.clone(), row.interval.start()),
-            move |row, _| AgendaEventWidget {
-                row,
-                state: state.clone(),
-                theme: theme.clone(),
-                size,
-                unstyled,
-            },
-        )
-        .show_in(&list_scope)?;
+        glory::ui::each(day.map(|day| day.rows.clone()))
+            .key(|row| (row.key.clone(), row.interval.start()))
+            .children(move |entry| {
+                let row = entry.value;
+                AgendaEventWidget {
+                    row,
+                    state: state.clone(),
+                    theme: theme.clone(),
+                    size,
+                    unstyled,
+                }
+            })
+            .show_in(&list_scope)?;
         scope.retain(list_scope)?;
         scope.retain(content)
     }

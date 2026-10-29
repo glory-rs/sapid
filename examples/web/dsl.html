@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Sapid · Shared Widget DSL</title><!--BASE_CSS--><link rel="stylesheet" href="sapid.css"></head>
+<body><div id="app"></div><script type="module">
+import init, * as demo from './sapid_web_example.js';
+await init(); window.demo = demo; window.moduleReady = true;
+if (!new URLSearchParams(location.search).has('manual')) {
+    demo.dsl_mount(location.pathname.includes('hydrate')); window.ready = true;
+}
+</script></body></html>

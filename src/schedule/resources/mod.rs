@@ -787,23 +787,21 @@ impl Widget for ResourceSchedule {
             viewport_height: self.viewport_height,
         };
         let s = state.clone();
-        glory::ui::each(
-            accepted.map(move |m| {
-                vec![(
-                    m.visible_resources().len(),
-                    if view == ResourceScheduleView::Month {
-                        m.data().window().start().date().year_month().days()
-                    } else {
-                        0
-                    },
-                )]
-            }),
-            |count| *count,
-            move |_, _| Frame {
-                root: s.clone(),
-                config: config.clone(),
-            },
-        )
+        glory::ui::each(accepted.map(move |m| {
+            vec![(
+                m.visible_resources().len(),
+                if view == ResourceScheduleView::Month {
+                    m.data().window().start().date().year_month().days()
+                } else {
+                    0
+                },
+            )]
+        }))
+        .key(|count| *count)
+        .children(move |__each_row| Frame {
+            root: s.clone(),
+            config: config.clone(),
+        })
         .show_in(&content)?;
         if view != ResourceScheduleView::Month {
             build_all_day(
@@ -946,17 +944,18 @@ fn build_editor(
     });
     let s = state.clone();
     let button_theme = theme.clone();
-    glory::ui::each(
-        rows,
-        |row| (row.0.event.clone(), row.0.candidate),
-        move |row, _| EditChoice {
-            row,
-            root: s.clone(),
-            theme: button_theme.clone(),
-            unstyled,
-        },
-    )
-    .show_in(&content)?;
+    glory::ui::each(rows)
+        .key(|row| (row.0.event.clone(), row.0.candidate))
+        .children(move |entry| {
+            let row = entry.value;
+            EditChoice {
+                row,
+                root: s.clone(),
+                theme: button_theme.clone(),
+                unstyled,
+            }
+        })
+        .show_in(&content)?;
     let target = state.edit_target;
     crate::text()
         .theme(theme.clone())
@@ -1069,17 +1068,18 @@ fn build_all_day(
         .show_in(scope)?;
     let content = child(scope, parent)?;
     let theme = theme.clone();
-    glory::ui::each(
-        rows,
-        |row| (row.key.clone(), row.candidate),
-        move |row, _| AllDayWidget {
-            row,
-            root: state.clone(),
-            theme: theme.clone(),
-            unstyled,
-        },
-    )
-    .show_in(&content)?;
+    glory::ui::each(rows)
+        .key(|row| (row.key.clone(), row.candidate))
+        .children(move |entry| {
+            let row = entry.value;
+            AllDayWidget {
+                row,
+                root: state.clone(),
+                theme: theme.clone(),
+                unstyled,
+            }
+        })
+        .show_in(&content)?;
     scope.retain(content)
 }
 struct AllDayWidget {

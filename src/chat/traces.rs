@@ -333,15 +333,16 @@ fn build_list(scope: &Scope, state: Rc<State>, parent: Option<TraceKey>) -> Resu
             }
         })
     });
-    glory::ui::each(
-        keys,
-        |k| k.clone(),
-        move |key, _| TraceRow {
-            key: key.get_untracked(),
-            state: state.clone(),
-        },
-    )
-    .show_in(&area)?;
+    glory::ui::each(keys)
+        .key(|k| k.clone())
+        .children(move |entry| {
+            let key = entry.value;
+            TraceRow {
+                key: key.get_untracked(),
+                state: state.clone(),
+            }
+        })
+        .show_in(&area)?;
     scope.retain(area)
 }
 struct TraceRow {

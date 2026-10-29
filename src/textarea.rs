@@ -110,3 +110,9 @@ impl Widget for Textarea {
         self.input.build(scope)
     }
 }
+
+impl Default for Textarea {
+    fn default() -> Self {
+        textarea()
+    }
+}

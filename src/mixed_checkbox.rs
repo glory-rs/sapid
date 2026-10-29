@@ -193,3 +193,9 @@ impl Widget for MixedCheckbox {
         Ok(())
     }
 }
+
+impl Default for MixedCheckbox {
+    fn default() -> Self {
+        mixed_checkbox()
+    }
+}

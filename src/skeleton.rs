@@ -148,3 +148,9 @@ impl Widget for Skeleton {
         .show_in(scope)
     }
 }
+
+impl Default for Skeleton {
+    fn default() -> Self {
+        skeleton()
+    }
+}

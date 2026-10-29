@@ -874,10 +874,10 @@ impl Widget for Tree {
         let unstyled = self.common.unstyled;
         let renderer = self.label.clone();
         let icons = self.file_icons;
-        glory::ui::each(
-            rows,
-            |row| row.key.clone(),
-            move |row, _index| {
+        glory::ui::each(rows)
+            .key(|row| row.key.clone())
+            .children(move |entry| {
+                let (row, _index) = (entry.value, entry.index);
                 let state = state.clone();
                 let theme = theme.clone();
                 let renderer = renderer.clone();
@@ -1121,9 +1121,8 @@ impl Widget for Tree {
                     scope.retain(content)?;
                     Ok(())
                 })
-            },
-        )
-        .show_in(&area)?;
+            })
+            .show_in(&area)?;
         scope.retain(area)?;
         scope.retain(fields)?;
         Ok(())

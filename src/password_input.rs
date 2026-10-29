@@ -113,7 +113,7 @@ impl Widget for PasswordInput {
         if unstyled {
             toggle = toggle.unstyled();
         }
-        let input = std::mem::replace(&mut self.input, crate::text_field()).purpose(purpose);
+        let input = std::mem::take(&mut self.input).purpose(purpose);
         let mut group = crate::input_group()
             .theme(theme)
             .size(size)
@@ -124,5 +124,11 @@ impl Widget for PasswordInput {
             group = group.unstyled();
         }
         group.build(scope)
+    }
+}
+
+impl Default for PasswordInput {
+    fn default() -> Self {
+        password_input()
     }
 }

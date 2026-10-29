@@ -417,21 +417,22 @@ pub(super) fn build(scope: &Scope, root: Rc<Controller>, config: Config) -> Resu
     }
     let state_for_events = root.clone();
     let theme_for_events = theme.clone();
-    glory::ui::each(
-        scope.bond(move || prepared.with(|p| p.events.clone())),
-        |event| (event.row.key.clone(), event.row.interval.start(), event.day),
-        move |event, _| TimelineEventWidget {
-            event,
-            prepared,
-            state: state_for_events.clone(),
-            theme: theme_for_events.clone(),
-            unstyled,
-            direction,
-            days,
-            height: height - 32.,
-        },
-    )
-    .show_in(&canvas_scope)?;
+    glory::ui::each(scope.bond(move || prepared.with(|p| p.events.clone())))
+        .key(|event| (event.row.key.clone(), event.row.interval.start(), event.day))
+        .children(move |entry| {
+            let event = entry.value;
+            TimelineEventWidget {
+                event,
+                prepared,
+                state: state_for_events.clone(),
+                theme: theme_for_events.clone(),
+                unstyled,
+                direction,
+                days,
+                height: height - 32.,
+            }
+        })
+        .show_in(&canvas_scope)?;
     let weak = Rc::downgrade(&state);
     scope.effect(move || {
         let Some(s) = weak.upgrade() else { return };

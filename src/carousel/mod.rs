@@ -497,33 +497,36 @@ impl Widget for Carousel {
         glory::ui::view()
             .class("sapid-carousel-viewport")
             .style(Style::new().min_width(Length::Px(0.)))
-            .fill(glory::ui::each(
-                indices,
-                |index| *index,
-                move |index, _| {
-                    let index = index.get();
-                    let mut content = Some(factory(index));
-                    glory::ui::widget(move |scope| {
-                        let current = current_page;
-                        glory::ui::view()
-                            .class(format!("sapid-carousel-slide sapid-carousel-slide-{index}"))
-                            .name(scope.bond(move || {
-                                format!("Slide {} of {}", index + 1, current.get().count)
-                            }))
-                            .semantics(scope.bond(move || {
-                                let hidden = current.get().current != index;
-                                Some(Box::new(Semantics {
-                                    hidden,
-                                    inert: hidden,
-                                    ..Default::default()
+            .fill(
+                glory::ui::each(indices)
+                    .key(|index| *index)
+                    .children(move |entry| {
+                        let index = entry.value;
+                        let index = index.get();
+                        let mut content = Some(factory(index));
+                        glory::ui::widget(move |scope| {
+                            let current = current_page;
+                            glory::ui::view()
+                                .class(format!(
+                                    "sapid-carousel-slide sapid-carousel-slide-{index}"
+                                ))
+                                .name(scope.bond(move || {
+                                    format!("Slide {} of {}", index + 1, current.get().count)
                                 }))
-                            }))
-                            .fill(content.take().ok_or(glory::ui::Error::Gone)?)
-                            .show_in(scope)?;
-                        Ok(())
-                    })
-                },
-            ))
+                                .semantics(scope.bond(move || {
+                                    let hidden = current.get().current != index;
+                                    Some(Box::new(Semantics {
+                                        hidden,
+                                        inert: hidden,
+                                        ..Default::default()
+                                    }))
+                                }))
+                                .fill(content.take().ok_or(glory::ui::Error::Gone)?)
+                                .show_in(scope)?;
+                            Ok(())
+                        })
+                    }),
+            )
             .show_in(&child)?;
         let control_ref = owner.cage(None);
         glory::ui::view()
@@ -623,5 +626,11 @@ impl Widget for Carousel {
         scope.retain(child)?;
         scope.retain(owner)?;
         Ok(())
+    }
+}
+
+impl Default for Carousel {
+    fn default() -> Self {
+        carousel()
     }
 }

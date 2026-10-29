@@ -287,11 +287,14 @@ fn branch(state: Rc<State>, item: Cage<Item>) -> Box<dyn Widget> {
                             .document_part(DocumentPart::UnorderedList)
                             .class("sapid-json-children")
                             .style(Style::new().margin(Edges::all(0.)).padding(Edges::all(0.)))
-                            .fill(glory::ui::each(
-                                items,
-                                |(tree, index)| tree.nodes()[*index].path.clone(),
-                                move |item, _| branch(state.clone(), item),
-                            ))
+                            .fill(
+                                glory::ui::each(items)
+                                    .key(|(tree, index)| tree.nodes()[*index].path.clone())
+                                    .children(move |entry| {
+                                        let item = entry.value;
+                                        branch(state.clone(), item)
+                                    }),
+                            )
                             .show_in(scope)
                     })
                 });
@@ -470,11 +473,10 @@ impl Widget for JsonViewer {
             .document_part(DocumentPart::UnorderedList)
             .class("sapid-json-root")
             .style(Style::new().margin(Edges::all(0.)).padding(Edges::all(0.)))
-            .fill(glory::ui::each(
-                items,
-                |_| (),
-                move |item, _| branch(state.clone(), item),
-            ))
+            .fill(glory::ui::each(items).key(|_| ()).children(move |entry| {
+                let item = entry.value;
+                branch(state.clone(), item)
+            }))
             .show_in(&area)?;
         scope.retain(area)?;
         Ok(())

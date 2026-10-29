@@ -764,10 +764,10 @@ impl Widget for FileInput {
             .show_in(&child)?;
         let preview = self.preview;
         let mut factory = self.attachment.take();
-        glory::ui::each(
-            current,
-            |info| info.token,
-            move |info, _| {
+        glory::ui::each(current)
+            .key(|info| info.token)
+            .children(move |entry| {
+                let info = entry.value;
                 let controller = controller.clone();
                 let info = info.get();
                 if let Some(factory) = factory.as_mut() {
@@ -782,10 +782,21 @@ impl Widget for FileInput {
                     }
                     Box::new(attachment) as Box<dyn Widget>
                 }
-            },
-        )
-        .show_in(&child)?;
+            })
+            .show_in(&child)?;
         scope.retain(child)?;
         Ok(())
+    }
+}
+
+impl Default for FileButton {
+    fn default() -> Self {
+        file_button()
+    }
+}
+
+impl Default for FileInput {
+    fn default() -> Self {
+        file_input()
     }
 }

@@ -617,10 +617,10 @@ impl Widget for TreeSelect {
             .show_in(&content)?;
         let proxies = scope.child_in(hidden_ref.get().ok_or(glory::ui::Error::Gone)?)?;
         let form_metadata = metadata;
-        glory::ui::each(
-            accepted.map(|a| a.values.paths().to_vec()),
-            |path| path.leaf().to_owned(),
-            move |path, _| {
+        glory::ui::each(accepted.map(|a| a.values.paths().to_vec()))
+            .key(|path| path.leaf().to_owned())
+            .children(move |entry| {
+                let path = entry.value;
                 let meta = form_metadata.clone();
                 let name = form_name;
                 let enabled = enabled.clone();
@@ -644,9 +644,8 @@ impl Widget for TreeSelect {
                         }))
                         .show_in(scope)
                 })
-            },
-        )
-        .show_in(&proxies)?;
+            })
+            .show_in(&proxies)?;
         content.retain(proxies)?;
         scope.retain(content)
     }

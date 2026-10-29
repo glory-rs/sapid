@@ -104,6 +104,11 @@ macro_rules! inline_text {
             common: Common,
             content: Vary<String>,
         }
+        impl Default for $name {
+            fn default() -> Self {
+                $factory()
+            }
+        }
         pub fn $factory() -> $name {
             $name {
                 common: Common::default(),
@@ -751,5 +756,53 @@ impl Widget for Item {
                     .fill(take(&mut self.actions)),
             )
             .show_in(scope)
+    }
+}
+
+impl Default for Kbd {
+    fn default() -> Self {
+        kbd()
+    }
+}
+
+impl Default for TextList {
+    fn default() -> Self {
+        text_list()
+    }
+}
+
+impl Default for TextListItem {
+    fn default() -> Self {
+        text_list_item()
+    }
+}
+
+impl Default for Blockquote {
+    fn default() -> Self {
+        blockquote()
+    }
+}
+
+impl Default for DataList {
+    fn default() -> Self {
+        data_list()
+    }
+}
+
+impl Default for DataListItem {
+    fn default() -> Self {
+        data_list_item()
+    }
+}
+
+impl Default for Highlight {
+    fn default() -> Self {
+        highlight()
+    }
+}
+
+impl Default for Item {
+    fn default() -> Self {
+        item()
     }
 }

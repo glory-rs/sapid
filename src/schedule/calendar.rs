@@ -426,18 +426,19 @@ pub(super) fn build(scope: &Scope, root: Rc<Controller>, config: Config) -> Resu
             })
         });
         let root = state.root.clone();
-        glory::ui::each(
-            scope.bond(move || vec![day.get()]),
-            |d| d.date,
-            move |day, _| AgendaDayWidget {
-                day,
-                state: root.clone(),
-                theme: theme.clone(),
-                size,
-                unstyled,
-            },
-        )
-        .show_in(scope)?;
+        glory::ui::each(scope.bond(move || vec![day.get()]))
+            .key(|d| d.date)
+            .children(move |entry| {
+                let day = entry.value;
+                AgendaDayWidget {
+                    day,
+                    state: root.clone(),
+                    theme: theme.clone(),
+                    size,
+                    unstyled,
+                }
+            })
+            .show_in(scope)?;
     }
     let weak = Rc::downgrade(&state);
     scope.effect(move || {
@@ -628,17 +629,18 @@ impl Widget for CalendarCell {
                 }))
                 .show_in(&events_scope)?;
             let list_scope = child(scope, list)?;
-            glory::ui::each(
-                rows,
-                |r| (r.key.clone(), r.interval.start()),
-                move |row, _| PeriodEventWidget {
-                    row,
-                    state: root.clone(),
-                    theme: event_theme.clone(),
-                    unstyled,
-                },
-            )
-            .show_in(&list_scope)?;
+            glory::ui::each(rows)
+                .key(|r| (r.key.clone(), r.interval.start()))
+                .children(move |entry| {
+                    let row = entry.value;
+                    PeriodEventWidget {
+                        row,
+                        state: root.clone(),
+                        theme: event_theme.clone(),
+                        unstyled,
+                    }
+                })
+                .show_in(&list_scope)?;
             let s = state.clone();
             let more = state.expanded;
             let expanded = state.expanded;

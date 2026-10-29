@@ -170,10 +170,10 @@ pub(super) fn build(widget: &mut Tabs, scope: &Scope, input: Items) -> Result {
     let owner = scope.id();
     let registrations = collection.clone();
     let navigation = roving.clone();
-    let triggers = glory::ui::each(
-        configs,
-        |config| config.key.clone(),
-        move |row, _| {
+    let triggers = glory::ui::each(configs)
+        .key(|config| config.key.clone())
+        .children(move |entry| {
+            let row = entry.value;
             let namespace = namespace.clone();
             let root_enabled = root_enabled.clone();
             let theme = theme.clone();
@@ -294,14 +294,13 @@ pub(super) fn build(widget: &mut Tabs, scope: &Scope, input: Items) -> Result {
                 });
                 trigger.show_in(scope)
             })
-        },
-    );
+        });
     let namespace = widget.key.clone();
     let policy = widget.policy;
-    let panels = glory::ui::each(
-        configs,
-        |config| config.key.clone(),
-        move |row, _| {
+    let panels = glory::ui::each(configs)
+        .key(|config| config.key.clone())
+        .children(move |entry| {
+            let row = entry.value;
             let namespace = namespace.clone();
             glory::ui::widget(move |scope| {
                 let config = row.try_get()?;
@@ -338,8 +337,7 @@ pub(super) fn build(widget: &mut Tabs, scope: &Scope, input: Items) -> Result {
                     .fill(panel)
                     .show_in(scope)
             })
-        },
-    );
+        });
     let mut list = glory::ui::view()
         .class("sapid-tab-list")
         .role(Role::TabList)

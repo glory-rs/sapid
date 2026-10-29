@@ -1036,10 +1036,10 @@ impl Widget for Combobox {
                 .show_in(&content)?;
             let values_scope =
                 scope.child_in(values_ref.get().ok_or(glory::ui::Error::Gone)?)?;
-            glory::ui::each(
-                multiple.selected,
-                |key| key.clone(),
-                move |key, _| {
+            glory::ui::each(multiple.selected)
+                .key(|key| key.clone())
+                .children(move |entry| {
+                    let key = entry.value;
                     let controller = controller.clone();
                     let theme = theme.clone();
                     glory::ui::widget(move |scope| {
@@ -1099,9 +1099,8 @@ impl Widget for Combobox {
                             .fill(remove)
                             .show_in(scope)
                     })
-                },
-            )
-            .show_in(&values_scope)?;
+                })
+                .show_in(&values_scope)?;
             content.retain(values_scope)?;
         }
         if self.clearable && self.kind == ComboboxKind::Multiple {

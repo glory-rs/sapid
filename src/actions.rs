@@ -734,3 +734,21 @@ impl Widget for ButtonGroup {
         }
     }
 }
+
+impl Default for CloseButton {
+    fn default() -> Self {
+        close_button()
+    }
+}
+
+impl Default for Burger {
+    fn default() -> Self {
+        burger()
+    }
+}
+
+impl Default for ButtonGroup {
+    fn default() -> Self {
+        button_group()
+    }
+}

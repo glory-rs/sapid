@@ -121,7 +121,7 @@ pub(super) fn controls(
             section("Edit every color"),
             copy("studio-help", "Hex inputs accept RGB or RGBA. Enable Override to replace a mode value; uncheck it to inherit. Shades and series inherit independently per index."),
             tabs,
-            each(edit_layers,|v|*v,move |value,_| fields::role_rows(draft,value.get(),target,picker,row_theme.clone())),
+            each(edit_layers).key(|v|*v).children(move |entry| { let value = entry.value;fields::role_rows(draft,value.get(),target,picker,row_theme.clone())}),
         ));
         group().fill((generate, modes, fields)).show_in(scope)
     })

@@ -254,3 +254,9 @@ impl Widget for Indicator {
         .show_in(scope)
     }
 }
+
+impl Default for Indicator {
+    fn default() -> Self {
+        indicator()
+    }
+}

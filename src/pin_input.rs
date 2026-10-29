@@ -183,6 +183,11 @@ pub struct PinInput {
     completed: Option<Box<dyn FnMut(String)>>,
     rejected: Option<Box<dyn FnMut(PinRejection)>>,
 }
+impl Default for PinInput {
+    fn default() -> Self {
+        pin_input()
+    }
+}
 pub fn pin_input() -> PinInput {
     PinInput {
         common: Common::default(),

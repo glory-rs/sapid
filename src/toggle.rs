@@ -520,3 +520,9 @@ impl Widget for ToggleGroup {
         Ok(())
     }
 }
+
+impl Default for Toggle {
+    fn default() -> Self {
+        toggle()
+    }
+}

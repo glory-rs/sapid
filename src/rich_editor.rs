@@ -739,3 +739,9 @@ impl Widget for RichTextEditor {
         Ok(())
     }
 }
+
+impl Default for RichTextEditor {
+    fn default() -> Self {
+        rich_text_editor()
+    }
+}

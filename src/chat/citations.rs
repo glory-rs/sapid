@@ -349,107 +349,110 @@ impl Widget for Sources {
         base.radius = Some(self.common.theme.radius);
         let mut root = configure!(self.common, glory::ui::view(), scope, "sapid-sources", base)
             .document_part(DocumentPart::UnorderedList)
-            .fill(glory::ui::each(
-                keys,
-                |k| k.clone(),
-                move |key, _| {
-                    let key = key.get_untracked();
-                    let theme = theme.clone();
-                    let callback = callback.clone();
-                    let namespace = namespace.clone();
-                    glory::ui::widget(move |scope| {
-                        let href = key.clone();
-                        let title = key.clone();
-                        let trust = key.clone();
-                        let preview = key.clone();
-                        let destination = key.clone();
-                        let mut link = crate::anchor()
-                            .class("sapid-source-link")
-                            .theme(theme.clone())
-                            .size(size)
-                            .semantic_id(composite::id("sources", &namespace, "entry", &key)?)
-                            .label(scope.bond(move || {
-                                records.with(|v| {
-                                    v.iter()
-                                        .find(|r| r.key == title)
-                                        .expect("live source")
-                                        .title
-                                        .clone()
-                                })
-                            }))
-                            .href(scope.bond(move || {
-                                records.with(|v| {
-                                    v.iter()
-                                        .find(|r| r.key == href)
-                                        .expect("live source")
-                                        .url
-                                        .clone()
-                                })
-                            }));
-                        if unstyled {
-                            link = link.unstyled();
-                        }
+            .fill(
+                glory::ui::each(keys)
+                    .key(|k| k.clone())
+                    .children(move |entry| {
+                        let key = entry.value;
+                        let key = key.get_untracked();
+                        let theme = theme.clone();
                         let callback = callback.clone();
-                        if has_callback {
-                            link = link.on_navigate(move |request| {
-                                callback.emit(
-                                    owner,
-                                    SourceNavigation {
-                                        key: destination.clone(),
-                                        url: request.href,
-                                        open: request.open,
-                                    },
+                        let namespace = namespace.clone();
+                        glory::ui::widget(move |scope| {
+                            let href = key.clone();
+                            let title = key.clone();
+                            let trust = key.clone();
+                            let preview = key.clone();
+                            let destination = key.clone();
+                            let mut link = crate::anchor()
+                                .class("sapid-source-link")
+                                .theme(theme.clone())
+                                .size(size)
+                                .semantic_id(composite::id(
+                                    "sources", &namespace, "entry", &key,
+                                )?)
+                                .label(scope.bond(move || {
+                                    records.with(|v| {
+                                        v.iter()
+                                            .find(|r| r.key == title)
+                                            .expect("live source")
+                                            .title
+                                            .clone()
+                                    })
+                                }))
+                                .href(scope.bond(move || {
+                                    records.with(|v| {
+                                        v.iter()
+                                            .find(|r| r.key == href)
+                                            .expect("live source")
+                                            .url
+                                            .clone()
+                                    })
+                                }));
+                            if unstyled {
+                                link = link.unstyled();
+                            }
+                            let callback = callback.clone();
+                            if has_callback {
+                                link = link.on_navigate(move |request| {
+                                    callback.emit(
+                                        owner,
+                                        SourceNavigation {
+                                            key: destination.clone(),
+                                            url: request.href,
+                                            open: request.open,
+                                        },
+                                    )
+                                });
+                            }
+                            glory::ui::view()
+                                .class("sapid-source")
+                                .document_part(DocumentPart::ListItem)
+                                .style(
+                                    Style::new()
+                                        .display(Display::Flex)
+                                        .flex_direction(FlexDirection::Column)
+                                        .gap(4.)
+                                        .min_width(Length::Px(0.)),
                                 )
-                            });
-                        }
-                        glory::ui::view()
-                            .class("sapid-source")
-                            .document_part(DocumentPart::ListItem)
-                            .style(
-                                Style::new()
-                                    .display(Display::Flex)
-                                    .flex_direction(FlexDirection::Column)
-                                    .gap(4.)
-                                    .min_width(Length::Px(0.)),
-                            )
-                            .fill((
-                                link,
-                                glory::ui::text().class("sapid-source-trust").content(
-                                    scope.bond(move || {
-                                        records.with(|v| {
-                                            v.iter()
-                                                .find(|r| r.key == trust)
-                                                .expect("live source")
-                                                .trust
-                                                .label()
-                                                .to_owned()
-                                        })
-                                    }),
-                                ),
-                                glory::ui::text()
-                                    .kind(TextKind::Paragraph)
-                                    .class("sapid-source-preview")
-                                    .content(scope.bond(move || {
-                                        records.with(|v| {
-                                            v.iter()
-                                                .find(|r| r.key == preview)
-                                                .expect("live source")
-                                                .preview
-                                                .clone()
-                                                .unwrap_or_default()
-                                        })
-                                    }))
-                                    .style(Style {
-                                        white_space: Some(WhiteSpace::PreWrap),
-                                        max_width: Some(Limit::Percent(100.)),
-                                        overflow_x: Some(Overflow::Auto),
-                                        ..Style::new()
-                                    }),
-                            ))
-                            .show_in(scope)
-                    })
-                },
-            ));
+                                .fill((
+                                    link,
+                                    glory::ui::text().class("sapid-source-trust").content(
+                                        scope.bond(move || {
+                                            records.with(|v| {
+                                                v.iter()
+                                                    .find(|r| r.key == trust)
+                                                    .expect("live source")
+                                                    .trust
+                                                    .label()
+                                                    .to_owned()
+                                            })
+                                        }),
+                                    ),
+                                    glory::ui::text()
+                                        .kind(TextKind::Paragraph)
+                                        .class("sapid-source-preview")
+                                        .content(scope.bond(move || {
+                                            records.with(|v| {
+                                                v.iter()
+                                                    .find(|r| r.key == preview)
+                                                    .expect("live source")
+                                                    .preview
+                                                    .clone()
+                                                    .unwrap_or_default()
+                                            })
+                                        }))
+                                        .style(Style {
+                                            white_space: Some(WhiteSpace::PreWrap),
+                                            max_width: Some(Limit::Percent(100.)),
+                                            overflow_x: Some(Overflow::Auto),
+                                            ..Style::new()
+                                        }),
+                                ))
+                                .show_in(scope)
+                        })
+                    }),
+            );
         for (kind, mut handlers) in std::mem::take(&mut self.common.handlers) {
             let owner = scope.id();
             root = root.on(kind, move |event| observe(&mut handlers, owner, event));
@@ -534,5 +537,11 @@ impl Widget for InlineCitation {
             anchor = anchor.on(kind, move |event| observers.emit(owner, event));
         }
         anchor.show_in(scope)
+    }
+}
+
+impl Default for Context {
+    fn default() -> Self {
+        context()
     }
 }

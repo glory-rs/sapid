@@ -131,6 +131,11 @@ macro_rules! widget {
         pub struct $name {
             layout: Layout,
         }
+        impl Default for $name {
+            fn default() -> Self {
+                $factory()
+            }
+        }
         pub fn $factory() -> $name {
             $name {
                 layout: Layout::new($class, $style),
@@ -238,5 +243,11 @@ impl Container {
     pub fn fluid(mut self) -> Self {
         self.layout.cap = Some(Limit::None);
         self
+    }
+}
+
+impl Default for Container {
+    fn default() -> Self {
+        container()
     }
 }

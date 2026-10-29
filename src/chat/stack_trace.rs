@@ -182,15 +182,16 @@ impl Widget for StackTrace {
             })
         });
         let rows = state.clone();
-        glory::ui::each(
-            frames,
-            |key| key.clone(),
-            move |key, _| FrameRow {
-                key: key.get_untracked(),
-                state: rows.clone(),
-            },
-        )
-        .show_in(&list)?;
+        glory::ui::each(frames)
+            .key(|key| key.clone())
+            .children(move |entry| {
+                let key = entry.value;
+                FrameRow {
+                    key: key.get_untracked(),
+                    state: rows.clone(),
+                }
+            })
+            .show_in(&list)?;
         glory::ui::when(accepted.map(|d| d.frames().is_empty()), || {
             glory::ui::text().content("No stack frames")
         })

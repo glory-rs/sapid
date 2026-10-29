@@ -389,3 +389,9 @@ fn section_name(name: &str) -> Result {
     }
     Ok(())
 }
+
+impl Default for Button {
+    fn default() -> Self {
+        button()
+    }
+}

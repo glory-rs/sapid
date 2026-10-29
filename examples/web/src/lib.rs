@@ -19,6 +19,7 @@ pub mod copy_button_form;
 pub mod display_form;
 pub mod display_pages;
 pub mod document_form;
+pub mod dsl;
 pub mod environment_form;
 pub mod fields_form;
 pub mod files_form;

@@ -147,10 +147,10 @@ impl Widget for Legend {
         let theme = self.common.theme.clone();
         let unstyled = self.common.unstyled;
         let owner = scope.id();
-        glory::ui::each(
-            keys,
-            |key| key.clone(),
-            move |key, _| {
+        glory::ui::each(keys)
+            .key(|key| key.clone())
+            .children(move |entry| {
+                let key = entry.value;
                 let key = key.get_untracked();
                 let theme = theme.clone();
                 let callback = callback.clone();
@@ -220,9 +220,8 @@ impl Widget for Legend {
                     }
                     button.show_in(scope)
                 })
-            },
-        )
-        .show_in(&area)?;
+            })
+            .show_in(&area)?;
         scope.retain(area)?;
         Ok(())
     }
@@ -312,5 +311,11 @@ impl Widget for Tooltip {
             }))
             .enabled(scope.bond(move || enabled.get() && accepted.with(Option::is_some)))
             .show_in(scope)
+    }
+}
+
+impl Default for Legend {
+    fn default() -> Self {
+        legend()
     }
 }

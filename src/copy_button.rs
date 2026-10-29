@@ -262,3 +262,9 @@ impl Widget for CopyButton {
         inner.show_in(scope)
     }
 }
+
+impl Default for CopyButton {
+    fn default() -> Self {
+        copy_button()
+    }
+}

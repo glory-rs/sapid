@@ -5,7 +5,7 @@
   batch, run `python scripts/widget-plan.py`, then `--check`. Baseline coverage
   does not mean full upstream feature parity; do not mark empty builders done.
 
-- Use handwritten Rust builders implementing Glory `Widget`; keep `Cage`,
+- Use Rust builders or the optional Glory DSL implementing the same `Widget`; keep `Cage`,
   `Bond`, and `Vary`. Host selection belongs to the application.
 - The current development dependency is the sibling `../glory` checkout.
   Preserve unrelated changes there. Keep browser/SSR/native types outside
@@ -56,3 +56,8 @@
   synthesize colors in Theme::new or silently fall back from an unsupported mode.
   Ship BLUE/GREEN definitions, each supporting both modes. Keep preset CSS synced
   with Theme::stylesheet via `cargo run --example palette_css`; no widget CSS injection.
+
+- DSL integration uses `examples/fixtures/dsl_demo.rs` unchanged across hosts.
+  Follow `docs/dsl.md` and run `scripts/check-dsl.ps1 -Browser -Native` when
+  changing the shared example or mixed-tree integration. Do not add a Sapid
+  Component/Props interface or separate renderer.

@@ -170,3 +170,9 @@ impl Widget for Checkbox {
         Ok(())
     }
 }
+
+impl Default for Checkbox {
+    fn default() -> Self {
+        checkbox()
+    }
+}

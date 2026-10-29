@@ -426,13 +426,14 @@ impl Widget for Plan {
                 })
                 .document_part(DocumentPart::OrderedList)
                 .style(Style::new().min_width(Length::Px(0.)))
-                .fill(glory::ui::each(
-                    scope.bond(move || {
+                .fill(
+                    glory::ui::each(scope.bond(move || {
                         accepted
                             .with(|p| p.tasks.iter().map(|t| t.key.clone()).collect::<Vec<_>>())
-                    }),
-                    |k| k.clone(),
-                    move |key, _| {
+                    }))
+                    .key(|k| k.clone())
+                    .children(move |entry| {
+                        let key = entry.value;
                         let key = key.get_untracked();
                         let theme = palette.clone();
                         let callback = callback.clone();
@@ -474,8 +475,8 @@ impl Widget for Plan {
                                 .fill(row)
                                 .show_in(scope)
                         })
-                    },
-                )),
+                    }),
+                ),
         );
         for (kind, mut handlers) in std::mem::take(&mut self.common.handlers) {
             let owner = scope.id();

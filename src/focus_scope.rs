@@ -147,3 +147,9 @@ impl Widget for FocusScope {
             .show_in(scope)
     }
 }
+
+impl Default for FocusScope {
+    fn default() -> Self {
+        focus_scope()
+    }
+}

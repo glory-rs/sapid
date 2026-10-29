@@ -219,10 +219,10 @@ impl Widget for Reasoning {
                         accepted
                             .with(|d| d.steps.iter().map(|s| s.key.clone()).collect::<Vec<_>>())
                     });
-                    glory::ui::each(
-                        keys,
-                        |key| key.clone(),
-                        move |key, _| {
+                    glory::ui::each(keys)
+                        .key(|key| key.clone())
+                        .children(move |entry| {
+                            let key = entry.value;
                             let key = key.get_untracked();
                             let style = style.clone();
                             glory::ui::widget(move |scope| {
@@ -270,9 +270,8 @@ impl Widget for Reasoning {
                                     ))
                                     .show_in(scope)
                             })
-                        },
-                    )
-                    .show_in(&area)?;
+                        })
+                        .show_in(&area)?;
                     scope.retain(area)?;
                     Ok(())
                 })

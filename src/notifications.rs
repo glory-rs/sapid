@@ -738,87 +738,92 @@ impl Widget for Toaster {
         let command = handle.clone();
         let namespace = self.key.clone();
         let theme = self.theme.clone();
-        root.fill(glory::ui::each(
-            items,
-            |entry| entry.id,
-            move |item, _| {
-                let command = command.clone();
-                let namespace = namespace.clone();
-                let theme = theme.clone();
-                glory::ui::widget(move |scope| {
-                    let entry = item.get();
-                    let token = NotificationToken {
-                        controller: Rc::downgrade(&command.0),
-                        id: entry.id,
-                    };
-                    let title = scope.bond(move || item.with(|e| e.title.clone()));
-                    let message = scope.bond(move || item.with(|e| e.message.clone()));
-                    let dismiss = command.clone();
-                    let dismissed = token.clone();
-                    let weak = scope.downgrade();
-                    let mut row = crate::notification(format!("{namespace}-{}", entry.id))
-                        .theme(theme.clone())
-                        .title(title)
-                        .content(message)
-                        .severity(entry.severity)
-                        .announcement(entry.announcement)
-                        .closable(true)
-                        .close_label("Dismiss notification")
-                        .on_close(move || {
-                            if let Err(error) = dismiss.dismiss(&dismissed)
-                                && let Some(scope) = weak.upgrade()
-                            {
-                                scope.report_error(error)
-                            }
-                        });
-                    if let Some((label, _)) = &entry.action {
-                        let action = command.clone();
-                        let token = token.clone();
+        root.fill(
+            glory::ui::each(items)
+                .key(|entry| entry.id)
+                .children(move |entry| {
+                    let item = entry.value;
+                    let command = command.clone();
+                    let namespace = namespace.clone();
+                    let theme = theme.clone();
+                    glory::ui::widget(move |scope| {
+                        let entry = item.get();
+                        let token = NotificationToken {
+                            controller: Rc::downgrade(&command.0),
+                            id: entry.id,
+                        };
+                        let title = scope.bond(move || item.with(|e| e.title.clone()));
+                        let message = scope.bond(move || item.with(|e| e.message.clone()));
+                        let dismiss = command.clone();
+                        let dismissed = token.clone();
                         let weak = scope.downgrade();
-                        row = row.action(label.clone(), move || {
-                            if let Err(error) =
-                                action.resolve(&token, NotificationCloseReason::Action, true)
-                                && let Some(scope) = weak.upgrade()
-                            {
-                                scope.report_error(error)
-                            }
-                        });
-                    }
-                    let cleanup = command.clone();
-                    let id = entry.id;
-                    scope.on_cleanup(move || {
-                        let _ = cleanup.activity(1, id, false);
-                        let _ = cleanup.activity(2, id, false);
-                    })?;
-                    let mut wrapper = glory::ui::view().class("sapid-notification-row");
-                    for (kind, bit) in [
-                        (glory::render::EventKind::FocusWithin, 2),
-                        (glory::render::EventKind::PointerWithin, 1),
-                    ] {
-                        if bit == 1 && !hover {
-                            continue;
-                        }
-                        let activity = command.clone();
-                        let weak = scope.downgrade();
-                        wrapper = wrapper.on(kind, move |event| {
-                            let active = match event {
-                                glory::render::Event::FocusWithin { focused, .. } => focused,
-                                glory::render::Event::PointerWithin { phase, .. } => {
-                                    phase != glory::render::PointerPhase::Leave
+                        let mut row = crate::notification(format!("{namespace}-{}", entry.id))
+                            .theme(theme.clone())
+                            .title(title)
+                            .content(message)
+                            .severity(entry.severity)
+                            .announcement(entry.announcement)
+                            .closable(true)
+                            .close_label("Dismiss notification")
+                            .on_close(move || {
+                                if let Err(error) = dismiss.dismiss(&dismissed)
+                                    && let Some(scope) = weak.upgrade()
+                                {
+                                    scope.report_error(error)
                                 }
-                                _ => return,
-                            };
-                            if let Err(error) = activity.activity(bit, id, active)
-                                && let Some(scope) = weak.upgrade()
-                            {
-                                scope.report_error(error)
+                            });
+                        if let Some((label, _)) = &entry.action {
+                            let action = command.clone();
+                            let token = token.clone();
+                            let weak = scope.downgrade();
+                            row = row.action(label.clone(), move || {
+                                if let Err(error) = action.resolve(
+                                    &token,
+                                    NotificationCloseReason::Action,
+                                    true,
+                                ) && let Some(scope) = weak.upgrade()
+                                {
+                                    scope.report_error(error)
+                                }
+                            });
+                        }
+                        let cleanup = command.clone();
+                        let id = entry.id;
+                        scope.on_cleanup(move || {
+                            let _ = cleanup.activity(1, id, false);
+                            let _ = cleanup.activity(2, id, false);
+                        })?;
+                        let mut wrapper = glory::ui::view().class("sapid-notification-row");
+                        for (kind, bit) in [
+                            (glory::render::EventKind::FocusWithin, 2),
+                            (glory::render::EventKind::PointerWithin, 1),
+                        ] {
+                            if bit == 1 && !hover {
+                                continue;
                             }
-                        });
-                    }
-                    wrapper.fill(row).show_in(scope)
-                })
-            },
-        ))
+                            let activity = command.clone();
+                            let weak = scope.downgrade();
+                            wrapper = wrapper.on(kind, move |event| {
+                                let active = match event {
+                                    glory::render::Event::FocusWithin { focused, .. } => {
+                                        focused
+                                    }
+                                    glory::render::Event::PointerWithin { phase, .. } => {
+                                        phase != glory::render::PointerPhase::Leave
+                                    }
+                                    _ => return,
+                                };
+                                if let Err(error) = activity.activity(bit, id, active)
+                                    && let Some(scope) = weak.upgrade()
+                                {
+                                    scope.report_error(error)
+                                }
+                            });
+                        }
+                        wrapper.fill(row).show_in(scope)
+                    })
+                }),
+        )
         .show_in(scope)?;
         if let Some(mut callback) = self.ready.take() {
             callback(handle)

@@ -71,10 +71,9 @@ mod fixture {
                                     .gap(12.)
                             }
                         }))
-                        .fill(glory::ui::each(
-                            keys,
-                            |key| key.clone(),
-                            move |key, _| {
+                        .fill(glory::ui::each(keys).key(|key| key.clone()).children(
+                            move |entry| {
+                                let key = entry.value;
                                 let context = context.clone();
                                 let theme = theme.clone();
                                 widget(move |scope| {

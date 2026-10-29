@@ -530,34 +530,35 @@ pub(super) fn build(scope: &Scope, root: Rc<Controller>, config: Config) -> Resu
     let state_for_events = root.clone();
     let theme_for_events = theme.clone();
     let drag_for_events = drag.clone();
-    glory::ui::each(
-        scope.bond(move || prepared.with(|p| p.events.clone())),
-        |event| {
+    glory::ui::each(scope.bond(move || prepared.with(|p| p.events.clone())))
+        .key(|event| {
             (
                 event.row.key.clone(),
                 event.row.interval.start(),
                 event.resource.clone(),
                 event.date,
             )
-        },
-        move |event, _| TimelineEventWidget {
-            event,
-            prepared,
-            state: state_for_events.clone(),
-            theme: theme_for_events.clone(),
-            unstyled,
-            direction,
-            days,
-            height: if axis == ResourceAxis::Columns {
-                height - 32.
-            } else {
-                steps as f64 * 64.
-            },
-            axis,
-            drag: drag_for_events.clone(),
-        },
-    )
-    .show_in(&canvas_scope)?;
+        })
+        .children(move |entry| {
+            let event = entry.value;
+            TimelineEventWidget {
+                event,
+                prepared,
+                state: state_for_events.clone(),
+                theme: theme_for_events.clone(),
+                unstyled,
+                direction,
+                days,
+                height: if axis == ResourceAxis::Columns {
+                    height - 32.
+                } else {
+                    steps as f64 * 64.
+                },
+                axis,
+                drag: drag_for_events.clone(),
+            }
+        })
+        .show_in(&canvas_scope)?;
     let weak = Rc::downgrade(&state);
     scope.effect(move || {
         let Some(s) = weak.upgrade() else { return };

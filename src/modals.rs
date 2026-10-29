@@ -291,10 +291,10 @@ impl Widget for ModalsManager {
         let key = self.key.clone();
         let theme = self.theme.clone();
         let command = handle.clone();
-        glory::ui::each(
-            current,
-            |entry| entry.id,
-            move |item, _| {
+        glory::ui::each(current)
+            .key(|entry| entry.id)
+            .children(move |entry| {
+                let item = entry.value;
                 let key = key.clone();
                 let theme = theme.clone();
                 let command = command.clone();
@@ -395,9 +395,8 @@ impl Widget for ModalsManager {
                             .show_in(scope)
                     }
                 })
-            },
-        )
-        .show_in(scope)?;
+            })
+            .show_in(scope)?;
         if let Some(mut callback) = self.ready.take() {
             callback(handle)
         }

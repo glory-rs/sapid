@@ -30,6 +30,11 @@ pub fn spinner() -> Spinner {
 pub fn loader() -> Spinner {
     spinner()
 }
+impl Default for Spinner {
+    fn default() -> Self {
+        spinner()
+    }
+}
 impl Spinner {
     pub fn theme(mut self, theme: crate::Theme) -> Self {
         self.common.theme = theme;

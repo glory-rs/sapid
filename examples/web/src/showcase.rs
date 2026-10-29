@@ -97,30 +97,27 @@ fn sidebar(query: Cage<String>, selected: &'static str, theme: Theme) -> impl Wi
                         .class("site-nav-group")
                         .fill((
                             text().class("site-nav-title").content(category),
-                            each(
-                                items,
-                                |id| *id,
-                                move |id, _| {
-                                    let entry =
-                                        find(id.get()).expect("catalogued navigation entry");
-                                    link(
-                                        label(entry),
-                                        route(entry.id, &theme),
-                                        if entry.id == selected {
-                                            "site-nav-link is-active"
-                                        } else {
-                                            "site-nav-link"
-                                        },
-                                    )
-                                    .current(
-                                        if entry.id == selected {
-                                            Some(Current::Page)
-                                        } else {
-                                            None
-                                        },
-                                    )
-                                },
-                            ),
+                            each(items).key(|id| *id).children(move |entry| {
+                                let id = entry.value;
+                                let entry =
+                                    find(id.get()).expect("catalogued navigation entry");
+                                link(
+                                    label(entry),
+                                    route(entry.id, &theme),
+                                    if entry.id == selected {
+                                        "site-nav-link is-active"
+                                    } else {
+                                        "site-nav-link"
+                                    },
+                                )
+                                .current(
+                                    if entry.id == selected {
+                                        Some(Current::Page)
+                                    } else {
+                                        None
+                                    },
+                                )
+                            }),
                         ))
                         .show_in(scope)
                 })
@@ -159,18 +156,15 @@ fn search_results(query: Cage<String>, theme: Theme) -> impl Widget {
             .class("site-search-results")
             .name("Search results")
             .fill((
-                each(
-                    items,
-                    |id| *id,
-                    move |id, _| {
-                        let entry = find(id.get()).expect("catalogued search result");
-                        link(
-                            format!("{} · {}", label(entry), entry.group),
-                            route(entry.id, &theme),
-                            "site-search-result",
-                        )
-                    },
-                ),
+                each(items).key(|id| *id).children(move |entry| {
+                    let id = entry.value;
+                    let entry = find(id.get()).expect("catalogued search result");
+                    link(
+                        format!("{} · {}", label(entry), entry.group),
+                        route(entry.id, &theme),
+                        "site-search-result",
+                    )
+                }),
                 when(none, || {
                     text()
                         .class("site-nav-empty")
@@ -331,25 +325,22 @@ fn palette_choices(
                         })
                         .collect::<Vec<_>>(),
                 ),
-                each(
-                    choices,
-                    |r| r.id.clone(),
-                    move |record, _| {
-                        let r = record.get();
-                        let mode = if r.supports(custom_theme.scheme) {
-                            custom_theme.scheme
-                        } else {
-                            r.default_scheme
-                        };
-                        let choice = r.theme(mode).expect("validated saved theme");
-                        palette_link(
-                            &r.title,
-                            &choice,
-                            &custom_selected,
-                            r.id == custom_theme.name,
-                        )
-                    },
-                ),
+                each(choices).key(|r| r.id.clone()).children(move |entry| {
+                    let record = entry.value;
+                    let r = record.get();
+                    let mode = if r.supports(custom_theme.scheme) {
+                        custom_theme.scheme
+                    } else {
+                        r.default_scheme
+                    };
+                    let choice = r.theme(mode).expect("validated saved theme");
+                    palette_link(
+                        &r.title,
+                        &choice,
+                        &custom_selected,
+                        r.id == custom_theme.name,
+                    )
+                }),
             ))
             .show_in(scope)
     })
@@ -395,10 +386,10 @@ fn saved_actions(
         });
         let theme = theme.clone();
         let selection = selection.clone();
-        each(
-            active,
-            |r| r.id.clone(),
-            move |r, _| {
+        each(active)
+            .key(|r| r.id.clone())
+            .children(move |entry| {
+                let r = entry.value;
                 let record = r.get();
                 let id = record.id.clone();
                 let fallback = route(&selection, &crate::themes::select("blue", theme.scheme));
@@ -436,9 +427,8 @@ fn saved_actions(
                             }
                         }),
                 ))
-            },
-        )
-        .show_in(scope)
+            })
+            .show_in(scope)
     })
 }
 

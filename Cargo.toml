@@ -25,7 +25,7 @@ glory = { path = "../glory/crates/glory", default-features = false }
 serde_json = { version = "=1.0.154", features = ["raw_value"], optional = true }
 
 [dev-dependencies]
-glory = { path = "../glory/crates/glory", default-features = false, features = ["ssr"] }
+glory = { path = "../glory/crates/glory", default-features = false, features = ["ssr", "dsl"] }
 
 [lints.rust]
 unsafe_code = "forbid"

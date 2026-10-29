@@ -356,3 +356,15 @@ impl Widget for Typography {
         root.show_in(scope)
     }
 }
+
+impl Default for Text {
+    fn default() -> Self {
+        text()
+    }
+}
+
+impl Default for Typography {
+    fn default() -> Self {
+        typography()
+    }
+}

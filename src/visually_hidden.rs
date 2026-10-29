@@ -115,3 +115,9 @@ impl Widget for VisuallyHidden {
         Ok(())
     }
 }
+
+impl Default for VisuallyHidden {
+    fn default() -> Self {
+        visually_hidden()
+    }
+}

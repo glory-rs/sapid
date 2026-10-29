@@ -255,3 +255,9 @@ impl Widget for TextField {
         Ok(())
     }
 }
+
+impl Default for TextField {
+    fn default() -> Self {
+        text_field()
+    }
+}

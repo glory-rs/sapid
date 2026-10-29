@@ -96,10 +96,10 @@ pub(super) fn build(widget: &mut Accordion, scope: &Scope, input: Items) -> Resu
         selected.map(|keys| keys.first().cloned()).into(),
         root_enabled.clone(),
     );
-    let rows = glory::ui::each(
-        configs,
-        |config| config.key.clone(),
-        move |row, _| {
+    let rows = glory::ui::each(configs)
+        .key(|config| config.key.clone())
+        .children(move |entry| {
+            let row = entry.value;
             let namespace = namespace.clone();
             let root_enabled = root_enabled.clone();
             let theme = theme.clone();
@@ -212,8 +212,7 @@ pub(super) fn build(widget: &mut Accordion, scope: &Scope, input: Items) -> Resu
                     ))
                     .show_in(scope)
             })
-        },
-    );
+        });
     let mut observers = widget
         .common
         .handlers

@@ -12,7 +12,7 @@ clipboard = ["glory/blitz-clipboard"]
 
 [dependencies]
 sapid = { path = "../..", features = ["json", "code", "dates", "charts", "chat"] }
-glory = { path = "../../../glory/crates/glory", default-features = false, features = ["html", "blitz-accesskit", "blitz-raster"] }
+glory = { path = "../../../glory/crates/glory", default-features = false, features = ["html", "dsl", "blitz-accesskit", "blitz-raster"] }
 blitz-traits = { git = "https://github.com/glory-rs/blitz", rev = "ee125981e0e5a217e758be5c470df23cdd9e2fc3", version = "=0.3.0-beta.4", default-features = false }
 blitz-dom = { git = "https://github.com/glory-rs/blitz", rev = "ee125981e0e5a217e758be5c470df23cdd9e2fc3", version = "=0.3.0-beta.4", default-features = false }
 

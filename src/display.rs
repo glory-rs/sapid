@@ -569,3 +569,33 @@ impl Widget for EmptyState {
         .show_in(scope)
     }
 }
+
+impl Default for Badge {
+    fn default() -> Self {
+        badge()
+    }
+}
+
+impl Default for Pill {
+    fn default() -> Self {
+        pill()
+    }
+}
+
+impl Default for Paper {
+    fn default() -> Self {
+        paper()
+    }
+}
+
+impl Default for Card {
+    fn default() -> Self {
+        card()
+    }
+}
+
+impl Default for EmptyState {
+    fn default() -> Self {
+        empty_state()
+    }
+}

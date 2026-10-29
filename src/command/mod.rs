@@ -1006,10 +1006,10 @@ impl Widget for Command {
         let live = state.clone();
         let theme = self.common.theme.clone();
         let size = self.common.size;
-        glory::ui::each(
-            data,
-            |section| section.key.clone(),
-            move |section, _| {
+        glory::ui::each(data)
+            .key(|section| section.key.clone())
+            .children(move |entry| {
+                let section = entry.value;
                 let live = live.clone();
                 let owner = list_id.clone();
                 let theme = theme.clone();
@@ -1024,9 +1024,8 @@ impl Widget for Command {
                         plain,
                     )
                 })
-            },
-        )
-        .show_in(&results_scope)?;
+            })
+            .show_in(&results_scope)?;
         let status_state = state.clone();
         glory::ui::view()
             .role(Role::Status)
@@ -1150,10 +1149,10 @@ fn mount_section(
             .show_in(&content)?;
     }
     let live = state.clone();
-    glory::ui::each(
-        section.map(|section| section.actions.clone()),
-        |action| action.key.clone(),
-        move |action, index| {
+    glory::ui::each(section.map(|section| section.actions.clone()))
+        .key(|action| action.key.clone())
+        .children(move |entry| {
+            let (action, index) = (entry.value, entry.index);
             let live = live.clone();
             let list_id = list_id.clone();
             let theme = theme.clone();
@@ -1220,9 +1219,8 @@ fn mount_section(
                 member.revise(|value| *value = Some(token));
                 Ok(())
             })
-        },
-    )
-    .show_in(&content)?;
+        })
+        .show_in(&content)?;
     scope.retain(content)?;
     Ok(())
 }

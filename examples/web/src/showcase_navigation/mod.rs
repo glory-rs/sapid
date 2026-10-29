@@ -125,10 +125,9 @@ pub fn app(state: State) -> impl Widget {
                 state.notice.revise(|v| *v = error);
             }
         });
-        each(
-            revisions,
-            |v| *v,
-            move |_, _| {
+        each(revisions)
+            .key(|v| *v)
+            .children(move |__each_row| {
                 let page = state.page.get();
                 if page.route.widget == "theme-studio" {
                     state.editor.prepare(
@@ -145,8 +144,7 @@ pub fn app(state: State) -> impl Widget {
                     state.notice,
                     state.editor,
                 )
-            },
-        )
-        .show_in(scope)
+            })
+            .show_in(scope)
     })
 }

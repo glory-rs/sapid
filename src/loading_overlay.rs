@@ -253,3 +253,9 @@ impl Widget for Shade {
         .show_in(scope)
     }
 }
+
+impl Default for Overlay {
+    fn default() -> Self {
+        overlay()
+    }
+}

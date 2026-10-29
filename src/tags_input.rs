@@ -493,10 +493,10 @@ impl Widget for TagsInput {
         let plain = self.common.unstyled;
         let pills = self.pills;
         let size = self.common.size;
-        glory::ui::each(
-            rows,
-            |row| row.clone(),
-            move |row, _| {
+        glory::ui::each(rows)
+            .key(|row| row.clone())
+            .children(move |entry| {
+                let row = entry.value;
                 let tags = tags.clone();
                 let theme = theme.clone();
                 glory::ui::widget(move |scope| {
@@ -561,9 +561,8 @@ impl Widget for TagsInput {
                         .fill(remove)
                         .show_in(scope)
                 })
-            },
-        )
-        .show_in(&tags_scope)?;
+            })
+            .show_in(&tags_scope)?;
         content.retain(tags_scope)?;
         let input_metadata = metadata.clone();
         let metadata = scope.bond(move || {
@@ -667,10 +666,10 @@ impl Widget for TagsInput {
             false.into(),
             false.into(),
         );
-        glory::ui::each(
-            proxies,
-            |values| values.clone(),
-            move |values, _| {
+        glory::ui::each(proxies)
+            .key(|values| values.clone())
+            .children(move |entry| {
+                let values = entry.value;
                 let enabled = enabled.clone();
                 let form_meta = form_meta.clone();
                 glory::ui::widget(move |scope| {
@@ -720,9 +719,8 @@ impl Widget for TagsInput {
                         }))
                         .show_in(scope)
                 })
-            },
-        )
-        .show_in(&proxy_scope)?;
+            })
+            .show_in(&proxy_scope)?;
         content.retain(proxy_scope)?;
         scope.retain(content)?;
         scope.retain(controller)?;
