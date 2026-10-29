@@ -1,7 +1,13 @@
 # Sapid
 
-Sapid 0.6.0 targets Glory 0.6.0. Native examples use `glory::apace`
-and its `apace-*` features. See [crate release instructions](RELEASING.md).
+Sapid is a UI widget library built on [Glory](https://glory.taidge.org/),
+the Rust UI framework that provides its reactive model, `Widget` interface,
+and rendering hosts. Sapid adds ready-to-use controls, layouts, and themes;
+its widgets compose with Glory's built-in widgets and optional `view!` DSL
+across Web, SSR, hydration, and native hosts.
+
+Sapid 0.6.0 targets [Glory 0.6.0](https://glory.taidge.org/). Native examples use
+`glory::apace` and its `apace-*` features. See [crate release instructions](RELEASING.md).
 
 ```toml
 [dependencies]

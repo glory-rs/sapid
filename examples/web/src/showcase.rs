@@ -239,6 +239,7 @@ fn header(
                                 route("theme-studio", &theme),
                                 "site-topnav-link",
                             ),
+                            link("Glory", "https://glory.taidge.org/", "site-topnav-link"),
                             link(
                                 "GitHub",
                                 "https://github.com/sapid-ui/sapid",
@@ -652,6 +653,7 @@ pub fn site_with_state(
                                 ),
                                 link("Charts", route("P11-01", &theme), "site-nav-link"),
                                 link("Chat", route("P13-01", &theme), "site-nav-link"),
+                                link("Glory", "https://glory.taidge.org/", "site-nav-link"),
                             ))
                     })) as Box<dyn Widget>
                 } else {
