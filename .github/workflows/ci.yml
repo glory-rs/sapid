@@ -108,10 +108,12 @@ jobs:
             product_commit = (git rev-parse HEAD)
             glory_commit = (git -C ../glory rev-parse HEAD)
             acceptance_commit = $harness
+            fixture_protocol = 'HTTP/1.1'
+            browser_isolation = 'suite'
           } | ConvertTo-Json | Set-Content D:/BuildCache/sapid/browser-provenance.json
       - name: Actual widget browser acceptance
         run: |
-          $fixture = Start-Process python -ArgumentList @('-m','http.server','8794','--bind','127.0.0.1','--directory','D:/BuildCache/sapid/web') -WindowStyle Hidden -PassThru
+          $fixture = Start-Process python -ArgumentList @('-m','http.server','8794','--protocol','HTTP/1.1','--bind','127.0.0.1','--directory','D:/BuildCache/sapid/web') -WindowStyle Hidden -PassThru
           try {
             $ready = $false
             for ($attempt = 0; $attempt -lt 30; $attempt++) {

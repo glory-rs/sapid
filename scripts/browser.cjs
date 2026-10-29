@@ -38,7 +38,7 @@ async function withClipboardLock(run) {
   let cursor = 0;
   function snapshot(complete) {
     const done = results.filter(Boolean);
-    return { browser: [...versions].join(', '), jobs, complete,
+    return { browser: [...versions].join(', '), jobs, browserIsolation: 'suite', complete,
       completedSuites: done.map(result => result.file), reports: done.flatMap(result => result.reports),
       errors: [...runErrors, ...done.flatMap(result => result.errors)], sourceHashes, artifactHashes };
   }
@@ -69,7 +69,7 @@ async function withClipboardLock(run) {
       versions.add(browser.version());
       while (cursor < suites.length) {
         const index = cursor++, file = suites[index];
-        if (processed && processed % 16 === 0) {
+        if (processed) {
           await browser.close(); browser = await launchBrowser();
           versions.add(browser.version());
         }
