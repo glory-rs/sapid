@@ -1,0 +1,16 @@
+{
+  "repository": "sapid-ui/sapid",
+  "title": "Sapid",
+  "tag_prefix": "v",
+  "allowed_prefixes": [
+    "sapid"
+  ],
+  "packages": [
+    "sapid"
+  ],
+  "external_path_dependencies": {
+    "glory": "=0.6.0"
+  },
+  "registry_verifier": "scripts/verify-registry.py",
+  "uniform_version": true
+}

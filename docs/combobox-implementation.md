@@ -28,7 +28,7 @@ ArrowUp/Down 导航匹配且启用的选项，Enter 提交当前活动项，Esca
 
 Field 关联真实 Input，保留 label/description/error/required/invalid/readonly/disabled。原生 Input required 只能检查文字非空；“必须选择一个有效 key”属于应用 FormState/Field 校验策略。隐藏 NativeSelect 代理仅提交已选项业务 value，不承载 required/readonly/invalid 约束；搜索文字没有额外表单 name，不会冒充成功选择。readonly 保留焦点和程序写入；disabled 同时禁用 editor 与成功值代理。
 
-初批模型证据：`combobox::tests` 11 项，覆盖真实 Input/SSR/Field、过滤活动/选中分离、composition 冻结/恢复、受控三个源拒绝、百万来源入口与恢复、同 revision 整 tick、多事件过滤后旧项拒绝、closed Commit/同值同步不重新开启、readonly 中 composition 清理，以及 Owner capture 析构。共享 render Choice 9 项、HTML Choice 2 项、SSR Choice producer 1 项已过；Blitz Choice 1 项验证 Select/Editable 两分支均在 facet 注册前 preflight/direct 拒绝且保留成功前缀/查询水位。
+初批模型证据：`combobox::tests` 11 项，覆盖真实 Input/SSR/Field、过滤活动/选中分离、composition 冻结/恢复、受控三个源拒绝、百万来源入口与恢复、同 revision 整 tick、多事件过滤后旧项拒绝、closed Commit/同值同步不重新开启、readonly 中 composition 清理，以及 Owner capture 析构。共享 render Choice 9 项、HTML Choice 2 项、SSR Choice producer 1 项已过；Apace Choice 1 项验证 Select/Editable 两分支均在 facet 注册前 preflight/direct 拒绝且保留成功前缀/查询水位。
 
 浏览器入口 `examples/web/combobox.html`，脚本 `combobox-acceptance.js`；真实 producer 沿用 `GLORY_CHOICE_STREAM_FIXTURE` / `choice_stream`，含 editable Input、active-descendant 和 filtered hidden Option，该批 classic 证据使用 HTML v4/envelope v2；当前 producer 随共享协议使用 HTML v13/envelope v2。Sapid lib/tests 与 WASM fixture 严格 Clippy 均通过。
 

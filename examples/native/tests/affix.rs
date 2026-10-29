@@ -1,4 +1,4 @@
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::prelude::*;
 use glory::render::{Action, NodeId, Query, QueryValue, Rect};
 use glory::style::{Length, Overflow, Style};

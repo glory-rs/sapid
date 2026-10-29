@@ -1,4 +1,4 @@
-use glory::blitz::{Raster, shell::WindowApp};
+use glory::apace::{Raster, shell::WindowApp};
 use glory::prelude::*;
 use glory::render::{Action, Current, NodeId, Query, QueryValue, Rect, ScrollMetrics};
 use std::{cell::RefCell, rc::Rc};

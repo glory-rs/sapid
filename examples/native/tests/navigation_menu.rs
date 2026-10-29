@@ -1,4 +1,4 @@
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::prelude::*;
 use glory::render::{Action, Navigation, NodeId, Props, Query, QueryValue};
 use sapid::{navigation_menu, navigation_menu_link, navigation_menu_panel};

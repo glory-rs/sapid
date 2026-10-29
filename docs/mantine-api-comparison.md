@@ -26,7 +26,7 @@ polymorphic component、任意 Recharts/Tiptap/Embla 插件或全局 provider。
 | 批次 | 优先级 | 要补齐的行为 | 归属与状态 |
 | --- | --- | --- | --- |
 | A1 | P0 | MultiSelect max_values / hide_picked_options / clearable，含受控拒绝、IME、空组与游标恢复 | 已实现并验收：29 项选择控件测试、浏览器四主题 × 两尺寸 × CSR/SSR；受控拒绝/IME/空组/游标/焦点均有证据 |
-| A2 | P0 | 真实 input/textarea placeholder：Glory 共享语义/HTML/SSR/stream + Sapid 输入族 | 已实现并验收：render/HTML 差分/SSR stream、9 类 Sapid 输入；Blitz 明确拒绝并保留成功前缀，未声称原生绘制支持 |
+| A2 | P0 | 真实 input/textarea placeholder：Glory 共享语义/HTML/SSR/stream + Sapid 输入族 | 已实现并验收：render/HTML 差分/SSR stream、9 类 Sapid 输入；Apace 明确拒绝并保留成功前缀，未声称原生绘制支持 |
 | A3 | P1 | Button Light / Outline / Subtle 外观，保留 loading/disabled/自定义 Style | 已实现并验收：新增三种外观；四主题 loading/disabled/显式样式与真实浏览器恢复均通过 |
 | A4 | P1 | dropdown 配置、option slot、lineClamp、slider marks、分段 progress、日期 presets、日程统一编辑 | 待后续有限设计；未实现，不承诺整套上游等价 |
 
@@ -57,7 +57,7 @@ polymorphic component、任意 Recharts/Tiptap/Embla 插件或全局 provider。
 | [Input](https://mantine.dev/core/input/) | Field/Label/Description/Error：真实关联与 required/invalid | success 状态、说明/错误/控件顺序、loading/section 宽度尚无统一 API；InputGroup 已可组合左右内容。placeholder 属共享缺口。 | P1 |
 | [JsonInput](https://mantine.dev/core/json-input/) | JsonInput：有界解析/format、错误、草稿/只读、真实 placeholder | 本轮补 placeholder；autosize/formatOnBlur 等便捷行为仍需定义组合和失焦次序。 | P2 |
 | [MaskInput](https://mantine.dev/core/mask-input/) | MaskInput：有限 mask、raw/display 索引、paste/组合保护 | 不兼容任意第三方 mask 对象、动态 mask 引擎；保留 typed finite schema，并补 display 格式示例。 | 边界 |
-| [NativeSelect](https://mantine.dev/core/native-select/) | NativeSelect：真实 select、分组、多选、成功值 | NativeSelect 的左右 sections 需 InputGroup 组合；Blitz select facet 拒绝。不能将浏览器 select 打开状态作为可控 popup。 | P2 |
+| [NativeSelect](https://mantine.dev/core/native-select/) | NativeSelect：真实 select、分组、多选、成功值 | NativeSelect 的左右 sections 需 InputGroup 组合；Apace select facet 拒绝。不能将浏览器 select 打开状态作为可控 popup。 | P2 |
 | [NumberInput](https://mantine.dev/core/number-input/) | NumberInput：Decimal、locale、clamp、step、草稿与拒绝 | 缺完整千分位/前后缀/字符串数值/hold interval API；不能用 f64 替换当前精确小数，也不导入任意 formatter。 | P2 |
 | [PasswordInput](https://mantine.dev/core/password-input/) | PasswordInput：显隐/组合保护、Field、真实 placeholder | 本轮补 placeholder；显隐自定义图标/部位仍待补。不能重建输入实现；native 密码值投影与 hint 支持是不同承诺。 | P2 |
 | [PinInput](https://mantine.dev/core/pin-input/) | PinInput：长度/字母表、mask、autofill、complete、原子编辑 | 缺一组可单独引用的 input 单元等 UI 细项；现有是共享单 Input 投影，不假装独立多输入。onComplete 已有不能误报。 | P2 |
@@ -223,7 +223,7 @@ polymorphic component、任意 Recharts/Tiptap/Embla 插件或全局 provider。
 - 官方快照：181 条组件/工具目录记录、4,659 个按条目计数的 Props 字段（含同页子部件）及其类型；刷新器会拒绝未知新增目录页或无法解析的 Props 行，排除示例代码里的伪章节。
 - `scripts/check.ps1` 完整通过：415 组、2,649 次测试执行及默认/all-features 严格 Clippy（测试次数包含多 feature 重复运行）。日志：`D:/BuildCache/sapid/mantine-library-gate.log`。
 - 最终变更另补跑 29 项选择控件、3 项输入 hint、10 项 Button 增强测试，以及 all-features/all-targets 严格 Clippy。日志：`mantine-final-choice.log`、`mantine-final-input-tests.log`、`mantine-final-sapid-clippy.log`。
-- Glory：共享 hint 验证/回滚与 HTML prepared-field/full-shape 差分通过；独立 SSR stream 的 hint patch 通过；Blitz descriptor-local preflight/direct apply 拒绝与前缀保留通过，native tests 严格 Clippy 通过。日志：`mantine-glory-placeholder.log`、`mantine-html-placeholder.log`、`mantine-stream-placeholder.log`、`mantine-native-placeholder.log`、`mantine-native-clippy.log`。
+- Glory：共享 hint 验证/回滚与 HTML prepared-field/full-shape 差分通过；独立 SSR stream 的 hint patch 通过；Apace descriptor-local preflight/direct apply 拒绝与前缀保留通过，native tests 严格 Clippy 通过。日志：`mantine-glory-placeholder.log`、`mantine-html-placeholder.log`、`mantine-stream-placeholder.log`、`mantine-native-placeholder.log`、`mantine-native-clippy.log`。
 - 引擎来源检查与 fork 自有测试全部通过：保留两个 full SHA、六个上游包名及锁文件来源。修正检查器过期的十包断言，改为核对当前包含 opt-in i18n 的完整十一包集合。未修改 fork 代码或依赖 revision。日志：`mantine-engine-final.log`。
 - 展示站 host/wasm32 严格 Clippy、19 项 Rust 检查、WASM 与 36 个代表性 SSR 文档通过。日志：`mantine-showcase-final.log`；最终资产 `assets-aec435696a9fb3e4493f`。
 - Chromium 148.0.7778.96：350 组检查、errors=[]。包含新增 48 组 API 专项、64 组样式、182 组既有站点检查（含全部 149 路由）、16 组 Theme Studio、32 组当前配色顺序检查、8 组导航检查。报告均在 `D:/BuildCache/sapid/*-browser.json`。

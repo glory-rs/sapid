@@ -80,7 +80,7 @@ impl Collapsible {
         self
     }
     /// Opt into finite intrinsic-height motion. Zero settles immediately;
-    /// Web and Blitz publish revisioned host completion for closing content.
+    /// Web and Apace publish revisioned host completion for closing content.
     pub fn height_transition(mut self, millis: impl Into<Vary<u16>>) -> Self {
         self.height_duration = Some(millis.into());
         self

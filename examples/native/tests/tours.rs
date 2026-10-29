@@ -1,4 +1,4 @@
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::prelude::*;
 use glory::render::{Action, NodeId, Query, QueryValue, Rect};
 use sapid::{TourHandle, tour, tour_context, tour_step, tour_target};

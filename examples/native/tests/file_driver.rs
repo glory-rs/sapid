@@ -1,6 +1,6 @@
 #![cfg(feature = "files")]
 use glory::{
-    blitz::{
+    apace::{
         Config, Raster,
         files::{FilePicker, FileReader, Files, Reply, SelectedFile},
         shell::WindowApp,

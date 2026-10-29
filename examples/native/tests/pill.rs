@@ -1,4 +1,4 @@
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::render::{Query, QueryValue};
 use glory::style::{Length, Style};
 use std::{cell::RefCell, rc::Rc};

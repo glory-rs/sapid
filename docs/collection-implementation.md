@@ -52,7 +52,7 @@ HTML v3 / classic stream v1 无新增 wire 操作；仍使用既有有限 attrib
   metadata 前置条件及 RTL/编辑/组合/修饰键；HTML lib/tests 与 full-shape oracle 通过。
 - Glory `native_horizontal_rtl_driver_reverses_arrows_and_preserves_home_end`：真实 native
   key driver 1 项通过。原生当前没有字符搜索输入驱动，因此 typeahead descriptor/patch
-  preflight、direct apply 和 listen 均明确拒绝。`crates/blitz/tests/check_modes.rs` 最新
+  preflight、direct apply 和 listen 均明确拒绝。`crates/apace/tests/check_modes.rs` 最新
   4 项通过，包含该拒绝的成功前缀和 Query applied 水位；不以沉默接受代替功能支持。
 - `examples/web/choice-acceptance.js` 最新实际浏览器 10 份报告全部通过、errors=[]，包含
   8 种配色/CSR/hydration 的真实 RTL、prefix、repeat、timeout、拒绝/原生邻居恢复、

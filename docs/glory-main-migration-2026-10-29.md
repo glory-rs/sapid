@@ -11,8 +11,8 @@ Sapid 同步到 Glory `3c0c6576a38ddbd48211012f2a60ecaa7140816e`。
 - Sapid 继续实现 `glory::ui::Widget`，保留输入版本、焦点、组合态、SSR/接管、
   Layer 和原生语义。Glory `display` 的 HTML 模板 API 属于独立构造路径，
   本次没有把语义控件改为 HTML 包装，也没有宣称 Sapid 已可直接嵌入该 DSL。
-- 原生示例的直接 Blitz 依赖与 Glory 统一为
-  `ee125981e0e5a217e758be5c470df23cdd9e2fc3`，winit 统一为
+- 原生示例的直接 Apace 依赖与 Glory 统一为
+  `ee125981e0e5a217e758be5c470df23cdd9e2fc3`，wingy 统一为
   `3b6f5a09697acb936567af64e53c915b0b1a2af9`；更新锁文件以避免同时编译两套引擎类型。
 - `deploy/dependencies.json` 固定上述 Glory 提交，CI 与本地 sibling checkout
   使用同一实现。默认依赖图仍只有 Glory facade/core/render/style/ui。
@@ -45,7 +45,7 @@ Web 夹具拷贝改为枚举全部静态 HTML，避免手工清单漏掉 `text-m
 | 检查 | 结果 | 本地证据 |
 |---|---|---|
 | Sapid 默认/全功能、共享渲染协议、Web/wasm32 严格检查与 classic stream | 2,701 次测试执行通过，0 失败 | `D:/BuildCache/sapid/check-web-v2-sync.log` |
-| Glory Blitz shell/accesskit/raster 全目标 | 274 通过，2 项原有忽略 | `D:/BuildCache/sapid/check-v2-sync-initial-native-carousel-failure.log` 中独立的 Glory 阶段 |
+| Glory Apace shell/accesskit/raster 全目标 | 274 通过，2 项原有忽略 | `D:/BuildCache/sapid/check-v2-sync-initial-native-carousel-failure.log` 中独立的 Glory 阶段 |
 | Sapid 原生全部 features | 153 通过，0 失败 | `D:/BuildCache/sapid/native-final-v2-sync.log` |
 | Sapid 原生全部 features / 全目标严格 Clippy | 通过 | `D:/BuildCache/sapid/native-final-clippy-v2-sync.log` |
 | 展示站 release、149 路由、36 个代表性 SSR 页面和浏览器专项 | 通过；6 个专项脚本共 350 条报告/检查，errors 均为空 | `D:/BuildCache/sapid/showcase-final-v2-sync.log` |

@@ -30,7 +30,7 @@ async(hostPage)=>{
     assert(await page.locator('.stream-current-graphic path').getAttribute('d')==='M2 2L22 22','stream: existing path patch');
     assert(await page.locator('.stream-created-graphic').evaluate(e=>e.namespaceURI==='http://www.w3.org/2000/svg'&&e.firstElementChild.namespaceURI===e.namespaceURI&&e.getAttribute('viewBox')==='0 0 24 24'&&e.getAttribute('preserveAspectRatio')==='xMidYMid meet'&&e.firstElementChild.getTotalLength()>60),'stream: real finite SVG namespace/attributes/path');
     assert(await page.getByRole('img',{name:'Created graphic',exact:true}).count()===1,'stream: actual image role');
-    assert(await page.evaluate(()=>GloryStream.active()===0&&document.querySelector('#graphics-stream-root').firstChild.nodeValue==='gly:v:13'),'stream: End handoff and released controller');reports.push({suite:'graphics-classic-stream',status:'passed',checks:'actual SVG shell, Create namespace, drawing field patch, image alternative, finite End rekey and controller release'});
+    assert(await page.evaluate(()=>GloryStream.active()===0&&document.querySelector('#graphics-stream-root').firstChild.nodeValue==='gly:v:14'),'stream: End handoff and released controller');reports.push({suite:'graphics-classic-stream',status:'passed',checks:'actual SVG shell, Create namespace, drawing field patch, image alternative, finite End rekey and controller release'});
     assert(errors.length===0,JSON.stringify(errors));return{reports,errors};
   }finally{await context.close()}
 }

@@ -246,7 +246,7 @@ fn header(
                             ),
                         )),
                     view().class("site-header-tools").fill((
-                        text().class("site-version").content("v0.1.0"),
+                        text().class("site-version").content("v0.6.0"),
                         view().class("site-search").fill((
                             when(is_empty, || {
                                 text()

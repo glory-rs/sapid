@@ -1,4 +1,4 @@
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::render::{Event, NodeId, Props, Query, QueryValue, Rect};
 use glory::ui::App;
 use std::{cell::RefCell, rc::Rc};

@@ -1,4 +1,4 @@
-use glory::blitz::{Renderer, shell::WindowApp};
+use glory::apace::{Renderer, shell::WindowApp};
 use glory::render::*;
 fn named(app: &glory::App, name: &str) -> NodeId {
     let tree = app.tree();

@@ -1,7 +1,7 @@
 #[path = "../../web/src/spinner_form.rs"]
 mod spinner_form;
-use glory::blitz::shell::WindowApp;
-use glory::blitz::{Config, Raster};
+use glory::apace::shell::WindowApp;
+use glory::apace::{Config, Raster};
 use glory::render::{Event, MotionPreference, NodeId};
 use glory::ui::App;
 fn find(app: &App, class: &str) -> NodeId {

@@ -50,12 +50,12 @@ async function withClipboardLock(run) {
   async function worker(workerId) {
     let browser, processed = 0;
     try {
-      browser = await chromium.launch({ headless: true });
+      browser = await chromium.launch({ headless: true, executablePath: process.env.SAPID_CHROME });
       versions.add(browser.version());
       while (cursor < suites.length) {
         const index = cursor++, file = suites[index];
         if (processed && processed % 16 === 0) {
-          await browser.close(); browser = await chromium.launch({ headless: true });
+          await browser.close(); browser = await chromium.launch({ headless: true, executablePath: process.env.SAPID_CHROME });
           versions.add(browser.version());
         }
         const source = fs.readFileSync(path.join(sourceRoot, file), 'utf8');
@@ -87,7 +87,7 @@ async function withClipboardLock(run) {
   save('browser-results.json', result);
   console.log(JSON.stringify({ browser: result.browser, jobs, suites: result.completedSuites.length, reports: result.reports.length, errors: result.errors }, null, 2));
   if (result.errors.length) process.exitCode = 1;
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ headless: true, executablePath: process.env.SAPID_CHROME });
   try {
     const page = await browser.newPage();
     await page.goto('http://127.0.0.1:8794/');

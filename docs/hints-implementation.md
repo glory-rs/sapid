@@ -82,7 +82,7 @@ live 子树；不检查业务列表源。Tooltip 自身的 Focus action 在排�
   输入值/UTF-16 选区、卸载、Owner 取消和 390px 碰撞。隔离产物
   `D:/BuildCache/sapid/web/hints-next`，报告 `D:/BuildCache/sapid/hints-browser-148.json`，
   八份 `D:/BuildCache/sapid/hints-*.png`；green/dark/hydrate 已人工检查。
-- Native `blitz/tests/hints.rs`：1 项，descriptor/patch preflight 与 direct apply 明确拒绝
+- Native `apace/tests/hints.rs`：1 项，descriptor/patch preflight 与 direct apply 明确拒绝
   Layer/PointerWithin，同时保留成功前缀和 query 水位。AccessKit
   `passive_tooltip_model_exports_real_role_description_and_no_focus_action`：1 项，支持的
   无 Layer 模型输出真实 Tooltip、trigger description，且不广告 Focus action。

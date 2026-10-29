@@ -1,6 +1,6 @@
 #![cfg(feature = "clipboard")]
 use glory::{
-    blitz::{
+    apace::{
         Config, Raster,
         clipboard::{Clipboard, ClipboardDriver, ClipboardError, Reply},
         shell::WindowApp,
@@ -244,8 +244,8 @@ fn select(host: &WindowApp, id: NodeId, start: usize, end: usize) {
     settle(host);
 }
 fn paste(host: &mut WindowApp) {
-    use blitz_dom::Document;
-    host.handle_ui_event(blitz_traits::events::UiEvent::AppleStandardKeybinding(
+    use apace_dom::Document;
+    host.handle_ui_event(apace_traits::events::UiEvent::AppleStandardKeybinding(
         "paste:".into(),
     ));
     settle(host);

@@ -1,6 +1,6 @@
 #[path = "../../web/src/avatar_form.rs"]
 mod avatar_form;
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::render::{Event, NodeId, Query, QueryValue, Rect};
 use glory::ui::App;
 use std::{cell::RefCell, rc::Rc};

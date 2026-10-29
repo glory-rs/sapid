@@ -73,7 +73,7 @@ removes all component-owned theme declarations, including Card title/description
 and the Pill button; explicit overrides and child widgets keep their own styles.
 
 The nodes and style declarations are supported by Record, SSR/stream, Web and
-Blitz. Headless/SSR tests establish semantic shape, escaping, controlled state,
+Apace. Headless/SSR tests establish semantic shape, escaping, controlled state,
 disabled behavior, node stability and Owner cleanup. They do not establish
 browser pixel layout, hydration/AX acceptance, OS input or screen-reader speech.
 The integration fixture is `examples/web/src/display_form.rs`; browser/native

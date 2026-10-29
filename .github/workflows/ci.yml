@@ -1,0 +1,95 @@
+name: Sapid CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  widgets:
+    runs-on: windows-latest
+    timeout-minutes: 120
+    env:
+      CARGO_HOME: D:/BuildCache/glory-semantic-ui/cargo
+      CARGO_TARGET_DIR: D:/BuildCache/sapid/target
+      RUSTUP_HOME: D:/BuildCache/sapid/rustup
+      TEMP: D:/BuildCache/sapid/tmp
+      TMP: D:/BuildCache/sapid/tmp
+      PYTHONPYCACHEPREFIX: D:/BuildCache/sapid/pycache
+      npm_config_cache: D:/BuildCache/sapid/npm
+      PLAYWRIGHT_BROWSERS_PATH: D:/BuildCache/sapid/browsers
+      CARGO_INCREMENTAL: '0'
+      CARGO_PROFILE_DEV_DEBUG: '0'
+      CARGO_PROFILE_TEST_DEBUG: '0'
+      CARGO_BUILD_JOBS: '2'
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: sapid
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: sapid
+      - name: Read the pinned Glory release source
+        id: dependency
+        run: |
+          $dependency = (Get-Content deploy/dependencies.json -Raw | ConvertFrom-Json).glory
+          if ($dependency.revision -notmatch '^[a-f0-9]{40}$') { throw 'Invalid Glory source revision' }
+          "repository=$($dependency.repository)" >> $env:GITHUB_OUTPUT
+          "revision=$($dependency.revision)" >> $env:GITHUB_OUTPUT
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: ${{ steps.dependency.outputs.repository }}
+          ref: ${{ steps.dependency.outputs.revision }}
+          path: glory
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 24
+      - name: Prepare compiler and tools
+        run: |
+          New-Item -ItemType Directory -Force $env:CARGO_HOME,$env:CARGO_TARGET_DIR,$env:RUSTUP_HOME,$env:TEMP | Out-Null
+          rustup toolchain install 1.98.0 --profile minimal --component rustfmt,clippy --target wasm32-unknown-unknown
+          if ($LASTEXITCODE) { throw 'Compiler installation failed' }
+          rustup default 1.98.0
+          cargo install wasm-bindgen-cli --version 0.2.129 --locked --root D:/BuildCache/sapid/tools
+          if ($LASTEXITCODE) { throw 'WASM tools installation failed' }
+          'D:/BuildCache/sapid/tools/bin' >> $env:GITHUB_PATH
+          npm install --prefix D:/BuildCache/sapid/browser --no-save --package-lock=false playwright@1.64.1
+          if ($LASTEXITCODE) { throw 'Browser tools installation failed' }
+          node D:/BuildCache/sapid/browser/node_modules/playwright/cli.js install chromium
+          if ($LASTEXITCODE) { throw 'Chromium installation failed' }
+          'NODE_PATH=D:/BuildCache/sapid/browser/node_modules' >> $env:GITHUB_ENV
+      - name: Validate release, inventory and showcase sources
+        run: |
+          python scripts/release.py
+          if ($LASTEXITCODE) { throw 'Release plan failed' }
+          python scripts/release.py --check-package sapid
+          if ($LASTEXITCODE) { throw 'Archive contents failed' }
+          python -m unittest discover -s scripts -p test_release.py
+          if ($LASTEXITCODE) { throw 'Release tooling tests failed' }
+          python scripts/widget-plan.py --check
+          if ($LASTEXITCODE) { throw 'Widget inventory failed' }
+          python scripts/showcase-catalog.py --check
+          if ($LASTEXITCODE) { throw 'Showcase sources failed' }
+      - name: Widget, SSR, native and browser compilation checks
+        run: ./scripts/check.ps1 -Web -Native
+      - name: Mixed DSL hydration and native acceptance
+        run: ./scripts/check-dsl.ps1 -Browser -Native -Bindgen D:/BuildCache/sapid/tools/bin/wasm-bindgen.exe
+      - name: Actual widget browser acceptance
+        run: |
+          $fixture = Start-Process python -ArgumentList @('-m','http.server','8794','--bind','127.0.0.1','--directory','D:/BuildCache/sapid/web') -WindowStyle Hidden -PassThru
+          try {
+            $ready = $false
+            for ($attempt = 0; $attempt -lt 30; $attempt++) {
+              try { Invoke-WebRequest http://127.0.0.1:8794 -UseBasicParsing | Out-Null; $ready = $true; break }
+              catch { Start-Sleep -Seconds 1 }
+            }
+            if (-not $ready) { throw 'Browser fixture did not start' }
+            node scripts/browser.cjs --jobs=2
+            if ($LASTEXITCODE) { throw 'Widget browser acceptance failed' }
+          }
+          finally { Stop-Process -Id $fixture.Id -ErrorAction SilentlyContinue }

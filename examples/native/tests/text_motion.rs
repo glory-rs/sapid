@@ -1,4 +1,4 @@
-use glory::blitz::{Config, Raster, shell::WindowApp};
+use glory::apace::{Config, Raster, shell::WindowApp};
 use glory::prelude::*;
 use glory::render::{
     Action, MotionPreference, NodeId, Query, QueryValue, Rect, TranslationKind,

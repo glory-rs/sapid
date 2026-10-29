@@ -1,7 +1,7 @@
 #[path = "../../web/src/tasks_form.rs"]
 mod fixture;
 use glory::{
-    blitz::{Raster, shell::WindowApp},
+    apace::{Raster, shell::WindowApp},
     prelude::*,
     render::{Action, NodeId, Props, Query, QueryValue, Rect},
 };

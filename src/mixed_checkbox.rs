@@ -1,5 +1,5 @@
 //! A three-state check control; native activation proposes a binary selection.
-//! The pinned Blitz engine explicitly rejects the mixed state.
+//! The pinned Apace engine explicitly rejects the mixed state.
 
 /// Complete semantic selection state, including an indeterminate group result.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]

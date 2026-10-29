@@ -26,15 +26,15 @@ native_select("plan")
 
 本批有意升级 HTML/Snapshot **v4**、classic stream envelope **v2**（资源 envelope 仍 v1）。有限 Shape 增加 options，Property 增加 selectedKeys。SSR 输出完整原生结构；Web 通过 typed 子节点创建/真实属性读写，采用先验证整个子树再修复 disabled/inactive，活跃 dirty 选择以正常事件回放。classic stream 同步 selected defaults，同时保留用户实际 dirty 选择。旧 Snapshot v3/stream v1 在采用/启动前明确拒绝，测试确认宿主根未突变。SVG Graphic 的有限 tag/属性同时属于当前 v4 定义。
 
-Blitz 当前缺少原生 Select 编辑/事件实现，App preflight 和 direct apply 均在引擎 facet 注册前明确拒绝；保留已接受操作前缀及 query watermark。本批没有宣称 native Select、OS 原生弹出选择器或屏幕阅读器公告已验收。
+Apace 当前缺少原生 Select 编辑/事件实现，App preflight 和 direct apply 均在引擎 facet 注册前明确拒绝；保留已接受操作前缀及 query watermark。本批没有宣称 native Select、OS 原生弹出选择器或屏幕阅读器公告已验收。
 
 证据：
 
 - `tests/native_select.rs` 7 项：受控拒绝/回显/观察顺序、单多选/文档顺序、Field/SSR/FormControl、组禁用与 Owner、百万项接收/百万 Vec/String 入口、非法源恢复，以及同一宿主 tick 两个相同 revision 事件完整处理。
 - Glory render `tests/select.rs` 4 项，UI `tests/select.rs` 3 项，HTML full-shape differential oracle 4 项全部通过；keep/reset/默认/相等写入与 live guard 回滚、声明 Rc 共享均覆盖。
-- SSR `select_stream_uses_v4_shape_v2_envelope_and_preserves_native_selection_through_end` 通过，`GLORY_SELECT_STREAM_FIXTURE` 生成真实帧。Blitz `tests/select.rs` 1 项验证提前拒绝、无 facet 与 accepted-prefix/query 水位。
+- SSR `select_stream_uses_v4_shape_v2_envelope_and_preserves_native_selection_through_end` 通过，`GLORY_SELECT_STREAM_FIXTURE` 生成真实帧。Apace `tests/select.rs` 1 项验证提前拒绝、无 facet 与 accepted-prefix/query 水位。
 - 统一 Web snapshot7 下 Chromium **148.0.7778.96** 实际 **12/12**，`errors=[]`：四主题各 CSR/hydration、键盘/Tab/实际选中值、受控拒绝、原生 FormData/required/disabled、真实 AX combobox/listbox 名称、390px、Owner、dirty adoption/identity/focus、旧 HTML 格式拒绝、真实 Rust classic v2/v4、dirty stream 与旧 envelope 拒绝。报告 `D:/BuildCache/sapid/native-select-browser-web7.json`；八张 `native-select-*.png`，green-dark-hydrate 已目视检查。
 - dirty stream 场景在测试服务器响应的原 classic asset 前插入用户 change 的测试触发，然后执行完整原控制器和真实 Rust 帧；不修改生产控制器。多个 parser-blocking script 共用一次网络请求，不能按第三次请求假定暂停点。
 - 最终 Web7 已包含非空 `.selected` 初值版本1回归，以及 stream setter keys/order/cardinality 检查；实际浏览器同时验证 unknown/cardinality 非法补丁在选择字段突变前拒绝。Choices10/Menu11/Hints10 在相同 Web7/v4/v2 产物重跑全部通过，报告分别为 `choice-browser-web7.json`、`menu-browser-web7.json`、`hints-browser-web7.json`。
 
-复现：Sapid `cargo test --test native_select`；Glory `cargo test -p glory-render --test select`、`cargo test -p glory-ui --test select`、`cargo test -p glory-html --lib`、`cargo test -p glory-ssr --features stream --lib select_stream`、`cargo test -p glory-blitz --test select`。所有 targets、Cargo home、临时文件均在 D:，浏览器脚本 `examples/web/native-select-acceptance.js`。
+复现：Sapid `cargo test --test native_select`；Glory `cargo test -p glory-render --test select`、`cargo test -p glory-ui --test select`、`cargo test -p glory-html --lib`、`cargo test -p glory-ssr --features stream --lib select_stream`、`cargo test -p glory-apace --test select`。所有 targets、Cargo home、临时文件均在 D:，浏览器脚本 `examples/web/native-select-acceptance.js`。

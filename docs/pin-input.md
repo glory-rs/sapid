@@ -91,7 +91,7 @@ must avoid logging values in their own callbacks.
 ## Shared host contract
 
 `Length::Ch(f64)` is the final value bit (63) of the existing u64 style support
-mask. HTML/Record style profile 10 and Blitz profile 11 accept it for preferred
+mask. HTML/Record style profile 10 and Apace profile 11 accept it for preferred
 dimensions, minimum dimensions and signed insets. Dimensions are nonnegative;
 all values are finite. `Limit` remains None/Px/Percent, and pixel-only padding,
 gap and grid-track domains are unchanged. Optional CSS parses `ch` only in the

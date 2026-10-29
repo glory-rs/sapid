@@ -57,7 +57,7 @@ oracle. Classic streaming transports declarations and point updates; it does not
 implement a second pre-WASM menu input/focus driver. Adoption starts the actual
 Web driver from the declared live state.
 
-Blitz admits context regions, nearest-boundary/editor policy and finite mouse/pen or
+Apace admits context regions, nearest-boundary/editor policy and finite mouse/pen or
 keyboard requests. ContextPoint Menu layers use actual viewport geometry and
 preserve parent modal/focus-scope boundaries. Native Tab exit uses the current
 context region as a boundary, excluding its descendants and all Menu trees;
@@ -73,7 +73,7 @@ has eight passing regressions. Glory `render/tests/context_menu.rs` has two
 passing finite-policy/payload/ancestry/retirement/rollback tests;
 `html/src/context_menu_tests.rs` has one passing policy/point/reset full-shape
 oracle; `ssr/src/stream/menu_tests.rs` verifies policy/point Shell/Patch/End;
-`blitz/tests/context_menu.rs` verifies explicit rejection before facets and the
+`apace/tests/context_menu.rs` verifies explicit rejection before facets and the
 accepted query watermark. Web fixture strict Clippy passes. The independent
 browser fixture and suite have completed actual acceptance.
 

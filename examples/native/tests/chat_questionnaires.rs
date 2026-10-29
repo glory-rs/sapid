@@ -1,4 +1,4 @@
-use glory::blitz::{Raster, shell::WindowApp};
+use glory::apace::{Raster, shell::WindowApp};
 use glory::render::{Action, Event, NodeId, Props, Query, QueryValue, TextSelection};
 use glory::ui::App;
 use std::{cell::RefCell, rc::Rc};

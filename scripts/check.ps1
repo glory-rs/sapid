@@ -53,8 +53,8 @@ try {
         $env:TMP = $env:TEMP
         New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
         Confirm-Target '../glory/Cargo.toml'
-        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-blitz', '--features', 'shell,accesskit,raster', '--all-targets', '--', '--test-threads=1')
-        Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-blitz', '--features', 'accesskit,raster', '--all-targets', '--', '-D', 'warnings')
+        Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-apace', '--features', 'shell,accesskit,raster', '--all-targets', '--', '--test-threads=1')
+        Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-apace', '--features', 'accesskit,raster', '--all-targets', '--', '-D', 'warnings')
         Confirm-Target 'examples/native/Cargo.toml'
         Invoke-Cargo -Arguments @('fmt', '--manifest-path', 'examples/native/Cargo.toml', '--', '--check')
         Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', 'examples/native/Cargo.toml', '--all-features', '--', '--test-threads=1')
@@ -131,6 +131,13 @@ try {
         Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'compatible_path_transition_config_survives_content_patch_and_classic_stream_end')
         Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'bounded_sheet_config_and_revision_survive_stream_patch_and_end_without_input_driver')
         Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-ssr', '--all-features', 'busy_inert_content_and_retained_layer_survive_a_stream_patch_and_end')
+        # Serve the existing logo explicitly so Chromium does not request a
+        # nonexistent /favicon.ico and report an unrelated resource failure.
+        foreach ($page in Get-ChildItem -LiteralPath "$taskBuild/web" -File -Filter '*.html') {
+            $html = [IO.File]::ReadAllText($page.FullName)
+            $html = $html.Replace('<head>', '<head><link rel="icon" href="assets/sapid-logo.svg" type="image/svg+xml">')
+            [IO.File]::WriteAllText($page.FullName, $html, [Text.UTF8Encoding]::new($false))
+        }
         Write-Output "Browser fixture: $taskBuild/web"
         if ($Serve) { & python -m http.server 8794 --bind 127.0.0.1 --directory "$taskBuild/web" }
     }

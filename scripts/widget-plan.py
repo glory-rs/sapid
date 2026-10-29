@@ -32,7 +32,7 @@ Dialog、Drawer、Popover；第一批已增加 Field、Label/Description/Error�
 不表示与某个上游组件全部功能等价。蓝/绿各有明暗主题；有限主题 token/provider、方向、locale、
 响应式和运动契约已有独立验收，支持范围与明确拒绝见 P0 和逐组件能力记录。
 第二批已增加 Textarea、PasswordInput、InputGroup/Addon/Section，完成 Field、受控状态、
-Web/SSR 与原生引擎验收。Textarea 自动高度依赖浏览器 field-sizing:content，Blitz 明确拒绝；
+Web/SSR 与原生引擎验收。Textarea 自动高度依赖浏览器 field-sizing:content，Apace 明确拒绝；
 固定行数可用于原生。后续批次已增加 Form/FormState、成功控件快照、MixedCheckbox/组、
 Switch、RadioGroup/SegmentedControl、动作按钮、展示表面、NumberFormatter 和文档文本/列表组件，
 对应证据逐项记录在下表。Toggle、Chip、布局、Typography、Grid/比例、Timeline、Spoiler 与导航
@@ -102,7 +102,7 @@ Dialog/Popover 已验收 Web/SSR/hydration、Document 跨 App 栈、完整有限
 
 这些行描述组件所需的能力类别，实际 enum/API 及宿主边界见实现与协议文档。优先扩展共享有限契约、验证、mapper 和实际
 适配器；不在 Sapid 内注入 DOM/ARIA/脚本，也不把交互 View 随意改 role 冒充原生控件。
-新增语义必须明确 Web、SSR/stream、Blitz、AccessKit 的支持或拒绝；不能默默降级成错误语义。
+新增语义必须明确 Web、SSR/stream、Apace、AccessKit 的支持或拒绝；不能默默降级成错误语义。
 
 ## 统一完成标准
 

@@ -1,9 +1,9 @@
 # Portable shadow, wrapping and text overflow
 
 Glory's finite style schema adds three independent optional declarations.
-These declarations entered HTML/Record v5 and Blitz v6; the later grid/ratio
-schema advanced profiles to HTML/Record v6 and Blitz v7; image object-fit now
-advances the current profiles to HTML/Record v7 and Blitz v8. These versions
+These declarations entered HTML/Record v5 and Apace v6; the later grid/ratio
+schema advanced profiles to HTML/Record v6 and Apace v7; image object-fit now
+advances the current profiles to HTML/Record v7 and Apace v8. These versions
 identify typed acceptance and do not promise identical pixels between engines.
 Default component dependency graphs acquire no CSS parser or platform library.
 
@@ -40,7 +40,7 @@ successful-prefix behavior.
 
 Tests in Glory's style/html `shadow.rs` and `flex_wrap.rs` cover finite values,
 numeric rejection, explicit resets, support masks, CSS parsing and serialization.
-Blitz `tests/shadow.rs` records real native CPU pixels for a colored offset,
+Apace `tests/shadow.rs` records real native CPU pixels for a colored offset,
 clearing the shadow, blur/spread and stable engine identity. Its wrapping test
 uses real layout to verify a second fixed-width child moves to a new row and
 returns to the first row after NoWrap, retaining both child identities.
@@ -50,7 +50,7 @@ whitespace and overflow clipping. Absent leaves author CSS in charge; explicit
 Clip resets a stylesheet's ellipsis value. HTML/Record v5 accept both values;
 the optional CSS parser accepts only `clip` and `ellipsis`. Property and both
 values have independent support rejection tests and HTML differential-oracle
-coverage. The pinned native engine has no text-overflow rendering path, so Blitz
+coverage. The pinned native engine has no text-overflow rendering path, so Apace
 v6 rejects the entire property, including explicit Clip, before model/queue/host
 changes. No native ellipsis or selection behavior is fabricated.
 

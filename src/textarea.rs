@@ -49,7 +49,7 @@ impl Textarea {
         self
     }
     /// HTML hosts use intrinsic content sizing, including soft wrapping and
-    /// later font/width changes. Blitz currently rejects this declaration.
+    /// later font/width changes. Apace currently rejects this declaration.
     pub fn autosize(mut self, value: bool) -> Self {
         self.autosize = value;
         self

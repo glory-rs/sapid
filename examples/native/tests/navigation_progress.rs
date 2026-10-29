@@ -1,4 +1,4 @@
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::render::{Query, QueryValue, Rect};
 use std::{cell::RefCell, rc::Rc};
 fn bounds(app: &glory::App, id: glory::render::NodeId) -> Rect {

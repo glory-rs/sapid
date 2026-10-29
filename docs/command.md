@@ -53,7 +53,7 @@ million-element admission, application capture cleanup, cold SSR/pending shape
 equality, lazy host polling, new-query/refresh/disable/close/Owner cancellation,
 nearest shortcut-scope retirement, blank/Unicode-whitespace name rejection before
 node allocation and the maximum live/scrollable result set. Render's Palette test covers finite
-origin constraints and suspension; native `blitz/tests/palette.rs` admits the
+origin constraints and suspension; native `apace/tests/palette.rs` admits the
 interest while preserving the accepted Bounds watermark. The native driver now
 connects Choice, editable Input, Listbox and Palette facets. Ctrl/Meta+K only
 observes its nearest explicitly registered non-editor physical scope; editors,

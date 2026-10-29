@@ -1,4 +1,4 @@
-use glory::blitz::{Raster, shell::WindowApp};
+use glory::apace::{Raster, shell::WindowApp};
 use glory::render::{Event, NodeId, Query, QueryValue, Rect};
 use glory::style::{Color, Edges, Length, Style};
 use glory::ui::App;

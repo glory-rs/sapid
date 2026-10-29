@@ -8,7 +8,7 @@ Each live semantic node retains only its numeric request watermark and at most o
 
 `feedback_delay(|| Box::pin(host_timer()))` supplies a host timer. One Owner-owned task resets terminal feedback to Idle. A new request, changed source or Owner disposal cancels it. Without this explicit timer terminal feedback remains visible until a new request or source update. The component owns no ambient clock, browser timer or platform thread. `copied_label`, `failed_label`, `label`, four themes, size, explicit styles and `unstyled` customize the actual button.
 
-The source declaration is semantic host data, not a DOM attribute. HTML full shaping, field lowering and the classic stream emit no source edits or plaintext clipboard data. SSR records the ordinary button and interest but rejects the physical action. Native defaults to no text clipboard driver: activation reports Unavailable, and direct `CopyText` returns typed Unsupported. Applications can now enable `glory/blitz-clipboard` and supply `Config::clipboard`, using the bounded desktop worker or an explicit driver. See [Glory's native clipboard contract](../../glory/docs/native-clipboard.md). This adds no platform dependency to Sapid widget state.
+The source declaration is semantic host data, not a DOM attribute. HTML full shaping, field lowering and the classic stream emit no source edits or plaintext clipboard data. SSR records the ordinary button and interest but rejects the physical action. Native defaults to no text clipboard driver: activation reports Unavailable, and direct `CopyText` returns typed Unsupported. Applications can now enable `glory/apace-clipboard` and supply `Config::clipboard`, using the bounded desktop worker or an explicit driver. See [Glory's native clipboard contract](../../glory/docs/native-clipboard.md). This adds no platform dependency to Sapid widget state.
 
 Focused evidence:
 
@@ -29,7 +29,7 @@ JSON modes, and actual asynchronous TagsInput paste/budget recovery. CPU pixels
 and cleanup are checked; the existing default-unavailable test remains separate.
 Logs are `/Volumes/Data/Caches/glory/clipboard-sapid-{tests,clippy}.log`.
 The native acceptance lock now follows Glory's current fixed engine revisions
-and registry baseline; it previously retained an older Blitz/AccessKit baseline.
+and registry baseline; it previously retained an older Apace/AccessKit baseline.
 Actual macOS OS round trips belong to Glory's guarded system test. Injected
 consumer tests do not establish mobile clipboard menus or screen-reader support.
 Android now has a separate safe-JNI/ARM64 foreground OS service check, including

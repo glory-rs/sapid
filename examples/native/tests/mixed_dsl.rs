@@ -3,12 +3,12 @@ extern crate glory as g;
 mod mixed;
 #[path = "../../fixtures/dsl_demo.rs"]
 mod sapid_dsl;
-use blitz_dom::{Document, NodeId as EngineId};
-use blitz_traits::events::{
-    BlitzKeyEvent, BlitzPointerEvent, BlitzPointerId, KeyState, MouseEventButton,
+use apace_dom::{Document, NodeId as EngineId};
+use apace_traits::events::{
+    ApaceKeyEvent, ApacePointerEvent, ApacePointerId, KeyState, MouseEventButton,
     MouseEventButtons, Point, PointerCoords, UiEvent,
 };
-use glory::blitz::{Raster, shell::WindowApp};
+use glory::apace::{Raster, shell::WindowApp};
 use std::task::{Context, Waker};
 
 fn settle(host: &WindowApp) {
@@ -22,7 +22,7 @@ fn nodes(host: &WindowApp, class: &str) -> Vec<EngineId> {
             let node = doc.get_node(id).unwrap();
             if node
                 .element_data()
-                .and_then(|e| e.attr(blitz_dom::LocalName::from("class")))
+                .and_then(|e| e.attr(apace_dom::LocalName::from("class")))
                 .is_some_and(|value| value.split_ascii_whitespace().any(|c| c == class))
             {
                 found.push(id);
@@ -33,7 +33,7 @@ fn nodes(host: &WindowApp, class: &str) -> Vec<EngineId> {
     })
 }
 fn key(host: &mut WindowApp, key: &str, released: bool) {
-    let event = BlitzKeyEvent {
+    let event = ApaceKeyEvent {
         key: key.parse().unwrap(),
         code: Default::default(),
         modifiers: Default::default(),
@@ -61,8 +61,8 @@ fn click(host: &mut WindowApp, id: EngineId) {
     assert!(rect.width > 0. && rect.height > 0.);
     let x = (rect.x + rect.width / 2.) as f32;
     let y = (rect.y + rect.height / 2.) as f32;
-    let pointer = |pressed| BlitzPointerEvent {
-        id: BlitzPointerId::Mouse,
+    let pointer = |pressed| ApacePointerEvent {
+        id: ApacePointerId::Mouse,
         is_primary: true,
         coords: PointerCoords {
             page_x: x,
@@ -151,7 +151,7 @@ fn shared_mixed_tree_uses_real_native_layout_input_keyed_moves_paint_and_cleanup
         assert!(
             !doc.get_node(nodes(&host, "mixed")[0])
                 .unwrap()
-                .attr(blitz_dom::LocalName::from("class"))
+                .attr(apace_dom::LocalName::from("class"))
                 .unwrap()
                 .split_ascii_whitespace()
                 .any(|c| c == "active")

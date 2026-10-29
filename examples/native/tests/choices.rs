@@ -1,4 +1,4 @@
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::html::Part;
 use glory::render::{Event, NodeId, Query};
 use glory::ui::App;

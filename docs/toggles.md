@@ -1,7 +1,7 @@
 # Toggle / ToggleGroup
 
 Toggle 是具有 `pressed: Option<bool>` 状态的原生 Button。它保持 Button 的 Enter/Space 激活、
-焦点和禁用规则；Web/SSR 映射 `aria-pressed`，Blitz 的 AccessKit 节点提供 Toggled 状态。
+焦点和禁用规则；Web/SSR 映射 `aria-pressed`，Apace 的 AccessKit 节点提供 Toggled 状态。
 它不使用 Tabs、Switch 或 Radio 的角色冒充按钮选择。
 
 ```rust
@@ -65,7 +65,7 @@ Toggle 没有隐式提交成功值，也不会产生隐藏输入。需要表单�
 
 - `tests/toggles.rs` 15 项通过：百万项 lazy 接收预算、单项哨兵、未使用 captures 释放/析构写入重入，以及本地/受控/拒绝/外部静默、禁用、单多选/清空、未知/重复值、实际焦点与
   roving、导航不选值、typed/item/group 顺序、Owner 释放和 SSR 原生 pressed Button/escaping。
-- `examples/native/tests/toggles.rs` 实际运行四套主题，通过真实 Blitz box layout、engine identity、
+- `examples/native/tests/toggles.rs` 实际运行四套主题，通过真实 Apace box layout、engine identity、
   pressed patch、受控拒绝、actual Focus action 和组成员退休。此测试不等于 OS 键盘/读屏验收。
 - `examples/web/src/toggles_form.rs`、`toggles.html`、`toggle-acceptance.js` 提供四主题 CSR/SSR hydration、
   pointer/Enter/Space、水平/垂直箭头与Home/End、禁用跳过、单/多选、受控拒绝、外部静默及 pressed AX 树。

@@ -240,7 +240,7 @@
     },
     "P4-04": {
       "current": "NativeSelect：真实 select、分组、多选、成功值",
-      "differences": "NativeSelect 的左右 sections 需 InputGroup 组合；Blitz select facet 拒绝。不能将浏览器 select 打开状态作为可控 popup。",
+      "differences": "NativeSelect 的左右 sections 需 InputGroup 组合；Apace select facet 拒绝。不能将浏览器 select 打开状态作为可控 popup。",
       "priority": "P2"
     },
     "P4-05": {
@@ -630,7 +630,7 @@
       "id": "A2",
       "priority": "P0",
       "work": "真实 input/textarea placeholder：Glory 共享语义/HTML/SSR/stream + Sapid 输入族",
-      "status": "已实现并验收：render/HTML 差分/SSR stream、9 类 Sapid 输入；Blitz 明确拒绝并保留成功前缀，未声称原生绘制支持"
+      "status": "已实现并验收：render/HTML 差分/SSR stream、9 类 Sapid 输入；Apace 明确拒绝并保留成功前缀，未声称原生绘制支持"
     },
     {
       "id": "A3",
@@ -649,7 +649,7 @@
     "- 官方快照：181 条组件/工具目录记录、4,659 个按条目计数的 Props 字段（含同页子部件）及其类型；刷新器会拒绝未知新增目录页或无法解析的 Props 行，排除示例代码里的伪章节。",
     "- `scripts/check.ps1` 完整通过：415 组、2,649 次测试执行及默认/all-features 严格 Clippy（测试次数包含多 feature 重复运行）。日志：`D:/BuildCache/sapid/mantine-library-gate.log`。",
     "- 最终变更另补跑 29 项选择控件、3 项输入 hint、10 项 Button 增强测试，以及 all-features/all-targets 严格 Clippy。日志：`mantine-final-choice.log`、`mantine-final-input-tests.log`、`mantine-final-sapid-clippy.log`。",
-    "- Glory：共享 hint 验证/回滚与 HTML prepared-field/full-shape 差分通过；独立 SSR stream 的 hint patch 通过；Blitz descriptor-local preflight/direct apply 拒绝与前缀保留通过，native tests 严格 Clippy 通过。日志：`mantine-glory-placeholder.log`、`mantine-html-placeholder.log`、`mantine-stream-placeholder.log`、`mantine-native-placeholder.log`、`mantine-native-clippy.log`。",
+    "- Glory：共享 hint 验证/回滚与 HTML prepared-field/full-shape 差分通过；独立 SSR stream 的 hint patch 通过；Apace descriptor-local preflight/direct apply 拒绝与前缀保留通过，native tests 严格 Clippy 通过。日志：`mantine-glory-placeholder.log`、`mantine-html-placeholder.log`、`mantine-stream-placeholder.log`、`mantine-native-placeholder.log`、`mantine-native-clippy.log`。",
     "- 引擎来源检查与 fork 自有测试全部通过：保留两个 full SHA、六个上游包名及锁文件来源。修正检查器过期的十包断言，改为核对当前包含 opt-in i18n 的完整十一包集合。未修改 fork 代码或依赖 revision。日志：`mantine-engine-final.log`。",
     "- 展示站 host/wasm32 严格 Clippy、19 项 Rust 检查、WASM 与 36 个代表性 SSR 文档通过。日志：`mantine-showcase-final.log`；最终资产 `assets-aec435696a9fb3e4493f`。",
     "- Chromium 148.0.7778.96：350 组检查、errors=[]。包含新增 48 组 API 专项、64 组样式、182 组既有站点检查（含全部 149 路由）、16 组 Theme Studio、32 组当前配色顺序检查、8 组导航检查。报告均在 `D:/BuildCache/sapid/*-browser.json`。",

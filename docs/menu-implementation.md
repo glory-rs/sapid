@@ -80,7 +80,7 @@ Hydration 全子树验证通过后才修复 inactive/disabled Check 的脏 check
   静止鼠标回归修复后，隔离 `web/menu-race` 在 Chromium 148.0.7778.96 和
   153.0.8010.12 各 11/11 报告通过、errors=[]，证据分别为
   `D:/BuildCache/sapid/menu-browser-148.json` 与 `menu-browser-153.json`。
-- Native `blitz/tests/menu.rs` 验证当前 Menu Layer 准入、后续拒绝的成功前缀及 query 水位；
+- Native `apace/tests/menu.rs` 验证当前 Menu Layer 准入、后续拒绝的成功前缀及 query 水位；
   原生输入/CPU/AX 回归验证实际 Menu/Item/Check/Radio、菜单栏关系、模态边界和关闭后动作退休。
 - Sapid lib/Menu/budget strict Clippy、Glory SSR stream strict Clippy 通过。
 

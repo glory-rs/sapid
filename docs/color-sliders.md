@@ -29,7 +29,7 @@ space for independent hue/alpha semantic namespaces.
 
 The trail is a bounded passive visual: 120 HSV color samples for hue, 64 alpha
 samples over a genuine 16×4 white/gray checker for opacity. Samples are explicit
-typed boxes, so Web/SSR/Blitz share the same finite representation without author
+typed boxes, so Web/SSR/Apace share the same finite representation without author
 CSS gradients or a new host paint promise. This is a sampled trail rather than a
 continuous gradient shader; pointer geometry and channel precision remain
 continuous and independent of sample count. Alpha ignores the supplied Color's

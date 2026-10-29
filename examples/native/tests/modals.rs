@@ -1,5 +1,5 @@
 use glory::{
-    blitz::{Raster, shell::WindowApp},
+    apace::{Raster, shell::WindowApp},
     prelude::*,
     render::{
         Action, NodeId, Props, Query, QueryValue, Rect, Role, SelectionDirection, TextSelection,

@@ -253,7 +253,7 @@
 
 **官方功能章节：** Usage；Disabled
 
-**本地实现：** [../glory/crates/blitz/src/accessibility.rs](../../glory/crates/blitz/src/accessibility.rs)、[../glory/crates/blitz/src/shell.rs](../../glory/crates/blitz/src/shell.rs)、[../glory/crates/html/src/semantics.rs](../../glory/crates/html/src/semantics.rs)、[../glory/crates/render/src/semantics.rs](../../glory/crates/render/src/semantics.rs)、[../glory/crates/web/src/browser/events.rs](../../glory/crates/web/src/browser/events.rs)、[src/checkbox.rs](../src/checkbox.rs)、[src/field.rs](../src/field.rs)、[src/text_field.rs](../src/text_field.rs)
+**本地实现：** [../glory/crates/apace/src/accessibility.rs](../../glory/crates/apace/src/accessibility.rs)、[../glory/crates/apace/src/shell.rs](../../glory/crates/apace/src/shell.rs)、[../glory/crates/html/src/semantics.rs](../../glory/crates/html/src/semantics.rs)、[../glory/crates/render/src/semantics.rs](../../glory/crates/render/src/semantics.rs)、[../glory/crates/web/src/browser/events.rs](../../glory/crates/web/src/browser/events.rs)、[src/checkbox.rs](../src/checkbox.rs)、[src/field.rs](../src/field.rs)、[src/text_field.rs](../src/text_field.rs)
 
 **本地公开入口（同族）：** `add_window`, `android`, `app`, `as_str`, `checkbox`, `checked`, `class`, `content`, `control`, `default_checked`, `default_value`, `description`, `disabled`, `enabled`, `error`, `field`, `field_description`, `field_error`, `fieldset`, `fill`, `focus`, `form_name`, `form_value`, `frames`, `from_event_loop`, `handle_native_file_event`, `invalid`, `key`, `key_with_direction`, `label`, `legend`, `mount`, `mount_with`, `multiline`, `name`, `new`, `node_ref`, `observe`, `on`, `on_checked_change`, `on_commit`, `on_value_change`, `placeholder`, `purpose`, `readonly`, `renderer`, `request_size`, `required`, `run`, `size`, `style`, `take_event_loop`, `text_field`, `theme`, `unstyled`, `value`, `window_stats`, `with_config`, `with_limit`, `with_options`, `with_task_limit`
 
@@ -295,7 +295,7 @@
 
 **官方功能章节：** Disclaimer；Usage；Loading state；Input sections；Change input element；Input.Wrapper component；inputWrapperOrder；inputContainer；required and withAsterisk props；error prop；success prop；Input.Label, Input.Description and Input.Error components；Input.Placeholder component；Input.ClearButton component；Default props on theme；Shared default props for all inputs；Styles on theme；Change focus styles；InputBase component；Accessibility
 
-**本地实现：** [../glory/crates/blitz/src/accessibility.rs](../../glory/crates/blitz/src/accessibility.rs)、[../glory/crates/blitz/src/shell.rs](../../glory/crates/blitz/src/shell.rs)、[../glory/crates/html/src/semantics.rs](../../glory/crates/html/src/semantics.rs)、[../glory/crates/render/src/semantics.rs](../../glory/crates/render/src/semantics.rs)、[../glory/crates/web/src/browser/events.rs](../../glory/crates/web/src/browser/events.rs)、[src/checkbox.rs](../src/checkbox.rs)、[src/field.rs](../src/field.rs)、[src/text_field.rs](../src/text_field.rs)
+**本地实现：** [../glory/crates/apace/src/accessibility.rs](../../glory/crates/apace/src/accessibility.rs)、[../glory/crates/apace/src/shell.rs](../../glory/crates/apace/src/shell.rs)、[../glory/crates/html/src/semantics.rs](../../glory/crates/html/src/semantics.rs)、[../glory/crates/render/src/semantics.rs](../../glory/crates/render/src/semantics.rs)、[../glory/crates/web/src/browser/events.rs](../../glory/crates/web/src/browser/events.rs)、[src/checkbox.rs](../src/checkbox.rs)、[src/field.rs](../src/field.rs)、[src/text_field.rs](../src/text_field.rs)
 
 **本地公开入口（同族）：** `add_window`, `android`, `app`, `as_str`, `checkbox`, `checked`, `class`, `content`, `control`, `default_checked`, `default_value`, `description`, `disabled`, `enabled`, `error`, `field`, `field_description`, `field_error`, `fieldset`, `fill`, `focus`, `form_name`, `form_value`, `frames`, `from_event_loop`, `handle_native_file_event`, `invalid`, `key`, `key_with_direction`, `label`, `legend`, `mount`, `mount_with`, `multiline`, `name`, `new`, `node_ref`, `observe`, `on`, `on_checked_change`, `on_commit`, `on_value_change`, `placeholder`, `purpose`, `readonly`, `renderer`, `request_size`, `required`, `run`, `size`, `style`, `take_event_loop`, `text_field`, `theme`, `unstyled`, `value`, `window_stats`, `with_config`, `with_limit`, `with_options`, `with_task_limit`
 
@@ -477,7 +477,7 @@
 
 **官方功能章节：** Usage；Loading state；Controlled；Uncontrolled；Bottom section；Autosize；Enable resize；Error state；Success state
 
-**本地实现：** [../glory/crates/blitz/src/document.rs](../../glory/crates/blitz/src/document.rs)、[../glory/crates/html/src/styles.rs](../../glory/crates/html/src/styles.rs)、[../glory/crates/style/src/lib.rs](../../glory/crates/style/src/lib.rs)、[src/text_field.rs](../src/text_field.rs)、[src/text_input.rs](../src/text_input.rs)、[src/textarea.rs](../src/textarea.rs)
+**本地实现：** [../glory/crates/apace/src/document.rs](../../glory/crates/apace/src/document.rs)、[../glory/crates/html/src/styles.rs](../../glory/crates/html/src/styles.rs)、[../glory/crates/style/src/lib.rs](../../glory/crates/style/src/lib.rs)、[src/text_field.rs](../src/text_field.rs)、[src/text_input.rs](../src/text_input.rs)、[src/textarea.rs](../src/textarea.rs)
 
 **本地公开入口（同族）：** `advance_time`, `aspect_ratio`, `autosize`, `border_color`, `border_style`, `border_width`, `bottom`, `box_shadow`, `class`, `default_value`, `display`, `enabled`, `engine_id`, `field`, `field_sizing`, `flex_direction`, `flex_wrap`, `focus`, `font_family`, `font_weight`, `gap`, `grid_column`, `grid_columns`, `grid_row`, `grid_rows`, `height`, `inspect`, `invalid`, `invalidate`, `is_finite`, `left`, `margin`, `max_height`, `max_rows`, `max_width`, `min_height`, `min_rows`, `min_width`, `multiline`, `name`, `new`, `node_ref`, `object_fit`, `observe_resources`, `on`, `on_commit`, `on_value_change`, `opacity`, `overflow_x`, `overflow_y`, `padding`, `placeholder`, `pointer_events`, `poll_resources`, `position`, `profile`, `purpose`, `radius`, `readonly`, `required`, `resource_stats`, `right`, `rows`, `scroll_anchor`, `set_css`, `set_sheet`, `set_viewport`, `size`, `stats`, `style`, `text_field`, `text_overflow`, `textarea`, `theme`, `top`, `unstyled`, `validate`, `value`, `white_space`, `width`, `with_config`
 
@@ -547,7 +547,7 @@
 
 **官方功能章节：** Usage；Data format；Data prop；Searchable；Controlled search value；Sort options；Limit options；Multiple selection；Check icon；Allow deselect；Nothing found message；Disabled options；Groups；Render option；Large data sets；Control dropdown opened state；Dropdown position；Dropdown width；Dropdown animation
 
-**本地实现：** [../glory/crates/blitz/src/layers.rs](../../glory/crates/blitz/src/layers.rs)、[../glory/crates/web/src/browser/layer_document.rs](../../glory/crates/web/src/browser/layer_document.rs)、[src/overlay.rs](../src/overlay.rs)
+**本地实现：** [../glory/crates/apace/src/layers.rs](../../glory/crates/apace/src/layers.rs)、[../glory/crates/web/src/browser/layer_document.rs](../../glory/crates/web/src/browser/layer_document.rs)、[src/overlay.rs](../src/overlay.rs)
 
 **本地公开入口（同族）：** `allowed`, `ax_branch`, `boundary`, `cancel_label`, `class`, `close_content`, `close_label`, `confirm_enabled`, `confirm_label`, `confirm_variant`, `content`, `content_policy`, `default_open`, `default_snap`, `description`, `dismiss_on_escape`, `dismiss_on_outside`, `enabled`, `initial_focus`, `label`, `modal`, `name`, `on`, `on_cancel`, `on_confirm`, `on_dismiss`, `on_open_change`, `on_snap_change`, `open`, `panel_ref`, `placement`, `return_focus`, `show_close`, `show_trigger`, `side`, `size`, `snap_config`, `snap_index`, `snap_points`, `style`, `theme`, `title`, `trigger_content`, `trigger_ref`, `unstyled`
 
@@ -715,7 +715,7 @@
 
 **官方功能章节：** Usage；Controlled and uncontrolled；Auto contrast；Auto width；Configurator；Accessibility
 
-**本地实现：** [../glory/crates/blitz/src/accessibility.rs](../../glory/crates/blitz/src/accessibility.rs)、[../glory/crates/html/src/semantics.rs](../../glory/crates/html/src/semantics.rs)、[../glory/crates/render/src/semantics.rs](../../glory/crates/render/src/semantics.rs)、[src/toggle.rs](../src/toggle.rs)
+**本地实现：** [../glory/crates/apace/src/accessibility.rs](../../glory/crates/apace/src/accessibility.rs)、[../glory/crates/html/src/semantics.rs](../../glory/crates/html/src/semantics.rs)、[../glory/crates/render/src/semantics.rs](../../glory/crates/render/src/semantics.rs)、[src/toggle.rs](../src/toggle.rs)
 
 **本地公开入口（同族）：** `as_str`, `class`, `default_pressed`, `default_value`, `enabled`, `focus`, `item`, `items`, `key`, `key_with_direction`, `label`, `loop_focus`, `mode`, `name`, `new`, `node_ref`, `on`, `on_pressed_change`, `on_value_change`, `orientation`, `pressed`, `size`, `style`, `theme`, `toggle`, `toggle_group`, `toggle_item`, `unstyled`, `value`
 
@@ -897,7 +897,7 @@
 
 **官方功能章节：** Usage；Size prop；Adding custom loaders；children prop
 
-**本地实现：** [../glory/crates/blitz/src/graphic_motion.rs](../../glory/crates/blitz/src/graphic_motion.rs)、[src/spinner.rs](../src/spinner.rs)
+**本地实现：** [../glory/crates/apace/src/graphic_motion.rs](../../glory/crates/apace/src/graphic_motion.rs)、[src/spinner.rs](../src/spinner.rs)
 
 **本地公开入口（同族）：** `animated`, `class`, `decorative`, `diameter`, `finish_transitions`, `install`, `install_transition`, `loader`, `name`, `new`, `node_ref`, `period_millis`, `permissions`, `remove`, `set_motion_preference`, `size`, `spinner`, `style`, `theme`, `thickness`, `unstyled`, `visible`
 
@@ -1121,7 +1121,7 @@
 
 **官方功能章节：** Usage；Center modal vertically；Remove header；Change size；Size auto；Fullscreen；Customize overlay；Modal with scroll；Usage with ScrollArea；Change offsets；Change transitions；onExitTransitionEnd and onEnterTransitionEnd；Initial focus；Control behavior；react-remove-scroll settings；Change close icon；Compound components；Modal.Stack；useModalsStack hook；Fixed elements offset；Accessibility
 
-**本地实现：** [../glory/crates/blitz/src/layers.rs](../../glory/crates/blitz/src/layers.rs)、[../glory/crates/web/src/browser/layer_document.rs](../../glory/crates/web/src/browser/layer_document.rs)、[src/overlay.rs](../src/overlay.rs)
+**本地实现：** [../glory/crates/apace/src/layers.rs](../../glory/crates/apace/src/layers.rs)、[../glory/crates/web/src/browser/layer_document.rs](../../glory/crates/web/src/browser/layer_document.rs)、[src/overlay.rs](../src/overlay.rs)
 
 **本地公开入口（同族）：** `allowed`, `ax_branch`, `boundary`, `cancel_label`, `class`, `close_content`, `close_label`, `confirm_enabled`, `confirm_label`, `confirm_variant`, `content`, `content_policy`, `default_open`, `default_snap`, `description`, `dismiss_on_escape`, `dismiss_on_outside`, `enabled`, `initial_focus`, `label`, `modal`, `name`, `on`, `on_cancel`, `on_confirm`, `on_dismiss`, `on_open_change`, `on_snap_change`, `open`, `panel_ref`, `placement`, `return_focus`, `show_close`, `show_trigger`, `side`, `size`, `snap_config`, `snap_index`, `snap_points`, `style`, `theme`, `title`, `trigger_content`, `trigger_ref`, `unstyled`
 
@@ -1149,7 +1149,7 @@
 
 **官方功能章节：** Usage；Controlled；Focus trap；Inline elements；Same width；offset；Middlewares；Customize middleware options；Dropdown arrow；With overlay；Hide detached；Disabled；Click outside；onDismiss；Initial focus；Target component；Context menu；Nested popovers；Accessibility；Keyboard interactions
 
-**本地实现：** [../glory/crates/blitz/src/layers.rs](../../glory/crates/blitz/src/layers.rs)、[../glory/crates/web/src/browser/layer_document.rs](../../glory/crates/web/src/browser/layer_document.rs)、[src/overlay.rs](../src/overlay.rs)
+**本地实现：** [../glory/crates/apace/src/layers.rs](../../glory/crates/apace/src/layers.rs)、[../glory/crates/web/src/browser/layer_document.rs](../../glory/crates/web/src/browser/layer_document.rs)、[src/overlay.rs](../src/overlay.rs)
 
 **本地公开入口（同族）：** `allowed`, `ax_branch`, `boundary`, `cancel_label`, `class`, `close_content`, `close_label`, `confirm_enabled`, `confirm_label`, `confirm_variant`, `content`, `content_policy`, `default_open`, `default_snap`, `description`, `dismiss_on_escape`, `dismiss_on_outside`, `enabled`, `initial_focus`, `label`, `modal`, `name`, `on`, `on_cancel`, `on_confirm`, `on_dismiss`, `on_open_change`, `on_snap_change`, `open`, `panel_ref`, `placement`, `return_focus`, `show_close`, `show_trigger`, `side`, `size`, `snap_config`, `snap_index`, `snap_points`, `style`, `theme`, `title`, `trigger_content`, `trigger_ref`, `unstyled`
 
@@ -1177,7 +1177,7 @@
 
 **官方功能章节：** Usage；Complex example；Beacon mode；Controlled；Overlay configuration；Step targets；Steps without target；Custom content；Tooltip position；Custom labels；Styles API；Keyboard navigation；Accessibility
 
-**本地实现：** [../glory/crates/blitz/src/scroll_into_view.rs](../../glory/crates/blitz/src/scroll_into_view.rs)、[src/tour.rs](../src/tour.rs)
+**本地实现：** [../glory/crates/apace/src/scroll_into_view.rs](../../glory/crates/apace/src/scroll_into_view.rs)、[src/tour.rs](../src/tour.rs)
 
 **本地公开入口（同族）：** `cancel`, `current`, `default_current`, `default_open`, `fill`, `go_to`, `is_empty`, `len`, `next`, `on_cancel`, `on_complete`, `on_current_change`, `on_open_change`, `on_ready`, `on_target_lost`, `open`, `placement`, `previous`, `refresh`, `step`, `steps`, `theme`, `tour`, `tour_context`, `tour_step`, `tour_target`, `unstyled`
 
@@ -1275,7 +1275,7 @@
 
 **官方功能章节：** Usage；With divider；Vertical orientation
 
-**本地实现：** [../glory/crates/blitz/src/accessibility.rs](../../glory/crates/blitz/src/accessibility.rs)、[../glory/crates/html/src/mapping.rs](../../glory/crates/html/src/mapping.rs)、[../glory/crates/render/src/document.rs](../../glory/crates/render/src/document.rs)、[src/document.rs](../src/document.rs)
+**本地实现：** [../glory/crates/apace/src/accessibility.rs](../../glory/crates/apace/src/accessibility.rs)、[../glory/crates/html/src/mapping.rs](../../glory/crates/html/src/mapping.rs)、[../glory/crates/render/src/document.rs](../../glory/crates/render/src/document.rs)、[src/document.rs](../src/document.rs)
 
 **本地公开入口（同族）：** `actions`, `blockquote`, `citation`, `class`, `content`, `data_list`, `data_list_item`, `description`, `fill`, `highlight`, `item`, `items`, `kbd`, `key`, `media`, `name`, `node_ref`, `ordered`, `platform`, `preflight`, `queries`, `query`, `shape`, `shape_in`, `size`, `style`, `term`, `text_list`, `text_list_item`, `theme`, `title`, `unstyled`
 
@@ -1317,7 +1317,7 @@
 
 **官方功能章节：** Usage；Size
 
-**本地实现：** [../glory/crates/blitz/src/accessibility.rs](../../glory/crates/blitz/src/accessibility.rs)、[../glory/crates/html/src/mapping.rs](../../glory/crates/html/src/mapping.rs)、[../glory/crates/render/src/document.rs](../../glory/crates/render/src/document.rs)、[src/document.rs](../src/document.rs)
+**本地实现：** [../glory/crates/apace/src/accessibility.rs](../../glory/crates/apace/src/accessibility.rs)、[../glory/crates/html/src/mapping.rs](../../glory/crates/html/src/mapping.rs)、[../glory/crates/render/src/document.rs](../../glory/crates/render/src/document.rs)、[src/document.rs](../src/document.rs)
 
 **本地公开入口（同族）：** `actions`, `blockquote`, `citation`, `class`, `content`, `data_list`, `data_list_item`, `description`, `fill`, `highlight`, `item`, `items`, `kbd`, `key`, `media`, `name`, `node_ref`, `ordered`, `platform`, `preflight`, `queries`, `query`, `shape`, `shape_in`, `size`, `style`, `term`, `text_list`, `text_list_item`, `theme`, `title`, `unstyled`
 
@@ -1359,7 +1359,7 @@
 
 **官方功能章节：** Usage；Prefix and suffix；Animation duration；Text selection and copying
 
-**本地实现：** [../glory/crates/blitz/src/translation.rs](../../glory/crates/blitz/src/translation.rs)、[../glory/crates/render/src/translation.rs](../../glory/crates/render/src/translation.rs)、[../glory/crates/web/src/browser/translation.rs](../../glory/crates/web/src/browser/translation.rs)、[src/marquee.rs](../src/marquee.rs)、[src/rolling_number.rs](../src/rolling_number.rs)
+**本地实现：** [../glory/crates/apace/src/translation.rs](../../glory/crates/apace/src/translation.rs)、[../glory/crates/render/src/translation.rs](../../glory/crates/render/src/translation.rs)、[../glory/crates/web/src/browser/translation.rs](../../glory/crates/web/src/browser/translation.rs)、[src/marquee.rs](../src/marquee.rs)、[src/rolling_number.rs](../src/rolling_number.rs)
 
 **本地公开入口（同族）：** `admitted`, `animated`, `class`, `config`, `configure`, `direction`, `duration_millis`, `format`, `gap`, `grouping`, `is_empty`, `locale`, `marquee`, `max_fraction_digits`, `measurement_revision`, `min_fraction_digits`, `new`, `node_ref`, `offset`, `on`, `origin`, `paused`, `period_millis`, `resting_offset`, `retire`, `rolling_number`, `running`, `size`, `style`, `text`, `theme`, `unstyled`, `validate`, `value`
 
@@ -1415,7 +1415,7 @@
 
 **官方功能章节：** Usage；Text wrap
 
-**本地实现：** [../glory/crates/blitz/src/accessibility.rs](../../glory/crates/blitz/src/accessibility.rs)、[../glory/crates/html/src/mapping.rs](../../glory/crates/html/src/mapping.rs)、[../glory/crates/render/src/document.rs](../../glory/crates/render/src/document.rs)、[src/document.rs](../src/document.rs)
+**本地实现：** [../glory/crates/apace/src/accessibility.rs](../../glory/crates/apace/src/accessibility.rs)、[../glory/crates/html/src/mapping.rs](../../glory/crates/html/src/mapping.rs)、[../glory/crates/render/src/document.rs](../../glory/crates/render/src/document.rs)、[src/document.rs](../src/document.rs)
 
 **本地公开入口（同族）：** `actions`, `blockquote`, `citation`, `class`, `content`, `data_list`, `data_list_item`, `description`, `fill`, `highlight`, `item`, `items`, `kbd`, `key`, `media`, `name`, `node_ref`, `ordered`, `platform`, `preflight`, `queries`, `query`, `shape`, `shape_in`, `size`, `style`, `term`, `text_list`, `text_list_item`, `theme`, `title`, `unstyled`
 
@@ -1429,7 +1429,7 @@
 
 **官方功能章节：** Usage；Block code；Custom color
 
-**本地实现：** [../glory/crates/blitz/src/accessibility.rs](../../glory/crates/blitz/src/accessibility.rs)、[../glory/crates/html/src/mapping.rs](../../glory/crates/html/src/mapping.rs)、[../glory/crates/render/src/document.rs](../../glory/crates/render/src/document.rs)、[src/document.rs](../src/document.rs)
+**本地实现：** [../glory/crates/apace/src/accessibility.rs](../../glory/crates/apace/src/accessibility.rs)、[../glory/crates/html/src/mapping.rs](../../glory/crates/html/src/mapping.rs)、[../glory/crates/render/src/document.rs](../../glory/crates/render/src/document.rs)、[src/document.rs](../src/document.rs)
 
 **本地公开入口（同族）：** `actions`, `blockquote`, `citation`, `class`, `content`, `data_list`, `data_list_item`, `description`, `fill`, `highlight`, `item`, `items`, `kbd`, `key`, `media`, `name`, `node_ref`, `ordered`, `platform`, `preflight`, `queries`, `query`, `shape`, `shape_in`, `size`, `style`, `term`, `text_list`, `text_list_item`, `theme`, `title`, `unstyled`
 
@@ -1443,7 +1443,7 @@
 
 **官方功能章节：** Usage；Matching behavior；Case-sensitive matching；Accent-sensitive matching；Highlight multiple substrings；Custom colors per term；Whole word matching；Change highlight styles；Text props
 
-**本地实现：** [../glory/crates/blitz/src/accessibility.rs](../../glory/crates/blitz/src/accessibility.rs)、[../glory/crates/html/src/mapping.rs](../../glory/crates/html/src/mapping.rs)、[../glory/crates/render/src/document.rs](../../glory/crates/render/src/document.rs)、[src/document.rs](../src/document.rs)
+**本地实现：** [../glory/crates/apace/src/accessibility.rs](../../glory/crates/apace/src/accessibility.rs)、[../glory/crates/html/src/mapping.rs](../../glory/crates/html/src/mapping.rs)、[../glory/crates/render/src/document.rs](../../glory/crates/render/src/document.rs)、[src/document.rs](../src/document.rs)
 
 **本地公开入口（同族）：** `actions`, `blockquote`, `citation`, `class`, `content`, `data_list`, `data_list_item`, `description`, `fill`, `highlight`, `item`, `items`, `kbd`, `key`, `media`, `name`, `node_ref`, `ordered`, `platform`, `preflight`, `queries`, `query`, `shape`, `shape_in`, `size`, `style`, `term`, `text_list`, `text_list_item`, `theme`, `title`, `unstyled`
 
@@ -1457,7 +1457,7 @@
 
 **官方功能章节：** Usage；With icons；Nested lists；Ordered list numbering
 
-**本地实现：** [../glory/crates/blitz/src/accessibility.rs](../../glory/crates/blitz/src/accessibility.rs)、[../glory/crates/html/src/mapping.rs](../../glory/crates/html/src/mapping.rs)、[../glory/crates/render/src/document.rs](../../glory/crates/render/src/document.rs)、[src/document.rs](../src/document.rs)
+**本地实现：** [../glory/crates/apace/src/accessibility.rs](../../glory/crates/apace/src/accessibility.rs)、[../glory/crates/html/src/mapping.rs](../../glory/crates/html/src/mapping.rs)、[../glory/crates/render/src/document.rs](../../glory/crates/render/src/document.rs)、[src/document.rs](../src/document.rs)
 
 **本地公开入口（同族）：** `actions`, `blockquote`, `citation`, `class`, `content`, `data_list`, `data_list_item`, `description`, `fill`, `highlight`, `item`, `items`, `kbd`, `key`, `media`, `name`, `node_ref`, `ordered`, `platform`, `preflight`, `queries`, `query`, `shape`, `shape_in`, `size`, `style`, `term`, `text_list`, `text_list_item`, `theme`, `title`, `unstyled`
 
@@ -1471,7 +1471,7 @@
 
 **官方功能章节：** Usage
 
-**本地实现：** [../glory/crates/blitz/src/accessibility.rs](../../glory/crates/blitz/src/accessibility.rs)、[../glory/crates/html/src/mapping.rs](../../glory/crates/html/src/mapping.rs)、[../glory/crates/render/src/document.rs](../../glory/crates/render/src/document.rs)、[src/document.rs](../src/document.rs)
+**本地实现：** [../glory/crates/apace/src/accessibility.rs](../../glory/crates/apace/src/accessibility.rs)、[../glory/crates/html/src/mapping.rs](../../glory/crates/html/src/mapping.rs)、[../glory/crates/render/src/document.rs](../../glory/crates/render/src/document.rs)、[src/document.rs](../src/document.rs)
 
 **本地公开入口（同族）：** `actions`, `blockquote`, `citation`, `class`, `content`, `data_list`, `data_list_item`, `description`, `fill`, `highlight`, `item`, `items`, `kbd`, `key`, `media`, `name`, `node_ref`, `ordered`, `platform`, `preflight`, `queries`, `query`, `shape`, `shape_in`, `size`, `style`, `term`, `text_list`, `text_list_item`, `theme`, `title`, `unstyled`
 
@@ -1555,7 +1555,7 @@
 
 **官方功能章节：** Usage；Horizontal orientation；Change transition；Example: nested Collapse components；use-collapse hook
 
-**本地实现：** [../glory/crates/blitz/src/collapse.rs](../../glory/crates/blitz/src/collapse.rs)、[../glory/crates/render/src/collapse.rs](../../glory/crates/render/src/collapse.rs)、[../glory/crates/web/src/browser/collapse.rs](../../glory/crates/web/src/browser/collapse.rs)、[src/collapsible/mod.rs](../src/collapsible/mod.rs)
+**本地实现：** [../glory/crates/apace/src/collapse.rs](../../glory/crates/apace/src/collapse.rs)、[../glory/crates/render/src/collapse.rs](../../glory/crates/render/src/collapse.rs)、[../glory/crates/web/src/browser/collapse.rs](../../glory/crates/web/src/browser/collapse.rs)、[src/collapsible/mod.rs](../src/collapsible/mod.rs)
 
 **本地公开入口（同族）：** `animated`, `class`, `collapsible`, `content`, `content_policy`, `default_open`, `enabled`, `focus`, `height_transition`, `is_empty`, `label`, `name`, `needs_frame`, `node_ref`, `on`, `on_open_change`, `open`, `panel_ref`, `ready`, `retire`, `running`, `size`, `style`, `theme`, `trigger_content`, `trigger_ref`, `unstyled`, `update`, `validate`
 
@@ -1583,7 +1583,7 @@
 
 **官方功能章节：** Usage；Initial focus；FocusTrap.InitialFocus；Focus trapping logic
 
-**本地实现：** [../glory/crates/blitz/src/focus_scope.rs](../../glory/crates/blitz/src/focus_scope.rs)、[../glory/crates/render/src/focus_scope.rs](../../glory/crates/render/src/focus_scope.rs)、[../glory/crates/ui/src/app.rs](../../glory/crates/ui/src/app.rs)、[../glory/crates/web/src/browser/focus_scope.rs](../../glory/crates/web/src/browser/focus_scope.rs)、[src/focus_scope.rs](../src/focus_scope.rs)、[src/portal.rs](../src/portal.rs)
+**本地实现：** [../glory/crates/apace/src/focus_scope.rs](../../glory/crates/apace/src/focus_scope.rs)、[../glory/crates/render/src/focus_scope.rs](../../glory/crates/render/src/focus_scope.rs)、[../glory/crates/ui/src/app.rs](../../glory/crates/ui/src/app.rs)、[../glory/crates/web/src/browser/focus_scope.rs](../../glory/crates/web/src/browser/focus_scope.rs)、[src/focus_scope.rs](../src/focus_scope.rs)、[src/portal.rs](../src/portal.rs)
 
 **本地公开入口（同族）：** `action`, `active`, `auto_focus`, `batch`, `buffer_stats`, `cancel_request`, `capabilities`, `child`, `child_in`, `class`, `clear`, `clear_files`, `configuration`, `contain_focus`, `contains_node`, `content`, `copy_text`, `create`, `defer_descendant_disposal`, `dispatch`, `downgrade`, `enabled`, `fill`, `flush`, `focus_scope`, `focus_scope_nodes`, `focus_scope_roots`, `focus_scopes`, `graph_stats`, `initial_focus`, `instantiate`, `is_active`, `is_enabled`, `is_inert`, `is_within`, `link_request`, `loop_tab`, `memory`, `mount`, `mount_with`, `new`, `node_ref`, `on`, `on_target_lost`, `patch`, `pick_files`, `place`, `place_before`, `portal`, `portal_context`, `portal_target`, `profile`, `pump`, `remove_file`, `report`, `request`, `restore_focus`, `retain`, `return_focus`, `rich_editor_editable`, `rich_editor_value`, `roots`, `runtime`, `runtime_stats`, `scope`, `semantic_id`, `set_file_configuration`, `set_input_selection`, `set_profile`, `set_rich_document`, `set_rich_selection`, `settle`, `sources`, `stats`, `style`, `style_profile`, `suspend`, `targets`, `tree`, `upgrade`, `with_host`
 
@@ -1597,7 +1597,7 @@
 
 **官方功能章节：** Usage；Pause on hover；Vertical orientation；Multiple rows；Fade edges；Customization
 
-**本地实现：** [../glory/crates/blitz/src/translation.rs](../../glory/crates/blitz/src/translation.rs)、[../glory/crates/render/src/translation.rs](../../glory/crates/render/src/translation.rs)、[../glory/crates/web/src/browser/translation.rs](../../glory/crates/web/src/browser/translation.rs)、[src/marquee.rs](../src/marquee.rs)、[src/rolling_number.rs](../src/rolling_number.rs)
+**本地实现：** [../glory/crates/apace/src/translation.rs](../../glory/crates/apace/src/translation.rs)、[../glory/crates/render/src/translation.rs](../../glory/crates/render/src/translation.rs)、[../glory/crates/web/src/browser/translation.rs](../../glory/crates/web/src/browser/translation.rs)、[src/marquee.rs](../src/marquee.rs)、[src/rolling_number.rs](../src/rolling_number.rs)
 
 **本地公开入口（同族）：** `admitted`, `animated`, `class`, `config`, `configure`, `direction`, `duration_millis`, `format`, `gap`, `grouping`, `is_empty`, `locale`, `marquee`, `max_fraction_digits`, `measurement_revision`, `min_fraction_digits`, `new`, `node_ref`, `offset`, `on`, `origin`, `paused`, `period_millis`, `resting_offset`, `retire`, `rolling_number`, `running`, `size`, `style`, `text`, `theme`, `unstyled`, `validate`, `value`
 
@@ -1625,7 +1625,7 @@
 
 **官方功能章节：** Usage；Reuse target node；Specify target DOM node；Server side rendering；OptionalPortal component
 
-**本地实现：** [../glory/crates/blitz/src/focus_scope.rs](../../glory/crates/blitz/src/focus_scope.rs)、[../glory/crates/render/src/focus_scope.rs](../../glory/crates/render/src/focus_scope.rs)、[../glory/crates/ui/src/app.rs](../../glory/crates/ui/src/app.rs)、[../glory/crates/web/src/browser/focus_scope.rs](../../glory/crates/web/src/browser/focus_scope.rs)、[src/focus_scope.rs](../src/focus_scope.rs)、[src/portal.rs](../src/portal.rs)
+**本地实现：** [../glory/crates/apace/src/focus_scope.rs](../../glory/crates/apace/src/focus_scope.rs)、[../glory/crates/render/src/focus_scope.rs](../../glory/crates/render/src/focus_scope.rs)、[../glory/crates/ui/src/app.rs](../../glory/crates/ui/src/app.rs)、[../glory/crates/web/src/browser/focus_scope.rs](../../glory/crates/web/src/browser/focus_scope.rs)、[src/focus_scope.rs](../src/focus_scope.rs)、[src/portal.rs](../src/portal.rs)
 
 **本地公开入口（同族）：** `action`, `active`, `auto_focus`, `batch`, `buffer_stats`, `cancel_request`, `capabilities`, `child`, `child_in`, `class`, `clear`, `clear_files`, `configuration`, `contain_focus`, `contains_node`, `content`, `copy_text`, `create`, `defer_descendant_disposal`, `dispatch`, `downgrade`, `enabled`, `fill`, `flush`, `focus_scope`, `focus_scope_nodes`, `focus_scope_roots`, `focus_scopes`, `graph_stats`, `initial_focus`, `instantiate`, `is_active`, `is_enabled`, `is_inert`, `is_within`, `link_request`, `loop_tab`, `memory`, `mount`, `mount_with`, `new`, `node_ref`, `on`, `on_target_lost`, `patch`, `pick_files`, `place`, `place_before`, `portal`, `portal_context`, `portal_target`, `profile`, `pump`, `remove_file`, `report`, `request`, `restore_focus`, `retain`, `return_focus`, `rich_editor_editable`, `rich_editor_value`, `roots`, `runtime`, `runtime_stats`, `scope`, `semantic_id`, `set_file_configuration`, `set_input_selection`, `set_profile`, `set_rich_document`, `set_rich_selection`, `settle`, `sources`, `stats`, `style`, `style_profile`, `suspend`, `targets`, `tree`, `upgrade`, `with_host`
 
@@ -2521,7 +2521,7 @@
 
 **官方功能章节：** Installation；Setup ModalsProvider；Confirm modal；Context modals；Typesafe context modals；Content modals；Multiple opened modals；Modal props；Dynamic content and the modals manager
 
-**本地实现：** [../glory/crates/blitz/src/layers.rs](../../glory/crates/blitz/src/layers.rs)、[src/modals.rs](../src/modals.rs)、[src/overlay.rs](../src/overlay.rs)
+**本地实现：** [../glory/crates/apace/src/layers.rs](../../glory/crates/apace/src/layers.rs)、[src/modals.rs](../src/modals.rs)、[src/overlay.rs](../src/overlay.rs)
 
 **本地公开入口（同族）：** `allowed`, `ax_branch`, `boundary`, `cancel_label`, `capacity`, `class`, `close`, `close_all`, `close_content`, `close_label`, `confirm_enabled`, `confirm_label`, `confirm_variant`, `confirmation_request`, `content`, `content_policy`, `default_open`, `default_snap`, `description`, `dismiss_on_escape`, `dismiss_on_outside`, `enabled`, `initial_focus`, `label`, `modal`, `modal_request`, `modals_manager`, `name`, `on`, `on_cancel`, `on_confirm`, `on_dismiss`, `on_open_change`, `on_ready`, `on_result`, `on_snap_change`, `open`, `panel_ref`, `pending`, `placement`, `return_focus`, `show_close`, `show_trigger`, `side`, `size`, `snap_config`, `snap_index`, `snap_points`, `style`, `theme`, `title`, `trigger_content`, `trigger_ref`, `unstyled`, `update`
 

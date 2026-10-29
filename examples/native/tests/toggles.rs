@@ -1,4 +1,4 @@
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::prelude::*;
 use glory::render::{Action, Event, FocusMode, NodeId, Query, QueryValue};
 use sapid::{ToggleMode, toggle, toggle_group, toggle_item};

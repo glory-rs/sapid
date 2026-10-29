@@ -25,7 +25,7 @@ sapid::anchor()
 
 `LinkOpen::Current` 默认省略 target/rel；NewContext 在 Web/SSR 输出 `target="_blank"` 与
 `rel="noopener noreferrer"`。动态清除/切回 Current 会同步删除两者，保持同一个链接节点。
-Blitz 当前明确拒绝 NewContext；普通 Current 链接及其应用请求在原生有效，不静默执行系统打开动作。
+Apace 当前明确拒绝 NewContext；普通 Current 链接及其应用请求在原生有效，不静默执行系统打开动作。
 
 回调用身份校验后的 `Scope::link_request` 读取当前 accepted LinkProps.target 与 link_open，
 不直接读取可能尚未绑定或已被宿主拒绝的源值。因此 native NewContext 更新被拒绝、源写入尚未 flush

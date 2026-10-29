@@ -7,7 +7,7 @@ async(hostPage,baseURL='http://127.0.0.1:8794')=>{
     await page.evaluate(()=>{
       const root=document.querySelector('#environment-stream-root'),environment=root.querySelector('[lang][dir]');
       if(environment.getAttribute('lang')!=='ar'||environment.getAttribute('dir')!=='rtl')throw Error('classic environment finite patches');
-      if(root.firstChild.nodeValue!=='gly:v:13'||GloryStream.active()!==0)throw Error('environment End/version/controller release');
+      if(root.firstChild.nodeValue!=='gly:v:14'||GloryStream.active()!==0)throw Error('environment End/version/controller release');
     });reports.push({suite:'environment-classic-fields-and-End',status:'passed'});
     const source=await page.evaluate(async()=>await(await fetch('environment-stream.html')).text());
     for(const kind of ['direction','language','language-budget','old-version']){

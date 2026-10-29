@@ -81,7 +81,7 @@ value/revision untouched on policy changes. This batch used HTML v4/classic
 stream v2 without new edit operations. Current producers follow HTML v13 with
 the classic v2 envelope; the original snapshot evidence below retains its version.
 
-Blitz now admits the tags policy and connects shared key/revision commands,
+Apace now admits the tags policy and connects shared key/revision commands,
 software punctuation/Return, composition guards, atomic UTF-16 paste and body-free
 budget rejection. It retains an ordinary native TextInput and controlled
 selection/identity. Five actual TagsInput/PillsInput native consumer tests pass
@@ -109,7 +109,7 @@ Current evidence:
 - Glory `render/tests/tags.rs`: three payload/policy/routing/rollback tests.
   `html/src/tags_tests.rs`: prepared-field/full-shape oracle, required/default
   resets and preservation of a large unrelated editor value/revision.
-- Glory `blitz/tests/tags.rs`: plain/refined admission and retained successful-prefix/query
+- Glory `apace/tests/tags.rs`: plain/refined admission and retained successful-prefix/query
   watermark after a later unsupported File control. Eight native input/AX tests
   and five actual Sapid consumer tests provide the current host evidence.
 - Sapid library/tests and current WASM fixture compile with strict Clippy.

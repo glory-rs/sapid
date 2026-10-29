@@ -1,4 +1,4 @@
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::prelude::*;
 use glory::render::{Current, Event, NodeId, Props, Query, QueryValue};
 use sapid::{breadcrumb_item, breadcrumbs, nav_link, pagination};

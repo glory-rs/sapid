@@ -2,8 +2,8 @@
 mod assets;
 #[path = "../../web/src/image_form.rs"]
 mod image_form;
-use glory::blitz::assets::{Bytes, NetHandler, NetProvider, Request};
-use glory::blitz::{Config, shell::WindowApp};
+use glory::apace::assets::{Bytes, NetHandler, NetProvider, Request};
+use glory::apace::{Config, shell::WindowApp};
 use glory::render::{Event, NodeId, Props, Query, QueryValue, Rect};
 use glory::style::Display;
 use glory::ui::App;

@@ -97,7 +97,7 @@ full-shape and prepared-field delta lowering agree for mode/required/default
 changes and preserve Input values/revisions. HTML remains format v4 and classic
 stream envelope v2: these are finite attribute refinements within that schema.
 
-Native Blitz explicitly rejects all combobox/option refinements before facet
+Native Apace explicitly rejects all combobox/option refinements before facet
 registration, in preflight and direct apply, preserving successful prefixes and
 query watermarks. These components therefore do not claim native input or AX
 support. Browser CDP IME and AX tests establish browser protocol behavior, not OS
@@ -118,7 +118,7 @@ Evidence:
   tests, including the prepared-patch/full-shape differential oracle.
 - Glory SSR `choice_stream_retains_focus_preserving_intrinsics_and_live_active_descendant`
   and `GLORY_CHOICE_STREAM_FIXTURE` produce all four finite modes and a real
-  multiple Listbox. Native `blitz/tests/choice.rs`: one expanded preflight/direct
+  multiple Listbox. Native `apace/tests/choice.rs`: one expanded preflight/direct
   rejection and prefix/query test covering both new modes.
 - `examples/web/src/choice_extras_form.rs`, `choice-extras.html` and
   `choice-extras-acceptance.js`: Web14 Chromium 148.0.7778.96, 12 actual browser

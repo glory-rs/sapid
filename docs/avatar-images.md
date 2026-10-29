@@ -82,7 +82,7 @@ them. These runs cover accessibility snapshots, not screen-reader announcements.
 the shared finite image content sizing contract, independently of image box
 dimensions. The default is Fill; an absent declaration leaves the stylesheet
 in charge. Explicit Fill resets a previous fit. Object position is centered.
-HTML/Record profile v7 and native Blitz v8 advertise every value independently.
+HTML/Record profile v7 and native Apace v8 advertise every value independently.
 The optional CSS parser accepts exactly these five keywords and checks each
 original declaration before cascade overrides. Native raster tests verify real
 decoded image pixels, centered letterboxing, cover cropping, natural-size and

@@ -1,4 +1,4 @@
-use glory::blitz::{Raster, shell::WindowApp};
+use glory::apace::{Raster, shell::WindowApp};
 use glory::prelude::*;
 use glory::render::{Action, Props, Query, QueryValue, SelectionDirection, TextSelection};
 use sapid::{portal, portal_context, portal_target};

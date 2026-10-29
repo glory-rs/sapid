@@ -1,7 +1,7 @@
 # Finite Grid, SimpleGrid and AspectRatio
 
 These are passive layout widgets. They use actual typed CSS grid and aspect-ratio
-declarations across Record, HTML, Web/SSR and Blitz. They add no table, row, cell,
+declarations across Record, HTML, Web/SSR and Apace. They add no table, row, cell,
 selection or interactive grid accessibility roles. Slot controls retain their
 native roles, focus order and node identities.
 
@@ -66,7 +66,7 @@ removes component color tokens while keeping structural grid/placement/min-width
 and ratio declarations, matching the existing layout components. Explicit custom
 declarations retain precedence and preserve every unspecified declaration.
 
-Glory's HTML/Record profile is v6; Blitz is v7. Five independent properties are
+Glory's HTML/Record profile is v6; Apace is v7. Five independent properties are
 `GridColumns`, `GridRows`, `GridColumn`, `GridRow`, `AspectRatio`, plus the new Grid
 display value. Track-list, each original track unit, placement kinds, auto/reset
 and ratio requirements are independently rejectable with u64 support masks.

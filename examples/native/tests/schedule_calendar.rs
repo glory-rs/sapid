@@ -1,4 +1,4 @@
-use glory::blitz::{Raster, shell::WindowApp};
+use glory::apace::{Raster, shell::WindowApp};
 use glory::prelude::*;
 use glory::render::{Action, GridCommand, NodeId, Props, Query, QueryValue, Rect};
 use sapid::prelude::*;

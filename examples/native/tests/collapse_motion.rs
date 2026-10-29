@@ -1,4 +1,4 @@
-use glory::blitz::{Config, Raster, shell::WindowApp};
+use glory::apace::{Config, Raster, shell::WindowApp};
 use glory::prelude::*;
 use glory::render::{CollapseConfig, Event, MotionPreference, NodeId};
 use std::{

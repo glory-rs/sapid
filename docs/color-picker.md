@@ -49,7 +49,7 @@ string intentionally quantizes channels to RGBA8. An invalid draft leaves the
 palette at its last valid color. Active composition or readonly/disabled state
 blocks palette changes. Controlled `.open` uses `.on_open_change` proposals.
 
-Native Blitz supports the standalone picker, its real Slider alternatives and
+Native Apace supports the standalone picker, its real Slider alternatives and
 ColorInput's default anchored Popup through the finite Dialog/Popover layer
 facet. Four-theme native tests verify actual anchor geometry, palette changes,
 CPU pixels, retained editor identity and closing. Explicit `.show_picker(false)`

@@ -14,7 +14,7 @@ explicit even when another variant of the same family is available.
 | ID / widget | Inventory | Model | SSR | Web | Native | AccessKit |
 |---|---|---|---|---|---|---|
 | [P0-01 Button](#evidence-p0-01) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
-| [P0-02 TextField](#evidence-p0-02) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract. |
+| [P0-02 TextField](#evidence-p0-02) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. Optional Input placeholder metadata is explicitly rejected by Apace before model/engine changes; base inputs without the hint retain their existing contract. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. Optional Input placeholder metadata is explicitly rejected by Apace before model/engine changes; base inputs without the hint retain their existing contract. |
 | [P0-03 Checkbox](#evidence-p0-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P0-04 Collapsible](#evidence-p0-04) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P0-05 Accordion](#evidence-p0-05) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
@@ -30,8 +30,8 @@ explicit even when another variant of the same family is available.
 | [P1-01 Field / InputWrapper](#evidence-p1-01) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P1-02 Label / FieldDescription / FieldError](#evidence-p1-02) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P1-03 Fieldset / Legend](#evidence-p1-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
-| [P1-04 Textarea](#evidence-p1-04) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Fixed-row Textarea supported; intrinsic autosizing FieldSizing explicitly rejected. | **tested**: Fixed-row Textarea supported; intrinsic autosizing FieldSizing explicitly rejected. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract. |
-| [P1-05 PasswordInput](#evidence-p1-05) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract. |
+| [P1-04 Textarea](#evidence-p1-04) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Fixed-row Textarea supported; intrinsic autosizing FieldSizing explicitly rejected. | **tested**: Fixed-row Textarea supported; intrinsic autosizing FieldSizing explicitly rejected. Optional Input placeholder metadata is explicitly rejected by Apace before model/engine changes; base inputs without the hint retain their existing contract. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. Optional Input placeholder metadata is explicitly rejected by Apace before model/engine changes; base inputs without the hint retain their existing contract. |
+| [P1-05 PasswordInput](#evidence-p1-05) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. Optional Input placeholder metadata is explicitly rejected by Apace before model/engine changes; base inputs without the hint retain their existing contract. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. Optional Input placeholder metadata is explicitly rejected by Apace before model/engine changes; base inputs without the hint retain their existing contract. |
 | [P1-06 InputGroup / Addon / InputSection](#evidence-p1-06) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P1-07 Form / FormState / Validation](#evidence-p1-07) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Typed state/validation is host independent; native form requests and controls tested; file values unsupported. | **tested**: Typed state/validation is host independent; native form requests and controls tested; file values unsupported. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P1-08 Form submission / serialization](#evidence-p1-08) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
@@ -114,7 +114,7 @@ explicit even when another variant of the same family is available.
 | [P7-08 ColorPicker / ColorInput](#evidence-p7-08) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P7-09 PinInput / InputOTP](#evidence-p7-09) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
 | [P7-10 MaskInput](#evidence-p7-10) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. |
-| [P7-11 JsonInput](#evidence-p7-11) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. Optional Input placeholder metadata is explicitly rejected by Blitz before model/engine changes; base inputs without the hint retain their existing contract. |
+| [P7-11 JsonInput](#evidence-p7-11) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. Optional Input placeholder metadata is explicitly rejected by Apace before model/engine changes; base inputs without the hint retain their existing contract. | **model-only**: No component-specific AT client claim; shared projection is not screen-reader acceptance. Optional Input placeholder metadata is explicitly rejected by Apace before model/engine changes; base inputs without the hint retain their existing contract. |
 | [P8-01 Table](#evidence-p8-01) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P8-02 DataTable](#evidence-p8-02) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
 | [P8-03 Tree](#evidence-p8-03) | done | **tested**: Finite model and ownership rules are separately tested. | **tested**: Structural serialization/adoption shape only; SSR does not advertise an input driver. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Finite declared contract; variant-specific limits remain in the linked canonical evidence. | **tested**: Actual finite semantic projection tested; OS client/speech acceptance remains separate. |
@@ -234,7 +234,7 @@ Tests:
 
 ### Evidence P0-04
 
-Collapsible 有限 intrinsic height 动画、反向/内容增长、匹配 revision 后的 Unmount、KeepMounted、Clear/0/Reduce 已补齐。Web 四主题 CSR/采用及 Chromium 12 场景原证据保留；Blitz 现接通真实原生几何/CPU 插值、2x 文字重排、嵌套、隐藏/恢复/清理和单次完成回执，实际四主题双内容策略消费端验证编辑器身份、焦点返回、旧回执拒绝与 Owner 清理。OS 输入、读屏和真机呈现仍单独验收。
+Collapsible 有限 intrinsic height 动画、反向/内容增长、匹配 revision 后的 Unmount、KeepMounted、Clear/0/Reduce 已补齐。Web 四主题 CSR/采用及 Chromium 12 场景原证据保留；Apace 现接通真实原生几何/CPU 插值、2x 文字重排、嵌套、隐藏/恢复/清理和单次完成回执，实际四主题双内容策略消费端验证编辑器身份、焦点返回、旧回执拒绝与 Owner 清理。OS 输入、读屏和真机呈现仍单独验收。
 
 Implementation:
 
@@ -242,7 +242,7 @@ Implementation:
 - `docs/collapsible.md`
 - `../glory/crates/render/src/collapse.rs`
 - `../glory/crates/web/src/browser/collapse.rs`
-- `../glory/crates/blitz/src/collapse.rs`
+- `../glory/crates/apace/src/collapse.rs`
 - `../glory/docs/native-collapse.md`
 
 Tests:
@@ -250,7 +250,7 @@ Tests:
 - `tests/collapse_motion.rs (4 passed)`
 - `../glory/crates/render/tests/collapse.rs (5 passed)`
 - `../glory/crates/html/src/collapse_tests.rs (2 passed)`
-- `../glory/crates/blitz/tests/collapse.rs (5 passed)`
+- `../glory/crates/apace/tests/collapse.rs (5 passed)`
 - `examples/web/collapse-motion-acceptance.js`
 - `D:/BuildCache/sapid/collapse-motion-browser-command-next.json (12 passed, Chromium 148.0.7778.96)`
 - `examples/native/tests/collapse_motion.rs (four themes, two content policies)`
@@ -306,7 +306,7 @@ Implementation:
 - `src/overlay.rs`
 - `docs/popover.md`
 - `../glory/crates/web/src/browser/layer_document.rs`
-- `../glory/crates/blitz/src/layers.rs`
+- `../glory/crates/apace/src/layers.rs`
 - `../glory/docs/native-top-layers.md`
 
 Tests:
@@ -314,8 +314,8 @@ Tests:
 - `examples/web/overlay-acceptance.js`
 - `examples/web/popover-placement-acceptance.js`
 - `examples/web/layer-document-acceptance.js`
-- `../glory/crates/blitz/src/layer_tests.rs (8 passed)`
-- `../glory/crates/blitz/tests/layers.rs`
+- `../glory/crates/apace/src/layer_tests.rs (8 passed)`
+- `../glory/crates/apace/tests/layers.rs`
 - `examples/native/tests/alerts.rs`
 - `examples/native/tests/color_pickers.rs`
 - `D:/BuildCache/sapid/browser-web26-results.json (71 suites, 675 reports, errors [])`
@@ -350,7 +350,7 @@ Implementation:
 - `src/overlay.rs`
 - `docs/popover.md`
 - `../glory/crates/web/src/browser/layer_document.rs`
-- `../glory/crates/blitz/src/layers.rs`
+- `../glory/crates/apace/src/layers.rs`
 - `../glory/docs/native-top-layers.md`
 
 Tests:
@@ -358,8 +358,8 @@ Tests:
 - `examples/web/overlay-acceptance.js`
 - `examples/web/popover-placement-acceptance.js`
 - `examples/web/layer-document-acceptance.js`
-- `../glory/crates/blitz/src/layer_tests.rs (8 passed)`
-- `../glory/crates/blitz/tests/layers.rs`
+- `../glory/crates/apace/src/layer_tests.rs (8 passed)`
+- `../glory/crates/apace/tests/layers.rs`
 - `examples/native/tests/alerts.rs`
 - `examples/native/tests/color_pickers.rs`
 - `D:/BuildCache/sapid/browser-web26-results.json (71 suites, 675 reports, errors [])`
@@ -381,7 +381,7 @@ Tests:
 
 - `tests/collection.rs`
 - `../glory/crates/render/tests/typeahead.rs`
-- `../glory/crates/blitz/tests/check_modes.rs`
+- `../glory/crates/apace/tests/check_modes.rs`
 - `D:/BuildCache/sapid/choices-browser-results.json (10 passed; errors=[])`
 
 ### Evidence P0-11
@@ -397,7 +397,7 @@ Implementation:
 - `../glory/crates/render/src/focus_scope.rs`
 - `../glory/crates/ui/src/app.rs`
 - `../glory/crates/web/src/browser/focus_scope.rs`
-- `../glory/crates/blitz/src/focus_scope.rs`
+- `../glory/crates/apace/src/focus_scope.rs`
 
 Tests:
 
@@ -449,7 +449,7 @@ Tests:
 
 - `tests/visually_hidden.rs (4 passed)`
 - `examples/native/tests/visually_hidden.rs (4 themes)`
-- `../glory/crates/blitz/src/accessibility_current_tests.rs`
+- `../glory/crates/apace/src/accessibility_current_tests.rs`
 - `D:/BuildCache/sapid/hidden-browser.json (8 passed; errors=[])`
 - `D:/BuildCache/sapid/hidden-native.log`
 - `D:/BuildCache/sapid/hidden-ax.log`
@@ -499,16 +499,16 @@ Implementation:
 - `../glory/crates/render/src/semantics.rs`
 - `../glory/crates/html/src/semantics.rs`
 - `../glory/crates/web/src/browser/events.rs`
-- `../glory/crates/blitz/src/shell.rs`
-- `../glory/crates/blitz/src/accessibility.rs`
+- `../glory/crates/apace/src/shell.rs`
+- `../glory/crates/apace/src/accessibility.rs`
 
 Tests:
 
 - `tests/fields.rs`
 - `../glory/crates/render/tests/fields.rs`
 - `../glory/crates/html/src/patch_tests.rs`
-- `../glory/crates/blitz/src/command/tests.rs (native_field_label_readonly_and_disabled_group_preserve_editor_identity)`
-- `../glory/crates/blitz/src/accessibility_tests.rs (field_states_label_description_error_and_disabled_group_reach_accesskit)`
+- `../glory/crates/apace/src/command/tests.rs (native_field_label_readonly_and_disabled_group_preserve_editor_identity)`
+- `../glory/crates/apace/src/accessibility_tests.rs (field_states_label_description_error_and_disabled_group_reach_accesskit)`
 - `examples/web/field-acceptance.js (four themes, CSR/SSR, AX, draft adoption)`
 - `D:/BuildCache/sapid/fields-final-check.log`
 - `D:/BuildCache/sapid/browser-results.json`
@@ -525,16 +525,16 @@ Implementation:
 - `../glory/crates/render/src/semantics.rs`
 - `../glory/crates/html/src/semantics.rs`
 - `../glory/crates/web/src/browser/events.rs`
-- `../glory/crates/blitz/src/shell.rs`
-- `../glory/crates/blitz/src/accessibility.rs`
+- `../glory/crates/apace/src/shell.rs`
+- `../glory/crates/apace/src/accessibility.rs`
 
 Tests:
 
 - `tests/fields.rs`
 - `../glory/crates/render/tests/fields.rs`
 - `../glory/crates/html/src/patch_tests.rs`
-- `../glory/crates/blitz/src/command/tests.rs (native_field_label_readonly_and_disabled_group_preserve_editor_identity)`
-- `../glory/crates/blitz/src/accessibility_tests.rs (field_states_label_description_error_and_disabled_group_reach_accesskit)`
+- `../glory/crates/apace/src/command/tests.rs (native_field_label_readonly_and_disabled_group_preserve_editor_identity)`
+- `../glory/crates/apace/src/accessibility_tests.rs (field_states_label_description_error_and_disabled_group_reach_accesskit)`
 - `examples/web/field-acceptance.js (four themes, CSR/SSR, AX, draft adoption)`
 - `D:/BuildCache/sapid/fields-final-check.log`
 - `D:/BuildCache/sapid/browser-results.json`
@@ -551,23 +551,23 @@ Implementation:
 - `../glory/crates/render/src/semantics.rs`
 - `../glory/crates/html/src/semantics.rs`
 - `../glory/crates/web/src/browser/events.rs`
-- `../glory/crates/blitz/src/shell.rs`
-- `../glory/crates/blitz/src/accessibility.rs`
+- `../glory/crates/apace/src/shell.rs`
+- `../glory/crates/apace/src/accessibility.rs`
 
 Tests:
 
 - `tests/fields.rs`
 - `../glory/crates/render/tests/fields.rs`
 - `../glory/crates/html/src/patch_tests.rs`
-- `../glory/crates/blitz/src/command/tests.rs (native_field_label_readonly_and_disabled_group_preserve_editor_identity)`
-- `../glory/crates/blitz/src/accessibility_tests.rs (field_states_label_description_error_and_disabled_group_reach_accesskit)`
+- `../glory/crates/apace/src/command/tests.rs (native_field_label_readonly_and_disabled_group_preserve_editor_identity)`
+- `../glory/crates/apace/src/accessibility_tests.rs (field_states_label_description_error_and_disabled_group_reach_accesskit)`
 - `examples/web/field-acceptance.js (four themes, CSR/SSR, AX, draft adoption)`
 - `D:/BuildCache/sapid/fields-final-check.log`
 - `D:/BuildCache/sapid/browser-results.json`
 
 ### Evidence P1-04
 
-独立 Textarea、Field、正整数 rows/min_rows/max_rows 与 typed FieldSizing 自动高度；支持软换行/缩回/上限滚动，保留 caret/IME。Web/SSR 已验收；Blitz 支持固定行，明确拒绝自动高度；其他浏览器需支持 field-sizing:content。
+独立 Textarea、Field、正整数 rows/min_rows/max_rows 与 typed FieldSizing 自动高度；支持软换行/缩回/上限滚动，保留 caret/IME。Web/SSR 已验收；Apace 支持固定行，明确拒绝自动高度；其他浏览器需支持 field-sizing:content。
 
 Implementation:
 
@@ -576,7 +576,7 @@ Implementation:
 - `src/text_field.rs`
 - `../glory/crates/style/src/lib.rs (FieldSizing; HTML/RECORD v4)`
 - `../glory/crates/html/src/styles.rs`
-- `../glory/crates/blitz/src/document.rs (Blitz v5 explicitly rejects FieldSizing)`
+- `../glory/crates/apace/src/document.rs (Apace v5 explicitly rejects FieldSizing)`
 - `../glory/docs/input-placeholder.md`
 
 Tests:
@@ -587,7 +587,7 @@ Tests:
 - `../glory/crates/style/tests/sheet.rs`
 - `../glory/crates/html/src/patch_tests.rs`
 - `../glory/crates/html/tests/sheet.rs`
-- `../glory/crates/blitz/tests/style_profile.rs (preflight/direct apply/prefix/query recovery)`
+- `../glory/crates/apace/tests/style_profile.rs (preflight/direct apply/prefix/query recovery)`
 - `D:/BuildCache/sapid/inputs-check.log`
 - `D:/BuildCache/sapid/inputs-native-widgets.log`
 - `D:/BuildCache/sapid/inputs-native-profile.log`
@@ -614,7 +614,7 @@ Tests:
 - `../glory/crates/style/tests/sheet.rs`
 - `../glory/crates/html/src/patch_tests.rs`
 - `../glory/crates/html/tests/sheet.rs`
-- `../glory/crates/blitz/tests/style_profile.rs (preflight/direct apply/prefix/query recovery)`
+- `../glory/crates/apace/tests/style_profile.rs (preflight/direct apply/prefix/query recovery)`
 - `D:/BuildCache/sapid/inputs-check.log`
 - `D:/BuildCache/sapid/inputs-native-widgets.log`
 - `D:/BuildCache/sapid/inputs-native-profile.log`
@@ -639,7 +639,7 @@ Tests:
 - `../glory/crates/style/tests/sheet.rs`
 - `../glory/crates/html/src/patch_tests.rs`
 - `../glory/crates/html/tests/sheet.rs`
-- `../glory/crates/blitz/tests/style_profile.rs (preflight/direct apply/prefix/query recovery)`
+- `../glory/crates/apace/tests/style_profile.rs (preflight/direct apply/prefix/query recovery)`
 - `D:/BuildCache/sapid/inputs-check.log`
 - `D:/BuildCache/sapid/inputs-native-widgets.log`
 - `D:/BuildCache/sapid/inputs-native-profile.log`
@@ -665,7 +665,7 @@ Tests:
 - `tests/forms.rs (9 passed)`
 - `examples/web/form-acceptance.js (10 reports; zero errors)`
 - `D:/BuildCache/sapid/forms-browser.json`
-- `../glory/crates/blitz/src/command/tests.rs::native_form_requests_queue_enter_and_button_defaults_without_resetting_the_editor`
+- `../glory/crates/apace/src/command/tests.rs::native_form_requests_queue_enter_and_button_defaults_without_resetting_the_editor`
 - `D:/BuildCache/sapid/forms-native-host.log`
 
 ### Evidence P1-08
@@ -712,8 +712,8 @@ Tests:
 - `tests/segmented_control.rs (2 passed)`
 - `examples/web/choice-acceptance.js (10 reports; zero errors)`
 - `D:/BuildCache/sapid/choices-browser-results.json`
-- `../glory/crates/blitz/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)`
-- `../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name`
+- `../glory/crates/apace/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)`
+- `../glory/crates/apace/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name`
 - `examples/native/tests/choices.rs`
 - `D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)`
 - `docs/glory-main-migration-2026-10-29.md`
@@ -741,8 +741,8 @@ Tests:
 - `tests/segmented_control.rs (2 passed)`
 - `examples/web/choice-acceptance.js (10 reports; zero errors)`
 - `D:/BuildCache/sapid/choices-browser-results.json`
-- `../glory/crates/blitz/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)`
-- `../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name`
+- `../glory/crates/apace/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)`
+- `../glory/crates/apace/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name`
 
 ### Evidence P2-03
 
@@ -767,8 +767,8 @@ Tests:
 - `tests/segmented_control.rs (2 passed)`
 - `examples/web/choice-acceptance.js (10 reports; zero errors)`
 - `D:/BuildCache/sapid/choices-browser-results.json`
-- `../glory/crates/blitz/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)`
-- `../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name`
+- `../glory/crates/apace/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)`
+- `../glory/crates/apace/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name`
 - `examples/native/tests/choices.rs`
 - `D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)`
 - `docs/glory-main-migration-2026-10-29.md`
@@ -783,7 +783,7 @@ Implementation:
 - `docs/toggles.md`
 - `../glory/crates/render/src/semantics.rs (pressed)`
 - `../glory/crates/html/src/semantics.rs`
-- `../glory/crates/blitz/src/accessibility.rs`
+- `../glory/crates/apace/src/accessibility.rs`
 
 Tests:
 
@@ -791,7 +791,7 @@ Tests:
 - `examples/native/tests/toggles.rs`
 - `../glory/crates/render/tests/toggles.rs`
 - `../glory/crates/html/tests/toggles.rs`
-- `../glory/crates/blitz/src/accessibility_tests.rs::toggle_button_state_updates_accesskit_without_replacing_native_button`
+- `../glory/crates/apace/src/accessibility_tests.rs::toggle_button_state_updates_accesskit_without_replacing_native_button`
 - `D:/BuildCache/sapid/toggles-native.log`
 - `D:/BuildCache/sapid/toggles-browser.json (9 passed; errors=[])`
 
@@ -818,8 +818,8 @@ Tests:
 - `tests/segmented_control.rs (2 passed)`
 - `examples/web/choice-acceptance.js (10 reports; zero errors)`
 - `D:/BuildCache/sapid/choices-browser-results.json`
-- `../glory/crates/blitz/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)`
-- `../glory/crates/blitz/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name`
+- `../glory/crates/apace/tests/check_modes.rs (3 passed; explicit mixed/radio refusal and prefix watermarks)`
+- `../glory/crates/apace/src/accessibility_tests.rs::switch_exports_independent_role_actual_engine_checked_and_live_name`
 - `examples/native/tests/choices.rs`
 - `D:/BuildCache/sapid/native-final-v2-sync.log (2026-10-29 all-feature native regression)`
 - `docs/glory-main-migration-2026-10-29.md`
@@ -913,7 +913,7 @@ Tests:
 - `tests/layout.rs (5 passed)`
 - `examples/native/tests/layout.rs (4 themes real geometry)`
 - `D:/BuildCache/sapid/layout-native.log`
-- `../glory/crates/blitz/tests/flex_wrap.rs`
+- `../glory/crates/apace/tests/flex_wrap.rs`
 - `examples/web/layout-acceptance.js`
 - `D:/BuildCache/sapid/layout-display-browser.json (24 combined reports; errors=[])`
 
@@ -934,7 +934,7 @@ Tests:
 - `tests/layout.rs (5 passed)`
 - `examples/native/tests/layout.rs (4 themes real geometry)`
 - `D:/BuildCache/sapid/layout-native.log`
-- `../glory/crates/blitz/tests/flex_wrap.rs`
+- `../glory/crates/apace/tests/flex_wrap.rs`
 - `examples/web/layout-acceptance.js`
 - `D:/BuildCache/sapid/layout-display-browser.json`
 - `D:/BuildCache/sapid/responsive-browser-web36.json (10 reports, zero errors)`
@@ -957,7 +957,7 @@ Tests:
 - `tests/grid_layout.rs`
 - `../glory/crates/style/tests/grid.rs`
 - `../glory/crates/html/tests/grid.rs`
-- `../glory/crates/blitz/tests/grid.rs`
+- `../glory/crates/apace/tests/grid.rs`
 - `examples/native/tests/grid.rs`
 - `D:/BuildCache/sapid/grid-browser.json (8 passed; errors=[])`
 - `D:/BuildCache/sapid/responsive-browser-web36.json (10 reports, zero errors)`
@@ -978,7 +978,7 @@ Tests:
 - `tests/grid_layout.rs`
 - `../glory/crates/style/tests/grid.rs`
 - `../glory/crates/html/tests/grid.rs`
-- `../glory/crates/blitz/tests/grid.rs`
+- `../glory/crates/apace/tests/grid.rs`
 - `examples/native/tests/grid.rs`
 - `D:/BuildCache/sapid/grid-browser.json (8 passed; errors=[])`
 
@@ -1025,7 +1025,7 @@ Implementation:
 - `../glory/crates/render/src/document.rs`
 - `../glory/crates/html/src/mapping.rs`
 - `../glory/crates/web/src/stream.js`
-- `../glory/crates/blitz/src/accessibility.rs`
+- `../glory/crates/apace/src/accessibility.rs`
 
 Tests:
 
@@ -1034,7 +1034,7 @@ Tests:
 - `examples/web/document-stream-acceptance.js (actual Shell/Patch/End passed)`
 - `../glory/crates/ssr/src/stream/document_tests.rs`
 - `examples/native/tests/document.rs (4 themes real engine)`
-- `../glory/crates/blitz/src/accessibility_document_tests.rs`
+- `../glory/crates/apace/src/accessibility_document_tests.rs`
 - `D:/BuildCache/sapid/display-native.log`
 
 ### Evidence P3-08
@@ -1048,7 +1048,7 @@ Implementation:
 - `../glory/crates/render/src/document.rs`
 - `../glory/crates/html/src/mapping.rs`
 - `../glory/crates/web/src/stream.js`
-- `../glory/crates/blitz/src/accessibility.rs`
+- `../glory/crates/apace/src/accessibility.rs`
 
 Tests:
 
@@ -1057,7 +1057,7 @@ Tests:
 - `examples/web/document-stream-acceptance.js (actual Shell/Patch/End passed)`
 - `../glory/crates/ssr/src/stream/document_tests.rs`
 - `examples/native/tests/document.rs (4 themes real engine)`
-- `../glory/crates/blitz/src/accessibility_document_tests.rs`
+- `../glory/crates/apace/src/accessibility_document_tests.rs`
 - `D:/BuildCache/sapid/display-native.log`
 
 ### Evidence P3-09
@@ -1071,7 +1071,7 @@ Implementation:
 - `../glory/crates/render/src/document.rs`
 - `../glory/crates/html/src/mapping.rs`
 - `../glory/crates/web/src/stream.js`
-- `../glory/crates/blitz/src/accessibility.rs`
+- `../glory/crates/apace/src/accessibility.rs`
 
 Tests:
 
@@ -1080,7 +1080,7 @@ Tests:
 - `examples/web/document-stream-acceptance.js (actual Shell/Patch/End passed)`
 - `../glory/crates/ssr/src/stream/document_tests.rs`
 - `examples/native/tests/document.rs (4 themes real engine)`
-- `../glory/crates/blitz/src/accessibility_document_tests.rs`
+- `../glory/crates/apace/src/accessibility_document_tests.rs`
 - `D:/BuildCache/sapid/display-native.log`
 
 ### Evidence P3-10
@@ -1113,14 +1113,14 @@ Implementation:
 - `src/display.rs`
 - `docs/display-widgets.md`
 - `docs/portable-shadow-wrap.md`
-- `../glory/crates/style/src/lib.rs (BoxShadow/Shadow; HTML v6/Blitz v7)`
+- `../glory/crates/style/src/lib.rs (BoxShadow/Shadow; HTML v6/Apace v7)`
 
 Tests:
 
 - `tests/display.rs`
 - `../glory/crates/style/tests/shadow.rs`
 - `../glory/crates/html/tests/shadow.rs`
-- `../glory/crates/blitz/tests/shadow.rs`
+- `../glory/crates/apace/tests/shadow.rs`
 - `D:/BuildCache/sapid/layout-display-browser.json (includes latest 16 display/action reports and shadow checks)`
 
 ### Evidence P3-12
@@ -1177,8 +1177,8 @@ Tests:
 - `tests/image.rs (8 passed)`
 - `tests/avatar.rs (9 passed)`
 - `examples/native/tests/image.rs`
-- `../glory/crates/blitz/tests/image_events.rs`
-- `../glory/crates/blitz/tests/object_fit.rs`
+- `../glory/crates/apace/tests/image_events.rs`
+- `../glory/crates/apace/tests/object_fit.rs`
 - `D:/BuildCache/sapid/image-host-native.log`
 - `D:/BuildCache/sapid/image-avatar-native.log`
 - `examples/web/image-acceptance.js`
@@ -1201,8 +1201,8 @@ Tests:
 - `tests/indicator.rs (5 passed)`
 - `tests/theme_icon.rs (3 passed)`
 - `examples/native/tests/graphics.rs`
-- `../glory/crates/blitz/tests/graphic.rs`
-- `../glory/crates/blitz/tests/graphic_rejection.rs`
+- `../glory/crates/apace/tests/graphic.rs`
+- `../glory/crates/apace/tests/graphic_rejection.rs`
 - `examples/web/graphics-acceptance.js`
 - `D:/BuildCache/sapid/graphics-browser.json (9 passed, final web7, Chromium 148.0.7778.96)`
 
@@ -1217,7 +1217,7 @@ Implementation:
 - `../glory/crates/render/src/document.rs`
 - `../glory/crates/html/src/mapping.rs`
 - `../glory/crates/web/src/stream.js`
-- `../glory/crates/blitz/src/accessibility.rs`
+- `../glory/crates/apace/src/accessibility.rs`
 
 Tests:
 
@@ -1226,7 +1226,7 @@ Tests:
 - `examples/web/document-stream-acceptance.js (actual Shell/Patch/End passed)`
 - `../glory/crates/ssr/src/stream/document_tests.rs`
 - `examples/native/tests/document.rs (4 themes real engine)`
-- `../glory/crates/blitz/src/accessibility_document_tests.rs`
+- `../glory/crates/apace/src/accessibility_document_tests.rs`
 - `D:/BuildCache/sapid/display-native.log`
 
 ### Evidence P3-17
@@ -1257,7 +1257,7 @@ Implementation:
 - `../glory/crates/render/src/document.rs`
 - `../glory/crates/html/src/mapping.rs`
 - `../glory/crates/web/src/stream.js`
-- `../glory/crates/blitz/src/accessibility.rs`
+- `../glory/crates/apace/src/accessibility.rs`
 
 Tests:
 
@@ -1266,7 +1266,7 @@ Tests:
 - `examples/web/document-stream-acceptance.js (actual Shell/Patch/End passed)`
 - `../glory/crates/ssr/src/stream/document_tests.rs`
 - `examples/native/tests/document.rs (4 themes real engine)`
-- `../glory/crates/blitz/src/accessibility_document_tests.rs`
+- `../glory/crates/apace/src/accessibility_document_tests.rs`
 - `D:/BuildCache/sapid/display-native.log`
 
 ### Evidence P3-19
@@ -1336,8 +1336,8 @@ Tests:
 - `tests/menu.rs (6 passed)`
 - `../glory/crates/render/tests/menu.rs`
 - `../glory/crates/html/tests/menu.rs`
-- `../glory/crates/blitz/tests/menu.rs`
-- `../glory/crates/blitz/src/accessibility_menu_tests.rs`
+- `../glory/crates/apace/tests/menu.rs`
+- `../glory/crates/apace/src/accessibility_menu_tests.rs`
 - `D:/BuildCache/sapid/menu-browser-results.json (11 passed; errors=[]; isolated menu-next snapshot)`
 - `/Volumes/Data/Caches/glory/menu-consumer-tests.log (8 actual native consumer tests; four themes where applicable)`
 - `tests/menu.rs: keyboard_focus_and_reveal_follow_visibility_and_exit_retires_older_focus_intents`
@@ -1359,7 +1359,7 @@ Tests:
 - `tests/menu.rs (7 passed)`
 - `../glory/crates/render/tests/context_menu.rs (2 passed)`
 - `../glory/crates/html/src/context_menu_tests.rs (1 passed)`
-- `../glory/crates/blitz/tests/context_menu.rs (1 passed)`
+- `../glory/crates/apace/tests/context_menu.rs (1 passed)`
 - `../glory/crates/ssr/src/stream/menu_tests.rs`
 - `examples/web/context-menu-acceptance.js`
 - `D:/BuildCache/sapid/context-menu-browser-root17.json (14 passed, Chromium 148.0.7778.96)`
@@ -1382,7 +1382,7 @@ Tests:
 - `src/menu/bar/tests.rs (4 passed)`
 - `../glory/crates/render/tests/menubar.rs (2 passed)`
 - `../glory/crates/html/src/menu/bar/tests.rs (1 passed)`
-- `../glory/crates/blitz/tests/menubar.rs (1 passed)`
+- `../glory/crates/apace/tests/menubar.rs (1 passed)`
 - `examples/web/menubar-acceptance.js`
 - `D:/BuildCache/sapid/menubar-browser-menubar-final-rating-next.json (10 passed, Chromium 148.0.7778.96)`
 - `/Volumes/Data/Caches/glory/menu-consumer-tests.log (8 actual native consumer tests; four themes where applicable)`
@@ -1403,7 +1403,7 @@ Tests:
 - `tests/native_select.rs (7 passed)`
 - `../glory/crates/render/tests/select.rs (4 passed)`
 - `../glory/crates/ui/tests/select.rs (3 passed)`
-- `../glory/crates/blitz/tests/select.rs`
+- `../glory/crates/apace/tests/select.rs`
 - `../glory/crates/ssr/src/stream/select_tests.rs`
 - `D:/BuildCache/sapid/native-select-browser-web7.json (12 passed, final Chromium 148.0.7778.96)`
 
@@ -1503,7 +1503,7 @@ Implementation:
 Tests:
 
 - `src/tags_input.rs (12 passed)`
-- `../glory/crates/blitz/tests/tags.rs`
+- `../glory/crates/apace/tests/tags.rs`
 - `examples/web/tags-acceptance.js`
 - `D:/BuildCache/sapid/tags-browser-tags-next.json (14 passed, Chromium 148.0.7778.96)`
 - `D:/BuildCache/sapid/tags-browser-web16.json (14 passed, Chromium 148.0.7778.96)`
@@ -1526,7 +1526,7 @@ Tests:
 
 - `src/command/tests.rs (11 passed)`
 - `../glory/crates/render/tests/palette.rs`
-- `../glory/crates/blitz/tests/palette.rs`
+- `../glory/crates/apace/tests/palette.rs`
 - `../glory/crates/ssr/src/stream/command_tests.rs`
 - `examples/web/command-acceptance.js`
 - `D:/BuildCache/sapid/command-browser-root20.json (14 passed, Chromium 148.0.7778.96)`
@@ -1549,7 +1549,7 @@ Tests:
 - `tests/overlays.rs (6 passed)`
 - `../glory/crates/render/tests/alert_dialog.rs`
 - `../glory/crates/html/src/patch_tests.rs`
-- `../glory/crates/blitz/src/accessibility_alert_tests.rs`
+- `../glory/crates/apace/src/accessibility_alert_tests.rs`
 - `examples/native/tests/alerts.rs`
 - `D:/BuildCache/sapid/alerts-browser.json (8 passed, web8, Chromium 148.0.7778.96)`
 - `D:/BuildCache/sapid/native-new-layer-consumers-final.log (7 passed across alerts/color tests)`
@@ -1591,8 +1591,8 @@ Tests:
 - `../glory/crates/ssr/src/stream/hints_tests.rs`
 - `examples/web/hints-acceptance.js`
 - `D:/BuildCache/sapid/hints-browser-web7.json (10 passed)`
-- `../glory/crates/blitz/tests/hints.rs`
-- `../glory/crates/blitz/src/accessibility_hint_tests.rs`
+- `../glory/crates/apace/tests/hints.rs`
+- `../glory/crates/apace/src/accessibility_hint_tests.rs`
 
 ### Evidence P5-04
 
@@ -1609,7 +1609,7 @@ Tests:
 - `tests/hints.rs (7 passed)`
 - `examples/web/hints-acceptance.js`
 - `D:/BuildCache/sapid/hints-browser-web7.json (10 passed)`
-- `../glory/crates/blitz/tests/hints.rs`
+- `../glory/crates/apace/tests/hints.rs`
 
 ### Evidence P5-05
 
@@ -1654,7 +1654,7 @@ Implementation:
 
 - `src/spinner.rs`
 - `docs/spinner.md`
-- `../glory/crates/blitz/src/graphic_motion.rs`
+- `../glory/crates/apace/src/graphic_motion.rs`
 
 Tests:
 
@@ -1762,7 +1762,7 @@ Implementation:
 - `src/modals.rs`
 - `src/overlay.rs`
 - `docs/modals-manager.md`
-- `../glory/crates/blitz/src/layers.rs`
+- `../glory/crates/apace/src/layers.rs`
 
 Tests:
 
@@ -1804,7 +1804,7 @@ Implementation:
 
 - `src/tour.rs`
 - `docs/tour.md`
-- `../glory/crates/blitz/src/scroll_into_view.rs`
+- `../glory/crates/apace/src/scroll_into_view.rs`
 
 Tests:
 
@@ -1931,7 +1931,7 @@ Tests:
 
 - `tests/scroll_area.rs`
 - `../glory/crates/ui/tests/query_barriers.rs`
-- `../glory/crates/blitz/tests/scroll.rs`
+- `../glory/crates/apace/tests/scroll.rs`
 - `examples/native/tests/scroll_area.rs`
 - `examples/web/scroll-area-acceptance.js`
 - `D:/BuildCache/sapid/scroll-area-browser.json (9 passed, final fixture, Chromium 148.0.7778.96)`
@@ -2011,7 +2011,7 @@ Tests:
 
 ### Evidence P6-12
 
-有界当前128项OverflowList已实现，真实布局测量、可控前缀提案、单Owner/节点移入Popover与移回、焦点交接、重排和dirty采用已补齐。10组件+2纯模型、Web实际验收及原生inline/default Popover两项各四主题真实验收通过，含top layer、布局/命中/像素、editor身份/value/selection/focus和Owner清理。genuine Blitz fork c127fd9699a89ff8ecba0c8d8c9eccb3330627af修复隐藏旧owner的移动布局缓存引用，保留内部布局与编辑状态。
+有界当前128项OverflowList已实现，真实布局测量、可控前缀提案、单Owner/节点移入Popover与移回、焦点交接、重排和dirty采用已补齐。10组件+2纯模型、Web实际验收及原生inline/default Popover两项各四主题真实验收通过，含top layer、布局/命中/像素、editor身份/value/selection/focus和Owner清理。genuine Apace fork c127fd9699a89ff8ecba0c8d8c9eccb3330627af修复隐藏旧owner的移动布局缓存引用，保留内部布局与编辑状态。
 
 Implementation:
 
@@ -2060,7 +2060,7 @@ Implementation:
 - `src/rolling_number.rs`
 - `docs/text-motion.md`
 - `../glory/crates/render/src/translation.rs`
-- `../glory/crates/blitz/src/translation.rs`
+- `../glory/crates/apace/src/translation.rs`
 - `../glory/crates/web/src/browser/translation.rs`
 
 Tests:
@@ -2071,7 +2071,7 @@ Tests:
 - `examples/web/translation-acceptance.js`
 - `../glory/crates/render/tests/translation.rs`
 - `../glory/crates/html/src/translation_tests.rs`
-- `../glory/crates/blitz/tests/translation.rs`
+- `../glory/crates/apace/tests/translation.rs`
 - `../glory/crates/ssr/src/stream/translation_tests.rs`
 - `D:/BuildCache/sapid/text-motion-browser-web26.json (9 passed, Chromium 148.0.7778.96)`
 - `D:/BuildCache/sapid/translation-browser-web26.json (9 passed, Chromium 148.0.7778.96)`
@@ -2091,7 +2091,7 @@ Tests:
 
 - `tests/number_inputs.rs (15 passed)`
 - `examples/native/tests/number_input.rs`
-- `../glory/crates/blitz/src/command/tests.rs`
+- `../glory/crates/apace/src/command/tests.rs`
 - `../glory/crates/html/src/patch_tests.rs`
 - `examples/web/number-input-acceptance.js`
 - `D:/BuildCache/sapid/number-input-browser-root22.json (12 passed, Chromium 148.0.7778.96)`
@@ -2333,7 +2333,7 @@ Tests:
 - `examples/web/table-acceptance.js`
 - `../glory/crates/render/tests/table.rs (4 passed)`
 - `../glory/crates/html/src/table_tests.rs`
-- `../glory/crates/blitz/src/accessibility_table_tests.rs`
+- `../glory/crates/apace/src/accessibility_table_tests.rs`
 - `../glory/crates/ssr/src/stream/table_tests.rs`
 - `D:/BuildCache/sapid/table-browser-root24.json (12 passed, Chromium 148.0.7778.96)`
 
@@ -2356,7 +2356,7 @@ Tests:
 - `../glory/crates/render/tests/table.rs`
 - `../glory/crates/ui/tests/table_list.rs (2 passed)`
 - `../glory/crates/html/src/table_tests.rs`
-- `../glory/crates/blitz/src/accessibility_table_tests.rs`
+- `../glory/crates/apace/src/accessibility_table_tests.rs`
 - `../glory/crates/ssr/src/stream/table_virtual_tests.rs`
 - `examples/web/data-table-acceptance.js`
 - `examples/web/data-table-server-acceptance.js`
@@ -2658,7 +2658,7 @@ Tests:
 
 ### Evidence P10-01
 
-FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。显式 blitz-files 已接通原生选择/读取/私有预览及四主题真实消费端；桌面原生投放通道与四主题 Dropzone 真实句柄执行端已通过；移动 driver、实际 OS 拖动/chooser 输入验收仍开放，ambient 路径不支持；上传网络由应用提供。
+FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。显式 apace-files 已接通原生选择/读取/私有预览及四主题真实消费端；桌面原生投放通道与四主题 Dropzone 真实句柄执行端已通过；移动 driver、实际 OS 拖动/chooser 输入验收仍开放，ambient 路径不支持；上传网络由应用提供。
 
 Implementation:
 
@@ -2679,13 +2679,13 @@ Tests:
 - `examples/native/tests/file_driver.rs (2 tests across four themes; selection/read/preview/removal/cancel/refusal)`
 - `/Volumes/Data/Caches/glory/native-files-sapid-tests.log (2 passed; actual native engine PNG decode)`
 - `/Volumes/Data/Caches/glory/native-files-sapid-clippy.log`
-- `examples/native/tests/file_drop.rs (four themes; real desktop opener, path replacement, chunk read, PNG preview, retirement; owned Winit event source)`
+- `examples/native/tests/file_drop.rs (four themes; real desktop opener, path replacement, chunk read, PNG preview, retirement; owned Wingy event source)`
 - `/Volumes/Data/Caches/glory/native-file-drop-sapid-tests.log`
 - `/Volumes/Data/Caches/glory/native-file-drop-sapid-clippy.log`
 
 ### Evidence P10-02
 
-FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。显式 blitz-files 已接通原生选择/读取/私有预览及四主题真实消费端；桌面原生投放通道与四主题 Dropzone 真实句柄执行端已通过；移动 driver、实际 OS 拖动/chooser 输入验收仍开放，ambient 路径不支持；上传网络由应用提供。
+FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。显式 apace-files 已接通原生选择/读取/私有预览及四主题真实消费端；桌面原生投放通道与四主题 Dropzone 真实句柄执行端已通过；移动 driver、实际 OS 拖动/chooser 输入验收仍开放，ambient 路径不支持；上传网络由应用提供。
 
 Implementation:
 
@@ -2706,7 +2706,7 @@ Tests:
 - `examples/native/tests/file_driver.rs (2 tests across four themes; selection/read/preview/removal/cancel/refusal)`
 - `/Volumes/Data/Caches/glory/native-files-sapid-tests.log (2 passed; actual native engine PNG decode)`
 - `/Volumes/Data/Caches/glory/native-files-sapid-clippy.log`
-- `examples/native/tests/file_drop.rs (four themes; real desktop opener, path replacement, chunk read, PNG preview, retirement; owned Winit event source)`
+- `examples/native/tests/file_drop.rs (four themes; real desktop opener, path replacement, chunk read, PNG preview, retirement; owned Wingy event source)`
 - `/Volumes/Data/Caches/glory/native-file-drop-sapid-tests.log`
 - `/Volumes/Data/Caches/glory/native-file-drop-sapid-clippy.log`
 

@@ -1,4 +1,4 @@
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::prelude::*;
 use glory::render::{
     Action, NodeId, Props, Query, QueryValue, Rect, Role, SelectionDirection, TextSelection,
@@ -250,7 +250,7 @@ fn native_popup_mode_measures_opens_real_anchor_layer_and_keeps_editor_focus_and
             query(app, Query::Selection(editor)),
             QueryValue::Selection { start: 2, end: 8 }
         );
-        let mut raster = glory::blitz::Raster::new();
+        let mut raster = glory::apace::Raster::new();
         raster.draw(host.renderer()).unwrap();
         let color = theme.surface;
         assert!(

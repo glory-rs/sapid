@@ -1,6 +1,6 @@
 #[path = "../../web/src/document_form.rs"]
 mod document_form;
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::render::{NodeId, Query, QueryValue};
 use glory::style::{Length, Style};
 use glory::ui::App;

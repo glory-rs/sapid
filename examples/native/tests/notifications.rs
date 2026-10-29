@@ -1,4 +1,4 @@
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::render::{Event, NodeId, Query, QueryValue, Rect};
 use sapid::{Theme, notification_request, toaster};
 use std::{

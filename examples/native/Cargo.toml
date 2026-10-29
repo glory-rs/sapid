@@ -7,16 +7,16 @@ publish = false
 [workspace]
 
 [features]
-files = ["glory/blitz-files", "dep:winit"]
-clipboard = ["glory/blitz-clipboard"]
+files = ["glory/apace-files", "dep:wingy"]
+clipboard = ["glory/apace-clipboard"]
 
 [dependencies]
 sapid = { path = "../..", features = ["json", "code", "dates", "charts", "chat"] }
-glory = { path = "../../../glory/crates/glory", default-features = false, features = ["html", "dsl", "blitz-accesskit", "blitz-raster"] }
-blitz-traits = { git = "https://github.com/glory-rs/blitz", rev = "ee125981e0e5a217e758be5c470df23cdd9e2fc3", version = "=0.3.0-beta.4", default-features = false }
-blitz-dom = { git = "https://github.com/glory-rs/blitz", rev = "ee125981e0e5a217e758be5c470df23cdd9e2fc3", version = "=0.3.0-beta.4", default-features = false }
+glory = { path = "../../../glory/crates/glory", default-features = false, features = ["html", "dsl", "apace-accesskit", "apace-raster"] }
+apace-traits = { version = "=0.3.0-beta.4", default-features = false }
+apace-dom = { version = "=0.3.0-beta.4", default-features = false }
 
-winit = { git = "https://github.com/glory-rs/winit", rev = "3b6f5a09697acb936567af64e53c915b0b1a2af9", version = "=0.31.0-beta.4", optional = true }
+wingy = { version = "=0.31.0", optional = true }
 
 [lints.rust]
 unsafe_code = "forbid"

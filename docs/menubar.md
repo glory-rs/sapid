@@ -64,7 +64,7 @@ producer transports Menubar role/orientation, root marker and expanded state
 through Shell/Patch/End. The original acceptance used HTML v4/classic v2;
 current producers use HTML v13 with the same classic v2 envelope.
 
-`blitz/tests/menubar.rs` now verifies finite admission and retained query/prefix
+`apace/tests/menubar.rs` now verifies finite admission and retained query/prefix
 watermarks after a later unsupported control. The native connection covers root
 and submenu commands, directional navigation, Typeahead and whole-bar Tab exit.
 Actual four-theme Sapid consumers and current AccessKit MenuBar/MenuItem/popup

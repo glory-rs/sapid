@@ -1,4 +1,4 @@
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::prelude::*;
 use glory::render::{Event, Query, QueryValue, ScrollCommand, ScrollMetrics, ScrollMovement};
 use glory::style::{Length, Style};

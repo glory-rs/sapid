@@ -1,4 +1,4 @@
-use glory::blitz::{Raster, shell::WindowApp};
+use glory::apace::{Raster, shell::WindowApp};
 use glory::prelude::*;
 use glory::render::{Action, Event, NodeId, Query, QueryValue, Rect};
 use std::{cell::RefCell, rc::Rc};
@@ -132,9 +132,9 @@ fn four_theme_real_native_window_geometry_retained_editors_and_actual_pixels() {
 
 #[test]
 fn native_autoplay_tracks_hover_and_uses_actual_owner_executor() {
-    use blitz_dom::Document;
-    use blitz_traits::events::{
-        BlitzPointerEvent, BlitzPointerId, MouseEventButton, MouseEventButtons, Point,
+    use apace_dom::Document;
+    use apace_traits::events::{
+        ApacePointerEvent, ApacePointerId, MouseEventButton, MouseEventButtons, Point,
         PointerCoords, UiEvent,
     };
     use std::{
@@ -193,8 +193,8 @@ fn native_autoplay_tracks_hover_and_uses_actual_owner_executor() {
     let root = nodes(host.app(), "sapid-carousel")[0];
     let area = bounds(host.app(), root);
     let move_pointer = |host: &mut WindowApp, x: f32, y: f32| {
-        host.handle_ui_event(UiEvent::PointerMove(BlitzPointerEvent {
-            id: BlitzPointerId::Mouse,
+        host.handle_ui_event(UiEvent::PointerMove(ApacePointerEvent {
+            id: ApacePointerId::Mouse,
             is_primary: true,
             coords: PointerCoords {
                 page_x: x,

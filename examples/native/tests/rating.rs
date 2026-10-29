@@ -1,4 +1,4 @@
-use glory::blitz::{Raster, Renderer, shell::WindowApp};
+use glory::apace::{Raster, Renderer, shell::WindowApp};
 use glory::prelude::*;
 use glory::render::{
     CheckMode, CheckProps, Descriptor, FormControl, Input, Mutation, NodeId, NodeIds, Props,

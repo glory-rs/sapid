@@ -50,7 +50,7 @@ with a later valid bounded source. Limits bound payloads rather than process RSS
 Formatting is unavailable for empty/invalid drafts, disabled/readonly Fields and
 active composition. The event callback rechecks the current composition state,
 including events queued before a visual update. Default fixed rows work on Web
-and Blitz. Explicit `.style` overrides apply to the editor and preserve absent
+and Apace. Explicit `.style` overrides apply to the editor and preserve absent
 theme declarations. `.unstyled()` retains behavior and removes theme decoration.
 All callbacks, references and validation Effects retire with the component Owner.
 

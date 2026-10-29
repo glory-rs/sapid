@@ -3,7 +3,7 @@
 The optional `files` feature provides `file_button()`, `file_input()`,
 `dropzone()` and `file_attachment(info, controller)`. The finite protocol, real Web
 chooser/drop/read driver, four themes, unstyled appearance and default-native
-rejection have focused tests. The explicit native `blitz-files` service now also
+rejection have focused tests. The explicit native `apace-files` service now also
 supports FileInput/FileButton, reading and private previews; the follow-up below
 keeps actual OS dialog and drag/drop acceptance separate. Immutable Web36 passed nine actual widget groups and
 one classic-stream/adoption group in Chromium 148.0.7778.96, with no page errors.
@@ -204,8 +204,8 @@ fallback is installed. Upload transport and its cancellation remain application-
 ## 2026-10-27: explicit native file service consumers
 
 The separate `examples/native` workspace adds opt-in `files`, forwarding only to
-`glory/blitz-files`. Sapid's widget/default dependency graph gains no native
-transport. Applications install a `glory::blitz::files::Files` service explicitly;
+`glory/apace-files`. Sapid's widget/default dependency graph gains no native
+transport. Applications install a `glory::apace::files::Files` service explicitly;
 normal widgets retain their existing controller and Owner lifecycle.
 
 `examples/native/tests/file_driver.rs` passes two tests across blue/green and
@@ -235,7 +235,7 @@ classic-stream records above retain their original scope.
 
 ## 2026-10-27: desktop native Dropzone
 
-The native `files` acceptance feature now also imports the same pinned Winit
+The native `files` acceptance feature now also imports the same pinned Wingy
 identity for its owned event source. Production Shell forwards native file and
 availability events; custom hosts forward them once through
 `WindowApp::handle_native_file_event`. `Files::desktop()` connects a production
@@ -243,7 +243,7 @@ availability events; custom hosts forward them once through
 `with_drop_driver` opt-in. Headless/mobile capability rejection is preserved.
 
 `examples/native/tests/file_drop.rs` mounts actual Dropzone/FileAttachment widgets
-in all four themes and forwards real Winit event types through an application-owned
+in all four themes and forwards real Wingy event types through an application-owned
 `ActiveEventLoop` implementation. The production desktop opener reads a temporary
 PNG. After selection, the original file is renamed and its former path replaced;
 controller chunk reads and explicit PNG preview still use the original opened

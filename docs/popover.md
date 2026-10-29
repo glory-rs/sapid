@@ -42,7 +42,7 @@ lifetime. Nine Sapid overlay tests cover controlled requests, slots, content
 validation and cleanup. HTML's dedicated differential oracle compares every
 placement and individual field/reset with full shaping; the existing general
 oracle remains in place. The anchor classic-stream producer exercises every
-field patch and both version boundaries. Native `blitz/tests/hints.rs` continues
+field patch and both version boundaries. Native `apace/tests/hints.rs` continues
 to reject unsupported Tooltip layers before facet registration and retains the successful
 prefix/query watermark.
 
@@ -78,7 +78,7 @@ The final combined regression also runs the original Overlay, placement, Menu,
 Hints, Choice, Select, Command, ContextMenu and Menubar suites: 109 reports,
 `errors: []`, at `D:/BuildCache/sapid/layer-final-root23.json`.
 
-Native now uses the genuine `glory-rs/blitz` fork at full commit
+Native now uses the genuine `glory-rs/apace` fork at full commit
 `c127fd9699a89ff8ecba0c8d8c9eccb3330627af`: separate viewport layout, ordered
 paint/backdrops and reverse hit testing preserve the logical DOM/Stylo parents.
 The final current-pin fork and combined native regressions pass in

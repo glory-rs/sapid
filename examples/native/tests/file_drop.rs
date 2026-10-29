@@ -3,7 +3,7 @@
     any(target_os = "macos", target_os = "windows", target_os = "linux")
 ))]
 use glory::{
-    blitz::{Config, Raster, files::Files, shell::WindowApp},
+    apace::{Config, Raster, files::Files, shell::WindowApp},
     render::*,
 };
 use std::{
@@ -15,14 +15,14 @@ use std::{
     task::{Context, Waker},
     time::{Duration, Instant},
 };
-use winit::{
+use wingy::{
     data_transfer::{DataTransfer, DataTransferId, TransferType, TypeHint, TypedData},
     dpi::PhysicalPosition,
     event::WindowEvent,
     event_loop::{ActiveEventLoop, AsyncRequestSerial, DndAction},
 };
 
-// This is an application-owned native event source. It implements Winit's actual
+// This is an application-owned native event source. It implements Wingy's actual
 // event-loop interface; no test-only production hook or business event bypass.
 #[derive(Debug)]
 struct Loop {
@@ -49,28 +49,28 @@ impl DataTransfer for Metadata {
         let _ = func(&TypeHint::UriList);
     }
 }
-impl winit::raw_window_handle::HasDisplayHandle for Loop {
+impl wingy::raw_window_handle::HasDisplayHandle for Loop {
     fn display_handle(
         &self,
     ) -> Result<
-        winit::raw_window_handle::DisplayHandle<'_>,
-        winit::raw_window_handle::HandleError,
+        wingy::raw_window_handle::DisplayHandle<'_>,
+        wingy::raw_window_handle::HandleError,
     > {
-        Err(winit::raw_window_handle::HandleError::Unavailable)
+        Err(wingy::raw_window_handle::HandleError::Unavailable)
     }
 }
 impl ActiveEventLoop for Loop {
     fn data_transfer(
         &self,
         _: DataTransferId,
-    ) -> Result<Box<dyn DataTransfer>, winit::error::TransferError> {
+    ) -> Result<Box<dyn DataTransfer>, wingy::error::TransferError> {
         Ok(Box::new(Metadata))
     }
     fn fetch_data_transfer(
         &self,
         _: DataTransferId,
         hint: &dyn TransferType,
-    ) -> Result<AsyncRequestSerial, winit::error::TransferError> {
+    ) -> Result<AsyncRequestSerial, wingy::error::TransferError> {
         assert_eq!(hint.hint(), Some(TypeHint::UriList));
         let serial = AsyncRequestSerial::get();
         self.serial.set(serial);
@@ -81,48 +81,48 @@ impl ActiveEventLoop for Loop {
         &self,
         _: DataTransferId,
         actions: &[DndAction],
-    ) -> Result<(), winit::error::TransferError> {
+    ) -> Result<(), wingy::error::TransferError> {
         assert!(actions.is_empty() || actions == [DndAction::Copy]);
         self.accepts.borrow_mut().push(!actions.is_empty());
         Ok(())
     }
-    fn create_proxy(&self) -> winit::event_loop::EventLoopProxy {
+    fn create_proxy(&self) -> wingy::event_loop::EventLoopProxy {
         unreachable!()
     }
     fn create_window(
         &self,
-        _: winit::window::WindowAttributes,
-    ) -> Result<Box<dyn winit::window::Window>, winit::error::CreateWindowError> {
+        _: wingy::window::WindowAttributes,
+    ) -> Result<Box<dyn wingy::window::Window>, wingy::error::CreateWindowError> {
         unreachable!()
     }
     fn create_custom_cursor(
         &self,
-        _: winit::cursor::CustomCursorSource,
-    ) -> Result<winit::cursor::CustomCursor, winit::error::CustomCursorError> {
+        _: wingy::cursor::CustomCursorSource,
+    ) -> Result<wingy::cursor::CustomCursor, wingy::error::CustomCursorError> {
         unreachable!()
     }
-    fn available_monitors(&self) -> Box<dyn Iterator<Item = winit::monitor::MonitorHandle>> {
+    fn available_monitors(&self) -> Box<dyn Iterator<Item = wingy::monitor::MonitorHandle>> {
         Box::new(std::iter::empty())
     }
-    fn primary_monitor(&self) -> Option<winit::monitor::MonitorHandle> {
+    fn primary_monitor(&self) -> Option<wingy::monitor::MonitorHandle> {
         None
     }
-    fn listen_device_events(&self, _: winit::event_loop::DeviceEvents) {}
-    fn system_theme(&self) -> Option<winit::window::Theme> {
+    fn listen_device_events(&self, _: wingy::event_loop::DeviceEvents) {}
+    fn system_theme(&self) -> Option<wingy::window::Theme> {
         None
     }
-    fn set_control_flow(&self, _: winit::event_loop::ControlFlow) {}
-    fn control_flow(&self) -> winit::event_loop::ControlFlow {
-        winit::event_loop::ControlFlow::Wait
+    fn set_control_flow(&self, _: wingy::event_loop::ControlFlow) {}
+    fn control_flow(&self) -> wingy::event_loop::ControlFlow {
+        wingy::event_loop::ControlFlow::Wait
     }
     fn exit(&self) {}
     fn exiting(&self) -> bool {
         false
     }
-    fn owned_display_handle(&self) -> winit::event_loop::OwnedDisplayHandle {
+    fn owned_display_handle(&self) -> wingy::event_loop::OwnedDisplayHandle {
         unreachable!()
     }
-    fn rwh_06_handle(&self) -> &dyn winit::raw_window_handle::HasDisplayHandle {
+    fn rwh_06_handle(&self) -> &dyn wingy::raw_window_handle::HasDisplayHandle {
         self
     }
 }
@@ -270,7 +270,7 @@ fn dropzone_reads_real_opened_files_previews_and_retires_attachments_across_four
             &source,
             1,
             vec![
-                glory::blitz::assets::Url::from_file_path(&path)
+                glory::apace::assets::Url::from_file_path(&path)
                     .unwrap()
                     .to_string(),
             ],

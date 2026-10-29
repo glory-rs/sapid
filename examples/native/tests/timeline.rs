@@ -1,6 +1,6 @@
 #[path = "../../web/src/timeline_form.rs"]
 mod timeline_form;
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::render::{Event, NodeId, Props, Query, QueryValue, Rect};
 use glory::style::{Length, Style};
 use glory::ui::App;

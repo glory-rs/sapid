@@ -1,4 +1,4 @@
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::prelude::*;
 use glory::render::{Event, NodeId, Query, QueryValue};
 use std::{cell::RefCell, rc::Rc};
@@ -160,7 +160,7 @@ fn native_alert_dialog_uses_safe_focus_controlled_refusal_real_pixels_and_return
             .renderer()
             .engine_id(panel, glory::html::Part::Main)
             .unwrap();
-        let mut raster = glory::blitz::Raster::new();
+        let mut raster = glory::apace::Raster::new();
         raster.draw(host.renderer()).unwrap();
         assert!(raster.pixels().as_chunks::<4>().0.iter().any(|p| p[3] > 0));
         app.dispatch(confirm, Event::Activate).unwrap();

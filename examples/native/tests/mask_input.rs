@@ -1,4 +1,4 @@
-use glory::blitz::{Raster, shell::WindowApp};
+use glory::apace::{Raster, shell::WindowApp};
 use glory::prelude::*;
 use glory::render::{
     Action, InputEdit, InputEditIntent, NodeId, Props, Query, QueryValue, SelectionDirection,
@@ -96,7 +96,7 @@ fn native_mask_four_themes_format_one_real_editor_and_apply_actual_selection_wit
             )
             .unwrap();
         app.flush().unwrap();
-        // The native InputEdit driver itself is covered in glory-blitz's actual
+        // The native InputEdit driver itself is covered in glory-apace's actual
         // key/IME tests; this exercises the widget protocol and physical action.
         edit(app, id, "12", 2, 3, InputEditIntent::DeleteBackward);
         app.settle(12).unwrap();

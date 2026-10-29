@@ -27,7 +27,7 @@
   不在控件里注入脚本。hydration 不替换控件身份，保留用户已改变的 checked 值。
 - classic stream 保留用户脏 checked/indeterminate；Radio 的原生同名邻居隐式取消也进入
   整组保护，避免随后 server patch 擦除用户已作出的单选。
-- 新版 Blitz/Glory 支持真实 mixed indeterminate 和互斥 radio。2026-10-29 四主题
+- 新版 Apace/Glory 支持真实 mixed indeterminate 和互斥 radio。2026-10-29 四主题
   消费端验证 Mixed 转 Checked、Radio/SegmentedControl/单选 Chip 的受控选择、只读
   与物理控件身份；历史拒绝记录已被本次通过的回归取代。OS 输入及读屏另行验收。
 
@@ -41,7 +41,7 @@
 - Glory `crates/render/tests/field_patch.rs::check_mode_prepare_swaps_only_mode_and_rolls_back_without_counters`：通过，
   检查大标签缓冲地址、回滚与水位不变。
 - Sapid五个聚焦target共27项及严格Clippy通过；Web例子wasm32编译通过。
-- Glory `crates/blitz/tests/check_modes.rs`：4 项通过；preflight/direct-prefix、真实 checked 与控制身份。
+- Glory `crates/apace/tests/check_modes.rs`：4 项通过；preflight/direct-prefix、真实 checked 与控制身份。
 - Glory `switch_exports_independent_role_actual_engine_checked_and_live_name`：通过，检查 AX Switch、
   原生 checked、动态名称与稳定 AX identity。
 - `tests/segmented_control.rs`：2 项通过，覆盖真正radio与无TabPanel、受控拒绝、局部状态、

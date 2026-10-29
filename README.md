@@ -1,5 +1,17 @@
 # Sapid
 
+Sapid 0.6.0 targets Glory 0.6.0. Native examples use `glory::apace`
+and its `apace-*` features. See [crate release instructions](RELEASING.md).
+
+```toml
+[dependencies]
+sapid = "=0.6.0"
+glory = { version = "=0.6.0", default-features = false, features = ["dsl"] }
+```
+
+Add the host features needed by your application, such as `ssr`, `hydrate`,
+`stream`, or `apace-raster` / `apace-shell`.
+
 [Showcase](https://sapid.taidge.org/) · [GitHub repository](https://github.com/sapid-ui/sapid)
 
 Pushes to `main` validate and publish the showcase through Cloudflare Pages.
@@ -223,7 +235,7 @@ fallback when none is supplied, so specify a typed line height when replacing it
 Autosize uses Glory's typed `FieldSizing::Content`, including soft wrapping,
 shrinkage and later width/font changes, with scrolling after the maximum. It
 requires a browser supporting CSS `field-sizing: content`; Chromium acceptance
-is recorded. SSR and stream share the same CSS serialization. Blitz explicitly
+is recorded. SSR and stream share the same CSS serialization. Apace explicitly
 rejects field sizing in both preflight and direct apply; fixed rows remain usable.
 No measurement script, hidden duplicate editor, or value rewrite is installed.
 `examples/native` keeps native widget layout/identity/refusal tests outside the
@@ -332,7 +344,7 @@ noninteractive, so this API does not expose HTML's first-legend control exceptio
 Standalone `label(label_id, control_id)`, `description(id)` and `field_error(id)`
 builders use Glory `SemanticId`s. Give the target an ID and `labelled_by` /
 `described_by` / `error_message` through typed `Semantics`. Native HTML labels
-focus text inputs and toggle checkboxes; the Blitz shell performs the same
+focus text inputs and toggle checkboxes; the Apace shell performs the same
 association. Native AccessKit exports required/read-only/invalid and live
 label/help/error relations, plus inherited disabled state.
 
@@ -513,7 +525,7 @@ presentation begins after successful browser adoption. Classic streams carry
 finite HTML shapes without a pre-WASM interaction driver.
 
 Native Dialog/AlertDialog and nonmodal Dialog Preserve use the genuine pinned
-Blitz fork's viewport layout, top-layer painting and hit testing while retaining
+Apace fork's viewport layout, top-layer painting and hit testing while retaining
 logical ancestry and editor identity. Native Drawer/Sheet, Menu/Tooltip/Listbox
 layers and ContextPoint remain explicit capability rejections. These boundaries
 are checked before mutation and preserve accepted-prefix query watermarks;

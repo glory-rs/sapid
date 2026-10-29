@@ -35,7 +35,7 @@ Sapid 与 Glory 均导出 text 构造器；混用两个 prelude 时请显式使�
 应用应通过 `.style(...)` 提供实际 width/max_width。完整字符串仍保留在语义节点和可访问树，
 不截短业务源。false 不下发 Clip 或其他额外限制，避免无必要拒绝宿主能力。
 
-Web/SSR/Record 支持此有限样式。当前固定 Blitz 引擎没有相应 ellipsis 布局/paint 路径，
+Web/SSR/Record 支持此有限样式。当前固定 Apace 引擎没有相应 ellipsis 布局/paint 路径，
 原生 profile v6 对整个 TextOverflow property 明确 UnsupportedStyle；不会只藏掉文字冒充截断。
 不使用 truncate 的 Text/Title/Typography 可在原生正常排版。本批不宣称支持多行 line-clamp 或
 任意富编辑器文档协议。

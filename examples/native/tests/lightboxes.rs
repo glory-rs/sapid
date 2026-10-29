@@ -3,7 +3,7 @@ mod assets;
 #[path = "../../web/src/lightbox_form.rs"]
 mod fixture;
 use glory::{
-    blitz::{
+    apace::{
         Config, Raster,
         assets::{Bytes, NetHandler, NetProvider, Request},
         shell::WindowApp,

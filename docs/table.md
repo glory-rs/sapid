@@ -65,7 +65,7 @@ Evidence:
 - `../glory/crates/render/tests/table.rs`: four independent target/coordinate/
   content/rollback tests. `../glory/crates/html/src/table_tests.rs` compares live
   field lowering and full-shape output, including resets without tag replacement.
-- `../glory/crates/blitz/src/accessibility_table_tests.rs`: actual AccessKit
+- `../glory/crates/apace/src/accessibility_table_tests.rs`: actual AccessKit
   consumer caption/header/cell names, counts/coordinates and Name Clear identity.
 - `examples/native/tests/tables.rs`: two real engine tests, covering four themes,
   shared column geometry, CPU pixels, focused editor identity and physical row/

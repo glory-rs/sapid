@@ -108,7 +108,7 @@ Glory adds dedicated render and HTML document tests plus the existing full-shape
 patch differential oracle. They verify structural targets, immutable document
 parts, rollback/stats/watermarks, transparent Group Place/Resume and Plan rules,
 intrinsic tags, tag-override rejection and phrasing content in native buttons.
-`glory-blitz`'s native AccessKit consumer test verifies real engine output for
+`glory-apace`'s native AccessKit consumer test verifies real engine output for
 all new document roles and keyboard-hint text. These checks do not claim spoken
 screen-reader output or platform-specific text selection acceptance.
 

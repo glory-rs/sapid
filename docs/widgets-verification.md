@@ -20,7 +20,7 @@
 | Glory style/core/render/ui/html/ssr 全 feature 测试与严格 Clippy | 通过 | 同上 |
 | Web native / wasm32 严格检查、WASM、四主题 SSR、classic stream 夹具 | 通过，当前 HTML FORMAT13 | 同上 |
 | 两个 genuine engine forks、六个引擎/布局包的固定来源与 fork-owned 回归 | 通过，439 次测试执行，0 失败 | [fork 门禁](D:/BuildCache/sapid/final-engine-forks.log) |
-| Blitz shell/accesskit/raster 全目标回归与严格 Clippy | 通过，216 项通过，2 项原有忽略 | [原生门禁](D:/BuildCache/sapid/final-native-acceptance.log) |
+| Apace shell/accesskit/raster 全目标回归与严格 Clippy | 通过，216 项通过，2 项原有忽略 | [原生门禁](D:/BuildCache/sapid/final-native-acceptance.log) |
 | Sapid 全部原生示例、格式与严格 Clippy | 84 个测试文件、146 项通过，0 失败，严格检查通过 | 同上 |
 | Chromium 148.0.7778.96 组件矩阵 | 120 组、1270 条报告，errors 为空 | [最终 JSON](D:/BuildCache/sapid/final-browser-matrix.json) |
 | 最终原生证据文案同步后的 gallery | 额外 12 条报告，errors 为空 | [gallery JSON](D:/BuildCache/sapid/final-gallery-browser.json) |
@@ -28,7 +28,7 @@
 | 清单、能力表及文件证据 | 149 项同步，1605 条文件证据路径均存在 | [路径审计](D:/BuildCache/sapid/evidence-audit-current.json) |
 
 不同 feature 配置与 focused 回归会重复执行部分测试；执行数不作为互异用例数。
-默认 normal 依赖图仍只有 Glory facade/core/render/style/ui，未引入 serde、libm 或 Blitz；
+默认 normal 依赖图仍只有 Glory facade/core/render/style/ui，未引入 serde、libm 或 Apace；
 见 [依赖图](D:/BuildCache/sapid/final-default-dependency-tree.log)。
 工具版本为 Rust/Cargo 1.98.0、wasm-bindgen 0.2.129。
 编译产物、Cargo 缓存、浏览器 profile、临时文件与测试日志均位于 D 盘。
@@ -48,7 +48,7 @@
 原生回归修复了两个实际缺陷：ModalsManager FIFO 关闭后丢失最初触发器焦点，
 以及 OverflowList 移动条目后隐藏旧容器残留布局引用。
 前者只传递本次关闭 managed 层的有效 fallback；后者在真正的
-[glory-rs/blitz 提交 c127fd96](https://github.com/glory-rs/blitz/commit/c127fd9699a89ff8ecba0c8d8c9eccb3330627af)
+[glory-rs/apace 提交 c127fd96](https://github.com/glory-rs/apace/commit/c127fd9699a89ff8ecba0c8d8c9eccb3330627af)
 中修复，依赖、锁文件、来源记录一起固定完整 SHA，没有 vendor 或全局 patch。
 原生真实焦点、选择区、preedit、控件身份、布局、命中、像素和 Owner 清理分别验收；
 原始失败及边界见 [ModalsManager](modals-manager.md)、[OverflowList](overflow-list.md)

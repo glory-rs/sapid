@@ -81,7 +81,7 @@ Evidence:
   four-theme geometry/CPU pixels, 1200 rows with bounded mounted rows, real
   scroll metrics, focused editor identity and server loading/stale reply cleanup.
   `D:/BuildCache/sapid/data-table-native-final.log` records success.
-- Glory `crates/blitz/src/accessibility_table_tests.rs`: actual AccessKit
+- Glory `crates/apace/src/accessibility_table_tests.rs`: actual AccessKit
   consumer counts, cell names, sort/reset and coordinates without list positions.
   `D:/BuildCache/sapid/data-table-native-ax.log` records success.
 - `examples/web/data-table-acceptance.js` and

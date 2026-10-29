@@ -1,6 +1,6 @@
 #[path = "../../web/src/toolbar_form.rs"]
 mod fixture;
-use glory::blitz::shell::WindowApp;
+use glory::apace::shell::WindowApp;
 use glory::render::{Event, Navigation, NodeId, Props, Query, QueryValue, Rect};
 use std::{cell::RefCell, rc::Rc};
 fn button(app: &glory::App, label: &str) -> NodeId {

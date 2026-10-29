@@ -16,7 +16,7 @@ Dialog、Drawer、Popover；第一批已增加 Field、Label/Description/Error�
 不表示与某个上游组件全部功能等价。蓝/绿各有明暗主题；有限主题 token/provider、方向、locale、
 响应式和运动契约已有独立验收，支持范围与明确拒绝见 P0 和逐组件能力记录。
 第二批已增加 Textarea、PasswordInput、InputGroup/Addon/Section，完成 Field、受控状态、
-Web/SSR 与原生引擎验收。Textarea 自动高度依赖浏览器 field-sizing:content，Blitz 明确拒绝；
+Web/SSR 与原生引擎验收。Textarea 自动高度依赖浏览器 field-sizing:content，Apace 明确拒绝；
 固定行数可用于原生。后续批次已增加 Form/FormState、成功控件快照、MixedCheckbox/组、
 Switch、RadioGroup/SegmentedControl、动作按钮、展示表面、NumberFormatter 和文档文本/列表组件，
 对应证据逐项记录在下表。Toggle、Chip、布局、Typography、Grid/比例、Timeline、Spoiler 与导航
@@ -86,7 +86,7 @@ Dialog/Popover 已验收 Web/SSR/hydration、Document 跨 App 栈、完整有限
 
 这些行描述组件所需的能力类别，实际 enum/API 及宿主边界见实现与协议文档。优先扩展共享有限契约、验证、mapper 和实际
 适配器；不在 Sapid 内注入 DOM/ARIA/脚本，也不把交互 View 随意改 role 冒充原生控件。
-新增语义必须明确 Web、SSR/stream、Blitz、AccessKit 的支持或拒绝；不能默默降级成错误语义。
+新增语义必须明确 Web、SSR/stream、Apace、AccessKit 的支持或拒绝；不能默默降级成错误语义。
 
 ## 统一完成标准
 
@@ -118,7 +118,7 @@ S= shadcn 主目录；D=日期；C=图表；T=日程；H=代码；X=其他 Manti
 | P0-01 | Button | 已完成并记录证据 | 五档尺寸、左右插槽与独立动态标签、typed disabled颜色和busy/loading、受控静默与Owner存活回调顺序已补齐；四主题Web/SSR接管与原生实际布局/身份和AX busy已验收。 | [M:Button](https://mantine.dev/core/button/)、[M:UnstyledButton](https://mantine.dev/core/unstyled-button/)、[S:Button](https://ui.shadcn.com/docs/components/base/button) |
 | P0-02 | TextField | 已完成并记录证据 | 受控/本地状态、Field/Fieldset元数据、表单成功值、版本/组合输入及typed disabled主题已补齐；真实Web/SSR/dirty hydration与native身份、输入事件已验收。 | [M:TextInput](https://mantine.dev/core/text-input/)、[S:Input](https://ui.shadcn.com/docs/components/base/input) |
 | P0-03 | Checkbox | 已完成并记录证据 | 布尔受控/本地状态、Field/Fieldset与表单值、独立readonly/invalid及typed disabled主题已补齐；mixed与分组通过独立组件提供，Web/native边界已有证据。 | [M:Checkbox](https://mantine.dev/core/checkbox/)、[S:Checkbox](https://ui.shadcn.com/docs/components/base/checkbox) |
-| P0-04 | Collapsible | 已完成并记录证据 | Collapsible 有限 intrinsic height 动画、反向/内容增长、匹配 revision 后的 Unmount、KeepMounted、Clear/0/Reduce 已补齐。Web 四主题 CSR/采用及 Chromium 12 场景原证据保留；Blitz 现接通真实原生几何/CPU 插值、2x 文字重排、嵌套、隐藏/恢复/清理和单次完成回执，实际四主题双内容策略消费端验证编辑器身份、焦点返回、旧回执拒绝与 Owner 清理。OS 输入、读屏和真机呈现仍单独验收。 | [M:Collapse](https://mantine.dev/core/collapse/)、[S:Collapsible](https://ui.shadcn.com/docs/components/base/collapsible) |
+| P0-04 | Collapsible | 已完成并记录证据 | Collapsible 有限 intrinsic height 动画、反向/内容增长、匹配 revision 后的 Unmount、KeepMounted、Clear/0/Reduce 已补齐。Web 四主题 CSR/采用及 Chromium 12 场景原证据保留；Apace 现接通真实原生几何/CPU 插值、2x 文字重排、嵌套、隐藏/恢复/清理和单次完成回执，实际四主题双内容策略消费端验证编辑器身份、焦点返回、旧回执拒绝与 Owner 清理。OS 输入、读屏和真机呈现仍单独验收。 | [M:Collapse](https://mantine.dev/core/collapse/)、[S:Collapsible](https://ui.shadcn.com/docs/components/base/collapsible) |
 | P0-05 | Accordion | 已完成并记录证据 | 有界动态 items(key source, factory) 与独立 rich trigger_content 插槽已实现。每个当前 key 短 Owner 工厂一次、重排保留编辑/触发器/panel 身份、移除重插新身份、受控 absent 意图与本地选择修复、当前顺序导航和实际聚焦成员移除交接已验收。此项不包含另行跟踪的 Collapsible 高度 motion。 | [M:Accordion](https://mantine.dev/core/accordion/)、[S:Accordion](https://ui.shadcn.com/docs/components/base/accordion) |
 | P0-06 | Tabs | 已完成并记录证据 | 动态稳定key成员与短Owner、复用trigger/panel工厂、受控缺失选择保留及本地修复、LTR/RTL roving和自动/手动激活已补齐。10模型及旧30回归、四主题原生真实几何/身份/焦点与Chromium148实际9项通过；受拒绝Focus不会吞掉后续用户激活。 | [M:Tabs](https://mantine.dev/core/tabs/)、[S:Tabs](https://ui.shadcn.com/docs/components/base/tabs) |
 | P0-07 | Dialog | 已完成并记录证据 | Dialog原生独立top layer布局/命中/paint、Manage焦点/AX、嵌套和非模态关联、滚动隔离、真正Button slots与Document跨App栈均已补齐；Web26矩阵71/675、独立layer12/placement13、原生Layer8/AX1/Sapid消费者7与真fork全验收通过。 | [M:Modal](https://mantine.dev/core/modal/)、[S:Dialog](https://ui.shadcn.com/docs/components/base/dialog) |
@@ -141,7 +141,7 @@ S= shadcn 主目录；D=日期；C=图表；T=日程；H=代码；X=其他 Manti
 | P1-01 | Field / InputWrapper | 已完成并记录证据 | 关联 Label/Description/Error；统一 required、readonly、invalid、disabled、命名优先级和稳定 ID；输入控件本身仍保持内在角色。 | [M:Input](https://mantine.dev/core/input/)、[S:Field](https://ui.shadcn.com/docs/components/base/field) |
 | P1-02 | Label / FieldDescription / FieldError | 已完成并记录证据 | 真实标签激活、控件聚焦、错误描述与多控件分组，区分名称和内容。 | [S:Label](https://ui.shadcn.com/docs/components/base/label) |
 | P1-03 | Fieldset / Legend | 已完成并记录证据 | 组级禁用和可访问命名，补齐 Glory 的分组控件契约。 | [M:Fieldset](https://mantine.dev/core/fieldset/) |
-| P1-04 | Textarea | 已完成并记录证据 | 独立 Textarea、Field、正整数 rows/min_rows/max_rows 与 typed FieldSizing 自动高度；支持软换行/缩回/上限滚动，保留 caret/IME。Web/SSR 已验收；Blitz 支持固定行，明确拒绝自动高度；其他浏览器需支持 field-sizing:content。 | [M:Textarea](https://mantine.dev/core/textarea/)、[S:Textarea](https://ui.shadcn.com/docs/components/base/textarea) |
+| P1-04 | Textarea | 已完成并记录证据 | 独立 Textarea、Field、正整数 rows/min_rows/max_rows 与 typed FieldSizing 自动高度；支持软换行/缩回/上限滚动，保留 caret/IME。Web/SSR 已验收；Apace 支持固定行，明确拒绝自动高度；其他浏览器需支持 field-sizing:content。 | [M:Textarea](https://mantine.dev/core/textarea/)、[S:Textarea](https://ui.shadcn.com/docs/components/base/textarea) |
 | P1-05 | PasswordInput | 已完成并记录证据 | 独立 PasswordInput、具名显隐动作、受控/本地可见性和 Field 禁用；Purpose 更新保持节点、值版本、UTF-16 选区及组合协议。原生引擎身份/原始值已验收，实际 OS IME/读屏仍待平台验收。 | [M:PasswordInput](https://mantine.dev/core/password-input/) |
 | P1-06 | InputGroup / Addon / InputSection | 已完成并记录证据 | InputGroup 前/后插槽、文本 Addon 和可含原生按钮的 InputSection；Field 只关联主输入，保留名称与自然 Tab 顺序；分组禁用复用 Fieldset。 | [S:Input Group](https://ui.shadcn.com/docs/components/base/input-group) |
 | P1-07 | Form / FormState / Validation | 已完成并记录证据 | Owner范围FormState与Form，值留在Cage；同步/异步校验、touched/dirty/errors、取消、ABA版本、reset原子观察与submit token均有回归；Web/原生请求不触发默认网络。 | Sapid/Glory 共享能力 |
@@ -257,7 +257,7 @@ S= shadcn 主目录；D=日期；C=图表；T=日程；H=代码；X=其他 Manti
 | P6-09 | Affix | 已完成并记录证据 | typed Fixed/right/bottom视口锚定、显式Relative容器Absolute/Sticky与响应式偏移已实现；native实际祖先scroll/viewport resize通过，Sticky仍明确拒绝。 | [M:Affix](https://mantine.dev/core/affix/) |
 | P6-10 | Toolbar / ActionBar | 已完成并记录证据 | 有界具名分组Toolbar共享roving入口，方向键/Home/End、RTL/垂直/非循环、动态disabled与身份保留。ActionBar按受控selection count展示、只提议清空、不制造modal或夺取焦点。四项模型、一项含四主题原生实际布局和Web14四主题CSR/hydration八项通过；任意Widget/动态业务集合自动注册不在契约内。 | [M:Toolbar](https://mantine.dev/core/toolbar/)、[M:ActionBar](https://mantine.dev/core/action-bar/) |
 | P6-11 | TableOfContents | 已完成并记录证据 | 仅存活256标题的显式注册索引、真实Location当前节链接/嵌套列表、实际Bounds滚动及Owner任务查询合并已完成。9组件+3纯模型、原生四主题geometry/CPU/focus/identity1和私有toc-next实际11项CSR/采用/移动端/dirty/退休全过；SSR与首测前确定性seed一致。 | [M:TableOfContents](https://mantine.dev/core/table-of-contents/) |
-| P6-12 | OverflowList | 已完成并记录证据 | 有界当前128项OverflowList已实现，真实布局测量、可控前缀提案、单Owner/节点移入Popover与移回、焦点交接、重排和dirty采用已补齐。10组件+2纯模型、Web实际验收及原生inline/default Popover两项各四主题真实验收通过，含top layer、布局/命中/像素、editor身份/value/selection/focus和Owner清理。genuine Blitz fork c127fd9699a89ff8ecba0c8d8c9eccb3330627af修复隐藏旧owner的移动布局缓存引用，保留内部布局与编辑状态。 | [M:OverflowList](https://mantine.dev/core/overflow-list/) |
+| P6-12 | OverflowList | 已完成并记录证据 | 有界当前128项OverflowList已实现，真实布局测量、可控前缀提案、单Owner/节点移入Popover与移回、焦点交接、重排和dirty采用已补齐。10组件+2纯模型、Web实际验收及原生inline/default Popover两项各四主题真实验收通过，含top layer、布局/命中/像素、editor身份/value/selection/focus和Owner清理。genuine Apace fork c127fd9699a89ff8ecba0c8d8c9eccb3330627af修复隐藏旧owner的移动布局缓存引用，保留内部布局与编辑状态。 | [M:OverflowList](https://mantine.dev/core/overflow-list/) |
 | P6-13 | FloatingIndicator | 已完成并记录证据 | 有界128当前target的真实Bounds装饰指示器已实现：单任务/两query、当前staged祖先校验、首次采用静态seed、GraphicTransition移动/打断/Reduce、隐藏退休与无焦点改写。5组件+2模型+共享祖先4、原生四主题像素/motion/focus2、私有layer-next实际9项全过。 | [M:FloatingIndicator](https://mantine.dev/core/floating-indicator/) |
 | P6-14 | Marquee / RollingNumber | 已完成并记录证据 | Marquee/RollingNumber已走有限TranslationMotion宿主动画；单静态可访问文本、inert视觉副本、实际测宽/稳定reel、暂停/停止/中断/Reduce，无业务Cage逐帧更新。6组件+NumberFormatter11回归、四theme原生geometry/CPU/focus2、Web26实际组件9与基础9（含Rust经典stream End后动画/退休）全过。 | [M:Marquee](https://mantine.dev/core/marquee/)、[M:RollingNumber](https://mantine.dev/core/rolling-number/) |
 
@@ -321,8 +321,8 @@ S= shadcn 主目录；D=日期；C=图表；T=日程；H=代码；X=其他 Manti
 
 | 编号 | 工作项 | 当前状态 | 实现与验收重点 | 来源 |
 |---|---|---|---|---|
-| P10-01 | FileInput / FileButton | 已完成并记录证据 | FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。显式 blitz-files 已接通原生选择/读取/私有预览及四主题真实消费端；桌面原生投放通道与四主题 Dropzone 真实句柄执行端已通过；移动 driver、实际 OS 拖动/chooser 输入验收仍开放，ambient 路径不支持；上传网络由应用提供。 | [M:FileInput](https://mantine.dev/core/file-input/)、[M:FileButton](https://mantine.dev/core/file-button/) |
-| P10-02 | Dropzone / Attachment | 已完成并记录证据 | FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。显式 blitz-files 已接通原生选择/读取/私有预览及四主题真实消费端；桌面原生投放通道与四主题 Dropzone 真实句柄执行端已通过；移动 driver、实际 OS 拖动/chooser 输入验收仍开放，ambient 路径不支持；上传网络由应用提供。 | [X:Dropzone](https://mantine.dev/x/dropzone/)、[S:Attachment](https://ui.shadcn.com/docs/components/base/attachment) |
+| P10-01 | FileInput / FileButton | 已完成并记录证据 | FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。显式 apace-files 已接通原生选择/读取/私有预览及四主题真实消费端；桌面原生投放通道与四主题 Dropzone 真实句柄执行端已通过；移动 driver、实际 OS 拖动/chooser 输入验收仍开放，ambient 路径不支持；上传网络由应用提供。 | [M:FileInput](https://mantine.dev/core/file-input/)、[M:FileButton](https://mantine.dev/core/file-button/) |
+| P10-02 | Dropzone / Attachment | 已完成并记录证据 | FileButton/FileInput 与 Dropzone/Attachment：真实可信 OS chooser/drop、有限非 ambient File 引用/版本/元数据/字节读取、filter/count/bytes 预算、四个跨 App 不可早退 read permits、当前预览 URL 安全解码/撤销、dirty adoption/Owner 清理。显式 apace-files 已接通原生选择/读取/私有预览及四主题真实消费端；桌面原生投放通道与四主题 Dropzone 真实句柄执行端已通过；移动 driver、实际 OS 拖动/chooser 输入验收仍开放，ambient 路径不支持；上传网络由应用提供。 | [X:Dropzone](https://mantine.dev/x/dropzone/)、[S:Attachment](https://ui.shadcn.com/docs/components/base/attachment) |
 | P10-03 | CopyButton | 已完成并记录证据 | 显式带revision/request的可信宿主剪贴板action、真实成功/拒绝/不可用/失败、每文档至多一个OS写入、Owner/源替换撤销与注入计时反馈已完成；4组件、共享协议/HTML零输出差分/SSR拒绝、原生默认不可用及四主题像素1；显式可选桌面剪贴板、四主题 CopyButton/Code/Json/Tags 异步消费端和 macOS 系统往返另已通过，Android 安全 JNI/ARM64 前台系统服务独立验收，iOS driver/移动菜单仍开放；Web28实际9组写读/权限/迟到/dirty/退休全过。 | [M:CopyButton](https://mantine.dev/core/copy-button/) |
 | P10-04 | Carousel | 已完成并记录证据 | 索引轮播最多七个短 Owner、百万 count 不扫描源；受控页、RTL/Swipe、注入时钟与暂停协议已实现。新版 Glory 原生真实鼠标悬停可取消当前时钟，离开恢复；四主题几何/像素与清理验证保留。 | [X:Carousel](https://mantine.dev/x/carousel/)、[S:Carousel](https://ui.shadcn.com/docs/components/base/carousel) |
 | P10-05 | Lightbox | 已完成并记录证据 | 最多128条/256KiB元数据，真实管理Dialog中仅一个Image资源消费者；替代文本/解码失败、受控键值和1..4倍实际滚动缩放、键盘和焦点返回，关闭/Owner释放及宿主资源配置边界；Web/Native四主题实测。 | [X:Lightbox](https://mantine.dev/x/lightbox/) |

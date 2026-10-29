@@ -1,5 +1,5 @@
-use glory::blitz::shell::WindowApp;
-use glory::blitz::{Config, Raster};
+use glory::apace::shell::WindowApp;
+use glory::apace::{Config, Raster};
 use glory::render::{Event, MotionPreference};
 #[test]
 fn four_theme_burger_pixels_morph_with_stable_button_graphic_identity_and_no_frame_source_writes()

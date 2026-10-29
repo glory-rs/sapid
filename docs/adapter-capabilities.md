@@ -16,7 +16,7 @@ keyboard/pointer input, hydration and Chrome AX snapshots. Native engine tests
 validate layout and controlled state; AccessKit tests validate semantic exports.
 None of these imply OS IME, screen-reader speech or untested devices.
 
-| Component family | Web / SSR / classic stream | Native Blitz / AccessKit |
+| Component family | Web / SSR / classic stream | Native Apace / AccessKit |
 |---|---|---|
 | TextField, fixed Textarea, PasswordInput, Field, Fieldset, InputGroup | Existing input/field suites, dirty hydration and composition protocol | Actual layout/editor identity; password raw/display protocol shared by Glory |
 | Autosizing Textarea | Browser field-sizing:content; fixed rows remain explicit | FieldSizing rejected before allocation and direct apply |
@@ -89,7 +89,7 @@ The 2026-10-24 `scripts/check.ps1 -Native` gate completed successfully in
 shared style/render/core/ui/html/SSR tests, Glory native semantic/profile/AX
 tests and all native component fixtures. The separate fork provenance gate
 `engine-pins-check.log` verified all six immutable engine packages and ran
-Taffy 185 tests, Blitz 100 tests and the parallel profile/style/drop matrices.
+Takia 185 tests, Apace 100 tests and the parallel profile/style/drop matrices.
 These reports cover that source snapshot; later component batches require their
 own focused evidence and another integration gate.
 
@@ -99,7 +99,7 @@ result reports, including doctests and repeated targets). Its matching
 `browser-snapshot8-results.json` records Chromium 148.0.7778.96, all 31 suites,
 264 reports and an empty errors array. That snapshot covers the completed
 families through Splitter. `engine-image-pins-check.log` verifies the newer
-immutable image-observation engine pin with 106 Blitz tests and 185 Taffy tests.
+immutable image-observation engine pin with 106 Apace tests and 185 Takia tests.
 
 Snapshot 9's combined gate passed with 1019 passed-report sum across 261 test
 result reports (`gate-snapshot9.log`). Its browser run stopped at the custom

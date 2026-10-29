@@ -1,7 +1,7 @@
 //! Native engine acceptance kept outside Sapid's default dependency graph.
 #[cfg(test)]
 mod tests {
-    use glory::blitz::shell::WindowApp;
+    use glory::apace::shell::WindowApp;
     use glory::prelude::*;
     use glory::render::{Event, NodeId, Props, Query, QueryValue};
     use std::{cell::RefCell, rc::Rc};

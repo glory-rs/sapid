@@ -1,4 +1,4 @@
-use glory::blitz::{Raster, shell::WindowApp};
+use glory::apace::{Raster, shell::WindowApp};
 use glory::prelude::*;
 use glory::render::{Action, DragPhase, NodeId, PathCommand, Props, Query, QueryValue, Rect};
 use glory::style::{Length, Style};
