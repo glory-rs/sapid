@@ -15,3 +15,30 @@ Successful checks return an exact attempt-specific artifact name and a SHA-256 d
 A publication retry may reuse the exact successful artifact from an earlier attempt of the same workflow run when all source identities and digests still match. The attempt number remains in provenance; artifacts from another run, future attempt, failed suite, changed source or changed tag fail the gate. Evidence is downloaded and checked before any registry upload, and the remote tag is checked again immediately before each upload. Direct local `--publish` without the workflow's frozen identities and successful evidence is rejected. Local plan validation remains `python scripts/release.py`.
 
 The static fixture server uses HTTP/1.1 persistent connections and each complete suite receives a fresh browser process. This bounds networking and browser resources over the full matrix: Windows CI previously failed to load pages or WASM with Winsock's `ERR_NO_BUFFER_SPACE`. All modes and identity/focus assertions within each suite still share their original browser lifetime. Do not hide infrastructure failures by dropping suites or converting missing-page failures into passes.
+
+## Acceptance evidence
+
+`D:/BuildCache/...` paths in the capability and verification records identify the
+original machine-local runs; those files are not part of a Git checkout. For a
+release, use the assets on the repository's [GitHub Releases](https://github.com/sapid-ui/sapid/releases)
+page. The workflow attaches `browser-results.json` and `browser-provenance.json`,
+including product/harness revisions and source/fixture hashes. Before release,
+the same browser reports are available as the run's `sapid-browser-acceptance`
+Actions artifact. Download artifacts needed for a review while they remain
+available, and keep the reports and their provenance together.
+An uploaded report can describe a failed or interrupted run: check `complete`,
+the recorded errors and the source/fixture hashes before treating it as passing
+evidence. Preserve failed reports separately when rerunning a check.
+
+The release publisher also attaches `registry-consumer.json` and its lockfile
+after `scripts/verify-registry.py` tests an isolated crates.io-only consumer.
+This checks packaged DSL/SSR/native dependencies independently of the pinned
+sibling source build. The local path dependency, CI Glory revision in
+`deploy/dependencies.json`, and published exact version serve these separate
+development and distribution checks.
+
+Keep accessibility evidence scoped to what was exercised: browser keyboard and
+Chrome AX checks, native layout/input regressions and AccessKit exports are
+separate records. OS IME, screen-reader speech and physical-device acceptance
+require their own dated platform/tool versions, steps and results; automated
+protocol checks alone do not establish those outcomes.

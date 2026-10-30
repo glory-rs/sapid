@@ -8,6 +8,8 @@ across Web, SSR, hydration, and native hosts.
 
 Sapid 0.6.0 targets [Glory 0.6.0](https://glory.taidge.org/). Native examples use
 `glory::apace` and its `apace-*` features. See [crate release instructions](RELEASING.md).
+Both [Sapid 0.6.0](https://crates.io/crates/sapid/0.6.0) and
+[Glory 0.6.0](https://crates.io/crates/glory/0.6.0) are published on crates.io.
 
 ```toml
 [dependencies]
@@ -58,6 +60,9 @@ Completion does not imply every upstream feature or every platform is supported.
 
 Final commands, host boundaries and run evidence are collected in the
 [verification record](docs/widgets-verification.md).
+Its `D:/BuildCache/...` links refer to historical machine-local artifacts.
+See the [evidence archive guidance](RELEASING.md#acceptance-evidence) for CI and
+release reports that can be shared independently of that machine.
 
 The library includes typed controls and forms; layout, typography and themes;
 menus, layers and navigation; tables, trees and indexed choices; dates and
@@ -96,11 +101,15 @@ Sapid; the HTML entry only boots WASM. Build and open it locally:
 The separate [capability audit gallery](examples/web/gallery.html) preserves
 the detailed host evidence and original acceptance fixtures.
 
-It targets the current semantic Glory checkout in the sibling `../glory`
-directory. Publishing and a standalone versioned Glory dependency are pending.
-The current integration follows Glory's new `main` branch: reactive property
-sources use `Vary<T>`, and native examples pin the same engine revisions as Glory.
-The deployment manifest locks the exact tested Glory commit. Sapid builders and
+Source development uses the sibling `../glory` checkout through the `path` and
+exact `version` in `Cargo.toml`. CI and showcase deployment check out the full
+Glory revision recorded in [deploy/dependencies.json](deploy/dependencies.json);
+use that revision locally to reproduce those builds. Registry consumers use
+the published `glory = "=0.6.0"` dependency and need no sibling checkout.
+The release's [registry-only consumer check](scripts/verify-registry.py)
+verifies the packaged dependency graph separately from source integration.
+Reactive property sources use `Vary<T>`, and native examples pin the same engine
+revisions as Glory. Sapid builders and
 Glory's `view!` DSL implement the same `Widget` interface. Mix raw HTML with
 `<sapid::Button />`, imported `<Button />` and `<{factory(args)}/>` on standard
 browser, SSR, hydration, incremental stream and native hosts. See the
