@@ -14,13 +14,41 @@ concurrency:
   group: sapid-release
   cancel-in-progress: false
 jobs:
+  resolve:
+    runs-on: windows-latest
+    timeout-minutes: 5
+    outputs:
+      product_commit: ${{ steps.freeze.outputs.product_commit }}
+      tag: ${{ steps.freeze.outputs.tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Freeze the release tag before validation
+        id: freeze
+        shell: pwsh
+        env:
+          REQUESTED_TAG: ${{ inputs.tag || github.ref_name }}
+          EVENT_COMMIT: ${{ github.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          git check-ref-format "refs/tags/$env:REQUESTED_TAG"
+          if ($LASTEXITCODE) { throw 'Invalid release tag' }
+          $commit = git rev-parse --verify "refs/tags/$env:REQUESTED_TAG^{commit}"
+          if ($LASTEXITCODE -or $commit -notmatch '^[a-f0-9]{40}$') { throw 'Release tag must identify an existing commit' }
+          if ($env:EVENT_NAME -eq 'push' -and $commit -ne $env:EVENT_COMMIT) { throw 'Release tag moved after the push event' }
+          "product_commit=$commit" >> $env:GITHUB_OUTPUT
+          "tag=$env:REQUESTED_TAG" >> $env:GITHUB_OUTPUT
   checks:
+    needs: resolve
     uses: ./.github/workflows/ci.yml
     with:
-      release_ref: ${{ inputs.tag || github.ref }}
+      release_ref: ${{ needs.resolve.outputs.product_commit }}
       acceptance_ref: ${{ github.sha }}
   publish:
-    needs: checks
+    needs: [resolve, checks]
     runs-on: windows-latest
     timeout-minutes: 360
     permissions:
@@ -38,7 +66,11 @@ jobs:
       CARGO_BUILD_JOBS: '2'
       CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
       GH_TOKEN: ${{ github.token }}
-      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+      RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+      RELEASE_COMMIT: ${{ needs.resolve.outputs.product_commit }}
+      ACCEPTANCE_COMMIT: ${{ github.sha }}
+      ACCEPTANCE_ARTIFACT: ${{ needs.checks.outputs.acceptance_artifact }}
+      ACCEPTANCE_PROVENANCE_SHA256: ${{ needs.checks.outputs.acceptance_provenance_sha256 }}
     defaults:
       run:
         shell: pwsh
@@ -48,7 +80,19 @@ jobs:
         with:
           fetch-depth: 0
           path: sapid
-          ref: ${{ inputs.tag || github.ref }}
+          ref: ${{ needs.resolve.outputs.product_commit }}
+      - name: Check out workflow-versioned release tools
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          path: release-tools
+          persist-credentials: false
+          sparse-checkout: |
+            .gitattributes
+            scripts/release.py
+            scripts/browser.cjs
+            examples/web/*acceptance.js
+          sparse-checkout-cone-mode: false
       - name: Read the pinned Glory release source
         id: dependency
         run: |
@@ -72,12 +116,14 @@ jobs:
           rustup default 1.98.0
       - name: Publish verified packages and GitHub release
         run: |
-          python scripts/release.py --publish --tag $env:RELEASE_TAG
+          $evidence = Join-Path $env:CARGO_TARGET_DIR 'browser-acceptance'
+          if ($env:ACCEPTANCE_ARTIFACT -notmatch '^sapid-browser-acceptance-[1-9][0-9]*$') { throw 'Successful checks did not identify their acceptance artifact' }
+          gh run download $env:GITHUB_RUN_ID --repo $env:GITHUB_REPOSITORY --name $env:ACCEPTANCE_ARTIFACT --dir $evidence
+          if ($LASTEXITCODE) { throw 'Browser evidence download failed' }
+          python ../release-tools/scripts/release.py --product-root . --harness-root ../release-tools --publish --tag $env:RELEASE_TAG --expected-commit $env:RELEASE_COMMIT --acceptance-commit $env:ACCEPTANCE_COMMIT --provenance (Join-Path $evidence 'browser-provenance.json')
           if ($LASTEXITCODE) { throw 'Release failed' }
       - name: Attach browser acceptance provenance
         run: |
           $evidence = Join-Path $env:CARGO_TARGET_DIR 'browser-acceptance'
-          gh run download $env:GITHUB_RUN_ID --name sapid-browser-acceptance --dir $evidence
-          if ($LASTEXITCODE) { throw 'Browser evidence download failed' }
           gh release upload $env:RELEASE_TAG (Join-Path $evidence 'browser-results.json') (Join-Path $evidence 'browser-provenance.json')
           if ($LASTEXITCODE) { throw 'Browser evidence upload failed' }
