@@ -22,3 +22,30 @@ validation attempt when a later publication attempt reuses its evidence. The
 `--attach-acceptance` helper revalidates the same gate before uploading those files.
 
 The static fixture server uses HTTP/1.1 persistent connections and each complete suite receives a fresh browser process. This bounds networking and browser resources over the full matrix: Windows CI previously failed to load pages or WASM with Winsock's `ERR_NO_BUFFER_SPACE`. All modes and identity/focus assertions within each suite still share their original browser lifetime. Do not hide infrastructure failures by dropping suites or converting missing-page failures into passes.
+
+## Acceptance evidence
+
+`D:/BuildCache/...` paths in the capability and verification records identify the
+original machine-local runs; those files are not part of a Git checkout. For a
+release, use the assets on the repository's [GitHub Releases](https://github.com/sapid-ui/sapid/releases)
+page. Its browser results and provenance JSON assets include product/harness
+revisions and source/fixture hashes. Before release,
+the same browser reports are available in the run's browser-acceptance Actions
+artifacts, whose exact names are shown by the checks. Download artifacts needed for a review while they remain
+available, and keep the reports and their provenance together.
+An uploaded report can describe a failed or interrupted run: check `complete`,
+the recorded errors and the source/fixture hashes before treating it as passing
+evidence. Preserve failed reports separately when rerunning a check.
+
+The release publisher also attaches `registry-consumer.json` and its lockfile
+after `scripts/verify-registry.py` tests an isolated crates.io-only consumer.
+This checks packaged DSL/SSR/native dependencies independently of the pinned
+sibling source build. The local path dependency, CI Glory revision in
+`deploy/dependencies.json`, and published exact version serve these separate
+development and distribution checks.
+
+Keep accessibility evidence scoped to what was exercised: browser keyboard and
+Chrome AX checks, native layout/input regressions and AccessKit exports are
+separate records. OS IME, screen-reader speech and physical-device acceptance
+require their own dated platform/tool versions, steps and results; automated
+protocol checks alone do not establish those outcomes.

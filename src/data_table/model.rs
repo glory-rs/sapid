@@ -117,6 +117,13 @@ impl DataTableError {
         }
     }
 }
+impl std::fmt::Display for DataTableError {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str(self.message())
+    }
+}
+impl std::error::Error for DataTableError {}
+
 type Result<T> = std::result::Result<T, DataTableError>;
 fn valid_key(value: &str) -> bool {
     !value.is_empty() && value.len() <= 64 && glory::render::SemanticId::new(value).is_ok()

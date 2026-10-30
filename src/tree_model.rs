@@ -82,6 +82,13 @@ impl TreeError {
         }
     }
 }
+impl std::fmt::Display for TreeError {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str(self.message())
+    }
+}
+impl std::error::Error for TreeError {}
+
 pub fn valid_tree_key(key: &str) -> bool {
     !key.is_empty() && key.len() <= 64 && glory::render::SemanticId::new(key).is_ok()
 }
