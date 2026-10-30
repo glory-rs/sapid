@@ -1,10 +1,30 @@
 //! Bounded Rust route state. Browser history and transport live in the host.
 use crate::theme_studio::{EditorState, model::ThemeRecord};
 use glory::prelude::*;
+use glory::routing::{Location, RouteDef, RouteKey, RouteViews, RouterHandle, Routes, SlashPolicy};
 use sapid::{ColorScheme, Theme};
-use serde::{Deserialize, Serialize};
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
+pub const DOCUMENT: RouteKey<glory::routing::Params> = RouteKey::new("showcase.document");
+pub const SCHEMA: &str = "sapid-showcase-routing-v1";
+pub const SSR_PAGES: &[(&str, &str)] = &[
+    ("", "home"),
+    ("P0-01", "button"),
+    ("P0-02", "textfield"),
+    ("P2-08", "actions"),
+    ("P3-10", "pills"),
+    ("P4-08", "multi-select"),
+    ("P4-09", "tags"),
+    ("P9-01", "dates"),
+    ("P13-01", "chat"),
+];
+pub fn routes() -> Routes {
+    // The public application is query-routed, including its static SSR aliases.
+    Routes::builder()
+        .slash_policy(SlashPolicy::Ignore)
+        .root(RouteDef::new(DOCUMENT, "*document"))
+        .finish()
+        .expect("showcase routes")
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Route {
     pub widget: String,
     pub palette: String,
@@ -14,6 +34,40 @@ pub struct Route {
     pub fragment: String,
 }
 impl Route {
+    pub fn from_location(location: &Location) -> Self {
+        let mut route = Self::new(String::new(), &Theme::blue_light());
+        let file = location.path().rsplit('/').next().unwrap_or_default();
+        for &(widget, name) in SSR_PAGES {
+            for palette in ["blue", "green"] {
+                for scheme in ["light", "dark"] {
+                    if file == format!("ssr-{name}-{palette}-{scheme}.html") {
+                        route.widget = widget.into();
+                        route.palette = palette.into();
+                        route.scheme = scheme.into();
+                    }
+                }
+            }
+        }
+        let query = location.query();
+        if let Some(widget) = query.values("widget").next() {
+            route.widget = widget.into();
+        }
+        if let Some(palette) = query.values("theme").next() {
+            route.palette = palette.into();
+        }
+        if let Some(scheme) = query.values("scheme").next() {
+            route.scheme = if scheme == "dark" { "dark" } else { "light" }.into();
+        }
+        route.return_to = query
+            .values("return_to")
+            .next()
+            .filter(|id| crate::showcase_catalog::find(id).is_some())
+            .unwrap_or("P0-01")
+            .into();
+        route.edit = query.values("edit").next().map(str::to_owned);
+        route.fragment = location.fragment().unwrap_or_default().into();
+        route
+    }
     pub fn new(widget: String, theme: &Theme) -> Self {
         Self {
             widget,
@@ -39,35 +93,36 @@ impl Route {
         }
     }
     pub fn url(&self) -> String {
-        let mut url = format!(
-            "showcase.html?widget={}&theme={}&scheme={}",
-            encode(&self.widget),
-            encode(&self.palette),
-            self.mode().name()
-        );
+        self.location().to_string().trim_start_matches('/').into()
+    }
+    pub fn location(&self) -> Location {
+        self.canonical_location(&Location::parse("/showcase.html").expect("showcase path"))
+    }
+    pub fn canonical_location(&self, requested: &Location) -> Location {
+        let mut url = Location::parse(requested.path())
+            .expect("validated showcase path")
+            .with_query("widget", &self.widget)
+            .with_query("theme", &self.palette)
+            .with_query("scheme", self.mode().name());
         if self.return_to != "P0-01" {
-            url.push_str(&format!("&return_to={}", encode(&self.return_to)));
+            url = url.with_query("return_to", &self.return_to);
         }
         if let Some(edit) = &self.edit {
-            url.push_str(&format!("&edit={}", encode(edit)));
+            url = url.with_query("edit", edit);
         }
-        if !self.fragment.is_empty() {
-            url.push('#');
-            url.push_str(&encode(&self.fragment));
+        for (name, value) in &requested.query().0 {
+            if !matches!(
+                name.as_str(),
+                "widget" | "theme" | "scheme" | "return_to" | "edit"
+            ) {
+                url = url.with_query(name, value);
+            }
+        }
+        if !self.fragment.is_empty() || requested.fragment().is_some() {
+            url = url.with_fragment(&self.fragment);
         }
         url
     }
-}
-fn encode(value: &str) -> String {
-    let mut out = String::new();
-    for b in value.bytes() {
-        if b.is_ascii_alphanumeric() || b"-._~".contains(&b) {
-            out.push(b as char)
-        } else {
-            out.push_str(&format!("%{b:02X}"))
-        }
-    }
-    out
 }
 #[derive(Clone)]
 pub struct Page {
@@ -76,7 +131,6 @@ pub struct Page {
     pub initial: ThemeRecord,
     pub notice: String,
     pub revision: u64,
-    pub scroll: Option<(f64, f64)>,
 }
 impl Page {
     pub fn builtin(theme: Theme, widget: String) -> Self {
@@ -90,7 +144,6 @@ impl Page {
             theme,
             notice: String::new(),
             revision: 0,
-            scroll: None,
         }
     }
 }
@@ -147,4 +200,12 @@ pub fn app(state: State) -> impl Widget {
             })
             .show_in(scope)
     })
+}
+
+pub fn routed_app(state: State, definitions: Routes, router: RouterHandle) -> impl Widget {
+    RouteViews::new(definitions)
+        .route(DOCUMENT, move |_| app(state))
+        .expect("showcase view")
+        .view(router)
+        .expect("shared showcase declarations")
 }

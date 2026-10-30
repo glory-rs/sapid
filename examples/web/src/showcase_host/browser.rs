@@ -1,28 +1,21 @@
 use super::*;
-use crate::showcase_navigation::State;
-use crate::{
-    showcase_navigation::Route,
-    theme_studio::{
-        host,
-        model::{ThemeRecord, ThemeStore},
-    },
+use crate::showcase_navigation::{self, Route, State};
+use crate::theme_studio::{
+    host,
+    model::{ThemeRecord, ThemeStore},
 };
-use serde::{Deserialize, Serialize};
-use std::cell::RefCell;
+use glory::routing::{Bootstrap, Location, RouterHandle};
+use std::{
+    cell::{Cell, RefCell},
+    rc::Rc,
+};
 use wasm_bindgen::prelude::*;
+
 struct Running {
-    _app: glory::web::WebApp,
+    app: glory::web::routing::RoutingApp,
     state: State,
-    window: web_sys::Window,
-    pop: Closure<dyn FnMut(web_sys::PopStateEvent)>,
-    palette_scroll: std::cell::Cell<Option<i32>>,
-}
-impl Drop for Running {
-    fn drop(&mut self) {
-        let _ = self
-            .window
-            .remove_event_listener_with_callback("popstate", self.pop.as_ref().unchecked_ref());
-    }
+    seen: Rc<Cell<u64>>,
+    palette_scroll: Cell<Option<i32>>,
 }
 thread_local! {static APP:RefCell<Option<Running>>=const{RefCell::new(None)};}
 fn js(error: impl std::fmt::Display) -> JsValue {
@@ -34,33 +27,24 @@ fn window() -> Result<web_sys::Window, String> {
 fn error(value: JsValue) -> String {
     value
         .as_string()
-        .unwrap_or_else(|| "Browser history operation failed".into())
+        .unwrap_or_else(|| "Browser operation failed".into())
 }
 pub(super) fn report(message: String) {
     let state = APP.with(|slot| slot.borrow().as_ref().map(|r| r.state));
     if let Some(state) = state {
         state.notice.revise(|v| *v = message);
+    } else {
+        web_sys::console::error_1(&message.into());
     }
 }
-fn parse(url: &web_sys::Url) -> Route {
-    let query = url.search_params();
-    Route {
-        widget: query.get("widget").unwrap_or_default(),
-        palette: query.get("theme").unwrap_or_else(|| "blue".into()),
-        scheme: if query.get("scheme").as_deref() == Some("dark") {
-            "dark"
-        } else {
-            "light"
-        }
-        .into(),
-        return_to: query
-            .get("return_to")
-            .filter(|id| crate::showcase_catalog::find(id).is_some())
-            .unwrap_or_else(|| "P0-01".into()),
-        edit: query.get("edit"),
-        fragment: url.hash().trim_start_matches('#').to_owned(),
-    }
+fn router_error(error: glory::routing::Error) {
+    report(error.to_string());
 }
+fn location(url: &web_sys::Url) -> Result<Location, String> {
+    Location::parse(&format!("{}{}{}", url.pathname(), url.search(), url.hash()))
+        .map_err(|error| error.to_string())
+}
+
 fn resolve(mut route: Route) -> Result<(Page, ThemeStore), String> {
     let (store, mut notice) = match host::load() {
         Ok(store) => (store, String::new()),
@@ -100,8 +84,8 @@ fn resolve(mut route: Route) -> Result<(Page, ThemeStore), String> {
         if let Some(record) = store.themes.iter().find(|r| &r.id == edit) {
             initial = record.clone()
         } else {
-            notice = "The saved theme to edit is unavailable. Your current workspace was kept."
-                .into();
+            notice =
+                "The saved theme to edit is unavailable. Your current workspace was kept.".into();
             route.edit = None;
         }
     }
@@ -113,39 +97,9 @@ fn resolve(mut route: Route) -> Result<(Page, ThemeStore), String> {
             initial,
             notice,
             revision: 0,
-            scroll: None,
         },
         store,
     ))
-}
-#[derive(Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-struct Entry {
-    version: u8,
-    route: Route,
-    x: f64,
-    y: f64,
-}
-fn entry(route: Route, window: &web_sys::Window) -> Entry {
-    Entry {
-        version: 1,
-        route,
-        x: window.scroll_x().unwrap_or(0.),
-        y: window.scroll_y().unwrap_or(0.),
-    }
-}
-fn value(entry: &Entry) -> Result<JsValue, String> {
-    serde_json::to_string(entry)
-        .map(|s| JsValue::from_str(&s))
-        .map_err(|e| e.to_string())
-}
-fn read_entry(value: JsValue) -> Option<Entry> {
-    let text = value.as_string()?;
-    if text.len() > 8192 {
-        return None;
-    }
-    let entry: Entry = serde_json::from_str(&text).ok()?;
-    (entry.version == 1 && entry.x.is_finite() && entry.y.is_finite()).then_some(entry)
 }
 fn publish(state: State, mut page: Page, store: ThemeStore) -> Result<(), String> {
     page.revision = state
@@ -192,61 +146,50 @@ pub(super) fn navigate(href: &str) -> Result<(), String> {
     let window = window()?;
     let url = web_sys::Url::new_with_base(href, &window.location().href().map_err(error)?)
         .map_err(error)?;
-    if url.origin() != window.location().origin().map_err(error)?
-        || !url.pathname().ends_with("/showcase.html")
-    {
+    let local_document = url.pathname().ends_with("/showcase.html")
+        || (href.starts_with('#')
+            && url.pathname() == window.location().pathname().map_err(error)?);
+    if url.origin() != window.location().origin().map_err(error)? || !local_document {
         return Err("Only showcase routes use local navigation".into());
     }
-    let state = APP
-        .with(|slot| slot.borrow().as_ref().map(|r| r.state))
+    let (state, router, seen) = APP
+        .with(|slot| {
+            slot.borrow()
+                .as_ref()
+                .map(|r| (r.state, r.app.router(), r.seen.clone()))
+        })
         .ok_or("Showcase is not mounted")?;
-    let (mut page, store) = resolve(parse(&url))?;
+    let requested = location(&url)?;
+    let (page, store) = resolve(Route::from_location(&requested))?;
+    let target = if href.starts_with('#') {
+        requested
+    } else {
+        page.route.canonical_location(&requested)
+    };
+    router.push(target).map_err(|error| error.to_string())?;
+    seen.set(
+        router
+            .current()
+            .map_err(|error| error.to_string())?
+            .revision,
+    );
     let previous = state.page.get();
     if page.route == previous.route
         && page.theme == previous.theme
         && page.initial == previous.initial
+        && page.notice == previous.notice
+        && state.catalog.with(|list| list == &store.themes)
     {
-        if state.catalog.with(|list| list == &store.themes) && page.notice == previous.notice {
-            return Ok(());
-        }
-        return publish(state, page, store);
+        return Ok(());
     }
-    let history = window.history().map_err(error)?;
-    history
-        .replace_state_with_url(&value(&entry(previous.route.clone(), &window))?, "", None)
-        .map_err(error)?;
-    let keep = page.route.widget == previous.route.widget;
-    page.scroll = Some(if keep {
-        (
-            window.scroll_x().unwrap_or(0.),
-            window.scroll_y().unwrap_or(0.),
-        )
-    } else {
-        (0., 0.)
-    });
-    let mut next = entry(page.route.clone(), &window);
-    let (x, y) = page.scroll.unwrap();
-    next.x = x;
-    next.y = y;
-    history
-        .push_state_with_url(&value(&next)?, "", Some(&page.route.url()))
-        .map_err(error)?;
+    // Component selection is a query change, so its top-of-page policy belongs
+    // to this application. BrowserHistory already captured the outgoing entry.
+    if page.route.widget != previous.route.widget && page.route.fragment.is_empty() {
+        window.scroll_to_with_x_and_y(0., 0.);
+    }
     publish(state, page, store)
 }
-fn pop(state: State, event: web_sys::PopStateEvent) -> Result<(), String> {
-    let window = window()?;
-    let current =
-        web_sys::Url::new(&window.location().href().map_err(error)?).map_err(error)?;
-    let history = read_entry(event.state());
-    let mut route = history
-        .as_ref()
-        .map(|e| e.route.clone())
-        .unwrap_or_else(|| parse(&current));
-    route.fragment = current.hash().trim_start_matches('#').to_owned();
-    let (mut page, store) = resolve(route)?;
-    page.scroll = history.map(|e| (e.x, e.y));
-    publish(state, page, store)
-}
+
 pub(super) fn present(page: &Page, source: Cage<Page>) -> Result<(), String> {
     host::install_page(&page.theme)?;
     let window = window()?;
@@ -263,29 +206,18 @@ pub(super) fn present(page: &Page, source: Cage<Page>) -> Result<(), String> {
             .as_ref()
             .and_then(|running| running.palette_scroll.take())
     });
-    if page.scroll.is_some() || !page.route.fragment.is_empty() || palette_scroll.is_some() {
+    // This horizontal palette strip is application state; window/fragment
+    // restoration is owned entirely by Glory's browser routing driver.
+    if let Some(x) = palette_scroll {
         let revision = page.revision;
-        let fragment = page.route.fragment.clone();
-        let position = page.scroll;
         let callback_window = window.clone();
         let callback = Closure::once_into_js(move || {
-            if source.try_get().is_ok_and(|p| p.revision == revision) {
-                if let Some(x) = palette_scroll
-                    && let Some(palettes) = callback_window
-                        .document()
-                        .and_then(|d| d.query_selector(".site-palettes").ok().flatten())
-                {
-                    palettes.set_scroll_left(x);
-                }
-                if !fragment.is_empty()
-                    && let Some(element) = callback_window
-                        .document()
-                        .and_then(|d| d.get_element_by_id(&fragment))
-                {
-                    element.scroll_into_view();
-                } else if let Some((x, y)) = position {
-                    callback_window.scroll_to_with_x_and_y(x, y);
-                }
+            if source.try_get().is_ok_and(|p| p.revision == revision)
+                && let Some(palettes) = callback_window
+                    .document()
+                    .and_then(|d| d.query_selector(".site-palettes").ok().flatten())
+            {
+                palettes.set_scroll_left(x);
             }
         });
         window
@@ -294,6 +226,7 @@ pub(super) fn present(page: &Page, source: Cage<Page>) -> Result<(), String> {
     }
     Ok(())
 }
+
 #[wasm_bindgen]
 pub fn start_showcase() -> Result<bool, JsValue> {
     let window = window().map_err(js)?;
@@ -309,7 +242,7 @@ pub fn start_showcase() -> Result<bool, JsValue> {
             .ok_or_else(|| js("Missing showcase metadata"))
     };
     let hydrate = meta("render")? == "ssr";
-    let route = parse(&url);
+    let route = Route::from_location(&location(&url).map_err(js)?);
     mount_showcase(
         hydrate,
         if hydrate {
@@ -326,6 +259,7 @@ pub fn start_showcase() -> Result<bool, JsValue> {
     )?;
     Ok(true)
 }
+
 #[wasm_bindgen]
 pub fn mount_showcase(
     hydrate: bool,
@@ -338,63 +272,92 @@ pub fn mount_showcase(
     let root = document
         .get_element_by_id("app")
         .ok_or_else(|| js("Missing showcase root"))?;
-    let url = web_sys::Url::new(&window.location().href()?)?;
-    let mut route = parse(&url);
+    drop(APP.with(|slot| slot.borrow_mut().take()));
+    let definitions = showcase_navigation::routes();
+    let seed = if hydrate {
+        let text = document
+            .get_element_by_id("sapid-route-seed")
+            .ok_or_else(|| js("Missing showcase route seed"))?
+            .text_content()
+            .unwrap_or_default();
+        Some(Bootstrap::from_payload(&text).map_err(js)?)
+    } else {
+        None
+    };
+    let initial = if let Some(seed) = &seed {
+        seed.validate(&definitions, showcase_navigation::SCHEMA)
+            .map_err(js)?
+    } else {
+        location(&web_sys::Url::new(&window.location().href()?)?).map_err(js)?
+    };
+    let mut route = Route::from_location(&initial);
     route.widget = selection;
     route.palette = hue;
     route.scheme = scheme;
     let (page, store) = resolve(route).map_err(js)?;
     host::install_catalog(&store).map_err(js)?;
     host::install_page(&page.theme).map_err(js)?;
-    let history = window.history()?;
-    history.replace_state_with_url(
-        &value(&entry(page.route.clone(), &window)).map_err(js)?,
-        "",
-        None,
-    )?;
-    let old = APP.with(|slot| slot.borrow_mut().take());
-    drop(old);
-    let mut handles = None;
-    let build = |scope: &glory::Scope| {
+    let captured = Rc::new(RefCell::new(None));
+    let capture = captured.clone();
+    let seen = Rc::new(Cell::new(0));
+    let observed_revision = seen.clone();
+    let views = definitions.clone();
+    let catalog = store.themes.clone();
+    let build = move |scope: &glory::Scope, router: RouterHandle| {
         let state = State::new(
             scope,
             page,
-            if hydrate {
-                Vec::new()
-            } else {
-                store.themes.clone()
-            },
+            if hydrate { Vec::new() } else { catalog },
             hydrate,
         );
-        handles = Some(state);
-        crate::showcase_navigation::app(state)
+        *capture.borrow_mut() = Some(state);
+        let observed = router.clone();
+        scope.effect(move || {
+            if let Ok(snapshot) = observed.snapshot()
+                && observed_revision.replace(snapshot.revision) != snapshot.revision
+            {
+                match resolve(Route::from_location(snapshot.location())) {
+                    Ok((page, store)) => {
+                        if let Err(error) = publish(state, page, store) {
+                            report(error);
+                        }
+                    }
+                    Err(error) => report(error),
+                }
+            }
+        });
+        showcase_navigation::routed_app(state, views, router)
     };
-    let app = if hydrate {
-        glory::web::hydrate_with(root, build).map_err(js)?
+    let app = if let Some(seed) = &seed {
+        glory::web::routing::hydrate_with(
+            root,
+            definitions,
+            seed,
+            showcase_navigation::SCHEMA,
+            build,
+            router_error,
+        )
     } else {
-        glory::web::launch_with(root, build).map_err(js)?
-    };
-    let state = handles.expect("mounted route state");
+        glory::web::routing::launch_with(root, definitions, build, router_error)
+    }
+    .map_err(js)?;
+    let state = captured
+        .borrow_mut()
+        .take()
+        .expect("mounted showcase state");
     if hydrate {
         state.catalog.revise(|v| *v = store.themes);
         state
             .notice
             .revise(|v| *v = state.page.with(|p| p.notice.clone()));
-        app.app().flush().map_err(js)?;
+        app.app().app().flush().map_err(js)?;
     }
-    let pop = Closure::wrap(Box::new(move |event| {
-        if let Err(e) = pop(state, event) {
-            report(e);
-        }
-    }) as Box<dyn FnMut(web_sys::PopStateEvent)>);
-    window.add_event_listener_with_callback("popstate", pop.as_ref().unchecked_ref())?;
     APP.with(|slot| {
         *slot.borrow_mut() = Some(Running {
-            _app: app,
+            app,
             state,
-            window,
-            pop,
-            palette_scroll: std::cell::Cell::new(None),
+            seen,
+            palette_scroll: Cell::new(None),
         })
     });
     Ok(())

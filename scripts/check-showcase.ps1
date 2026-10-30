@@ -48,6 +48,7 @@ try {
     Invoke-ShowcaseCargo -Arguments @('fmt','--manifest-path','examples/web/Cargo.toml','--','--check')
     Invoke-ShowcaseCargo -Arguments @('run','--locked','--manifest-path','examples/web/Cargo.toml','--bin','theme_audit')
     Invoke-ShowcaseCargo -Arguments @('test','--locked','--manifest-path','examples/web/Cargo.toml','--test','showcase_site')
+    Invoke-ShowcaseCargo -Arguments @('test','--locked','--manifest-path','examples/web/Cargo.toml','--test','showcase_routing')
     Invoke-ShowcaseCargo -Arguments @('test','--locked','--manifest-path','examples/web/Cargo.toml','--lib')
     Invoke-ShowcaseCargo -Arguments @('clippy','--locked','--manifest-path','examples/web/Cargo.toml','--all-targets','--','-D','warnings')
     Invoke-ShowcaseCargo -Arguments @('clippy','--locked','--manifest-path','examples/web/Cargo.toml','--lib','--target','wasm32-unknown-unknown','--','-D','warnings')
@@ -106,6 +107,8 @@ try {
         & "$PSScriptRoot/check-theme-export.ps1"
         & node scripts/showcase-navigation-browser.cjs
         if ($LASTEXITCODE -ne 0) { throw 'showcase navigation acceptance failed' }
+        & node scripts/showcase-routing-browser.cjs
+        if ($LASTEXITCODE -ne 0) { throw 'showcase routing acceptance failed' }
         & node scripts/showcase-style-browser.cjs
         if ($LASTEXITCODE -ne 0) { throw 'showcase style acceptance failed' }
         & node scripts/mantine-api-browser.cjs

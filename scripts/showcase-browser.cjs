@@ -7,7 +7,7 @@ const output = 'D:/BuildCache/sapid';
 (async () => {
   let browser;
   const report = { base: process.env.SAPID_SHOWCASE_BASE || 'http://127.0.0.1:8795', reports: [], errors: [] };
-  const manifest = path.join(output, 'showcase/asset-hashes.json');
+  const manifest = process.env.SAPID_SHOWCASE_MANIFEST || path.join(output, 'showcase/asset-hashes.json');
   if (fs.existsSync(manifest)) report.assetManifestSha256 = crypto.createHash('sha256').update(fs.readFileSync(manifest)).digest('hex');
   try {
     browser = await chromium.launch({headless:true});

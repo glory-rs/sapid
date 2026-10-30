@@ -7,7 +7,22 @@ fn document(
     scheme: &str,
     ssr: bool,
     assets: &str,
+    path: &str,
 ) -> String {
+    let seed = if ssr {
+        let seed = glory::routing::Bootstrap::new(
+            &sapid_web_example::showcase_navigation::routes(),
+            glory::routing::Location::parse(path).expect("SSR document path"),
+            sapid_web_example::showcase_navigation::SCHEMA,
+        )
+        .expect("showcase bootstrap");
+        format!(
+            "<script id=\"sapid-route-seed\" type=\"text/plain\">{}</script>",
+            seed.to_payload()
+        )
+    } else {
+        String::new()
+    };
     let theme = sapid_web_example::themes::select(
         hue,
         if scheme == "dark" {
@@ -17,6 +32,7 @@ fn document(
         },
     );
     include_str!("../../showcase.html")
+        .replace("<!--ROUTE_SEED-->", &seed)
         .replace(
             "assets/sapid-logo.svg",
             &sapid_web_example::assets::media("sapid-logo.svg"),
@@ -95,30 +111,23 @@ fn main() -> Result<(), Box<dyn Error>> {
     {
         return Err("invalid asset directory".into());
     }
-    let csr = document("", "", "blue", "light", false, &assets);
+    let csr = document("", "", "blue", "light", false, &assets, "/showcase.html");
     fs::write(directory.join("showcase.html"), &csr)?;
     fs::write(directory.join("index.html"), csr)?;
     // This is a deliberately representative SSR set, not 149 × four renders.
     // All 149 canonical documents remain directly addressable in the CSR shell.
-    for (selection, name) in [
-        ("", "home"),
-        ("P0-01", "button"),
-        ("P0-02", "textfield"),
-        ("P2-08", "actions"),
-        ("P3-10", "pills"),
-        ("P4-08", "multi-select"),
-        ("P4-09", "tags"),
-        ("P9-01", "dates"),
-        ("P13-01", "chat"),
-    ] {
+    for &(selection, name) in sapid_web_example::showcase_navigation::SSR_PAGES {
         for hue_name in ["blue", "green"] {
             for (scheme_name, scheme) in [
                 ("light", sapid::ColorScheme::Light),
                 ("dark", sapid::ColorScheme::Dark),
             ] {
-                let snapshot = glory::ssr::snapshot(sapid_web_example::showcase::site(
+                let filename = format!("ssr-{name}-{hue_name}-{scheme_name}.html");
+                let path = format!("/{filename}");
+                let snapshot = glory::ssr::snapshot(sapid_web_example::showcase::site_at(
                     sapid_web_example::themes::select(hue_name, scheme),
                     selection.to_owned(),
+                    glory::routing::Location::parse(&path)?,
                 ))?;
                 let html = document(
                     &snapshot.html,
@@ -127,11 +136,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                     scheme_name,
                     true,
                     &assets,
+                    &path,
                 );
-                fs::write(
-                    directory.join(format!("ssr-{name}-{hue_name}-{scheme_name}.html")),
-                    html,
-                )?;
+                fs::write(directory.join(filename), html)?;
             }
         }
     }
