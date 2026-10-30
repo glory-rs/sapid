@@ -19,8 +19,8 @@ original machine-local runs; those files are not part of a Git checkout. For a
 release, use the assets on the repository's [GitHub Releases](https://github.com/sapid-ui/sapid/releases)
 page. The workflow attaches `browser-results.json` and `browser-provenance.json`,
 including product/harness revisions and source/fixture hashes. Before release,
-the same browser reports are available as the run's `sapid-browser-acceptance`
-Actions artifact. Download artifacts needed for a review while they remain
+the same browser reports are available in the run's browser-acceptance Actions
+artifacts, whose exact names are shown by the checks. Download artifacts needed for a review while they remain
 available, and keep the reports and their provenance together.
 An uploaded report can describe a failed or interrupted run: check `complete`,
 the recorded errors and the source/fixture hashes before treating it as passing
