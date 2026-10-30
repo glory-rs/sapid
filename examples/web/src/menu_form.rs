@@ -1,7 +1,6 @@
 use glory::prelude::*;
 use sapid::{
-    Theme, dropdown_menu, menu_checkbox, menu_item, menu_radio_group, menu_radio_item,
-    menu_submenu,
+    Theme, dropdown_menu, menu_checkbox, menu_item, menu_radio_group, menu_radio_item, menu_submenu,
 };
 pub struct State {
     pub open: Cage<bool>,

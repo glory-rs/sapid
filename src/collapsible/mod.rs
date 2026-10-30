@@ -60,10 +60,7 @@ impl Collapsible {
         self.content = Some(Box::new(move || Box::new(factory())));
         self
     }
-    pub fn trigger_content<W: Widget>(
-        mut self,
-        mut factory: impl FnMut() -> W + 'static,
-    ) -> Self {
+    pub fn trigger_content<W: Widget>(mut self, mut factory: impl FnMut() -> W + 'static) -> Self {
         self.trigger_content = Some(Box::new(move || Box::new(factory())));
         self
     }

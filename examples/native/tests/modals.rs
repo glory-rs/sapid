@@ -50,8 +50,7 @@ fn focused(app: &App, id: NodeId) -> bool {
     query(app, Query::Focus(id)) == QueryValue::Focus(true)
 }
 #[test]
-fn native_modal_manager_uses_real_fifo_layers_retains_editors_and_retires_owner_in_four_themes()
-{
+fn native_modal_manager_uses_real_fifo_layers_retains_editors_and_retires_owner_in_four_themes() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),

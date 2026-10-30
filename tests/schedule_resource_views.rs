@@ -299,9 +299,8 @@ fn overfull_resource_overlap_rejects_complete_layout_before_any_partial_geometry
         events,
     )
     .unwrap();
-    let a =
-        ResourceScheduleData::new(source, registrations(1), ScheduleResourceWindow::default())
-            .unwrap();
+    let a = ResourceScheduleData::new(source, registrations(1), ScheduleResourceWindow::default())
+        .unwrap();
     assert!(a.layout_timeline(ScheduleTimeWindow::default(), 1).is_err());
 }
 #[test]
@@ -324,12 +323,172 @@ fn civil_edit_arithmetic_preserves_nanoseconds_and_rejects_crossed_or_exhausted_
     assert!(span.shifted_minutes(i64::MAX).is_err());
     assert!(span.shifted_minutes(i64::MIN).is_err());
     let edge =
-        ScheduleInterval::new(dt("9999-12-31T23:00"), dt("9999-12-31T23:59:59.999999999"))
-            .unwrap();
+        ScheduleInterval::new(dt("9999-12-31T23:00"), dt("9999-12-31T23:59:59.999999999")).unwrap();
     assert!(edge.shifted_minutes(1).is_err());
     assert!(edge.resize_end_by_minutes(1).is_err());
     assert!(
         edge.resize_start_by_minutes(1).is_ok(),
         "resizing the start must not translate the fixed exclusive end"
+    );
+}
+
+#[test]
+fn dense_annual_week_keeps_full_occurrence_indices_across_resource_windows() {
+    let start = d("2026-06-01");
+    let annual = ScheduleRecurrence::new(
+        RecurrenceFrequency::Yearly {
+            missing: MissingScheduleDay::Clamp,
+        },
+        1,
+        RecurrenceEnd::Never,
+    )
+    .unwrap();
+    let mut events = Vec::new();
+    for i in 0..112 {
+        events.push(
+            ScheduleEvent::new(
+                ScheduleKey::new(format!("annual-{i}")).unwrap(),
+                "Annual",
+                ScheduleInterval::new(dt("2024-01-01T00:00"), dt("2024-12-31T00:00")).unwrap(),
+            )
+            .unwrap()
+            .resource(ScheduleKey::new(format!("room-{}", i % 8)).unwrap())
+            .recurring(annual)
+            .unwrap(),
+        );
+    }
+    for i in 0..400usize {
+        let day = start.checked_add_days((i / 8 % 7) as i32).unwrap();
+        let hour = (8 + i / 56) as u8;
+        events.push(
+            ScheduleEvent::new(
+                ScheduleKey::new(format!("short-{i}")).unwrap(),
+                "Short",
+                ScheduleInterval::new(
+                    LocalDateTime::new(day, LocalTime::new(hour, 0, 0).unwrap()),
+                    LocalDateTime::new(day, LocalTime::new(hour, 30, 0).unwrap()),
+                )
+                .unwrap(),
+            )
+            .unwrap()
+            .resource(ScheduleKey::new(format!("room-{}", i % 8)).unwrap()),
+        );
+    }
+    let data = ScheduleData::new(
+        ScheduleZone::Civil,
+        ScheduleWindow::days(start, 7).unwrap(),
+        events,
+    )
+    .unwrap();
+    let occurrences = data.expand(MAX_SCHEDULE_OCCURRENCES).unwrap();
+    assert_eq!(occurrences.len(), 512);
+    let model = ResourceScheduleData::new(
+        data.clone(),
+        registrations(8),
+        ScheduleResourceWindow::new(0, 8).unwrap(),
+    )
+    .unwrap();
+    let time = ScheduleTimeWindow::default();
+    let layout = model.layout_timeline(time, 7).unwrap();
+    assert_eq!(layout.columns().len(), 56);
+    assert_eq!(layout.slot_count(), 1120);
+    assert_eq!(layout.placements().len(), 1184);
+    assert_eq!(
+        layout
+            .placements()
+            .iter()
+            .map(|p| p.position().lanes())
+            .max(),
+        Some(15)
+    );
+    let mut annual_segments = 0;
+    for placement in layout.placements() {
+        let column = layout.columns()[placement.column()];
+        let position = placement.position();
+        let occurrence = occurrences[position.occurrence_index()];
+        let event = data.event(occurrence).unwrap();
+        assert_eq!(
+            event.resource_key(),
+            Some(model.resources().items()[column.resource_index()].key())
+        );
+        if event.title() == "Annual" {
+            annual_segments += 1;
+            assert_eq!(occurrence.candidate_index(), 2);
+            assert_eq!(
+                (position.start_fraction(), position.end_fraction()),
+                (0., 1.)
+            );
+        }
+    }
+    assert_eq!(annual_segments, 112 * 7);
+    let filtered = ResourceScheduleData::new(
+        data.clone(),
+        registrations(8),
+        ScheduleResourceWindow::new(2, 4).unwrap(),
+    )
+    .unwrap();
+    let filtered_layout = filtered.layout_timeline(time, 7).unwrap();
+    for (index, column) in filtered_layout.columns().iter().enumerate() {
+        let key = filtered.resources().items()[column.resource_index()].key();
+        let independent_day = data.layout_day(column.date(), time, Some(key)).unwrap();
+        let positions = filtered_layout
+            .placements()
+            .iter()
+            .filter(|p| p.column() == index)
+            .map(|p| p.position())
+            .collect::<Vec<_>>();
+        assert_eq!(positions, independent_day);
+        let original_column = layout
+            .columns()
+            .iter()
+            .position(|original| original == column)
+            .unwrap();
+        assert_eq!(
+            positions,
+            layout
+                .placements()
+                .iter()
+                .filter(|p| p.column() == original_column)
+                .map(|p| p.position())
+                .collect::<Vec<_>>()
+        );
+    }
+}
+
+#[test]
+fn public_resource_layout_rejects_occurrence_overflow_before_returning_geometry() {
+    let daily =
+        ScheduleRecurrence::new(RecurrenceFrequency::Daily, 1, RecurrenceEnd::Never).unwrap();
+    let data = ScheduleData::new(
+        ScheduleZone::Civil,
+        ScheduleWindow::days(d("2026-06-01"), 7).unwrap(),
+        (0..300).map(|i| {
+            ScheduleEvent::new(
+                ScheduleKey::new(format!("daily-{i}")).unwrap(),
+                "Daily",
+                ScheduleInterval::new(dt("2026-06-01T09:00"), dt("2026-06-01T10:00")).unwrap(),
+            )
+            .unwrap()
+            .resource(ScheduleKey::new(format!("room-{}", i % 8)).unwrap())
+            .recurring(daily)
+            .unwrap()
+        }),
+    )
+    .unwrap();
+    let model = ResourceScheduleData::new(
+        data,
+        registrations(8),
+        ScheduleResourceWindow::new(0, 8).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(
+        model.layout_timeline(ScheduleTimeWindow::default(), 7),
+        Err(ScheduleError::TooManyOccurrences)
+    );
+    assert_eq!(
+        model
+            .data()
+            .layout_day(d("2026-06-01"), ScheduleTimeWindow::default(), None),
+        Err(ScheduleError::TooManyOccurrences)
     );
 }

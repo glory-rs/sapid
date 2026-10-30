@@ -609,17 +609,19 @@ impl Widget for OutputWindow {
         }
         root = root.fill(toolbar);
         if let Some(summary) = summary {
-            root = root.fill(glory::ui::text().class("sapid-test-summary").content(
-                scope.bond(move || {
-                    summary.with(|v| {
-                        if v.total().expect("validated counts") == 0 {
-                            "No tests supplied".into()
-                        } else {
-                            v.summary().expect("validated counts")
-                        }
-                    })
-                }),
-            ));
+            root = root.fill(
+                glory::ui::text()
+                    .class("sapid-test-summary")
+                    .content(scope.bond(move || {
+                        summary.with(|v| {
+                            if v.total().expect("validated counts") == 0 {
+                                "No tests supplied".into()
+                            } else {
+                                v.summary().expect("validated counts")
+                            }
+                        })
+                    })),
+            );
         }
         root.fill(list).show_in(scope)
     }

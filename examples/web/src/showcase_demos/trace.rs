@@ -90,8 +90,7 @@ mod fixture {
     pub fn form(scope: &Scope, theme: Theme, stack_only: bool) -> (impl Widget + use<>, State) {
         let data = scope.cage(trace_data(false, true));
         let stack = scope.cage(stack_data(false));
-        let expanded =
-            scope.cage(TraceExpansion::new([key("request"), key("lookup")]).unwrap());
+        let expanded = scope.cage(TraceExpansion::new([key("request"), key("lookup")]).unwrap());
         let enabled = scope.cage(true);
         let accept = scope.cage(true);
         let visible = scope.cage(true);

@@ -96,10 +96,7 @@ pub struct MenuRadioItem {
     key: String,
     label: Vary<String>,
 }
-pub fn menu_radio_item(
-    key: impl Into<String>,
-    label: impl Into<Vary<String>>,
-) -> MenuRadioItem {
+pub fn menu_radio_item(key: impl Into<String>, label: impl Into<Vary<String>>) -> MenuRadioItem {
     MenuRadioItem {
         common: Common::default(),
         key: key.into(),
@@ -1159,11 +1156,7 @@ impl Level {
                             let result = if callback.open.source.get() {
                                 callback.request(false)
                             } else {
-                                live.open_child(
-                                    &scope,
-                                    trigger.get().unwrap_or(panel_node),
-                                    true,
-                                )
+                                live.open_child(&scope, trigger.get().unwrap_or(panel_node), true)
                             };
                             if let Err(error) = result {
                                 scope.report_error(error);
@@ -1190,9 +1183,7 @@ impl Level {
                 for (trigger, child) in live.children() {
                     if child.open.source.try_get()? {
                         if accepted.is_some() {
-                            return Err(invalid(
-                                "only one submenu at each menu level may be open",
-                            ));
+                            return Err(invalid("only one submenu at each menu level may be open"));
                         }
                         accepted = Some(trigger);
                     }
@@ -1226,9 +1217,9 @@ impl Level {
                         .iter()
                         .find(|item| item.enabled && item.node == target)
                         .or_else(|| {
-                            items.iter().find(|item| {
-                                item.enabled && Some(&item.member) == current.as_ref()
-                            })
+                            items
+                                .iter()
+                                .find(|item| item.enabled && Some(&item.member) == current.as_ref())
                         });
                     if let Some(item) = target
                         && scope.is_active(item.node)?

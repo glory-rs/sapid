@@ -13,8 +13,7 @@ mod fixture {
             let content = scope.cage(long.clone());
             let open = scope.cage(false);
             let proposals = scope.cage(0_u32);
-            let status =
-                scope.bond(move || format!("Expansion proposals: {}", proposals.get()));
+            let status = scope.bond(move || format!("Expansion proposals: {}", proposals.get()));
             sapid::stack()
                 .theme(theme.clone())
                 .class("spoiler-fixture")
@@ -40,9 +39,7 @@ mod fixture {
                     sapid::button()
                         .theme(theme.clone())
                         .label("Shorten text")
-                        .on_press(move || {
-                            content.revise(|text| *text = "Short content".into())
-                        }),
+                        .on_press(move || content.revise(|text| *text = "Short content".into())),
                     sapid::button()
                         .theme(theme.clone())
                         .label("Restore long text")

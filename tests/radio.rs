@@ -60,8 +60,9 @@ fn radio_group_has_real_semantics_one_value_and_a_single_roving_tab_stop() {
     assert_eq!(
         members
             .iter()
-            .filter(|id| app.tree().node(**id).unwrap().descriptor.view().focus
-                == FocusMode::TabStop)
+            .filter(
+                |id| app.tree().node(**id).unwrap().descriptor.view().focus == FocusMode::TabStop
+            )
             .count(),
         1
     );
@@ -193,8 +194,7 @@ fn disabled_selected_value_is_preserved_with_an_enabled_tab_entry_and_nonlooping
     assert_eq!(checked(&app), [false, false, true]);
 }
 #[test]
-fn invalid_radio_configurations_are_rejected_before_nodes_and_program_unknown_values_preserve_ui()
- {
+fn invalid_radio_configurations_are_rejected_before_nodes_and_program_unknown_values_preserve_ui() {
     let app = App::memory();
     for group in [
         radio_group("empty"),
@@ -203,9 +203,8 @@ fn invalid_radio_configurations_are_rejected_before_nodes_and_program_unknown_va
         radio_group("bad-name")
             .radio(radio("a"))
             .form_name("business name with spaces"),
-        radio_group("budget").items(
-            (0..=sapid::MAX_RADIO_GROUP_ITEMS).map(|index| radio(format!("item{index}"))),
-        ),
+        radio_group("budget")
+            .items((0..=sapid::MAX_RADIO_GROUP_ITEMS).map(|index| radio(format!("item{index}")))),
     ] {
         assert!(app.mount(group).is_err());
         assert_eq!(app.stats().nodes, 0);

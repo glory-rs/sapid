@@ -87,9 +87,7 @@ impl Widget for Spoiler {
         }
         let initial = glory::core::untracked(|| self.content.try_get())?;
         if initial.len() > MAX_SPOILER_BYTES {
-            return Err(
-                glory::render::Error::InvalidProps("spoiler text exceeds 64KiB").into(),
-            );
+            return Err(glory::render::Error::InvalidProps("spoiler text exceeds 64KiB").into());
         }
         let measured = scope.cage(if initial.is_empty() { Some(0.0) } else { None });
         let control = std::mem::take(&mut self.expanded).mount(scope);
@@ -260,10 +258,9 @@ impl Widget for Spoiler {
                     return Ok(());
                 }
                 if value.len() > MAX_SPOILER_BYTES {
-                    return Err(glory::render::Error::InvalidProps(
-                        "spoiler text exceeds 64KiB",
-                    )
-                    .into());
+                    return Err(
+                        glory::render::Error::InvalidProps("spoiler text exceeds 64KiB").into(),
+                    );
                 }
                 if let Some(id) = text_ref.try_get()? {
                     scope.patch(id, Patch::Text(Change::Set(value.clone())))?;

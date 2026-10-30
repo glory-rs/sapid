@@ -37,8 +37,7 @@ mod fixture {
                 let content_theme = theme.clone();
                 controls.push(sapid::button().theme(theme.clone()).label(label).on_press(
                     move || {
-                        if let Err(error) =
-                            command(&control, operation, log, count, &content_theme)
+                        if let Err(error) = command(&control, operation, log, count, &content_theme)
                             && let Some(scope) = weak.upgrade()
                         {
                             scope.report_error(error);

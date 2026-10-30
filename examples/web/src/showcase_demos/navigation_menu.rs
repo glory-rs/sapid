@@ -40,9 +40,7 @@ mod fixture {
                         .context(ctx.clone())
                         .label("Home")
                         .href("/home")
-                        .on_navigate(move |request| {
-                            status.revise(|value| *value = request.href)
-                        }),
+                        .on_navigate(move |request| status.revise(|value| *value = request.href)),
                     navigation_menu_panel("products")
                         .context(ctx.clone())
                         .label("Products")
@@ -75,9 +73,7 @@ mod fixture {
                                             glory::ui::when(editor, move || {
                                                 ctx.track_focusable(
                                                     draft_ref,
-                                                    glory::ui::view()
-                                                        .role(Role::ListItem)
-                                                        .fill(
+                                                    glory::ui::view().role(Role::ListItem).fill(
                                                         glory::ui::input()
                                                             .node_ref(draft_ref)
                                                             .name("Navigation draft")
@@ -87,14 +83,14 @@ mod fixture {
                                                                 EventKind::ValueChanged,
                                                                 move |event| {
                                                                     if let Event::ValueChanged {
-                                                                    value,
-                                                                    ..
-                                                                } = event
-                                                                {
-                                                                    draft.revise(|draft| {
-                                                                        *draft = value
-                                                                    })
-                                                                }
+                                                                        value,
+                                                                        ..
+                                                                    } = event
+                                                                    {
+                                                                        draft.revise(|draft| {
+                                                                            *draft = value
+                                                                        })
+                                                                    }
                                                                 },
                                                             ),
                                                     ),

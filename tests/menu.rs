@@ -10,8 +10,7 @@ use glory::render::{
 };
 use glory::ui::{App, Widget};
 use sapid::{
-    dropdown_menu, menu, menu_checkbox, menu_item, menu_radio_group, menu_radio_item,
-    menu_submenu,
+    dropdown_menu, menu, menu_checkbox, menu_item, menu_radio_group, menu_radio_item, menu_submenu,
 };
 
 fn nodes(app: &App) -> Vec<NodeId> {
@@ -496,10 +495,7 @@ fn keyboard_focus_and_reveal_follow_visibility_and_exit_retires_older_focus_inte
                 ..Default::default()
             }
         }
-        fn apply(
-            &mut self,
-            m: &[Mutation],
-        ) -> std::result::Result<Receipt, glory::render::Error> {
+        fn apply(&mut self, m: &[Mutation]) -> std::result::Result<Receipt, glory::render::Error> {
             self.memory.apply(m)
         }
         fn request(

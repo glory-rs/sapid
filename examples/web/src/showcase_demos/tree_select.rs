@@ -9,8 +9,8 @@ mod fixture {
     use glory::prelude::*;
     use glory::style::{Display, FlexDirection, FlexWrap, Length, Style};
     use sapid::{
-        TreeChoiceModel, TreeChoicePolicy, TreeChoices, TreeKind, TreeModel, TreeNode,
-        cascader, tree_select,
+        TreeChoiceModel, TreeChoicePolicy, TreeChoices, TreeKind, TreeModel, TreeNode, cascader,
+        tree_select,
     };
     use std::collections::BTreeSet;
     pub fn nodes() -> Vec<TreeNode> {
@@ -66,16 +66,12 @@ mod fixture {
                                         .theme(theme.clone())
                                         .label("Refuse path selection")
                                         .checked(refuse)
-                                        .on_checked_change(move |v| {
-                                            refuse.revise(|old| *old = v)
-                                        }),
+                                        .on_checked_change(move |v| refuse.revise(|old| *old = v)),
                                     sapid::checkbox()
                                         .theme(theme.clone())
                                         .label("Enable path choice")
                                         .checked(enabled)
-                                        .on_checked_change(move |v| {
-                                            enabled.revise(|old| *old = v)
-                                        }),
+                                        .on_checked_change(move |v| enabled.revise(|old| *old = v)),
                                     sapid::checkbox()
                                         .theme(theme.clone())
                                         .label("Readonly path choice")
@@ -106,14 +102,11 @@ mod fixture {
                                             .on_expanded_change(move |v| {
                                                 expanded.revise(|old| *old = v)
                                             })
-                                            .on_load_children(move |_| {
-                                                loads.revise(|n| *n += 1)
-                                            })
+                                            .on_load_children(move |_| loads.revise(|n| *n += 1))
                                     };
                                 }
                                 if columns {
-                                    Box::new(main!(cascader("main-destination")))
-                                        as Box<dyn Widget>
+                                    Box::new(main!(cascader("main-destination"))) as Box<dyn Widget>
                                 } else {
                                     Box::new(main!(tree_select("main-destination")))
                                         as Box<dyn Widget>
@@ -176,10 +169,9 @@ mod fixture {
                                             )
                                             .unwrap();
                                             value.revise(|old| {
-                                                *old = TreeChoices::new([model
-                                                    .path("lib")
-                                                    .unwrap()])
-                                                .unwrap()
+                                                *old =
+                                                    TreeChoices::new([model.path("lib").unwrap()])
+                                                        .unwrap()
                                             });
                                         }),
                                     sapid::button()

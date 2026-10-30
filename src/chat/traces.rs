@@ -368,8 +368,7 @@ impl Widget for TraceRow {
             .node_ref(reference)
             .show_in(scope)?;
         let area = scope.child_in(reference.get().ok_or(glory::ui::Error::Gone)?)?;
-        let opened =
-            scope.bond(move || state.expanded.source.with(|v| v.contains(&expanded_key)));
+        let opened = scope.bond(move || state.expanded.source.with(|v| v.contains(&expanded_key)));
         let label = scope.bond(move || {
             accepted.with(|d| {
                 d.record(&label_key).map_or_else(String::new, |r| {

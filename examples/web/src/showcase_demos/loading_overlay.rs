@@ -82,9 +82,7 @@ mod fixture {
                                         button()
                                             .theme(inside_theme.clone())
                                             .label("Load from region dialog")
-                                            .on_press(move || {
-                                                loading.revise(|value| *value = true)
-                                            })
+                                            .on_press(move || loading.revise(|value| *value = true))
                                     }),
                             )),
                         ),

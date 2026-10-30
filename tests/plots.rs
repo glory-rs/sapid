@@ -38,8 +38,7 @@ fn named(app: &App, name: &str) -> NodeId {
         .find(|id| {
             let t = app.tree();
             let d = t.node(*id).unwrap().descriptor.view();
-            d.name.as_deref() == Some(name)
-                || matches!(d.props,Props::Button(p)if p.label==name)
+            d.name.as_deref() == Some(name) || matches!(d.props,Props::Button(p)if p.label==name)
         })
         .unwrap_or_else(|| panic!("missing {name}"))
 }
@@ -189,4 +188,91 @@ fn sampled_points_disclose_the_source_count_and_do_not_claim_a_complete_source_t
     app.mount(scatter_chart("sample").data(data)).unwrap();
     assert_eq!(class(&app, "sapid-plot-point").len(), 16);
     assert!(text(&app).contains("16 of 1000000 sampled"));
+}
+
+fn scene_descriptors(app: &App) -> Vec<glory::render::Descriptor> {
+    all(app)
+        .into_iter()
+        .filter_map(|id| {
+            let tree = app.tree();
+            let view = tree.node(id).unwrap().descriptor.view();
+            view.classes
+                .iter()
+                .any(|c| {
+                    matches!(
+                        c.as_str(),
+                        "sapid-plot-layer"
+                            | "sapid-plot-label"
+                            | "sapid-plot-range"
+                            | "sapid-plot-point"
+                            | "sapid-plot-detail"
+                            | "sapid-plot-empty"
+                            | "sapid-plot-clipping"
+                    )
+                })
+                .then(|| view.to_owned())
+        })
+        .collect()
+}
+
+#[test]
+fn table_policy_keeps_all_plot_scenes_accessibility_and_selection_equivalent() {
+    for kind in samples::KINDS {
+        let full = App::memory();
+        let drawing = App::memory();
+        let full_data = full.scope().cage(samples::sample(kind));
+        let drawing_data = drawing.scope().cage(samples::sample(kind));
+        let full_selected = full.scope().cage(None);
+        let drawing_selected = drawing.scope().cage(None);
+        full.mount(
+            plot("policy", kind)
+                .data(full_data)
+                .on_selection_change(move |value| full_selected.revise(|old| *old = value)),
+        )
+        .unwrap();
+        drawing
+            .mount(
+                plot("policy", kind)
+                    .data(drawing_data)
+                    .data_table(false)
+                    .on_selection_change(move |value| drawing_selected.revise(|old| *old = value)),
+            )
+            .unwrap();
+        assert_eq!(
+            scene_descriptors(&full),
+            scene_descriptors(&drawing),
+            "{kind:?}"
+        );
+        assert!(!class(&full, "sapid-plot-tables").is_empty());
+        assert!(class(&drawing, "sapid-plot-tables").is_empty());
+        full.dispatch(named(&full, "Next data point"), Event::Activate)
+            .unwrap();
+        drawing
+            .dispatch(named(&drawing, "Next data point"), Event::Activate)
+            .unwrap();
+        assert_eq!(full_selected.get(), drawing_selected.get(), "{kind:?}");
+        assert_eq!(
+            scene_descriptors(&full),
+            scene_descriptors(&drawing),
+            "selected {kind:?}"
+        );
+        full_data.revise(samples::update);
+        drawing_data.revise(samples::update);
+        full.flush().unwrap();
+        drawing.flush().unwrap();
+        assert_eq!(
+            scene_descriptors(&full),
+            scene_descriptors(&drawing),
+            "updated {kind:?}"
+        );
+        full_data.revise(|value| *value = samples::empty(kind));
+        drawing_data.revise(|value| *value = samples::empty(kind));
+        full.flush().unwrap();
+        drawing.flush().unwrap();
+        assert_eq!(
+            scene_descriptors(&full),
+            scene_descriptors(&drawing),
+            "empty {kind:?}"
+        );
+    }
 }

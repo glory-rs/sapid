@@ -3,9 +3,9 @@ use crate::appearance::{Common, common_methods};
 use crate::composite::{self, Callback};
 use crate::state::{Control, Dirty, Value};
 use crate::{
-    DateSelection, DateTimeBounds, DateTimeDraft, DateTimeOutcome, DateTimeParts,
-    DateTimePolicy, DateTimeStatus, DatesProvider, FieldControl, LocalDateTime, LocalTime,
-    TimeFormat, TimeGridSpec, TimePickerDraft, TimePickerStatus,
+    DateSelection, DateTimeBounds, DateTimeDraft, DateTimeOutcome, DateTimeParts, DateTimePolicy,
+    DateTimeStatus, DatesProvider, FieldControl, LocalDateTime, LocalTime, TimeFormat,
+    TimeGridSpec, TimePickerDraft, TimePickerStatus,
 };
 use glory::render::{Direction, NodeId, Role};
 use glory::style::{Display, FlexDirection};
@@ -561,9 +561,7 @@ impl Widget for InlineDateTimePicker {
             .class("sapid-date-time-status")
             .content(scope.bond(move || {
                 match status.get() {
-                    DateTimeStatus::OutOfBounds(_) => {
-                        "Date/time is outside the allowed interval"
-                    }
+                    DateTimeStatus::OutOfBounds(_) => "Date/time is outside the allowed interval",
                     DateTimeStatus::Ambiguous { .. } => {
                         "Date/time is ambiguous; choose an explicit application policy"
                     }

@@ -29,14 +29,16 @@ fn panel(app: &App) -> NodeId {
 fn real_dialog_has_stable_named_anchor_relations_and_measureless_initial_shape() {
     let app = App::memory();
     let ctx = tour_context(app.scope(), "guide").unwrap();
-    app.mount(glory::ui::view().fill((
-        tour_target(&ctx, "editor").fill(glory::ui::input().name("Draft")),
-        tour(&ctx, "intro").default_open(true).step(tour_step(
-            "editor",
-            "Edit",
-            "Type a draft",
-        )),
-    )))
+    app.mount(glory::ui::view().fill(
+        (
+            tour_target(&ctx, "editor").fill(glory::ui::input().name("Draft")),
+            tour(&ctx, "intro").default_open(true).step(tour_step(
+                "editor",
+                "Edit",
+                "Type a draft",
+            )),
+        ),
+    ))
     .unwrap();
     assert_eq!(ctx.len(), 1);
     let tree = app.tree();
@@ -156,8 +158,9 @@ fn declarations_reject_empty_duplicate_invalid_and_overbudget_before_panel_nodes
         let ctx = tour_context(app.scope(), "reject").unwrap();
         let guide = match mode {
             0 => tour(&ctx, "intro"),
-            1 => tour(&ctx, "intro")
-                .steps([tour_step("a", "A", "A"), tour_step("a", "Again", "A")]),
+            1 => {
+                tour(&ctx, "intro").steps([tour_step("a", "A", "A"), tour_step("a", "Again", "A")])
+            }
             2 => tour(&ctx, "intro").step(tour_step("a", " ", "A")),
             3 => tour(&ctx, "intro")
                 .default_current(1)

@@ -4,9 +4,7 @@ use crate::{
     state::Value,
 };
 use glory::render::{Event, EventKind, FocusMode, Navigation, NodeId};
-use glory::style::{
-    Display, FlexDirection, FlexWrap, Length, Limit, ObjectFit, Overflow, Style,
-};
+use glory::style::{Display, FlexDirection, FlexWrap, Length, Limit, ObjectFit, Overflow, Style};
 use glory::ui::{Result, Widget};
 use glory::{Cage, Scope, Vary};
 use std::{collections::BTreeSet, rc::Rc};
@@ -104,10 +102,8 @@ fn validate(images: &[LightboxImage], view: &LightboxView) -> Result {
                 "lightbox requires nonempty bounded alt text and canonical captions",
             ));
         }
-        bytes += image.key.len()
-            + image.source.len()
-            + image.alternative.len()
-            + image.caption.len();
+        bytes +=
+            image.key.len() + image.source.len() + image.alternative.len() + image.caption.len();
         if bytes > MAX_LIGHTBOX_METADATA_BYTES {
             return Err(invalid("lightbox metadata exceeds its byte budget"));
         }
@@ -470,27 +466,28 @@ fn build_content(scope: &Scope, state: &State, theme: &crate::Theme, unstyled: b
                     status.revise(|v| *v = "Loading image".into());
                 }
             });
-            let mut image =
-                crate::image(scope.bond(move || {
-                    model.with(|m| m.image().expect("live image").source.clone())
-                }))
-                .alt(scope.bond(move || {
+            let mut image = crate::image(
+                scope.bond(move || model.with(|m| m.image().expect("live image").source.clone())),
+            )
+            .alt(
+                scope.bond(move || {
                     model.with(|m| m.image().expect("live image").alternative.clone())
-                }))
-                .class("sapid-lightbox-image")
-                .theme(theme.clone())
-                .fit(ObjectFit::Contain)
-                .style(scope.bond(move || {
-                    model.with(|m| {
-                        let factor = f64::from(m.view.zoom.factor());
-                        Style::new()
-                            .width(Length::Percent(100. * factor))
-                            .height(Length::Px(320. * factor))
-                            .max_width(Limit::None)
-                    })
-                }))
-                .on_load(move |_| status.revise(|v| v.clear()))
-                .on_error(move |_| status.revise(|v| *v = "Image could not be loaded".into()));
+                }),
+            )
+            .class("sapid-lightbox-image")
+            .theme(theme.clone())
+            .fit(ObjectFit::Contain)
+            .style(scope.bond(move || {
+                model.with(|m| {
+                    let factor = f64::from(m.view.zoom.factor());
+                    Style::new()
+                        .width(Length::Percent(100. * factor))
+                        .height(Length::Px(320. * factor))
+                        .max_width(Limit::None)
+                })
+            }))
+            .on_load(move |_| status.revise(|v| v.clear()))
+            .on_error(move |_| status.revise(|v| *v = "Image could not be loaded".into()));
             if unstyled {
                 image = image.unstyled();
             }

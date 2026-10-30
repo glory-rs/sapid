@@ -743,8 +743,7 @@ impl Widget for RangeSlider {
         let gap = self.gap.clone();
         let axis = self.axis;
         let direction = self.direction;
-        let names =
-            std::mem::replace(&mut self.names, ["Minimum".into(), "Maximum".into()].into());
+        let names = std::mem::replace(&mut self.names, ["Minimum".into(), "Maximum".into()].into());
         let text = std::mem::replace(&mut self.text, [None, None].into());
         let field_metadata = metadata.clone();
         let read = move || -> Result<Snapshot> {
@@ -762,8 +761,7 @@ impl Widget for RangeSlider {
                 axis,
                 direction,
                 enabled: enabled.try_get()?,
-                readonly: field_metadata
-                    .try_with(|s| s.as_ref().is_some_and(|s| s.readonly))?,
+                readonly: field_metadata.try_with(|s| s.as_ref().is_some_and(|s| s.readonly))?,
                 names: [String::new(), String::new()],
                 text: [None, None],
             };
@@ -1055,8 +1053,7 @@ impl Widget for RangeSlider {
                 }
             });
             widget.show_in(&parent)?;
-            let visual =
-                scope.child_in(thumbs[index].try_get()?.ok_or(glory::ui::Error::Gone)?)?;
+            let visual = scope.child_in(thumbs[index].try_get()?.ok_or(glory::ui::Error::Gone)?)?;
             let mut circle = Style::new()
                 .position(Position::Absolute)
                 .width(Length::Px(size / 2.))

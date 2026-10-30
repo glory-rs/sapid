@@ -24,8 +24,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
             }
         })
     });
-    let status =
-        scope.bond(move || format!("mobile={};visible={}", mobile.get(), visible.get()));
+    let status = scope.bond(move || format!("mobile={};visible={}", mobile.get(), visible.get()));
     let fixed = affix("viewport")
         .theme(theme.clone())
         .name("Viewport affix")
@@ -80,9 +79,8 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                                 .height(Length::Px(34.0)),
                         )
                         .fill(glory::ui::button().label("Container action")),
-                    glory::ui::text().content(
-                        "Explicit scroll content; sticky remains within this container.",
-                    ),
+                    glory::ui::text()
+                        .content("Explicit scroll content; sticky remains within this container."),
                 ))
         });
     (

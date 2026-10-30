@@ -56,10 +56,8 @@ impl Snapshot {
             step: self.domain.step.to_f64(),
             page_step: self.domain.page.to_f64(),
             value_text: Some(self.text()),
-            can_increase: self.writable()
-                && self.domain.increment(parsed, true, false).is_some(),
-            can_decrease: self.writable()
-                && self.domain.increment(parsed, false, false).is_some(),
+            can_increase: self.writable() && self.domain.increment(parsed, true, false).is_some(),
+            can_decrease: self.writable() && self.domain.increment(parsed, false, false).is_some(),
         });
         metadata
     }
@@ -237,10 +235,7 @@ impl Controller {
                     self.draft.borrow_mut().take();
                 }
                 self.text(value, false)?;
-                if ended
-                    && value.len() <= crate::MAX_NUMBER_INPUT_BYTES
-                    && self.ensure().is_ok()
-                {
+                if ended && value.len() <= crate::MAX_NUMBER_INPUT_BYTES && self.ensure().is_ok() {
                     *self.composition_echo.borrow_mut() = Some((
                         *revision,
                         if value.is_empty() {
@@ -527,8 +522,7 @@ impl Widget for NumberInput {
             EventKind::Spin,
         ] {
             let s = state.clone();
-            let observers =
-                Observers::new(self.common.handlers.remove(&kind).unwrap_or_default());
+            let observers = Observers::new(self.common.handlers.remove(&kind).unwrap_or_default());
             let cleanup = observers.clone();
             scope.on_cleanup(move || cleanup.clear())?;
             input=input.on(kind,move |event|{

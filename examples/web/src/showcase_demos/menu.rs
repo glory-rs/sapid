@@ -117,9 +117,7 @@ mod fixture {
                     .gap(16.0),
             )
             .fill((
-                text().content(
-                    scope.bond(move || format!("Actions performed: {}", actions.get())),
-                ),
+                text().content(scope.bond(move || format!("Actions performed: {}", actions.get()))),
                 view().field_part(glory::render::FieldPart::Form).fill((
                     button().label("Before tools"),
                     tools,

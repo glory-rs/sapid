@@ -31,10 +31,7 @@ pub struct DataRecord {
     pub cells: Vec<String>,
 }
 impl DataRecord {
-    pub fn new(
-        key: impl Into<String>,
-        cells: impl IntoIterator<Item = impl Into<String>>,
-    ) -> Self {
+    pub fn new(key: impl Into<String>, cells: impl IntoIterator<Item = impl Into<String>>) -> Self {
         Self {
             key: key.into(),
             cells: cells
@@ -115,13 +112,18 @@ impl DataTableError {
                 "data table local source exceeds 4096 current records or its column shape"
             }
             Self::Payload => "data table current text payload exceeds 8 MiB",
-            Self::Query => {
-                "data table query exceeds finite bounds or references an unknown column"
-            }
+            Self::Query => "data table query exceeds finite bounds or references an unknown column",
             Self::Page => "data table server page conflicts with its echoed request or total",
         }
     }
 }
+impl std::fmt::Display for DataTableError {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str(self.message())
+    }
+}
+impl std::error::Error for DataTableError {}
+
 type Result<T> = std::result::Result<T, DataTableError>;
 fn valid_key(value: &str) -> bool {
     !value.is_empty() && value.len() <= 64 && glory::render::SemanticId::new(value).is_ok()
@@ -180,6 +182,8 @@ pub fn validate_data_query(columns: &[DataColumn], query: &DataTableQuery) -> Re
     Ok(())
 }
 pub fn validate_data_records(columns: &[DataColumn], rows: &[DataRecord]) -> Result<()> {
+    #[cfg(test)]
+    work::VALIDATION_PASSES.with(|count| count.set(count.get() + 1));
     if rows.len() > MAX_LOCAL_DATA_ROWS {
         return Err(DataTableError::Rows);
     }
@@ -207,8 +211,9 @@ pub fn validate_data_records(columns: &[DataColumn], rows: &[DataRecord]) -> Res
     }
     Ok(())
 }
-/// Explicit local sorting/filtering visits a finite local source only when its
-/// data/query changes. Stable equal values retain business order in both directions.
+/// Validate all inputs and resolve one standalone local query. Stable equal
+/// values retain business order in both directions. Mounted DataTable widgets
+/// reuse admitted matches when only pagination or column visibility changes.
 pub fn local_data_plan(
     columns: &[DataColumn],
     rows: &[DataRecord],
@@ -218,6 +223,19 @@ pub fn local_data_plan(
     validate_data_query(columns, query)?;
     validate_data_records(columns, rows)?;
     let needle = query.request.filter.to_lowercase();
+    let indices = local_match_indices(columns, rows, &needle, query.request.sort.as_ref());
+    Ok(local_page_plan(&indices, &query.request))
+}
+
+// Internal callers have already admitted the columns, records and query.
+pub(super) fn local_match_indices(
+    columns: &[DataColumn],
+    rows: &[DataRecord],
+    needle: &str,
+    sort: Option<&DataSort>,
+) -> Vec<usize> {
+    #[cfg(test)]
+    MATCH_PASSES.with(|count| count.set(count.get() + 1));
     let mut indices = rows
         .iter()
         .enumerate()
@@ -226,11 +244,11 @@ pub fn local_data_plan(
                 || row
                     .cells
                     .iter()
-                    .any(|cell| cell.to_lowercase().contains(&needle)))
+                    .any(|cell| cell.to_lowercase().contains(needle)))
             .then_some(index)
         })
         .collect::<Vec<_>>();
-    if let Some(sort) = &query.request.sort {
+    if let Some(sort) = sort {
         let column = columns
             .iter()
             .position(|column| column.key == sort.column)
@@ -244,22 +262,37 @@ pub fn local_data_plan(
             }
         });
     }
+    indices
+}
+
+pub(super) fn local_page_plan(indices: &[usize], request: &DataRequest) -> DataPlan {
     let total = indices.len();
-    let start = (query.request.page - 1) * query.request.page_size;
-    let end = start.saturating_add(query.request.page_size).min(total);
+    let start = (request.page - 1) * request.page_size;
+    let end = start.saturating_add(request.page_size).min(total);
     let selected = if start < end {
         indices[start..end].to_vec()
     } else {
         Vec::new()
     };
-    Ok(DataPlan {
+    DataPlan {
         indices: selected,
         total: Some(total),
-        pages: Some(total.div_ceil(query.request.page_size).max(1)),
+        pages: Some(total.div_ceil(request.page_size).max(1)),
         has_next: end < total,
         loading: false,
-    })
+    }
 }
+
+#[cfg(test)]
+pub(super) mod work {
+    use std::cell::Cell;
+    thread_local! {
+        pub static MATCH_PASSES: Cell<usize> = const { Cell::new(0) };
+        pub static VALIDATION_PASSES: Cell<usize> = const { Cell::new(0) };
+    }
+}
+#[cfg(test)]
+use work::MATCH_PASSES;
 /// Server pages are already sorted/filtered. Their finite rows are validated,
 /// then indexed as supplied; no local comparator or filter is applied.
 pub fn server_data_plan(
@@ -291,16 +324,20 @@ pub fn server_data_plan(
             return Err(DataTableError::Page);
         }
     }
+    Ok(server_page_plan(page, query))
+}
+
+pub(super) fn server_page_plan(page: &DataPage, query: &DataTableQuery) -> DataPlan {
     if page.request != query.request {
-        return Ok(DataPlan {
+        return DataPlan {
             indices: Vec::new(),
             total: None,
             pages: None,
             has_next: false,
             loading: true,
-        });
+        };
     }
-    Ok(DataPlan {
+    DataPlan {
         indices: (0..page.rows.len()).collect(),
         total: page.total,
         pages: page
@@ -308,7 +345,7 @@ pub fn server_data_plan(
             .map(|total| total.div_ceil(page.request.page_size).max(1)),
         has_next: page.has_next,
         loading: false,
-    })
+    }
 }
 
 #[cfg(test)]

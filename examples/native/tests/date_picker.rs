@@ -43,8 +43,7 @@ fn day(app: &App, date: CivilDate) -> NodeId {
 }
 
 #[test]
-fn native_default_picker_dialog_four_themes_has_real_popup_hit_testing_focus_return_and_pixels()
-{
+fn native_default_picker_dialog_four_themes_has_real_popup_hit_testing_focus_return_and_pixels() {
     for theme in [
         Theme::blue_light(),
         Theme::blue_dark(),
@@ -96,9 +95,7 @@ fn native_default_picker_dialog_four_themes_has_real_popup_hit_testing_focus_ret
         let next = day(app, d("2024-02-29"));
         let cell = bounds(app, selected);
         assert!((cell.width - 36.).abs() < 0.2 && (cell.height - 36.).abs() < 0.2);
-        assert!(
-            cell.x >= rect.x && cell.y >= rect.y && cell.x + cell.width <= rect.x + rect.width
-        );
+        assert!(cell.x >= rect.x && cell.y >= rect.y && cell.x + cell.width <= rect.x + rect.width);
         let hit = host.renderer().inspect(|dom| {
             dom.hit((cell.x + 18.) as f32, (cell.y + 18.) as f32)
                 .unwrap()
@@ -161,8 +158,7 @@ fn native_default_picker_dialog_four_themes_has_real_popup_hit_testing_focus_ret
     }
 }
 #[test]
-fn native_range_projection_readonly_and_disabled_keep_finite_real_selection_and_accepted_state()
-{
+fn native_range_projection_readonly_and_disabled_keep_finite_real_selection_and_accepted_state() {
     let host = WindowApp::new();
     host.renderer().set_viewport(720, 540, 1.).unwrap();
     let app = host.app();

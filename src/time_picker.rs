@@ -699,8 +699,7 @@ impl Widget for TimePicker {
                     let pending = s.pending.take();
                     let keep = reset == previous_reset
                         && pending.is_some_and(|p| {
-                            p.proposal == Some(value)
-                                || p.proposal.is_none() && p.baseline == value
+                            p.proposal == Some(value) || p.proposal.is_none() && p.baseline == value
                         });
                     if !keep {
                         s.set_parts(value)?;

@@ -171,10 +171,7 @@ macro_rules! methods {
                 self
             }
             /// Relative one-based line numbers. Consume at most 2049 iterator entries.
-            pub fn highlighted_lines(
-                mut self,
-                values: impl IntoIterator<Item = usize>,
-            ) -> Self {
+            pub fn highlighted_lines(mut self, values: impl IntoIterator<Item = usize>) -> Self {
                 crate::document::extend_bounded(
                     &mut self.config.highlighted,
                     values,
@@ -239,9 +236,8 @@ fn build(config: &mut Config, scope: &Scope) -> Result {
             let language = language.try_get()?;
             let next = source.try_with(|source| {
                 let same = glory::core::untracked(|| {
-                    accepted.try_with(|old| {
-                        old.language == language && old.document.source() == source
-                    })
+                    accepted
+                        .try_with(|old| old.language == language && old.document.source() == source)
                 })?;
                 if same {
                     return Ok::<_, glory::ui::Error>(None);
@@ -268,8 +264,8 @@ fn build(config: &mut Config, scope: &Scope) -> Result {
     base.padding = Some(Edges::all(12.));
     base.radius = Some(common.theme.radius);
     base.min_width = Some(Length::Px(0.));
-    let mut root = configure!(common, glory::ui::view(), scope, "sapid-code-block", base)
-        .node_ref(reference);
+    let mut root =
+        configure!(common, glory::ui::view(), scope, "sapid-code-block", base).node_ref(reference);
     let owner = scope.id();
     for (kind, mut handlers) in std::mem::take(&mut common.handlers) {
         root = root.on(kind, move |event| observe(&mut handlers, owner, event));
@@ -280,10 +276,8 @@ fn build(config: &mut Config, scope: &Scope) -> Result {
         if unstyled {
             copy = copy.unstyled();
         }
-        copy.source(
-            scope.bond(move || accepted.with(|value| value.document.source().to_string())),
-        )
-        .show_in(&area)?;
+        copy.source(scope.bond(move || accepted.with(|value| value.document.source().to_string())))
+            .show_in(&area)?;
     }
     let mut row = glory::ui::view().class("sapid-code-scroll").style(
         Style::new()
@@ -311,9 +305,7 @@ fn build(config: &mut Config, scope: &Scope) -> Result {
                     glory::ui::text()
                         .selectable(false)
                         .style(gutter_style)
-                        .content(
-                            scope.bond(move || accepted.with(|value| value.numbers.clone())),
-                        ),
+                        .content(scope.bond(move || accepted.with(|value| value.numbers.clone()))),
                 ),
         );
     }

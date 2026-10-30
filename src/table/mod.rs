@@ -463,8 +463,7 @@ impl Widget for Table {
                 .show_in(&parent)?;
         }
         row_index = 0;
-        for (section_index, (section, plan)) in self.sections.iter_mut().zip(&plans).enumerate()
-        {
+        for (section_index, (section, plan)) in self.sections.iter_mut().zip(&plans).enumerate() {
             let group = parent.cage(None);
             let part = match section.kind {
                 SectionKind::Head => DocumentPart::TableHead,
@@ -511,8 +510,7 @@ impl Widget for Table {
                     .show_in(&group_scope)?;
                 let row_scope =
                     group_scope.child_in(row_ref.get().ok_or(glory::ui::Error::Gone)?)?;
-                for (cell_index, (cell, column)) in
-                    row.cells.iter_mut().zip(positions).enumerate()
+                for (cell_index, (cell, column)) in row.cells.iter_mut().zip(positions).enumerate()
                 {
                     inherited(
                         &mut cell.common,
@@ -566,15 +564,11 @@ impl Widget for Table {
                         view = view.node_ref(reference)
                     }
                     if let Some(mut factory) = cell.content.take() {
-                        view =
-                            view.fill(glory::ui::widget(move |scope| factory().show_in(scope)))
+                        view = view.fill(glory::ui::widget(move |scope| factory().show_in(scope)))
                     } else {
-                        view = view.fill(
-                            glory::ui::text().content(
-                                texts[section_index][local_row][cell_index]
-                                    .expect("validated text"),
-                            ),
-                        )
+                        view = view.fill(glory::ui::text().content(
+                            texts[section_index][local_row][cell_index].expect("validated text"),
+                        ))
                     }
                     view.show_in(&row_scope)?;
                 }

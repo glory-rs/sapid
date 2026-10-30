@@ -72,8 +72,7 @@ pub fn image_form(theme: Theme) -> impl Widget {
                             .theme(theme.clone())
                             .label("Background action")
                             .on_press(move || {
-                                status
-                                    .revise(|value| *value = "Background action pressed".into())
+                                status.revise(|value| *value = "Background action pressed".into())
                             }),
                     )),
                 sapid::group().theme(theme.clone()).gap(8.0).fill((
@@ -81,17 +80,15 @@ pub fn image_form(theme: Theme) -> impl Widget {
                         .theme(theme.clone())
                         .label("Break image")
                         .on_press(move || {
-                            source.revise(|value| {
-                                *value = crate::assets::media("image-invalid.png")
-                            })
+                            source
+                                .revise(|value| *value = crate::assets::media("image-invalid.png"))
                         }),
                     button()
                         .theme(theme.clone())
                         .label("Restore image")
                         .on_press(move || {
-                            source.revise(|value| {
-                                *value = crate::assets::media("image-pattern.png")
-                            })
+                            source
+                                .revise(|value| *value = crate::assets::media("image-pattern.png"))
                         }),
                 )),
                 sapid::group().theme(theme.clone()).gap(8.0).fill((

@@ -6,7 +6,9 @@ use crate::{
 };
 use std::{cell::RefCell, collections::VecDeque};
 mod drag;
+mod snapshot;
 mod timeline;
+type AcceptedResources = Cage<Rc<snapshot::Snapshot>>;
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum ResourceAxis {
     #[default]
@@ -38,7 +40,7 @@ struct ResourceController {
     owner: glory::core::InstanceId,
     weak: WeakScope,
     live: Cell<bool>,
-    accepted: Cage<ResourceScheduleData>,
+    accepted: AcceptedResources,
     flags: Cage<Flags>,
     enabled: Vary<bool>,
     readonly: Vary<bool>,
@@ -157,22 +159,17 @@ impl ResourceController {
                 key,
                 candidate,
                 interval,
-            } => m
-                .data()
-                .expand(MAX_SCHEDULE_OCCURRENCES)
-                .is_ok_and(|items| {
-                    items.iter().any(|occ| {
-                        m.data().event(*occ).is_some_and(|event| {
-                            event.key() == key
-                                && event.edit_permissions().select
-                                && occ.candidate_index() == *candidate
-                                && occ.interval() == *interval
-                                && m.visible_resources()
-                                    .iter()
-                                    .any(|r| Some(r.key()) == event.resource_key())
-                        })
-                    })
-                }),
+            } => m.occurrences.iter().any(|occ| {
+                m.data().event(*occ).is_some_and(|event| {
+                    event.key() == key
+                        && event.edit_permissions().select
+                        && occ.candidate_index() == *candidate
+                        && occ.interval() == *interval
+                        && m.visible_resources()
+                            .iter()
+                            .any(|r| Some(r.key()) == event.resource_key())
+                })
+            }),
             ScheduleSelection::Slot {
                 interval,
                 resource: Some(resource),
@@ -200,20 +197,16 @@ impl ResourceController {
             return Ok(());
         }
         let allowed = self.accepted.try_with(|m| {
-            m.data()
-                .expand(MAX_SCHEDULE_OCCURRENCES)
-                .is_ok_and(|items| {
-                    items.iter().any(|occ| {
-                        m.data().event(*occ).is_some_and(|event| {
-                            event.key() == &target.event
-                                && occ.candidate_index() == target.candidate
-                                && occ.interval() == target.interval
-                                && event.resource_key() == Some(&target.resource)
-                                && (event.edit_permissions().move_event
-                                    || event.edit_permissions().resize_event)
-                        })
-                    })
+            m.occurrences.iter().any(|occ| {
+                m.data().event(*occ).is_some_and(|event| {
+                    event.key() == &target.event
+                        && occ.candidate_index() == target.candidate
+                        && occ.interval() == target.interval
+                        && event.resource_key() == Some(&target.resource)
+                        && (event.edit_permissions().move_event
+                            || event.edit_permissions().resize_event)
                 })
+            })
         })?;
         if allowed {
             self.edit_queue.borrow_mut().clear();
@@ -263,21 +256,16 @@ impl ResourceController {
                 return Ok(());
             };
             let current = self.accepted.try_with(|m| {
-                m.data()
-                    .expand(MAX_SCHEDULE_OCCURRENCES)
-                    .ok()?
-                    .into_iter()
-                    .find_map(|occ| {
-                        let event = m.data().event(occ)?;
-                        (event.key() == &chosen.event
-                            && occ.candidate_index() == chosen.candidate)
-                            .then(|| EditTarget {
-                                event: chosen.event.clone(),
-                                candidate: chosen.candidate,
-                                interval: occ.interval(),
-                                resource: event.resource_key().unwrap().clone(),
-                            })
-                    })
+                m.occurrences.iter().copied().find_map(|occ| {
+                    let event = m.data().event(occ)?;
+                    (event.key() == &chosen.event && occ.candidate_index() == chosen.candidate)
+                        .then(|| EditTarget {
+                            event: chosen.event.clone(),
+                            candidate: chosen.candidate,
+                            interval: occ.interval(),
+                            resource: event.resource_key().unwrap().clone(),
+                        })
+                })
             })?;
             let Some(current) = current else {
                 self.edit_queue.borrow_mut().clear();
@@ -310,9 +298,7 @@ impl ResourceController {
             let minutes = i64::from(steps) * if all_day { 1440 } else { i64::from(self.step) };
             let proposed = match kind {
                 ScheduleEditKind::Move => target.interval.shifted_minutes(minutes),
-                ScheduleEditKind::ResizeStart => {
-                    target.interval.resize_start_by_minutes(minutes)
-                }
+                ScheduleEditKind::ResizeStart => target.interval.resize_start_by_minutes(minutes),
                 ScheduleEditKind::ResizeEnd => target.interval.resize_end_by_minutes(minutes),
             };
             let Ok(proposed) = proposed else {
@@ -370,26 +356,21 @@ impl ResourceController {
             return Ok(());
         };
         let next = self.accepted.try_with(|m| {
-            m.data()
-                .expand(MAX_SCHEDULE_OCCURRENCES)
-                .unwrap()
-                .into_iter()
-                .find_map(|occ| {
-                    let e = m.data().event(occ).unwrap();
-                    (e.key() == &chosen.event
-                        && occ.candidate_index() == chosen.candidate
-                        && m.visible_resources()
-                            .iter()
-                            .any(|r| Some(r.key()) == e.resource_key())
-                        && (e.edit_permissions().move_event
-                            || e.edit_permissions().resize_event))
-                        .then(|| EditTarget {
-                            event: e.key().clone(),
-                            candidate: occ.candidate_index(),
-                            interval: occ.interval(),
-                            resource: e.resource_key().unwrap().clone(),
-                        })
-                })
+            m.occurrences.iter().copied().find_map(|occ| {
+                let e = m.data().event(occ).unwrap();
+                (e.key() == &chosen.event
+                    && occ.candidate_index() == chosen.candidate
+                    && m.visible_resources()
+                        .iter()
+                        .any(|r| Some(r.key()) == e.resource_key())
+                    && (e.edit_permissions().move_event || e.edit_permissions().resize_event))
+                    .then(|| EditTarget {
+                        event: e.key().clone(),
+                        candidate: occ.candidate_index(),
+                        interval: occ.interval(),
+                        resource: e.resource_key().unwrap().clone(),
+                    })
+            })
         })?;
         if next.as_ref() != Some(&chosen) {
             self.edit_target.try_revise(|v| *v = next)?;
@@ -552,34 +533,6 @@ impl ResourceSchedule {
         self
     }
 }
-fn validate(
-    model: &ResourceScheduleData,
-    view: ResourceScheduleView,
-    time: ScheduleTimeWindow,
-) -> Result {
-    model
-        .data()
-        .expand(MAX_SCHEDULE_OCCURRENCES)
-        .map_err(|_| invalid())?;
-    match view {
-        ResourceScheduleView::Day | ResourceScheduleView::Week => {
-            model
-                .layout_timeline(
-                    time,
-                    if view == ResourceScheduleView::Day {
-                        1
-                    } else {
-                        7
-                    },
-                )
-                .map_err(|_| invalid())?;
-        }
-        ResourceScheduleView::Month => {
-            model.layout_month().map_err(|_| invalid())?;
-        }
-    }
-    Ok(())
-}
 impl Widget for ResourceSchedule {
     fn build(&mut self, scope: &Scope) -> Result {
         if self.key.is_empty()
@@ -598,8 +551,7 @@ impl Widget for ResourceSchedule {
         }
         let view = self.view;
         let time = self.time;
-        let accepted =
-            composite::validated(scope, &self.data, move |m| validate(m, view, time))?;
+        let accepted = snapshot::accept(scope, &self.data, view, time)?;
         let enabled = self.common.enabled.clone();
         let readonly = self.readonly.clone();
         let enabled_flags = enabled.clone();
@@ -916,14 +868,12 @@ fn build_editor(
     let accepted = state.accepted;
     let rows = scope.bond(move || {
         accepted.with(|m| {
-            m.data()
-                .expand(MAX_SCHEDULE_OCCURRENCES)
-                .unwrap()
-                .into_iter()
+            m.occurrences
+                .iter()
+                .copied()
                 .filter_map(|occ| {
                     let event = m.data().event(occ).unwrap();
-                    ((event.edit_permissions().move_event
-                        || event.edit_permissions().resize_event)
+                    ((event.edit_permissions().move_event || event.edit_permissions().resize_event)
                         && m.visible_resources()
                             .iter()
                             .any(|r| Some(r.key()) == event.resource_key()))
@@ -1032,10 +982,9 @@ fn build_all_day(
     let data = state.accepted;
     let rows = scope.bond(move || {
         data.with(|m| {
-            m.data()
-                .expand(MAX_SCHEDULE_OCCURRENCES)
-                .unwrap()
-                .into_iter()
+            m.occurrences
+                .iter()
+                .copied()
                 .filter_map(|occ| {
                     let e = m.data().event(occ).unwrap();
                     (e.is_all_day()

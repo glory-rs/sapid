@@ -128,10 +128,7 @@ impl Controller {
         }
         self.request()
     }
-    fn complete(
-        self: &Rc<Self>,
-        result: std::result::Result<QueryValue, glory::render::Error>,
-    ) {
+    fn complete(self: &Rc<Self>, result: std::result::Result<QueryValue, glory::render::Error>) {
         if self.ensure().is_err() {
             return;
         }
@@ -511,10 +508,7 @@ impl Scroller {
         };
         self
     }
-    pub fn content<W: Widget>(
-        mut self,
-        factory: impl FnMut(ScrollContext) -> W + 'static,
-    ) -> Self {
+    pub fn content<W: Widget>(mut self, factory: impl FnMut(ScrollContext) -> W + 'static) -> Self {
         self.area = self.area.content(factory);
         self
     }

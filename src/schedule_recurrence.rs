@@ -91,8 +91,8 @@ impl ScheduleRecurrence {
                 }
                 let a = i64::from(anchor.ordinal())
                     - i64::from(anchor.weekday().index_from(week_start));
-                let b = i64::from(date.ordinal())
-                    - i64::from(date.weekday().index_from(week_start));
+                let b =
+                    i64::from(date.ordinal()) - i64::from(date.weekday().index_from(week_start));
                 let weeks = ((b - a) / 7) as u32;
                 if !weeks.is_multiple_of(interval) {
                     return None;
@@ -157,13 +157,10 @@ impl ScheduleRecurrence {
                 let n = delta / interval;
                 match missing {
                     MissingScheduleDay::Clamp => n,
-                    MissingScheduleDay::Skip => {
-                        periodic_count(n, 400 / gcd(interval, 400), |at| {
-                            let year = (u32::from(anchor.year()) - 1 + at * interval) % 400 + 1;
-                            YearMonth::new(year as u16, anchor.month()).unwrap().days()
-                                >= anchor.day()
-                        })
-                    }
+                    MissingScheduleDay::Skip => periodic_count(n, 400 / gcd(interval, 400), |at| {
+                        let year = (u32::from(anchor.year()) - 1 + at * interval) % 400 + 1;
+                        YearMonth::new(year as u16, anchor.month()).unwrap().days() >= anchor.day()
+                    }),
                 }
             }
         };

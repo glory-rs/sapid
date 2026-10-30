@@ -13,10 +13,8 @@ fn page(template: &str, html: &str) -> String {
         )
 }
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let directory =
-        std::path::PathBuf::from(std::env::args().nth(1).ok_or("output directory")?);
-    let dsl =
-        glory::ssr::snapshot(sapid_web_example::dsl::fixture::demo(sapid::Theme::light()))?;
+    let directory = std::path::PathBuf::from(std::env::args().nth(1).ok_or("output directory")?);
+    let dsl = glory::ssr::snapshot(sapid_web_example::dsl::fixture::demo(sapid::Theme::light()))?;
     std::fs::write(
         directory.join("dsl-hydrate.html"),
         page(include_str!("../../dsl.html"), &dsl.html),
@@ -36,30 +34,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let forms = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::forms_form::form(scope, theme.clone()).0
             })?;
-            let display = glory::ssr::snapshot(sapid_web_example::display_form::display_form(
+            let display =
+                glory::ssr::snapshot(sapid_web_example::display_form::display_form(theme.clone()))?;
+            let actions =
+                glory::ssr::snapshot(sapid_web_example::actions_form::actions_form(theme.clone()))?;
+            let document = glory::ssr::snapshot(sapid_web_example::document_form::document_form(
                 theme.clone(),
             ))?;
-            let actions = glory::ssr::snapshot(sapid_web_example::actions_form::actions_form(
-                theme.clone(),
-            ))?;
-            let document = glory::ssr::snapshot(
-                sapid_web_example::document_form::document_form(theme.clone()),
-            )?;
             let toggles = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::toggles_form::form(scope, theme.clone()).0
             })?;
-            let layout = glory::ssr::snapshot(sapid_web_example::layout_form::layout_form(
-                theme.clone(),
-            ))?;
+            let layout =
+                glory::ssr::snapshot(sapid_web_example::layout_form::layout_form(theme.clone()))?;
             let typography = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::typography_form::form(scope, theme.clone()).0
             })?;
-            let timeline = glory::ssr::snapshot(
-                sapid_web_example::timeline_form::timeline_form(theme.clone()),
-            )?;
-            let spoiler = glory::ssr::snapshot(sapid_web_example::spoiler_form::spoiler_form(
+            let timeline = glory::ssr::snapshot(sapid_web_example::timeline_form::timeline_form(
                 theme.clone(),
             ))?;
+            let spoiler =
+                glory::ssr::snapshot(sapid_web_example::spoiler_form::spoiler_form(theme.clone()))?;
             let navigation = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::navigation_form::form(scope, theme.clone()).0
             })?;
@@ -68,9 +62,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let hidden = glory::ssr::snapshot(
                 sapid_web_example::visually_hidden_form::visually_hidden_form(theme.clone()),
             )?;
-            let avatar = glory::ssr::snapshot(sapid_web_example::avatar_form::avatar_form(
-                theme.clone(),
-            ))?;
+            let avatar =
+                glory::ssr::snapshot(sapid_web_example::avatar_form::avatar_form(theme.clone()))?;
             let menu = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::menu_form::form(scope, theme.clone()).0
             })?;
@@ -85,18 +78,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             })?;
             let image =
                 glory::ssr::snapshot(sapid_web_example::image_form::image_form(theme.clone()))?;
-            let buttons = glory::ssr::snapshot(sapid_web_example::button_form::button_form(
-                theme.clone(),
-            ))?;
+            let buttons =
+                glory::ssr::snapshot(sapid_web_example::button_form::button_form(theme.clone()))?;
             let scroll_area = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::scroll_area_form::form(scope, theme.clone()).0
             })?;
-            let alerts = glory::ssr::snapshot(sapid_web_example::alerts_form::alerts_form(
+            let alerts =
+                glory::ssr::snapshot(sapid_web_example::alerts_form::alerts_form(theme.clone()))?;
+            let graphics = glory::ssr::snapshot(sapid_web_example::graphics_form::graphics_form(
                 theme.clone(),
             ))?;
-            let graphics = glory::ssr::snapshot(
-                sapid_web_example::graphics_form::graphics_form(theme.clone()),
-            )?;
             let native_select = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::native_select_form::form(scope, theme.clone()).0
             })?;
@@ -152,26 +143,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let context_menu = glory::ssr::snapshot_with(|scope| {
                 sapid_web_example::context_menu_form::form(scope, theme.clone()).0
             })?;
-            let progress = glory::ssr::snapshot(
-                sapid_web_example::progress_form::progress_form(theme.clone()),
-            )?;
-            let spinner = glory::ssr::snapshot(sapid_web_example::spinner_form::spinner_form(
+            let progress = glory::ssr::snapshot(sapid_web_example::progress_form::progress_form(
                 theme.clone(),
             ))?;
+            let spinner =
+                glory::ssr::snapshot(sapid_web_example::spinner_form::spinner_form(theme.clone()))?;
             let sheet =
                 glory::ssr::snapshot(sapid_web_example::sheet_form::sheet_form(theme.clone()))?;
             let loading_overlay = glory::ssr::snapshot(
                 sapid_web_example::loading_overlay_form::loading_overlay_form(theme.clone()),
             )?;
-            let modals = glory::ssr::snapshot(sapid_web_example::modals_form::modals_form(
-                theme.clone(),
-            ))?;
+            let modals =
+                glory::ssr::snapshot(sapid_web_example::modals_form::modals_form(theme.clone()))?;
             let notifications = glory::ssr::snapshot(
                 sapid_web_example::notifications_form::notifications_form(theme.clone()),
             )?;
-            let toolbar = glory::ssr::snapshot(sapid_web_example::toolbar_form::toolbar_form(
-                theme.clone(),
-            ))?;
+            let toolbar =
+                glory::ssr::snapshot(sapid_web_example::toolbar_form::toolbar_form(theme.clone()))?;
             let accordion = glory::ssr::snapshot(
                 sapid_web_example::accordion_form::accordion_form(theme.clone()),
             )?;
@@ -189,36 +177,30 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let environment = glory::ssr::snapshot(
                 sapid_web_example::environment_form::environment_form(theme.clone()),
             )?;
-            let messages = glory::ssr::snapshot(
-                sapid_web_example::messages_form::messages_form(theme.clone()),
-            )?;
+            let messages = glory::ssr::snapshot(sapid_web_example::messages_form::messages_form(
+                theme.clone(),
+            ))?;
             let message_scroller = glory::ssr::snapshot(
                 sapid_web_example::message_scroller_form::message_scroller_form(theme.clone()),
             )?;
-            let prompt = glory::ssr::snapshot(sapid_web_example::prompt_form::prompt_form(
-                theme.clone(),
-            ))?;
+            let prompt =
+                glory::ssr::snapshot(sapid_web_example::prompt_form::prompt_form(theme.clone()))?;
             let questionnaire = glory::ssr::snapshot(
                 sapid_web_example::questionnaire_form::questionnaire_form(theme.clone()),
             )?;
             let model_suggestions = glory::ssr::snapshot(
-                sapid_web_example::model_suggestions_form::model_suggestions_form(
-                    theme.clone(),
-                ),
+                sapid_web_example::model_suggestions_form::model_suggestions_form(theme.clone()),
             )?;
             let responsive = glory::ssr::snapshot(
                 sapid_web_example::responsive_form::responsive_form(theme.clone()),
             )?;
-            let portal = glory::ssr::snapshot(sapid_web_example::portal_form::portal_form(
-                theme.clone(),
-            ))?;
+            let portal =
+                glory::ssr::snapshot(sapid_web_example::portal_form::portal_form(theme.clone()))?;
             let portal_missing = glory::ssr::snapshot(
                 sapid_web_example::portal_form::portal_missing_form(theme.clone()),
             )?;
             let data_table_server = glory::ssr::snapshot(
-                sapid_web_example::data_table_server_form::data_table_server_form(
-                    theme.clone(),
-                ),
+                sapid_web_example::data_table_server_form::data_table_server_form(theme.clone()),
             )?;
             let data_table = glory::ssr::snapshot(
                 sapid_web_example::data_table_form::data_table_form(theme.clone()),
@@ -226,9 +208,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let table =
                 glory::ssr::snapshot(sapid_web_example::table_form::table_form(theme.clone()))?;
             let table_of_contents = glory::ssr::snapshot(
-                sapid_web_example::table_of_contents_form::table_of_contents_form(
-                    theme.clone(),
-                ),
+                sapid_web_example::table_of_contents_form::table_of_contents_form(theme.clone()),
             )?;
             let text_motion = glory::ssr::snapshot(
                 sapid_web_example::text_motion_form::text_motion_form(theme.clone()),
@@ -243,33 +223,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 theme.clone(),
                 true,
             ))?;
-            let plot_0 = glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(
+            let plot_0 =
+                glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(theme.clone(), 0))?;
+            let plot_1 =
+                glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(theme.clone(), 1))?;
+            let plot_2 =
+                glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(theme.clone(), 2))?;
+            let plot_3 =
+                glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(theme.clone(), 3))?;
+            let plot_4 =
+                glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(theme.clone(), 4))?;
+            let plot_5 =
+                glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(theme.clone(), 5))?;
+            let lightbox = glory::ssr::snapshot(sapid_web_example::lightbox_form::lightbox_form(
                 theme.clone(),
-                0,
             ))?;
-            let plot_1 = glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(
-                theme.clone(),
-                1,
-            ))?;
-            let plot_2 = glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(
-                theme.clone(),
-                2,
-            ))?;
-            let plot_3 = glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(
-                theme.clone(),
-                3,
-            ))?;
-            let plot_4 = glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(
-                theme.clone(),
-                4,
-            ))?;
-            let plot_5 = glory::ssr::snapshot(sapid_web_example::plots_form::plots_form(
-                theme.clone(),
-                5,
-            ))?;
-            let lightbox = glory::ssr::snapshot(
-                sapid_web_example::lightbox_form::lightbox_form(theme.clone()),
-            )?;
             let public_explanations = glory::ssr::snapshot(
                 sapid_web_example::chat_evidence_form::chat_evidence_form(theme.clone(), false),
             )?;
@@ -278,9 +246,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let confirmation = glory::ssr::snapshot(
                 sapid_web_example::confirmation_form::confirmation_form(theme.clone()),
             )?;
-            let output = glory::ssr::snapshot(sapid_web_example::output_form::output_form(
-                theme.clone(),
-            ))?;
+            let output =
+                glory::ssr::snapshot(sapid_web_example::output_form::output_form(theme.clone()))?;
             let citations = glory::ssr::snapshot(
                 sapid_web_example::chat_evidence_form::chat_evidence_form(theme.clone(), true),
             )?;
@@ -293,9 +260,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let rich_editor = glory::ssr::snapshot(
                 sapid_web_example::rich_editor_form::rich_editor_form(theme.clone()),
             )?;
-            let carousel = glory::ssr::snapshot(
-                sapid_web_example::carousel_form::carousel_form(theme.clone()),
-            )?;
+            let carousel = glory::ssr::snapshot(sapid_web_example::carousel_form::carousel_form(
+                theme.clone(),
+            ))?;
             let files =
                 glory::ssr::snapshot(sapid_web_example::files_form::files_form(theme.clone()))?;
             let copy_button = glory::ssr::snapshot(
@@ -307,9 +274,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 sapid_web_example::translation_form::translation_form(theme.clone()),
             )?;
             let floating_indicator = glory::ssr::snapshot(
-                sapid_web_example::floating_indicator_form::floating_indicator_form(
-                    theme.clone(),
-                ),
+                sapid_web_example::floating_indicator_form::floating_indicator_form(theme.clone()),
             )?;
             let overflow_list = glory::ssr::snapshot(
                 sapid_web_example::overflow_list_form::overflow_list_form(theme.clone()),

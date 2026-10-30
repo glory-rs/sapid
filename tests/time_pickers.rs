@@ -50,8 +50,7 @@ fn button(app: &App, name: &str) -> NodeId {
         .find(|id| {
             let tree = app.tree();
             let d = tree.node(*id).unwrap().descriptor.view();
-            matches!(d.props,Props::Button(p)if p.label==name)
-                || d.name.as_deref() == Some(name)
+            matches!(d.props,Props::Button(p)if p.label==name) || d.name.as_deref() == Some(name)
         })
         .unwrap()
 }

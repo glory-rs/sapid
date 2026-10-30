@@ -75,9 +75,7 @@ pub fn charts_form(theme: sapid::Theme, cartesian: bool) -> impl Widget {
         sapid::button()
             .label("Brush middle categories")
             .theme(theme.clone())
-            .on_press(move || {
-                options.revise(|o| o.brush = Some(ChartBrush { first: 1, last: 3 }))
-            })
+            .on_press(move || options.revise(|o| o.brush = Some(ChartBrush { first: 1, last: 3 })))
             .show_in(&area)?;
         sapid::button()
             .label("Reset chart window")

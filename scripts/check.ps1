@@ -36,33 +36,34 @@ try {
     $env:CARGO_PROFILE_TEST_DEBUG = '0'
     New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
     Confirm-Target 'Cargo.toml'
-    if (-not (Test-Path -LiteralPath 'Cargo.lock' -PathType Leaf)) {
-        Invoke-Cargo -Arguments @('--config', 'resolver.incompatible-rust-versions="fallback"', 'generate-lockfile', '--manifest-path', 'Cargo.toml')
-    }
-    Invoke-Cargo -Arguments @('fmt', '--all', '--', '--check')
+    & python "$PSScriptRoot/library_lock.py" --manifest-path Cargo.toml
+    if ($LASTEXITCODE -ne 0) { throw 'Library lock preparation failed' }
+    & "$PSScriptRoot/format.ps1" -Check
+    & python "$PSScriptRoot/test_format.py"
+    if ($LASTEXITCODE -ne 0) { throw 'Independent workspace formatting regression failed' }
+    & python "$PSScriptRoot/test_dsl_paths.py"
+    if ($LASTEXITCODE -ne 0) { throw 'DSL compiler path regression failed' }
     Invoke-Cargo -Arguments @('test', '--locked')
     Invoke-Cargo -Arguments @('test', '--locked', '--all-features')
     Invoke-Cargo -Arguments @('clippy', '--locked', '--all-targets', '--', '-D', 'warnings')
     Invoke-Cargo -Arguments @('clippy', '--locked', '--all-features', '--all-targets', '--', '-D', 'warnings')
     Confirm-Target '../glory/Cargo.toml'
-    if (-not (Test-Path -LiteralPath '../glory/Cargo.lock' -PathType Leaf)) {
-        Invoke-Cargo -Arguments @('--config', 'resolver.incompatible-rust-versions="fallback"', 'generate-lockfile', '--manifest-path', '../glory/Cargo.toml')
-    }
+    & python "$PSScriptRoot/library_lock.py" --manifest-path ../glory/Cargo.toml
+    if ($LASTEXITCODE -ne 0) { throw 'Glory library lock preparation failed' }
     Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-style', '-p', 'glory-core', '-p', 'glory-render', '-p', 'glory-ui', '-p', 'glory-html', '-p', 'glory-ssr', '--all-features')
     Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-style', '-p', 'glory-core', '-p', 'glory-render', '-p', 'glory-ui', '-p', 'glory-html', '-p', 'glory-ssr', '--all-features', '--all-targets', '--', '-D', 'warnings')
     if ($Native) {
-        # Reuse the verified D-drive engine target; no native dependencies enter
-        # Sapid's default production graph.
-        $env:CARGO_TARGET_DIR = 'D:/BuildCache/glory-semantic-ui/target'
+        # Isolate this gate's native output as well as its portable output.
+        # The shared Cargo home still reuses downloaded engine dependencies.
+        $env:CARGO_TARGET_DIR = "$taskBuild/native-target"
         $env:CARGO_BUILD_JOBS = '1'
-        $env:TEMP = 'D:/BuildCache/glory-semantic-ui/tmp'
+        $env:TEMP = "$taskBuild/tmp"
         $env:TMP = $env:TEMP
         New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
         Confirm-Target '../glory/Cargo.toml'
         Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-apace', '--features', 'shell,accesskit,raster', '--all-targets', '--', '--test-threads=1')
         Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-apace', '--features', 'accesskit,raster', '--all-targets', '--', '-D', 'warnings')
         Confirm-Target 'examples/native/Cargo.toml'
-        Invoke-Cargo -Arguments @('fmt', '--manifest-path', 'examples/native/Cargo.toml', '--', '--check')
         Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', 'examples/native/Cargo.toml', '--all-features', '--', '--test-threads=1')
         Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', 'examples/native/Cargo.toml', '--all-features', '--all-targets', '--', '-D', 'warnings')
         $env:CARGO_TARGET_DIR = "$taskBuild/target"
@@ -73,7 +74,6 @@ try {
     if ($Web) {
         $manifest = 'examples/web/Cargo.toml'
         Confirm-Target $manifest
-        Invoke-Cargo -Arguments @('fmt', '--manifest-path', $manifest, '--', '--check')
         Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', $manifest, '--all-targets', '--', '-D', 'warnings')
         Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', $manifest, '--lib', '--target', 'wasm32-unknown-unknown', '--', '-D', 'warnings')
         if ((& $Bindgen --version).Trim() -ne 'wasm-bindgen 0.2.129') { throw 'Requires wasm-bindgen-cli 0.2.129 (pass -Bindgen for a specific executable)' }

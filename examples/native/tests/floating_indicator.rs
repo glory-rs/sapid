@@ -198,11 +198,10 @@ fn default_native_reduce_is_static_and_hiding_retires_current_motion_membership(
                             .gap(20.),
                     )
                     .fill((
-                        sapid::floating_indicator_target(context.clone(), "one").fill(
-                            glory::ui::view().style(
+                        sapid::floating_indicator_target(context.clone(), "one")
+                            .fill(glory::ui::view().style(
                                 Style::new().width(Length::Px(60.)).height(Length::Px(36.)),
-                            ),
-                        ),
+                            )),
                         sapid::floating_indicator_target(context, "two").fill(
                             glory::ui::view().style(
                                 Style::new().width(Length::Px(100.)).height(Length::Px(36.)),

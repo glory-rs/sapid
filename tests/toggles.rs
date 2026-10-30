@@ -44,9 +44,7 @@ fn local_toggle_owns_state_and_typed_callback_precedes_observer() {
         toggle()
             .class("toggle")
             .label("Bold")
-            .on_pressed_change(move |value| {
-                a.borrow_mut().push(if value { "on" } else { "off" })
-            })
+            .on_pressed_change(move |value| a.borrow_mut().push(if value { "on" } else { "off" }))
             .on(EventKind::Activate, move |_| {
                 b.borrow_mut().push("observed")
             }),

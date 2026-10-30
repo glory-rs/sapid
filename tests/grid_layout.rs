@@ -267,14 +267,14 @@ fn dynamic_explicit_styles_patch_only_root_and_retirement_clears_references() {
     let app = App::memory();
     let custom = app.scope().cage(Style::new().width(Length::Px(300.0)));
     let reference = app.scope().cage(None);
-    let mounted = app
-        .scope()
-        .mount_with(|| {
-            grid("live").style(custom).node_ref(reference).item(
-                grid_item("a").fill(sapid::text_field().name("draft").default_value("Keep")),
-            )
-        })
-        .unwrap();
+    let mounted =
+        app.scope()
+            .mount_with(|| {
+                grid("live").style(custom).node_ref(reference).item(
+                    grid_item("a").fill(sapid::text_field().name("draft").default_value("Keep")),
+                )
+            })
+            .unwrap();
     app.flush().unwrap();
     let id = reference.get().unwrap();
     let children = app.tree().node(id).unwrap().children.clone();

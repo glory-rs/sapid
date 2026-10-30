@@ -82,6 +82,13 @@ impl TreeError {
         }
     }
 }
+impl std::fmt::Display for TreeError {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str(self.message())
+    }
+}
+impl std::error::Error for TreeError {}
+
 pub fn valid_tree_key(key: &str) -> bool {
     !key.is_empty() && key.len() <= 64 && glory::render::SemanticId::new(key).is_ok()
 }
@@ -329,9 +336,10 @@ pub fn file_tree_nodes(
         if entry.path.is_empty()
             || entry.path.len() > 1024
             || entry.path.contains(['\\', '\0', '\r', '\n', ':'])
-            || entry.path.split('/').any(|part| {
-                part.is_empty() || matches!(part, "." | "..") || part.trim() != part
-            })
+            || entry
+                .path
+                .split('/')
+                .any(|part| part.is_empty() || matches!(part, "." | "..") || part.trim() != part)
             || !paths.insert(entry.path.clone())
         {
             return Err(TreeError::Path);

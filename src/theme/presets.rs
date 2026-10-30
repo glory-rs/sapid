@@ -105,7 +105,7 @@ pub const BLUE: ThemeDefinition = ThemeDefinition::new(
         accent_soft: BLUE_SHADES[0],
         accent_text: BLUE_SHADES[9],
         on_accent: rgb(0xffffff),
-        focus_ring: BLUE_SHADES[3],
+        focus_ring: BLUE_SHADES[6],
         input_focus: BLUE_SHADES[6],
         danger: rgb(0xc92a2a),
         danger_fill: rgb(0xc92a2a),
@@ -119,6 +119,7 @@ pub const BLUE: ThemeDefinition = ThemeDefinition::new(
 .with_dark(PaletteOverrides {
     accent_soft: Some(rgb(0x142c41)),
     accent_text: Some(BLUE_SHADES[3]),
+    focus_ring: Some(BLUE_SHADES[3]),
     ..DARK
 });
 
@@ -130,7 +131,7 @@ pub const GREEN: ThemeDefinition = ThemeDefinition::new(
         accent_hover: rgb(0x1b5e2a),
         accent_soft: GREEN_SHADES[0],
         accent_text: rgb(0x237032),
-        focus_ring: GREEN_SHADES[3],
+        focus_ring: GREEN_SHADES[8],
         input_focus: GREEN_SHADES[8],
         ..BLUE.base
     },
@@ -138,6 +139,7 @@ pub const GREEN: ThemeDefinition = ThemeDefinition::new(
 .with_dark(PaletteOverrides {
     accent_soft: Some(rgb(0x173322)),
     accent_text: Some(GREEN_SHADES[3]),
+    focus_ring: Some(GREEN_SHADES[3]),
     input_focus: Some(GREEN_SHADES[5]),
     ..DARK
 });

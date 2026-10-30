@@ -294,9 +294,7 @@ impl NumberDomain {
     }
     pub fn increment(self, state: NumberParse, increase: bool, page: bool) -> Option<Decimal> {
         let current = match state {
-            NumberParse::Complete(v) | NumberParse::Incomplete { candidate: Some(v) } => {
-                Some(v)
-            }
+            NumberParse::Complete(v) | NumberParse::Incomplete { candidate: Some(v) } => Some(v),
             _ => None,
         };
         let amount = if page { self.page } else { self.step }.atoms();

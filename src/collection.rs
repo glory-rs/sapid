@@ -362,11 +362,7 @@ impl RovingFocus {
         }
         Ok(())
     }
-    pub fn destination(
-        &self,
-        from: NodeId,
-        command: Navigation,
-    ) -> Result<Option<MountedItem>> {
+    pub fn destination(&self, from: NodeId, command: Navigation) -> Result<Option<MountedItem>> {
         let items = self.collection.mounted()?;
         let Some(current) = items.iter().position(|item| item.node == from) else {
             return Ok(None);

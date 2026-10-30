@@ -77,11 +77,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                         .content(|context| {
                             glory::ui::view()
                                 .style(Style::new().height(Length::Px(700.0)))
-                                .fill(
-                                    sapid::text()
-                                        .theme(context.theme)
-                                        .content("Nested content"),
-                                )
+                                .fill(sapid::text().theme(context.theme).content("Nested content"))
                         }),
                     sapid::text()
                         .theme(nested_theme.clone())

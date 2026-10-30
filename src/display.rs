@@ -215,10 +215,7 @@ impl Pill {
         self
     }
     /// Observe removal activation after internal behavior and on_remove.
-    pub fn on_remove_press(
-        mut self,
-        observer: impl FnMut(glory::render::Event) + 'static,
-    ) -> Self {
+    pub fn on_remove_press(mut self, observer: impl FnMut(glory::render::Event) + 'static) -> Self {
         self.common
             .handlers
             .entry(EventKind::Activate)
@@ -232,9 +229,7 @@ impl Widget for Pill {
         if let Some(label) = &self.remove_label
             && label.trim().is_empty()
         {
-            return Err(
-                glory::render::Error::InvalidProps("pill removal requires a name").into(),
-            );
+            return Err(glory::render::Error::InvalidProps("pill removal requires a name").into());
         }
         let visible = std::mem::replace(
             &mut self.visible,
@@ -427,8 +422,7 @@ impl Widget for Card {
                 .kind(TextKind::Heading(self.level))
                 .content(title);
             if !self.common.unstyled {
-                title =
-                    title.style(self.common.theme.label(self.common.size).font_weight(600.0));
+                title = title.style(self.common.theme.label(self.common.size).font_weight(600.0));
             }
             header = header.fill(title);
         }

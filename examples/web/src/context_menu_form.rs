@@ -100,8 +100,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 main,
                 button().label("After context"),
                 override_editor,
-                text()
-                    .content(scope.bond(move || format!("Context actions: {}", actions.get()))),
+                text().content(scope.bond(move || format!("Context actions: {}", actions.get()))),
             )),
         State {
             open,

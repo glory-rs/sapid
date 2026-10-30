@@ -74,9 +74,7 @@ fn controlled_rejection_preserves_ui_and_callbacks_precede_observers() {
             .value(value)
             .node_ref(reference)
             .on_value_change(move |value| changed.borrow_mut().push(format!("change:{value}")))
-            .on_value_commit(move |value| {
-                commit_calls.borrow_mut().push(format!("commit:{value}"))
-            })
+            .on_value_commit(move |value| commit_calls.borrow_mut().push(format!("commit:{value}")))
             .on(EventKind::Range, move |_| {
                 observed.borrow_mut().push("observer".into())
             }),

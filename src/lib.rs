@@ -79,8 +79,8 @@ mod plot_table;
 #[cfg(feature = "charts")]
 mod plot_widget;
 pub use data_table::{
-    DataColumn, DataPage, DataPlan, DataRecord, DataRequest, DataSort, DataTable,
-    DataTableError, DataTableQuery, data_table,
+    DataColumn, DataPage, DataPlan, DataRecord, DataRequest, DataSort, DataTable, DataTableError,
+    DataTableQuery, data_table,
 };
 #[cfg(feature = "dates")]
 mod date_time_model;
@@ -197,8 +197,8 @@ pub use floating_window::{
     WindowCommand, WindowLimits, floating_window,
 };
 pub use portal::{
-    MAX_PORTAL_TARGETS, MAX_PORTALS, Portal, PortalContext, PortalTarget, portal,
-    portal_context, portal_target,
+    MAX_PORTAL_TARGETS, MAX_PORTALS, Portal, PortalContext, PortalTarget, portal, portal_context,
+    portal_target,
 };
 pub use tour::{
     MAX_TOUR_STEPS, Tour, TourContext, TourHandle, TourStep, TourTarget, tour, tour_context,
@@ -232,8 +232,8 @@ mod json_viewer;
 #[cfg(feature = "json")]
 pub use json_tree_model::{
     JsonTree, JsonViewError, JsonViewLimits, JsonViewNode, MAX_JSON_SEARCH_BYTES,
-    MAX_JSON_VIEW_DEPTH, MAX_JSON_VIEW_KEY_BYTES, MAX_JSON_VIEW_NODES,
-    MAX_JSON_VIEW_PATH_BYTES, parse_json_tree,
+    MAX_JSON_VIEW_DEPTH, MAX_JSON_VIEW_KEY_BYTES, MAX_JSON_VIEW_NODES, MAX_JSON_VIEW_PATH_BYTES,
+    parse_json_tree,
 };
 #[cfg(feature = "json")]
 pub use json_viewer::{JsonViewer, json_viewer};
@@ -295,9 +295,7 @@ pub use alert::{Alert, AlertSeverity, Announcement, MAX_ALERT_TEXT_BYTES, alert}
 pub use anchor::{Anchor, AnchorRequest, anchor};
 pub use app_shell::*;
 pub use autocomplete::{Autocomplete, autocomplete, autocomplete_option};
-pub use avatar::{
-    Avatar, AvatarGroup, AvatarShape, MAX_AVATAR_GROUP_ITEMS, avatar, avatar_group,
-};
+pub use avatar::{Avatar, AvatarGroup, AvatarShape, MAX_AVATAR_GROUP_ITEMS, avatar, avatar_group};
 pub use button::{Button, ButtonVariant, button};
 pub use checkbox::{Checkbox, checkbox};
 pub use checkbox_group::{
@@ -324,8 +322,8 @@ pub use display::{
 };
 pub use document::{
     Blockquote, Code, DataList, DataListItem, Highlight, Item, Kbd, KbdKey, KbdPlatform,
-    MAX_DOCUMENT_ITEMS, Mark, TextList, TextListItem, blockquote, code, data_list,
-    data_list_item, highlight, item, kbd, mark, text_list, text_list_item,
+    MAX_DOCUMENT_ITEMS, Mark, TextList, TextListItem, blockquote, code, data_list, data_list_item,
+    highlight, item, kbd, mark, text_list, text_list_item,
 };
 pub use field::{
     Description, Field, FieldControl, FieldError, Fieldset, Label, description, field,
@@ -351,8 +349,8 @@ pub use json_model::{
     MAX_JSON_DEPTH, format_json, validate_json,
 };
 pub use layout::{
-    Box, Center, Container, Flex, Group, Space, Stack, box_, center, container, flex, group,
-    space, stack,
+    Box, Center, Container, Flex, Group, Space, Stack, box_, center, container, flex, group, space,
+    stack,
 };
 pub use loading_overlay::{LoadingOverlay, Overlay, loading_overlay, overlay};
 pub use menu::{
@@ -378,16 +376,15 @@ pub use navigation_progress::{
 };
 pub use notifications::{
     MAX_NOTIFICATIONS, MAX_VISIBLE_NOTIFICATIONS, Notification, NotificationClock,
-    NotificationCloseReason, NotificationRequest, NotificationToken, NotificationsHandle,
-    Toaster, notification, notification_request, notifications, toaster,
+    NotificationCloseReason, NotificationRequest, NotificationToken, NotificationsHandle, Toaster,
+    notification, notification_request, notifications, toaster,
 };
 pub use number_formatter::{
     Currency, NumberFormat, NumberFormatter, NumberLocale, number_formatter,
 };
 pub use overlay::{
     AlertCancelReason, AlertDialog, AnchorAlign, AnchorPlacement, AnchorSide, Dialog, Drawer,
-    DrawerSide, FloatingDialog, Popover, alert_dialog, dialog, drawer, floating_dialog,
-    popover,
+    DrawerSide, FloatingDialog, Popover, alert_dialog, dialog, drawer, floating_dialog, popover,
 };
 pub use password_input::{PasswordInput, password_input};
 pub use pills_input::{PillsInput, pills_input};
@@ -422,8 +419,8 @@ pub use toggle::{
     toggle_item,
 };
 pub use toolbar::{
-    ActionBar, MAX_TOOLBAR_ACTIONS, MAX_TOOLBAR_GROUPS, Toolbar, ToolbarGroup, action_bar,
-    toolbar, toolbar_group,
+    ActionBar, MAX_TOOLBAR_ACTIONS, MAX_TOOLBAR_GROUPS, Toolbar, ToolbarGroup, action_bar, toolbar,
+    toolbar_group,
 };
 pub use typography::{
     Text, TextVariant, Title, Typography, TypographyContext, text, title, typography,
@@ -451,9 +448,9 @@ pub mod prelude {
     pub use crate::schedule_recurrence::*;
     pub use crate::{
         Breakpoint, Breakpoints, ControlMetrics, Locale, LocaleMessage, LocaleMessages,
-        MAX_LOCALE_TEXT_BYTES, ResponsiveContext, ResponsiveRoot, ResponsiveValues,
-        ThemeProvider, ThemeTokens, TypographyMetrics, TypographyRole, UiEnvironmentContext,
-        direction_provider, locale_provider, responsive_root, theme_provider,
+        MAX_LOCALE_TEXT_BYTES, ResponsiveContext, ResponsiveRoot, ResponsiveValues, ThemeProvider,
+        ThemeTokens, TypographyMetrics, TypographyRole, UiEnvironmentContext, direction_provider,
+        locale_provider, responsive_root, theme_provider,
     };
     pub use crate::{Carousel, MAX_CAROUSEL_COUNT, MAX_CAROUSEL_OVERSCAN, carousel};
     #[cfg(feature = "editor")]
@@ -485,8 +482,8 @@ pub mod prelude {
 
     pub use crate::command::{
         Command, CommandAction, CommandGroup, CommandHandle, CommandResponse, CommandResults,
-        MAX_COMMAND_ACTIONS, MAX_COMMAND_GROUPS, MAX_COMMAND_TEXT_BYTES, command,
-        command_action, command_group, spotlight,
+        MAX_COMMAND_ACTIONS, MAX_COMMAND_GROUPS, MAX_COMMAND_TEXT_BYTES, command, command_action,
+        command_group, spotlight,
     };
     pub use crate::copy_button::{CopyButton, CopyState, copy_button};
     pub use crate::data_table::{
@@ -506,8 +503,8 @@ pub mod prelude {
     #[cfg(feature = "dates")]
     pub use crate::dates::*;
     pub use crate::floating_indicator::{
-        FloatingIndicator, FloatingIndicatorContext, FloatingIndicatorTarget,
-        MAX_FLOATING_TARGETS, floating_indicator, floating_indicator_target,
+        FloatingIndicator, FloatingIndicatorContext, FloatingIndicatorTarget, MAX_FLOATING_TARGETS,
+        floating_indicator, floating_indicator_target,
     };
     #[cfg(feature = "dates")]
     pub use crate::period_model::*;
@@ -518,8 +515,7 @@ pub mod prelude {
     };
     #[cfg(feature = "dates")]
     pub use crate::period_picker_input::{
-        MonthPickerInput, PeriodPickerInput, YearPickerInput, month_picker_input,
-        year_picker_input,
+        MonthPickerInput, PeriodPickerInput, YearPickerInput, month_picker_input, year_picker_input,
     };
     pub use crate::table::{
         MAX_TABLE_CELLS, MAX_TABLE_COLUMNS, MAX_TABLE_ROWS, Table, TableCell, TableCellKind,
@@ -533,39 +529,37 @@ pub mod prelude {
     pub use crate::{
         Accordion, AccordionItem, ActionIcon, ActionIconVariant, Anchor, AnchorAlign,
         AnchorPlacement, AnchorRequest, AnchorSide, AspectRatio, BLUE, Badge, BadgeVariant,
-        Blockquote, Box, BreadcrumbItem, Breadcrumbs, Burger, Button, ButtonGroup,
-        ButtonVariant, Card, Center, CheckState, Checkbox, CheckboxGroup, CheckboxItem, Chip,
-        ChipGroup, ChipItem, ChipMode, CloseButton, Code, Collapsible, Collection,
-        CollectionLimits, CollectionMember, ColorScheme, Container, ContentPolicy,
-        ControlValue, Currency, DataList, DataListItem, Description, Dialog, Drawer,
-        DrawerSide, EmptyState, Field, FieldControl, FieldError, FieldOptions, Fieldset, Flex,
-        Form, FormButton, FormEntry, FormError, FormField, FormFieldState, FormLimits,
-        FormState, FormStatus, GREEN, Grid, GridItem, Group, Highlight, InputAddon, InputGroup,
-        InputSection, Item, Kbd, KbdKey, KbdPlatform, Label, Mark, MixedCheckbox, MountedItem,
-        NavLink, NumberFormat, NumberFormatter, NumberLocale, PageItem, Pagination, Palette,
-        PaletteOverrides, Paper, PasswordInput, Pill, Popover, Radio, RadioGroup, RovingFocus,
-        Segment, SegmentedControl, Separator, ShadowSize, SimpleGrid, Size, Space, Spoiler,
-        Stack, SubmissionLimits, SubmitStatus, SubmitToken, Switch, Tab, TabActivation, Tabs,
-        Text, TextField, TextList, TextListItem, TextVariant, Textarea, Theme, ThemeDefinition,
-        Timeline, TimelineItem, TimelineProgress, Title, Toggle, ToggleGroup, ToggleItem,
-        ToggleMode, Typeahead, TypeaheadConfig, Typography, TypographyContext,
+        Blockquote, Box, BreadcrumbItem, Breadcrumbs, Burger, Button, ButtonGroup, ButtonVariant,
+        Card, Center, CheckState, Checkbox, CheckboxGroup, CheckboxItem, Chip, ChipGroup, ChipItem,
+        ChipMode, CloseButton, Code, Collapsible, Collection, CollectionLimits, CollectionMember,
+        ColorScheme, Container, ContentPolicy, ControlValue, Currency, DataList, DataListItem,
+        Description, Dialog, Drawer, DrawerSide, EmptyState, Field, FieldControl, FieldError,
+        FieldOptions, Fieldset, Flex, Form, FormButton, FormEntry, FormError, FormField,
+        FormFieldState, FormLimits, FormState, FormStatus, GREEN, Grid, GridItem, Group, Highlight,
+        InputAddon, InputGroup, InputSection, Item, Kbd, KbdKey, KbdPlatform, Label, Mark,
+        MixedCheckbox, MountedItem, NavLink, NumberFormat, NumberFormatter, NumberLocale, PageItem,
+        Pagination, Palette, PaletteOverrides, Paper, PasswordInput, Pill, Popover, Radio,
+        RadioGroup, RovingFocus, Segment, SegmentedControl, Separator, ShadowSize, SimpleGrid,
+        Size, Space, Spoiler, Stack, SubmissionLimits, SubmitStatus, SubmitToken, Switch, Tab,
+        TabActivation, Tabs, Text, TextField, TextList, TextListItem, TextVariant, Textarea, Theme,
+        ThemeDefinition, Timeline, TimelineItem, TimelineProgress, Title, Toggle, ToggleGroup,
+        ToggleItem, ToggleMode, Typeahead, TypeaheadConfig, Typography, TypographyContext,
         ValidationErrors, ValidationFuture, accordion, accordion_item, action_icon, anchor,
         aspect_ratio, badge, blockquote, box_, breadcrumb_item, breadcrumbs, burger, button,
         button_group, card, center, checkbox, checkbox_group, checkbox_item, chip, chip_group,
         chip_item, close_button, code, collapsible, container, data_list, data_list_item,
-        description, dialog, drawer, empty_state, field, field_description, field_error,
-        fieldset, flex, form, grid, grid_item, group, highlight, input_addon, input_group,
-        input_section, item, kbd, label, mark, mixed_checkbox, nav_link, number_formatter,
-        pagination, pagination_window, paper, password_input, pill, popover, radio,
-        radio_group, reset_button, segment, segmented_control, separator, simple_grid, space,
-        spoiler, stack, submit_button, switch, tab, tabs, text, text_field, text_list,
-        text_list_item, textarea, timeline, timeline_item, title, toggle, toggle_group,
-        toggle_item, typography,
+        description, dialog, drawer, empty_state, field, field_description, field_error, fieldset,
+        flex, form, grid, grid_item, group, highlight, input_addon, input_group, input_section,
+        item, kbd, label, mark, mixed_checkbox, nav_link, number_formatter, pagination,
+        pagination_window, paper, password_input, pill, popover, radio, radio_group, reset_button,
+        segment, segmented_control, separator, simple_grid, space, spoiler, stack, submit_button,
+        switch, tab, tabs, text, text_field, text_list, text_list_item, textarea, timeline,
+        timeline_item, title, toggle, toggle_group, toggle_item, typography,
     };
     pub use crate::{ActionBar, Toolbar, ToolbarGroup, action_bar, toolbar, toolbar_group};
     pub use crate::{
-        Affix, AffixContainer, AffixContext, AffixHorizontal, AffixOffset, AffixVertical,
-        affix, affix_container,
+        Affix, AffixContainer, AffixContext, AffixHorizontal, AffixOffset, AffixVertical, affix,
+        affix_container,
     };
     pub use crate::{
         AlphaSlider, ColorError, Hsva, HueSlider, alpha_slider, format_hex_color, hue_slider,
@@ -588,13 +582,12 @@ pub mod prelude {
     };
     #[cfg(feature = "dates")]
     pub use crate::{
-        Calendar, MAX_CALENDAR_EXCLUDED_DATES, MAX_CALENDAR_SEARCH_DAYS, calendar,
-        mini_calendar,
+        Calendar, MAX_CALENDAR_EXCLUDED_DATES, MAX_CALENDAR_SEARCH_DAYS, calendar, mini_calendar,
     };
     #[cfg(feature = "code")]
     pub use crate::{
-        CodeBlock, CodeDocument, CodeError, CodeHighlight, CodeLanguage, CodeToken,
-        CodeTokenKind, code_block, code_highlight, tokenize_code,
+        CodeBlock, CodeDocument, CodeError, CodeHighlight, CodeLanguage, CodeToken, CodeTokenKind,
+        code_block, code_highlight, tokenize_code,
     };
     pub use crate::{
         ColorInput, ColorPicker, ColorValidity, MAX_COLOR_PICKER_KEY_BYTES, color_input,
@@ -614,8 +607,8 @@ pub mod prelude {
         file_tree, file_tree_nodes, tree,
     };
     pub use crate::{
-        FloatingWindow, FloatingWindowHandle, MAX_WINDOW_COORDINATE, MAX_WINDOW_SIZE,
-        WindowBounds, WindowCommand, WindowLimits, floating_window,
+        FloatingWindow, FloatingWindowHandle, MAX_WINDOW_COORDINATE, MAX_WINDOW_SIZE, WindowBounds,
+        WindowCommand, WindowLimits, floating_window,
     };
     #[cfg(feature = "json")]
     pub use crate::{
@@ -641,12 +634,12 @@ pub mod prelude {
     };
     pub use crate::{MAX_MENUBAR_ROOTS, Menubar, MenubarMenu, menubar, menubar_menu};
     pub use crate::{
-        MAX_PENDING_MODALS, ModalOutcome, ModalRequest, ModalToken, ModalsHandle,
-        ModalsManager, Select, confirmation_request, modal_request, modals_manager, select,
+        MAX_PENDING_MODALS, ModalOutcome, ModalRequest, ModalToken, ModalsHandle, ModalsManager,
+        Select, confirmation_request, modal_request, modals_manager, select,
     };
     pub use crate::{
-        MAX_PENDING_SCROLL_INTENTS, ScrollArea, ScrollContext, ScrollHandle, Scrollbars,
-        Scroller, scroll_area, scroller,
+        MAX_PENDING_SCROLL_INTENTS, ScrollArea, ScrollContext, ScrollHandle, Scrollbars, Scroller,
+        scroll_area, scroller,
     };
     pub use crate::{
         MAX_PORTAL_TARGETS, MAX_PORTALS, Portal, PortalContext, PortalTarget, portal,
@@ -654,8 +647,8 @@ pub mod prelude {
     };
     pub use crate::{MAX_RATING_COUNT, Rating, RatingPrecision, rating};
     pub use crate::{
-        MAX_TOUR_STEPS, Tour, TourContext, TourHandle, TourStep, TourTarget, tour,
-        tour_context, tour_step, tour_target,
+        MAX_TOUR_STEPS, Tour, TourContext, TourHandle, TourStep, TourTarget, tour, tour_context,
+        tour_step, tour_target,
     };
     pub use crate::{Marquee, MarqueeDirection, RollingNumber, marquee, rolling_number};
     pub use crate::{
@@ -718,8 +711,7 @@ mod mask_model;
 mod pin_input;
 pub use mask_input::{MaskInput, mask_input};
 pub use mask_model::{
-    MAX_MASK_INPUT_BYTES, MAX_MASK_PARTS, MAX_MASK_SLOTS, MaskPattern, MaskRejection,
-    MaskedText,
+    MAX_MASK_INPUT_BYTES, MAX_MASK_PARTS, MAX_MASK_SLOTS, MaskPattern, MaskRejection, MaskedText,
 };
 mod pin_model;
 pub use pin_input::{PinInput, input_otp, pin_input};
@@ -733,9 +725,9 @@ pub use table_of_contents::{
 
 mod table;
 pub use table::{
-    MAX_TABLE_CELLS, MAX_TABLE_COLUMNS, MAX_TABLE_ROWS, Table, TableCell, TableCellKind,
-    TableRow, TableSection, table, table_body, table_cell, table_foot, table_head,
-    table_header_cell, table_row, table_row_header,
+    MAX_TABLE_CELLS, MAX_TABLE_COLUMNS, MAX_TABLE_ROWS, Table, TableCell, TableCellKind, TableRow,
+    TableSection, table, table_body, table_cell, table_foot, table_head, table_header_cell,
+    table_row, table_row_header,
 };
 
 mod theme_tokens;
@@ -749,8 +741,7 @@ pub use environment::{
 
 mod responsive;
 pub use responsive::{
-    Breakpoint, Breakpoints, ResponsiveContext, ResponsiveRoot, ResponsiveValues,
-    responsive_root,
+    Breakpoint, Breakpoints, ResponsiveContext, ResponsiveRoot, ResponsiveValues, responsive_root,
 };
 
 #[cfg(feature = "chat")]
@@ -783,6 +774,6 @@ pub use glory::render::{
 };
 #[cfg(feature = "editor")]
 pub use rich_editor::{
-    EditorController, EditorHistory, MAX_EDITOR_HISTORY, MAX_EDITOR_HISTORY_BYTES,
-    RichTextEditor, rich_text_editor,
+    EditorController, EditorHistory, MAX_EDITOR_HISTORY, MAX_EDITOR_HISTORY_BYTES, RichTextEditor,
+    rich_text_editor,
 };

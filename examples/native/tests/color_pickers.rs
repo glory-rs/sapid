@@ -34,8 +34,7 @@ fn pixel(raster: &Raster, x: f64, y: f64) -> [u8; 4] {
     raster.pixels()[offset..offset + 4].try_into().unwrap()
 }
 #[test]
-fn native_picker_four_themes_has_real_plane_pixels_two_axis_mapping_focus_and_stable_identity()
-{
+fn native_picker_four_themes_has_real_plane_pixels_two_axis_mapping_focus_and_stable_identity() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),
@@ -75,9 +74,7 @@ fn native_picker_four_themes_has_real_plane_pixels_two_axis_mapping_focus_and_st
         assert_eq!((rect.width, rect.height), (240., 240.));
         let indicator = bounds(app, nodes(app, "sapid-color-plane-indicator")[0]);
         assert!((indicator.x + indicator.width / 2. - (rect.x + rect.width * 0.5)).abs() < 1.);
-        assert!(
-            (indicator.y + indicator.height / 2. - (rect.y + rect.height * 0.5)).abs() < 1.
-        );
+        assert!((indicator.y + indicator.height / 2. - (rect.y + rect.height * 0.5)).abs() < 1.);
         let cells = nodes(app, "sapid-color-plane-cell");
         assert_eq!(cells.len(), 256);
         let mut raster = Raster::new();

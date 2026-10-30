@@ -44,17 +44,14 @@ fn day(app: &App, date: CivilDate) -> NodeId {
         .find(|id| {
             let tree = app.tree();
             let view = tree.node(*id).unwrap().descriptor.view();
-            matches!(view.props, Props::Button(_))
-                && view.name.as_deref() == Some(name.as_str())
+            matches!(view.props, Props::Button(_)) && view.name.as_deref() == Some(name.as_str())
         })
         .unwrap_or_else(|| panic!("missing {date}"))
 }
 fn tab(app: &App) -> Vec<NodeId> {
     class(app, "sapid-calendar-day")
         .into_iter()
-        .filter(|id| {
-            app.tree().node(*id).unwrap().descriptor.view().focus == FocusMode::TabStop
-        })
+        .filter(|id| app.tree().node(*id).unwrap().descriptor.view().focus == FocusMode::TabStop)
         .collect()
 }
 fn command(app: &App, root: NodeId, from: NodeId, command: GridCommand) {
@@ -123,8 +120,7 @@ fn constant_real_grid_has_day_buttons_headers_independent_selected_and_today() {
     assert_eq!(tab(&app), [selected]);
 }
 #[test]
-fn same_tick_arrows_then_activation_use_the_bounded_cursor_and_do_not_select_old_physical_origin()
- {
+fn same_tick_arrows_then_activation_use_the_bounded_cursor_and_do_not_select_old_physical_origin() {
     let app = App::memory();
     let root = app.scope().cage(None);
     let value = app.scope().cage(None);
@@ -223,8 +219,7 @@ fn weekday_exclusions_bounds_and_readonly_preserve_navigation_without_business_w
     }));
 }
 #[test]
-fn finite_exclusion_admission_consumes_only_the_sentinel_and_year_edges_do_not_create_fake_dates()
- {
+fn finite_exclusion_admission_consumes_only_the_sentinel_and_year_edges_do_not_create_fake_dates() {
     let seen = Rc::new(Cell::new(0));
     let out = seen.clone();
     let iter = (0..1_000_000).map(move |_| {

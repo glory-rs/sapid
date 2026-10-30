@@ -1,8 +1,8 @@
 use glory::apace::{Raster, Renderer, shell::WindowApp};
 use glory::prelude::*;
 use glory::render::{
-    CheckMode, CheckProps, Descriptor, FormControl, Input, Mutation, NodeId, NodeIds, Props,
-    Query, QueryToken, QueryValue, Rect, Render, RuntimeId, SemanticId, Semantics,
+    CheckMode, CheckProps, Descriptor, FormControl, Input, Mutation, NodeId, NodeIds, Props, Query,
+    QueryToken, QueryValue, Rect, Render, RuntimeId, SemanticId, Semantics,
 };
 use std::{cell::RefCell, rc::Rc};
 fn bounds(app: &App, id: NodeId) -> Rect {

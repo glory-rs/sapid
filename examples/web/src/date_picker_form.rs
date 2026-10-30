@@ -81,10 +81,9 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                     })
             })
     });
-    let full = SelectedDates::try_from_iter(
-        (0..32).map(|i| d("2024-02-01").checked_add_days(i).unwrap()),
-    )
-    .unwrap();
+    let full =
+        SelectedDates::try_from_iter((0..32).map(|i| d("2024-02-01").checked_add_days(i).unwrap()))
+            .unwrap();
     (
         glory::ui::view().class("date-picker-demo").fill((
             sapid::title(1)

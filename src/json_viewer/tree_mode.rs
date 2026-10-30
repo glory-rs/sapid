@@ -38,8 +38,7 @@ impl Projection {
         let mut next = previous.map_or(0, |value| value.next);
         let mut paths = HashMap::with_capacity(tree.nodes().len());
         for node in tree.nodes() {
-            let key = if let Some(key) = previous.and_then(|value| value.paths.get(&node.path))
-            {
+            let key = if let Some(key) = previous.and_then(|value| value.paths.get(&node.path)) {
                 key.clone()
             } else {
                 next = next
@@ -74,9 +73,7 @@ impl Projection {
             nodes.push(value);
         }
         crate::TreeModel::validate(&nodes).map_err(|_| {
-            glory::render::Error::InvalidProps(
-                "JSON Tree projection exceeds the Tree model budget",
-            )
+            glory::render::Error::InvalidProps("JSON Tree projection exceeds the Tree model budget")
         })?;
         Ok(Rc::new(Self {
             tree,
@@ -87,11 +84,7 @@ impl Projection {
         }))
     }
 }
-pub(super) fn show(
-    state: Rc<State>,
-    projection: Cage<Rc<Projection>>,
-    scope: &Scope,
-) -> Result {
+pub(super) fn show(state: Rc<State>, projection: Cage<Rc<Projection>>, scope: &Scope) -> Result {
     let data = scope.bond(move || projection.with(|value| value.nodes.clone()));
     let expand_state = state.clone();
     let expanded = scope.bond(move || {

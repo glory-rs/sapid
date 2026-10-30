@@ -71,10 +71,9 @@ fn accepted_form_control(
     fn read(name: &Vary<String>, value: &Option<Vary<String>>) -> Result<FormControl> {
         name.try_with(|name| {
             if name.len() > 256 || name.contains(['\0', '\r', '\n']) {
-                return Err(glory::render::Error::InvalidProps(
-                    "invalid successful-control name",
-                )
-                .into());
+                return Err(
+                    glory::render::Error::InvalidProps("invalid successful-control name").into(),
+                );
             }
             if let Some(value) = value {
                 value.try_with(|value| {

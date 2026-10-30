@@ -91,9 +91,7 @@ mod fixture {
                             button()
                                 .theme(theme.clone())
                                 .label("Remove nested")
-                                .on_press(move || {
-                                    keys.revise(|v| v.retain(|key| key != "nested"))
-                                }),
+                                .on_press(move || keys.revise(|v| v.retain(|key| key != "nested"))),
                         )
                         .fill(
                             button()

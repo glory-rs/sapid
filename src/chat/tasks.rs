@@ -237,14 +237,14 @@ impl Widget for Task {
             move || {
                 let theme = palette.clone();
                 glory::ui::widget(move |scope| {
-                    let mut progress =
-                        crate::progress(scope.bond(move || {
-                            accepted.with(|t| f64::from(t.progress.unwrap_or(0)))
-                        }))
-                        .theme(theme.clone())
-                        .name(scope.bond(move || {
-                            accepted.with(|t| format!("Task progress: {}", t.title))
-                        }));
+                    let mut progress = crate::progress(
+                        scope.bond(move || accepted.with(|t| f64::from(t.progress.unwrap_or(0)))),
+                    )
+                    .theme(theme.clone())
+                    .name(
+                        scope
+                            .bond(move || accepted.with(|t| format!("Task progress: {}", t.title))),
+                    );
                     if unstyled {
                         progress = progress.unstyled();
                     }
@@ -276,8 +276,7 @@ impl Widget for Task {
                         .enabled(scope.bond(move || {
                             enabled.get()
                                 && available
-                                && accepted
-                                    .with(|t| t.action.as_ref().is_some_and(|a| a.enabled))
+                                && accepted.with(|t| t.action.as_ref().is_some_and(|a| a.enabled))
                         }))
                         .on_press(move || {
                             let request = accepted.with(|t| {
@@ -402,8 +401,7 @@ impl Widget for Plan {
                 let theme = palette.clone();
                 glory::ui::widget(move |scope| {
                     let mut progress = crate::progress(scope.bond(move || {
-                        accepted
-                            .with(|p| p.processed() as f64 / p.tasks.len().max(1) as f64 * 100.)
+                        accepted.with(|p| p.processed() as f64 / p.tasks.len().max(1) as f64 * 100.)
                     }))
                     .theme(theme.clone())
                     .class("sapid-plan-progress")
@@ -428,8 +426,7 @@ impl Widget for Plan {
                 .style(Style::new().min_width(Length::Px(0.)))
                 .fill(
                     glory::ui::each(scope.bond(move || {
-                        accepted
-                            .with(|p| p.tasks.iter().map(|t| t.key.clone()).collect::<Vec<_>>())
+                        accepted.with(|p| p.tasks.iter().map(|t| t.key.clone()).collect::<Vec<_>>())
                     }))
                     .key(|k| k.clone())
                     .children(move |entry| {
@@ -442,8 +439,7 @@ impl Widget for Plan {
                         glory::ui::widget(move |scope| {
                             let lookup = key.clone();
                             let initial = glory::core::untracked(|| {
-                                accepted
-                                    .with(|p| p.tasks.iter().find(|t| t.key == lookup).cloned())
+                                accepted.with(|p| p.tasks.iter().find(|t| t.key == lookup).cloned())
                             })
                             .ok_or(glory::ui::Error::Gone)?;
                             let data = scope.cage(initial);

@@ -13,8 +13,7 @@ fn named(app: &glory::App, name: &str) -> NodeId {
     panic!("missing {name}")
 }
 #[test]
-fn native_tree_select_and_cascader_keep_real_popup_focus_selection_and_identity_in_all_themes()
-{
+fn native_tree_select_and_cascader_keep_real_popup_focus_selection_and_identity_in_all_themes() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),

@@ -1,6 +1,4 @@
-use glory::render::{
-    Direction, Event, FocusMode, KeyboardInput, Navigation, NodeId, Orientation,
-};
+use glory::render::{Direction, Event, FocusMode, KeyboardInput, Navigation, NodeId, Orientation};
 use glory::ui::{App, Widget};
 use sapid::{
     Collection, CollectionLimits, RovingFocus, Typeahead, TypeaheadConfig, radio, radio_group,

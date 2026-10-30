@@ -188,8 +188,7 @@ impl ThemeTokens {
 mod tests {
     use super::*;
     #[test]
-    fn independent_numeric_tokens_are_immutable_and_reject_invalid_values_before_installation()
-    {
+    fn independent_numeric_tokens_are_immutable_and_reject_invalid_values_before_installation() {
         let defaults = ThemeTokens::default();
         let customized = defaults
             .clone()

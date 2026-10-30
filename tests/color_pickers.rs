@@ -1,7 +1,5 @@
 use glory::prelude::*;
-use glory::render::{
-    Event, EventKind, InputProps, NodeId, Props, RangeCommand, Role, Semantics,
-};
+use glory::render::{Event, EventKind, InputProps, NodeId, Props, RangeCommand, Role, Semantics};
 use sapid::{Hsva, color_input, color_picker};
 use std::{cell::RefCell, rc::Rc};
 fn nodes(app: &App, class: &str) -> Vec<NodeId> {
@@ -50,8 +48,7 @@ fn key(app: &App, id: NodeId, command: RangeCommand) {
         .unwrap();
 }
 fn input(app: &App, id: NodeId) -> InputProps {
-    let Props::Input(value) = app.tree().node(id).unwrap().descriptor.view().props.clone()
-    else {
+    let Props::Input(value) = app.tree().node(id).unwrap().descriptor.view().props.clone() else {
         panic!("input")
     };
     value

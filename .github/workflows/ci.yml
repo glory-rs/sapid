@@ -13,12 +13,25 @@ on:
         description: Immutable browser acceptance harness revision
         required: false
         type: string
+    outputs:
+      acceptance_artifact:
+        description: Exact successful acceptance artifact for this product and harness
+        value: ${{ jobs.widgets.outputs.acceptance_artifact }}
+      acceptance_provenance_sha256:
+        description: Digest of the successful acceptance provenance
+        value: ${{ jobs.widgets.outputs.acceptance_provenance_sha256 }}
 permissions:
   contents: read
+concurrency:
+  group: sapid-ci-${{ github.ref }}-${{ inputs.release_ref || 'branch' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   widgets:
     runs-on: windows-latest
     timeout-minutes: 120
+    outputs:
+      acceptance_artifact: ${{ steps.provenance.outputs.artifact_name }}
+      acceptance_provenance_sha256: ${{ steps.provenance.outputs.provenance_sha256 }}
     env:
       CARGO_HOME: D:/BuildCache/glory-semantic-ui/cargo
       CARGO_TARGET_DIR: D:/BuildCache/sapid/target
@@ -45,7 +58,14 @@ jobs:
           ref: ${{ inputs.release_ref || github.ref }}
       - name: Read the pinned Glory release source
         id: dependency
+        env:
+          EXPECTED_PRODUCT: ${{ inputs.release_ref }}
+          EXPECTED_ACCEPTANCE: ${{ inputs.acceptance_ref }}
         run: |
+          if ($env:EXPECTED_PRODUCT -and $env:EXPECTED_PRODUCT -notmatch '^[a-f0-9]{40}$') { throw 'Release validation requires an immutable commit SHA' }
+          if ($env:EXPECTED_ACCEPTANCE -and $env:EXPECTED_ACCEPTANCE -notmatch '^[a-f0-9]{40}$') { throw 'Acceptance requires an immutable commit SHA' }
+          $product = git rev-parse HEAD
+          if ($LASTEXITCODE -or ($env:EXPECTED_PRODUCT -and $product -ne $env:EXPECTED_PRODUCT)) { throw 'Product checkout differs from the frozen release commit' }
           $dependency = (Get-Content deploy/dependencies.json -Raw | ConvertFrom-Json).glory
           if ($dependency.revision -notmatch '^[a-f0-9]{40}$') { throw 'Invalid Glory source revision' }
           "repository=$($dependency.repository)" >> $env:GITHUB_OUTPUT
@@ -98,19 +118,12 @@ jobs:
           ref: ${{ inputs.acceptance_ref }}
           path: acceptance
           sparse-checkout: |
+            .gitattributes
             scripts/browser.cjs
+            scripts/release.py
+            scripts/library_lock.py
             examples/web
           sparse-checkout-cone-mode: false
-      - name: Record acceptance provenance
-        run: |
-          $harness = if (Test-Path ../acceptance/.git) { git -C ../acceptance rev-parse HEAD } else { git rev-parse HEAD }
-          @{
-            product_commit = (git rev-parse HEAD)
-            glory_commit = (git -C ../glory rev-parse HEAD)
-            acceptance_commit = $harness
-            fixture_protocol = 'HTTP/1.1'
-            browser_isolation = 'suite'
-          } | ConvertTo-Json | Set-Content D:/BuildCache/sapid/browser-provenance.json
       - name: Actual widget browser acceptance
         run: |
           $fixture = Start-Process python -ArgumentList @('-m','http.server','8794','--protocol','HTTP/1.1','--bind','127.0.0.1','--directory','D:/BuildCache/sapid/web') -WindowStyle Hidden -PassThru
@@ -125,13 +138,28 @@ jobs:
             if ($LASTEXITCODE) { throw 'Widget browser acceptance failed' }
           }
           finally { Stop-Process -Id $fixture.Id -ErrorAction SilentlyContinue }
+      - name: Record successful acceptance provenance
+        id: provenance
+        env:
+          EXPECTED_PRODUCT: ${{ inputs.release_ref }}
+          EXPECTED_ACCEPTANCE: ${{ inputs.acceptance_ref }}
+        run: |
+          $harnessRoot = if (Test-Path ../acceptance/.git) { '../acceptance' } else { '.' }
+          $arguments = @('--record-acceptance','--product-root','.', '--harness-root',$harnessRoot,'--fixtures-root','D:/BuildCache/sapid/web','--provenance','D:/BuildCache/sapid/browser-provenance.json')
+          if ($env:EXPECTED_PRODUCT) { $arguments += @('--expected-commit',$env:EXPECTED_PRODUCT) }
+          if ($env:EXPECTED_ACCEPTANCE) { $arguments += @('--acceptance-commit',$env:EXPECTED_ACCEPTANCE) }
+          python (Join-Path $harnessRoot 'scripts/release.py') @arguments
+          if ($LASTEXITCODE) { throw 'Browser evidence validation failed' }
+          "artifact_name=sapid-browser-acceptance-$env:GITHUB_RUN_ATTEMPT" >> $env:GITHUB_OUTPUT
+          "provenance_sha256=$((Get-FileHash D:/BuildCache/sapid/browser-provenance.json -Algorithm SHA256).Hash.ToLowerInvariant())" >> $env:GITHUB_OUTPUT
       - name: Preserve browser acceptance evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: sapid-browser-acceptance
+          name: ${{ steps.provenance.outputs.artifact_name || format('sapid-browser-acceptance-failed-{0}', github.run_attempt) }}
           path: |
             D:/BuildCache/sapid/browser-results.json
             D:/BuildCache/sapid/browser-progress.json
             D:/BuildCache/sapid/browser-provenance.json
+            D:/BuildCache/sapid/library-Cargo.lock
           if-no-files-found: ignore

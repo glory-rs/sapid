@@ -87,9 +87,9 @@ mod fixture {
                             .label("Remove selection")
                             .on_press(move || count.revise(|v| *v = 0)),
                     )),
-                    glory::ui::text().class("toolbar-clear-requests").content(
-                        scope.bond(move || format!("Clear requests: {}", requests.get())),
-                    ),
+                    glory::ui::text()
+                        .class("toolbar-clear-requests")
+                        .content(scope.bond(move || format!("Clear requests: {}", requests.get()))),
                     sapid::text_field()
                         .theme(theme.clone())
                         .name("Outside toolbar editor")

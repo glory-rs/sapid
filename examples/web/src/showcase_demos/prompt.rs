@@ -35,8 +35,7 @@ mod fixture {
                 .default_value("Draft 🙂")
                 .suggestion(PromptSuggestion {
                     label: "Explain this source".into(),
-                    value: "Please explain the application source.\nUse public information."
-                        .into(),
+                    value: "Please explain the application source.\nUse public information.".into(),
                 })
                 .on_send(move |value| {
                     sends.revise(|n| *n += 1);
@@ -64,9 +63,7 @@ mod fixture {
                     }
                 })
                 .on_cancel(move || cancels.revise(|n| *n += 1))
-                .on_reject(move |value| {
-                    reject.revise(|current| *current = format!("{value:?}"))
-                });
+                .on_reject(move |value| reject.revise(|current| *current = format!("{value:?}")));
             if attachments {
                 prompt = prompt.attachments(FileConfig {
                     multiple: true,

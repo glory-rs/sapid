@@ -2,7 +2,7 @@
 use crate::schedule_model::{midnight, ticks};
 use crate::{
     CivilDate, LocalDateTime, LocalTime, MAX_SCHEDULE_OCCURRENCES, ScheduleData, ScheduleError,
-    ScheduleKey,
+    ScheduleKey, ScheduleOccurrence,
 };
 mod resource_month;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -121,6 +121,12 @@ impl crate::ResourceScheduleData {
         time: ScheduleTimeWindow,
         days: usize,
     ) -> Result<ResourceScheduleTimeline, ScheduleError> {
+        self.validate_timeline_window(days)?;
+        let occurrences = self.data().expand(MAX_SCHEDULE_OCCURRENCES)?;
+        self.layout_timeline_expanded(time, days, &occurrences)
+    }
+
+    fn validate_timeline_window(&self, days: usize) -> Result<(), ScheduleError> {
         let data = self.data();
         let window = data.window();
         if !matches!(days, 1 | 7)
@@ -130,7 +136,20 @@ impl crate::ResourceScheduleData {
         {
             return Err(ScheduleError::InvalidInterval);
         }
-        data.expand(MAX_SCHEDULE_OCCURRENCES)?;
+        Ok(())
+    }
+
+    /// Reuse the occurrence order of the current admitted model. Callers must
+    /// pass the complete expansion of this data, never a filtered projection.
+    pub(crate) fn layout_timeline_expanded(
+        &self,
+        time: ScheduleTimeWindow,
+        days: usize,
+        occurrences: &[ScheduleOccurrence],
+    ) -> Result<ResourceScheduleTimeline, ScheduleError> {
+        self.validate_timeline_window(days)?;
+        let data = self.data();
+        let window = data.window();
         let visible = self.visible_resources();
         let count = visible.len() * days;
         let slots = count * time.len();
@@ -152,7 +171,9 @@ impl crate::ResourceScheduleData {
                     day: day as u8,
                     date,
                 });
-                for position in data.layout_day(date, time, Some(key.key()))? {
+                for position in
+                    data.layout_day_expanded(date, time, Some(key.key()), occurrences)?
+                {
                     if position.lanes() > 16 || placements.len() == 4096 {
                         return Err(ScheduleError::InvalidResource);
                     }
@@ -216,6 +237,17 @@ impl ScheduleData {
         resource: Option<&ScheduleKey>,
     ) -> Result<Vec<ScheduleDayPlacement>, ScheduleError> {
         let occurrences = self.expand(MAX_SCHEDULE_OCCURRENCES)?;
+        self.layout_day_expanded(date, time, resource, &occurrences)
+    }
+
+    /// Internal geometry over the complete expansion of this exact model.
+    pub(crate) fn layout_day_expanded(
+        &self,
+        date: CivilDate,
+        time: ScheduleTimeWindow,
+        resource: Option<&ScheduleKey>,
+        occurrences: &[ScheduleOccurrence],
+    ) -> Result<Vec<ScheduleDayPlacement>, ScheduleError> {
         let start = ticks(at_minute(date, time.start)?);
         let end = ticks(at_minute(date, time.end)?);
         let extent = (end - start) as f64;
@@ -224,9 +256,7 @@ impl ScheduleData {
             let event = self
                 .event(*occurrence)
                 .ok_or(ScheduleError::StaleOccurrence)?;
-            if event.is_all_day()
-                || resource.is_some_and(|key| event.resource_key() != Some(key))
-            {
+            if event.is_all_day() || resource.is_some_and(|key| event.resource_key() != Some(key)) {
                 continue;
             }
             let a = ticks(occurrence.interval().start()).max(start);

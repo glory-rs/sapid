@@ -15,8 +15,7 @@ fn node(app: &App) -> NodeId {
 }
 
 fn input(app: &App, id: NodeId) -> InputProps {
-    let Props::Input(props) = app.tree().node(id).unwrap().descriptor.view().props.clone()
-    else {
+    let Props::Input(props) = app.tree().node(id).unwrap().descriptor.view().props.clone() else {
         panic!("expected input")
     };
     props

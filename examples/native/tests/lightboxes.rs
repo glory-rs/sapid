@@ -89,8 +89,7 @@ fn bounds(app: &App, id: NodeId) -> Rect {
     v
 }
 #[test]
-fn four_theme_native_lightbox_has_real_modal_image_pixels_zoom_navigation_failure_and_cleanup()
-{
+fn four_theme_native_lightbox_has_real_modal_image_pixels_zoom_navigation_failure_and_cleanup() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),

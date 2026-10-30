@@ -430,10 +430,7 @@ pub fn month_picker(
 ) -> MonthPicker {
     period_picker(key, provider)
 }
-pub fn year_picker(
-    key: impl Into<String>,
-    provider: impl Into<Vary<DatesProvider>>,
-) -> YearPicker {
+pub fn year_picker(key: impl Into<String>, provider: impl Into<Vary<DatesProvider>>) -> YearPicker {
     period_picker(key, provider)
 }
 impl<T: DatePeriod> PeriodPicker<T> {
@@ -520,8 +517,7 @@ impl<T: DatePeriod> Widget for PeriodPicker<T> {
         let value = std::mem::take(&mut self.value).mount(scope);
         let initial = self.provider.try_get()?;
         let default_page = self.default_page.unwrap_or_else(|| {
-            CivilYear::new(initial.date_bounds().clamp(initial.reference_date()).year())
-                .unwrap()
+            CivilYear::new(initial.date_bounds().clamp(initial.reference_date()).year()).unwrap()
         });
         let page = Value {
             source: self.page.take(),
@@ -564,9 +560,7 @@ impl<T: DatePeriod> Widget for PeriodPicker<T> {
                     s.cells
                         .iter()
                         .flatten()
-                        .find(|v| {
-                            s.bounds().contains(**v) && excluded.binary_search(v).is_err()
-                        })
+                        .find(|v| s.bounds().contains(**v) && excluded.binary_search(v).is_err())
                         .copied()
                 }),
         );
@@ -815,8 +809,7 @@ impl<T: DatePeriod> Widget for PeriodPicker<T> {
                     .semantics(scope.bond(move || {
                         Some(Box::new(Semantics {
                             selected: Some(
-                                accepted
-                                    .with(|s| s.cells[at].is_some_and(|v| s.value.contains(v))),
+                                accepted.with(|s| s.cells[at].is_some_and(|v| s.value.contains(v))),
                             ),
                             table: Some(TableMetadata::Cell {
                                 row: row as u32,
@@ -862,8 +855,7 @@ impl<T: DatePeriod> Widget for PeriodPicker<T> {
                 let edited = dirty.take();
                 let snap = accepted.get();
                 let current = focused.get();
-                if current.is_none_or(|v| !snap.cells.contains(&Some(v)) || !s.allowed(snap, v))
-                {
+                if current.is_none_or(|v| !snap.cells.contains(&Some(v)) || !s.allowed(snap, v)) {
                     let next = s.nearest(snap, current.map(index).unwrap_or(0));
                     if next != current {
                         focused.try_revise(|v| *v = next)?;

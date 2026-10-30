@@ -177,8 +177,7 @@ impl Widget for ModelSelector {
                     return Err(invalid("invalid bounded model metadata"));
                 }
             }
-            bytes +=
-                model.key.len() + model.provider.len() + model.name.len() + model.value.len();
+            bytes += model.key.len() + model.provider.len() + model.name.len() + model.value.len();
             if bytes > MAX_MODEL_CATALOG_BYTES {
                 return Err(invalid("model catalog exceeds its 128KiB byte budget"));
             }
@@ -219,9 +218,10 @@ impl Widget for ModelSelector {
         let control = std::mem::take(&mut self.value).mount(scope);
         let valid = models.clone();
         let accepted = composite::validated(scope, &control.source, move |key| {
-            if key.as_ref().is_some_and(|key| {
-                key.len() > 64 || !valid.iter().any(|model| model.key == *key)
-            }) {
+            if key
+                .as_ref()
+                .is_some_and(|key| key.len() > 64 || !valid.iter().any(|model| model.key == *key))
+            {
                 Err(invalid("model selection must be a declared key"))
             } else {
                 Ok(())

@@ -74,10 +74,9 @@ impl Button {
         key: String,
     ) -> Result<Self> {
         if self.common.focus != glory::render::FocusMode::Auto {
-            return Err(glory::render::Error::InvalidProps(
-                "toolbar owns its button tab stops",
-            )
-            .into());
+            return Err(
+                glory::render::Error::InvalidProps("toolbar owns its button tab stops").into(),
+            );
         }
         let reference = self.common.node_ref.unwrap_or_else(|| scope.cage(None));
         self.common.node_ref = Some(reference);
@@ -164,13 +163,11 @@ impl Widget for Button {
         if has_sections {
             if let Some(name) = self.common.name.take() {
                 self.common.name = Some(
-                    crate::composite::validated(scope, &name, |value| section_name(value))?
-                        .into(),
+                    crate::composite::validated(scope, &name, |value| section_name(value))?.into(),
                 );
             } else {
-                let accepted = crate::composite::validated(scope, &self.label, |value| {
-                    section_name(value)
-                })?;
+                let accepted =
+                    crate::composite::validated(scope, &self.label, |value| section_name(value))?;
                 self.label = accepted.into();
                 self.common.name = Some(accepted.into());
             }
@@ -181,8 +178,7 @@ impl Widget for Button {
                     .content(self.label.clone())
                     .selectable(false),
                 glory::ui::group().fill(self.body.take().unwrap_or_else(|| ().into_children())),
-                glory::ui::group()
-                    .fill(self.right.take().unwrap_or_else(|| ().into_children())),
+                glory::ui::group().fill(self.right.take().unwrap_or_else(|| ().into_children())),
             ));
             let mut structural = glory::style::Style::new()
                 .display(glory::style::Display::InlineFlex)
@@ -269,8 +265,7 @@ impl Widget for Button {
         } else {
             state_style().into()
         };
-        let mut inner =
-            configure!(self.common, inner, scope, class, glory::style::Style::new());
+        let mut inner = configure!(self.common, inner, scope, class, glory::style::Style::new());
         inner = inner.enabled(enabled.clone());
         let loading = self.loading.clone();
         let navigation_item = self.toolbar.is_some();
@@ -367,13 +362,9 @@ impl ToolbarHooks for ToolbarItem {
         })
     }
     fn register(self: Box<Self>, scope: &Scope, enabled: Vary<bool>) -> Result {
-        let member = self.collection.register(
-            scope,
-            self.key,
-            self.reference,
-            enabled,
-            String::new(),
-        )?;
+        let member =
+            self.collection
+                .register(scope, self.key, self.reference, enabled, String::new())?;
         self.token
             .expect("configured toolbar button")
             .try_revise(|value| *value = Some(member))?;

@@ -6,9 +6,7 @@ use glory::render::{
     Direction, DragPhase, Event, EventKind, FocusMode, Navigation, NodeId, Orientation, Query,
     QueryToken, QueryValue, Semantics, SwipeCapture,
 };
-use glory::style::{
-    BorderStyle, Display, Edges, FlexDirection, Length, Limit, Overflow, Style,
-};
+use glory::style::{BorderStyle, Display, Edges, FlexDirection, Length, Limit, Overflow, Style};
 use glory::ui::{Result, WeakScope, Widget};
 use glory::{Cage, Scope, Vary};
 use std::{cell::Cell, rc::Rc};
@@ -464,8 +462,7 @@ impl Widget for Carousel {
                 let id = owner.id();
                 container = container.on(EventKind::PointerWithin, move |event| {
                     if let Event::PointerWithin { phase, .. } = event {
-                        hovered
-                            .revise(|old| *old = phase != glory::render::PointerPhase::Leave);
+                        hovered.revise(|old| *old = phase != glory::render::PointerPhase::Leave);
                     }
                     observe(&mut observers, id, event);
                 });
@@ -507,9 +504,7 @@ impl Widget for Carousel {
                         glory::ui::widget(move |scope| {
                             let current = current_page;
                             glory::ui::view()
-                                .class(format!(
-                                    "sapid-carousel-slide sapid-carousel-slide-{index}"
-                                ))
+                                .class(format!("sapid-carousel-slide sapid-carousel-slide-{index}"))
                                 .name(scope.bond(move || {
                                     format!("Slide {} of {}", index + 1, current.get().count)
                                 }))
@@ -552,9 +547,7 @@ impl Widget for Carousel {
                 .class(class)
                 .theme(self.common.theme.clone())
                 .size(self.common.size)
-                .enabled(
-                    owner.bond(move || enabled.get() && page.get().propose(step).is_some()),
-                )
+                .enabled(owner.bond(move || enabled.get() && page.get().propose(step).is_some()))
                 .on_press(move || {
                     if let Err(error) = local.step(step) {
                         local.report(error);

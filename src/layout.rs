@@ -1,9 +1,7 @@
 //! Portable layout boxes. Sapid Group owns a box; Glory Group stays boxless.
 use crate::appearance::{Common, merge};
 use glory::render::NodeId;
-use glory::style::{
-    Align, Display, Edges, FlexDirection, FlexWrap, Justify, Length, Limit, Style,
-};
+use glory::style::{Align, Display, Edges, FlexDirection, FlexWrap, Justify, Length, Limit, Style};
 use glory::ui::{Children, IntoChildren, Result, Widget};
 use glory::{Cage, Scope, Vary};
 

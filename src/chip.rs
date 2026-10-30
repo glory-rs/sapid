@@ -166,8 +166,7 @@ impl ChipGroup {
         self
     }
     pub fn items(mut self, values: impl IntoIterator<Item = ChipItem>) -> Self {
-        let remaining =
-            (crate::radio::MAX_RADIO_GROUP_ITEMS + 1).saturating_sub(self.items.len());
+        let remaining = (crate::radio::MAX_RADIO_GROUP_ITEMS + 1).saturating_sub(self.items.len());
         self.items.extend(values.into_iter().take(remaining));
         self
     }

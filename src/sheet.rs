@@ -109,9 +109,7 @@ pub(crate) fn mount(
                 value.validate(current)?;
                 Ok::<_, glory::ui::Error>(value.clone())
             })??;
-            if accepted
-                .try_with(|old| old.options == next && old.protocol.current == current)?
-            {
+            if accepted.try_with(|old| old.options == next && old.protocol.current == current)? {
                 return Ok(());
             }
             let revision = accepted

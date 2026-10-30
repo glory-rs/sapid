@@ -1,8 +1,6 @@
 #![cfg(feature = "dates")]
 use glory::prelude::*;
-use glory::render::{
-    Direction, DragPhase, EventKind, GridCommand, NodeId, Props, TableMetadata,
-};
+use glory::render::{Direction, DragPhase, EventKind, GridCommand, NodeId, Props, TableMetadata};
 use sapid::prelude::*;
 use std::{cell::RefCell, rc::Rc};
 fn date(s: &str) -> CivilDate {
@@ -191,9 +189,7 @@ fn key(s: &str) -> ScheduleKey {
 }
 fn resources(n: usize) -> ScheduleResources {
     ScheduleResources::new(
-        (0..n).map(|i| {
-            ScheduleResource::new(key(&format!("r{i}")), format!("Room {i}")).unwrap()
-        }),
+        (0..n).map(|i| ScheduleResource::new(key(&format!("r{i}")), format!("Room {i}")).unwrap()),
     )
     .unwrap()
 }
@@ -212,8 +208,7 @@ fn model(days: u16, first: usize, count: usize) -> ResourceScheduleData {
                 ScheduleEvent::new(
                     key("a"),
                     "Planning",
-                    ScheduleInterval::new(dt("2024-02-29T09:00"), dt("2024-02-29T10:00"))
-                        .unwrap(),
+                    ScheduleInterval::new(dt("2024-02-29T09:00"), dt("2024-02-29T10:00")).unwrap(),
                 )
                 .unwrap()
                 .resource(key("r0"))
@@ -221,8 +216,7 @@ fn model(days: u16, first: usize, count: usize) -> ResourceScheduleData {
                 ScheduleEvent::new(
                     key("b"),
                     "Review",
-                    ScheduleInterval::new(dt("2024-02-29T09:00"), dt("2024-02-29T10:00"))
-                        .unwrap(),
+                    ScheduleInterval::new(dt("2024-02-29T09:00"), dt("2024-02-29T10:00")).unwrap(),
                 )
                 .unwrap()
                 .resource(key("r1"))
@@ -248,6 +242,110 @@ fn model(days: u16, first: usize, count: usize) -> ResourceScheduleData {
         ScheduleResourceWindow::new(first, count).unwrap(),
     )
     .unwrap()
+}
+
+#[test]
+fn rejected_layout_preserves_current_geometry_and_selection_then_accepts_coherent_replacement() {
+    let app = App::memory();
+    let initial = model(1, 0, 2);
+    let source = app.scope().cage(initial.clone());
+    let selected = app.scope().cage(None);
+    app.mount(
+        resources_day_view("snapshot", source)
+            .on_selection_change(move |value| selected.revise(|old| *old = Some(value))),
+    )
+    .unwrap();
+    let planning = button(&app, "Planning");
+    let geometry = classes(&app, "sapid-resources-event-card")
+        .iter()
+        .map(|id| {
+            app.tree()
+                .node(*id)
+                .unwrap()
+                .descriptor
+                .view()
+                .style
+                .clone()
+        })
+        .collect::<Vec<_>>();
+    let invalid = ResourceScheduleData::new(
+        ScheduleData::new(
+            ScheduleZone::Civil,
+            initial.data().window(),
+            (0..17).map(|i| {
+                ScheduleEvent::new(
+                    key(&format!("crowded-{i}")),
+                    "Crowded",
+                    ScheduleInterval::new(dt("2024-02-29T09:00"), dt("2024-02-29T10:00")).unwrap(),
+                )
+                .unwrap()
+                .resource(key("r0"))
+            }),
+        )
+        .unwrap(),
+        initial.resources().clone(),
+        initial.resource_window(),
+    )
+    .unwrap();
+    source.revise(|old| *old = invalid);
+    assert!(app.flush().is_err());
+    assert_eq!(button(&app, "Planning"), planning);
+    assert_eq!(
+        classes(&app, "sapid-resources-event-card")
+            .iter()
+            .map(|id| app
+                .tree()
+                .node(*id)
+                .unwrap()
+                .descriptor
+                .view()
+                .style
+                .clone())
+            .collect::<Vec<_>>(),
+        geometry
+    );
+    app.dispatch(planning, Event::Activate).unwrap();
+    app.flush().unwrap();
+    assert!(
+        matches!(selected.get(), Some(ScheduleSelection::Event { interval, .. })
+        if interval.end() == dt("2024-02-29T10:00"))
+    );
+    let replacement = ResourceScheduleData::new(
+        ScheduleData::new(
+            ScheduleZone::Civil,
+            initial.data().window(),
+            initial.data().events().iter().map(|event| {
+                if event.key() == &key("a") {
+                    ScheduleEvent::new(
+                        event.key().clone(),
+                        "Planning",
+                        ScheduleInterval::new(dt("2024-02-29T09:00"), dt("2024-02-29T12:00"))
+                            .unwrap(),
+                    )
+                    .unwrap()
+                    .resource(key("r0"))
+                    .permissions(event.edit_permissions())
+                } else {
+                    event.clone()
+                }
+            }),
+        )
+        .unwrap(),
+        initial.resources().clone(),
+        initial.resource_window(),
+    )
+    .unwrap();
+    source.revise(|old| *old = replacement);
+    app.flush().unwrap();
+    assert_eq!(button(&app, "Planning"), planning);
+    app.dispatch(planning, Event::Activate).unwrap();
+    app.flush().unwrap();
+    assert!(
+        matches!(selected.get(), Some(ScheduleSelection::Event { interval, .. })
+        if interval.start() == dt("2024-02-29T09:00") && interval.end() == dt("2024-02-29T12:00"))
+    );
+    assert_eq!(classes(&app, "sapid-resources-event-card").len(), 2);
+    assert_eq!(classes(&app, "sapid-resources-all-day-event").len(), 1);
 }
 fn all(app: &App) -> Vec<NodeId> {
     let tree = app.tree();
@@ -397,8 +495,7 @@ fn last_partial_resource_page_returns_with_original_stride_and_request_refusal_i
     let calls = out.clone();
     let source = app.scope().cage(model(1, 0, 2));
     app.mount(
-        resources_day_view("pages", source)
-            .on_window_request(move |r| calls.borrow_mut().push(r)),
+        resources_day_view("pages", source).on_window_request(move |r| calls.borrow_mut().push(r)),
     )
     .unwrap();
     let next = button(&app, "Next resources");
@@ -487,8 +584,7 @@ fn same_tick_edit_fifo_accumulates_controlled_refusal_and_respects_resize_bounda
     assert_eq!(calls[1].proposed.start(), dt("2024-02-29T09:00"));
 }
 #[test]
-fn same_tick_accepted_edit_uses_latest_original_and_generic_readonly_cancels_following_intents()
-{
+fn same_tick_accepted_edit_uses_latest_original_and_generic_readonly_cancels_following_intents() {
     let app = App::memory();
     let source = app.scope().cage(model(1, 0, 2));
     let readonly = app.scope().cage(false);

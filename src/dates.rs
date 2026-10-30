@@ -259,8 +259,7 @@ impl YearMonth {
         }
     }
     pub fn checked_add(self, months: i32) -> DateResult<Self> {
-        let index =
-            (i64::from(self.year) - 1) * 12 + i64::from(self.month) - 1 + i64::from(months);
+        let index = (i64::from(self.year) - 1) * 12 + i64::from(self.month) - 1 + i64::from(months);
         if !(0..i64::from(MAX_DATE_YEAR) * 12).contains(&index) {
             return Err(DateError::OutOfRange);
         }
@@ -302,8 +301,7 @@ impl DateBounds {
             .min(self.max.unwrap_or(CivilDate::MAX))
     }
     pub fn month_allowed(self, month: YearMonth) -> bool {
-        self.min.is_none_or(|d| month.last() >= d)
-            && self.max.is_none_or(|d| month.first() <= d)
+        self.min.is_none_or(|d| month.last() >= d) && self.max.is_none_or(|d| month.first() <= d)
     }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -343,8 +341,7 @@ pub struct MonthGrid {
 impl MonthGrid {
     pub fn new(month: YearMonth, week_start: Weekday) -> Self {
         let first = month.first();
-        let start =
-            i64::from(first.ordinal()) - i64::from(first.weekday().index_from(week_start));
+        let start = i64::from(first.ordinal()) - i64::from(first.weekday().index_from(week_start));
         let cells = std::array::from_fn(|i| {
             let ordinal = start + i as i64;
             if (0..=i64::from(MAX_ORDINAL)).contains(&ordinal) {
@@ -385,12 +382,7 @@ impl LocalTime {
     pub fn new(hour: u8, minute: u8, second: u8) -> DateResult<Self> {
         Self::with_nanosecond(hour, minute, second, 0)
     }
-    pub fn with_nanosecond(
-        hour: u8,
-        minute: u8,
-        second: u8,
-        nanosecond: u32,
-    ) -> DateResult<Self> {
+    pub fn with_nanosecond(hour: u8, minute: u8, second: u8, nanosecond: u32) -> DateResult<Self> {
         if hour > 23 || minute > 59 || second > 59 || nanosecond >= 1_000_000_000 {
             return Err(DateError::InvalidTime);
         }
@@ -888,10 +880,8 @@ mod tests {
         ] {
             for minutes in [-1439, -480, 0, 330, 1439] {
                 let offset = FixedOffset::new(minutes).unwrap();
-                let local = LocalDateTime::new(
-                    date,
-                    LocalTime::with_nanosecond(23, 59, 59, 123).unwrap(),
-                );
+                let local =
+                    LocalDateTime::new(date, LocalTime::with_nanosecond(23, 59, 59, 123).unwrap());
                 assert_eq!(local.resolve_fixed(offset).to_local(offset).unwrap(), local);
             }
         }

@@ -30,8 +30,7 @@ fn bounds(app: &glory::App, node: NodeId) -> Rect {
 }
 
 #[test]
-fn four_theme_native_dynamic_accordion_preserves_layout_editor_and_actual_navigation_on_reorder()
- {
+fn four_theme_native_dynamic_accordion_preserves_layout_editor_and_actual_navigation_on_reorder() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),

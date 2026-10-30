@@ -188,7 +188,7 @@ fn clear_zero_and_duration_validation_use_accepted_revisions_and_keepmounted_ret
 }
 #[test]
 fn no_completion_driver_ssr_and_memory_close_unmount_immediately_and_controlled_refusal_is_silent()
- {
+{
     let app = App::memory();
     let open = app.scope().cage(true);
     let proposals = Rc::new(Cell::new(0));
@@ -227,7 +227,7 @@ fn no_completion_driver_ssr_and_memory_close_unmount_immediately_and_controlled_
 mod fixture;
 #[test]
 fn four_theme_fixture_is_deterministic_and_whole_owner_retirement_does_not_write_disposed_counters()
- {
+{
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),
@@ -235,8 +235,7 @@ fn four_theme_fixture_is_deterministic_and_whole_owner_retirement_does_not_write
         sapid::Theme::green_dark(),
     ] {
         let first = glory::ssr::snapshot(fixture::collapse_motion_form(theme.clone())).unwrap();
-        let second =
-            glory::ssr::snapshot(fixture::collapse_motion_form(theme.clone())).unwrap();
+        let second = glory::ssr::snapshot(fixture::collapse_motion_form(theme.clone())).unwrap();
         assert_eq!(first.html, second.html);
         let app = App::new(MotionHost::from);
         app.mount(fixture::collapse_motion_form(theme)).unwrap();

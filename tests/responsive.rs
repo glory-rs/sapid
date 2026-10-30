@@ -162,11 +162,7 @@ fn initial_measurement_is_one_queued_task_and_query_and_cannot_overwrite_a_new_r
             self.wire.borrow_mut().applied = receipt.applied;
             Ok(receipt)
         }
-        fn request(
-            &mut self,
-            query: Query,
-            token: QueryToken,
-        ) -> Result<(), glory::render::Error> {
+        fn request(&mut self, query: Query, token: QueryToken) -> Result<(), glory::render::Error> {
             self.memory.node(query.node())?;
             let mut wire = self.wire.borrow_mut();
             let applied = wire.applied;

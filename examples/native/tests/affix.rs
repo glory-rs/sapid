@@ -24,8 +24,7 @@ fn close(actual: f64, expected: f64) {
     assert!((actual - expected).abs() < 0.5, "{actual} != {expected}");
 }
 #[test]
-fn native_fixed_four_themes_preserves_viewport_offsets_during_real_scroll_resize_and_visibility()
- {
+fn native_fixed_four_themes_preserves_viewport_offsets_during_real_scroll_resize_and_visibility() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),
@@ -151,9 +150,7 @@ fn native_absolute_affix_uses_the_explicit_relative_container() {
 fn native_sticky_affix_is_explicitly_rejected_and_does_not_claim_fallback_layout() {
     let host = WindowApp::new();
     let error = host
-        .mount(
-            affix_container("sticky").content(|context| affix("sticky-child").sticky(context)),
-        )
+        .mount(affix_container("sticky").content(|context| affix("sticky-child").sticky(context)))
         .unwrap_err();
     assert!(
         matches!(

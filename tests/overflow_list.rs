@@ -79,8 +79,10 @@ fn current_keys_keep_single_owner_and_editor_identity_across_moves_reorders_and_
     visible.revise(|value| *value = 3);
     app.flush().unwrap();
     assert_eq!(nodes(&app, "editor-a"), [old]);
-    assert!(row.iter().all(|id| app.tree().node(*id).unwrap().parent
-        == Some(nodes(&app, "sapid-overflow-strip")[0])));
+    assert!(
+        row.iter().all(|id| app.tree().node(*id).unwrap().parent
+            == Some(nodes(&app, "sapid-overflow-strip")[0]))
+    );
     source.revise(|keys| keys.reverse());
     app.flush().unwrap();
     assert_eq!(builds.get(), 3);
@@ -462,8 +464,7 @@ fn deterministic_four_theme_ssr_starts_at_the_same_explicit_prefix_without_physi
         sapid::Theme::green_light(),
         sapid::Theme::green_dark(),
     ] {
-        let first =
-            glory::ssr::snapshot(fixture_page::overflow_list_form(theme.clone())).unwrap();
+        let first = glory::ssr::snapshot(fixture_page::overflow_list_form(theme.clone())).unwrap();
         let second = glory::ssr::snapshot(fixture_page::overflow_list_form(theme)).unwrap();
         assert_eq!(first.html, second.html);
         assert!(first.html.contains("More actions (3 hidden)"));

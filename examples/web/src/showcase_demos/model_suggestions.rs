@@ -45,16 +45,12 @@ mod fixture {
                                 *value = proposal.as_ref().map_or_else(
                                     || "Model proposal: none".into(),
                                     |model| {
-                                        format!(
-                                            "Model proposal: {} = {}",
-                                            model.key, model.value
-                                        )
+                                        format!("Model proposal: {} = {}", model.key, model.value)
                                     },
                                 )
                             });
                             if accept_model.get() {
-                                selected
-                                    .revise(|value| *value = proposal.map(|model| model.key));
+                                selected.revise(|value| *value = proposal.map(|model| model.key));
                             }
                         })
                         .on_search_change(move |proposal| {

@@ -13,6 +13,7 @@ use glory::{Cage, Scope, Vary};
 use std::{cell::Cell, rc::Rc};
 mod calendar;
 mod resources;
+mod snapshot;
 mod timeline;
 pub use resources::*;
 fn invalid() -> glory::ui::Error {
@@ -55,7 +56,7 @@ pub(crate) struct Controller {
     owner: glory::core::InstanceId,
     weak: WeakScope,
     live: Cell<bool>,
-    accepted: Cage<ScheduleData>,
+    accepted: Cage<Rc<snapshot::Snapshot>>,
     flags: Cage<Flags>,
     selection: Control<Option<ScheduleSelection>>,
     request_cursor: Cell<Option<ScheduleWindow>>,
@@ -117,18 +118,14 @@ impl Controller {
             return Ok(());
         }
         let allowed = self.accepted.try_with(|data| -> Result<bool> {
-            Ok(data
-                .expand(MAX_SCHEDULE_OCCURRENCES)
-                .map_err(|_| invalid())?
-                .iter()
-                .any(|occurrence| {
-                    data.event(*occurrence).is_some_and(|event| {
-                        event.edit_permissions().select
-                            && event.key() == &row.key
-                            && occurrence.candidate_index() == row.candidate
-                            && occurrence.interval() == row.interval
-                    })
-                }))
+            Ok(data.occurrences.iter().any(|occurrence| {
+                data.event(*occurrence).is_some_and(|event| {
+                    event.edit_permissions().select
+                        && event.key() == &row.key
+                        && occurrence.candidate_index() == row.candidate
+                        && occurrence.interval() == row.interval
+                })
+            }))
         })??;
         if !allowed {
             return Ok(());
@@ -270,10 +267,7 @@ impl Schedule {
         self.locale = value;
         self
     }
-    pub fn on_window_request(
-        mut self,
-        callback: impl FnMut(ScheduleRequest) + 'static,
-    ) -> Self {
+    pub fn on_window_request(mut self, callback: impl FnMut(ScheduleRequest) + 'static) -> Self {
         self.requested = Some(Box::new(callback));
         self
     }
@@ -318,18 +312,7 @@ impl Widget for Schedule {
         }
         let view = self.view;
         let time_window = self.time_window;
-        let accepted = composite::validated(scope, &self.data, move |data| {
-            data.expand(MAX_SCHEDULE_OCCURRENCES)
-                .map_err(|_| invalid())?;
-            match view {
-                ScheduleView::Agenda => Ok(()),
-                ScheduleView::Day => timeline::validate(data, 1, time_window),
-                ScheduleView::Week => timeline::validate(data, 7, time_window),
-                ScheduleView::Month | ScheduleView::Year | ScheduleView::MobileMonth => {
-                    calendar::validate(data, view)
-                }
-            }
-        })?;
+        let accepted = snapshot::accept(scope, &self.data, view, time_window)?;
         let selection = std::mem::take(&mut self.selection).mount(scope);
         let enabled = self.common.enabled.clone();
         let readonly = self.readonly.clone();
@@ -443,8 +426,7 @@ impl Widget for Schedule {
                 .size(self.common.size)
                 .enabled(scope.bond(move || {
                     flags.with(|f| f.enabled)
-                        && accepted
-                            .with(|data| shift_window(data.window(), view, delta).is_ok())
+                        && accepted.with(|data| shift_window(data.window(), view, delta).is_ok())
                 }))
                 .on_press(move || {
                     s.report(s.request(delta));
@@ -542,10 +524,7 @@ impl Widget for Schedule {
                 },
             )?;
         }
-        let empty = accepted.map(|data| {
-            data.expand(MAX_SCHEDULE_OCCURRENCES)
-                .is_ok_and(|items| items.is_empty())
-        });
+        let empty = accepted.map(|data| data.occurrences.is_empty());
         let theme = self.common.theme.clone();
         glory::ui::when(empty, move || {
             crate::text()
@@ -584,12 +563,9 @@ struct AgendaDay {
     label: String,
     rows: Vec<AgendaRow>,
 }
-fn agenda_groups(data: &ScheduleData, locale: DateLocale) -> Vec<AgendaDay> {
+fn agenda_groups(data: &snapshot::Snapshot, locale: DateLocale) -> Vec<AgendaDay> {
     let mut groups: Vec<AgendaDay> = vec![];
-    let Ok(occurrences) = data.expand(MAX_SCHEDULE_OCCURRENCES) else {
-        return groups;
-    };
-    for occurrence in occurrences {
+    for occurrence in data.occurrences.iter().copied() {
         let Some(event) = data.event(occurrence) else {
             continue;
         };
@@ -741,9 +717,8 @@ impl Widget for AgendaEventWidget {
                 )
             })
         });
-        let enabled = scope.bond(move || {
-            flags.with(|f| f.enabled && !f.readonly) && row.with(|r| r.selectable)
-        });
+        let enabled = scope
+            .bond(move || flags.with(|f| f.enabled && !f.readonly) && row.with(|r| r.selectable));
         let theme = self.theme.clone();
         let unstyled = self.unstyled;
         let style = scope.bond(move || {

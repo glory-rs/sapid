@@ -139,11 +139,7 @@ fn nonnegative(v: f64) -> Result<(), ChartError> {
         Ok(())
     }
 }
-fn record<'a>(
-    keys: &mut BTreeSet<&'a str>,
-    key: &'a str,
-    label: &str,
-) -> Result<(), ChartError> {
+fn record<'a>(keys: &mut BTreeSet<&'a str>, key: &'a str, label: &str) -> Result<(), ChartError> {
     if !chart_model::key(key) || !keys.insert(key) {
         return Err(ChartError::Key);
     }
@@ -263,9 +259,7 @@ impl PlotData {
                     for v in [r.open, r.high, r.low, r.close] {
                         value(v)?;
                     }
-                    if r.low > r.open.min(r.close)
-                        || r.high < r.open.max(r.close)
-                        || r.low > r.high
+                    if r.low > r.open.min(r.close) || r.high < r.open.max(r.close) || r.low > r.high
                     {
                         return Err(ChartError::Schema);
                     }

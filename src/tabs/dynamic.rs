@@ -43,10 +43,9 @@ fn check_value(value: &str) -> Result {
 
 pub(super) fn build(widget: &mut Tabs, scope: &Scope, input: Items) -> Result {
     if !widget.items.is_empty() {
-        return Err(glory::render::Error::InvalidProps(
-            "dynamic tabs cannot contain static tabs",
-        )
-        .into());
+        return Err(
+            glory::render::Error::InvalidProps("dynamic tabs cannot contain static tabs").into(),
+        );
     }
     let root_id = composite::id("t", &widget.key, "root", "root")?;
     let configs = dynamic::mount(scope, input)?;
@@ -197,8 +196,8 @@ pub(super) fn build(widget: &mut Tabs, scope: &Scope, input: Items) -> Result {
                     config.position,
                 )?;
                 let key = config.key.clone();
-                let open = scope
-                    .bond(move || selected.with(|selected| selected.as_ref() == Some(&key)));
+                let open =
+                    scope.bond(move || selected.with(|selected| selected.as_ref() == Some(&key)));
                 let id = trigger_id.clone();
                 let target = panel_id.clone();
                 let tab_roving = roving.clone();
@@ -307,8 +306,8 @@ pub(super) fn build(widget: &mut Tabs, scope: &Scope, input: Items) -> Result {
                 let trigger_id = composite::id("t", &namespace, "trigger", &config.key)?;
                 let panel_id = composite::id("t", &namespace, "panel", &config.key)?;
                 let key = config.key.clone();
-                let open = scope
-                    .bond(move || selected.with(|selected| selected.as_ref() == Some(&key)));
+                let open =
+                    scope.bond(move || selected.with(|selected| selected.as_ref() == Some(&key)));
                 let panel = Panel {
                     id: panel_id,
                     label: trigger_id,

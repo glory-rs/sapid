@@ -235,8 +235,7 @@ fn calendar_requests_are_true_month_year_pages_without_duration_drift_or_implici
     let source = app.scope().cage(data());
     let requests = app.scope().cage(Vec::<ScheduleRequest>::new());
     app.mount(
-        month_view("pages", source)
-            .on_window_request(move |v| requests.revise(|all| all.push(v))),
+        month_view("pages", source).on_window_request(move |v| requests.revise(|all| all.push(v))),
     )
     .unwrap();
     let next = button(&app, "Next schedule window");
@@ -321,14 +320,12 @@ fn mobile_focus_details_readonly_controlled_refusal_and_owner_retirement_are_sep
     assert_eq!(app.stats().queries, 0);
 }
 #[test]
-fn external_window_change_retains_slot_shells_and_clears_current_disclosure_without_proposals()
-{
+fn external_window_change_retains_slot_shells_and_clears_current_disclosure_without_proposals() {
     let app = App::memory();
     let source = app.scope().cage(data());
     let proposals = app.scope().cage(0);
     app.mount(
-        month_view("update", source)
-            .on_selection_change(move |_| proposals.revise(|v| *v += 1)),
+        month_view("update", source).on_selection_change(move |_| proposals.revise(|v| *v += 1)),
     )
     .unwrap();
     let slot = named(&app, "Monday, January 29, 2024");

@@ -379,9 +379,8 @@ impl Widget for Questionnaire {
                     let states = error_states.borrow();
                     states.iter().position(|fields| {
                         fields.iter().any(|state| {
-                            state.with(|state| {
-                                state.validation_overflow || !state.errors.is_empty()
-                            })
+                            state
+                                .with(|state| state.validation_overflow || !state.errors.is_empty())
                         })
                     })
                 };
@@ -550,27 +549,26 @@ impl Widget for Questionnaire {
             let mut questions = Some(step.questions);
             let legend = step.label.clone();
             let step_appearance = appearance.clone();
-            stepper =
-                stepper.step(crate::step(step.key).label(step.label).content(move || {
-                    let mut fields = crate::fieldset(prefix.clone())
-                        .theme(step_appearance.0.clone())
-                        .size(step_appearance.1)
-                        .legend(legend.clone())
-                        .disabled(ui_disabled)
-                        .fill(Questions {
-                            questions: questions.take().unwrap_or_default(),
-                            form: form.clone(),
-                            gate: gate.into(),
-                            prefix: prefix.clone(),
-                            appearance: appearance.clone(),
-                            states: states.clone(),
-                            index,
-                        });
-                    if step_appearance.2 {
-                        fields = fields.unstyled()
-                    }
-                    fields
-                }));
+            stepper = stepper.step(crate::step(step.key).label(step.label).content(move || {
+                let mut fields = crate::fieldset(prefix.clone())
+                    .theme(step_appearance.0.clone())
+                    .size(step_appearance.1)
+                    .legend(legend.clone())
+                    .disabled(ui_disabled)
+                    .fill(Questions {
+                        questions: questions.take().unwrap_or_default(),
+                        form: form.clone(),
+                        gate: gate.into(),
+                        prefix: prefix.clone(),
+                        appearance: appearance.clone(),
+                        states: states.clone(),
+                        index,
+                    });
+                if step_appearance.2 {
+                    fields = fields.unstyled()
+                }
+                fields
+            }));
         }
         let back_request = request.clone();
         let back_action = action.clone();

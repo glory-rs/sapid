@@ -278,8 +278,7 @@ impl FileButton {
                 return;
             };
             let result = (|| -> Result {
-                let next =
-                    config_source.try_with(|value| configuration(value, force_drop))??;
+                let next = config_source.try_with(|value| configuration(value, force_drop))??;
                 let text = label_source.try_with(|value| label(value))??;
                 let Some(node) = reference.try_get()? else {
                     return Ok(());
@@ -361,8 +360,7 @@ impl FileButton {
                             driver.set_status(FileStatus::Choosing)?;
                         }
                         Err(glory::ui::Error::Render(render::Error::Unsupported(_))) => {
-                            driver
-                                .set_status(FileStatus::Rejected(FileRejection::Unavailable))?;
+                            driver.set_status(FileStatus::Rejected(FileRejection::Unavailable))?;
                             unavailable
                                 .emit(owner, FileOutcome::Rejected(FileRejection::Unavailable));
                         }
@@ -564,8 +562,7 @@ impl Widget for FileAttachment {
                     });
                     if let Err(error) = reply {
                         pending.revise(|value| *value = false);
-                        feedback
-                            .revise(|value| *value = format!("Preview unavailable: {error}"));
+                        feedback.revise(|value| *value = format!("Preview unavailable: {error}"));
                     }
                 });
             if plain {

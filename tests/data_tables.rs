@@ -2,7 +2,7 @@ use glory::{
     prelude::*,
     render::{Event, NodeId, Props, Role, TableMetadata},
 };
-use sapid::{DataColumn, DataRecord, DataRequest, DataTableQuery, data_table};
+use sapid::{DataColumn, DataRecord, DataRequest, DataSort, DataTableQuery, data_table};
 use std::{
     cell::{Cell, RefCell},
     rc::Rc,
@@ -26,9 +26,7 @@ fn named(app: &App, name: &str) -> NodeId {
     while let Some(id) = pending.pop() {
         let n = tree.node(id).unwrap();
         let d = n.descriptor.view();
-        if d.name.as_deref() == Some(name)
-            || matches!(d.props,Props::Button(p) if p.label==name)
-        {
+        if d.name.as_deref() == Some(name) || matches!(d.props,Props::Button(p) if p.label==name) {
             return id;
         }
         pending.extend(&n.children);
@@ -63,9 +61,7 @@ fn four_theme_ssr_exports_windowed_table_header_coordinates_and_bounded_rows() {
         sapid::Theme::green_dark(),
     ] {
         let records = (0..4096)
-            .map(|i| {
-                DataRecord::new(format!("r{i}"), [format!("Person {i}"), "Compiler".into()])
-            })
+            .map(|i| DataRecord::new(format!("r{i}"), [format!("Person {i}"), "Compiler".into()]))
             .collect::<Vec<_>>();
         let q = DataTableQuery {
             request: DataRequest {
@@ -283,4 +279,163 @@ fn explicit_selection_survives_filtering_and_controlled_refusal_recovers_the_che
     assert!(
         matches!(app.tree().node(named(&app,"Select row a")).unwrap().descriptor.view().props,Props::Check(p) if p.checked)
     );
+}
+
+#[test]
+fn page_and_visibility_changes_keep_intersecting_row_drafts_and_focus_state() {
+    let app = App::memory();
+    let query = app.scope().cage(DataTableQuery::default());
+    app.mount(
+        data_table("draft-pages")
+            .columns(columns())
+            .local_rows(records())
+            .query(query)
+            .render_cell("name", move |_, key, value| {
+                widget(move |scope| {
+                    let draft = scope.cage(value.get());
+                    let focused = scope.cage(false);
+                    sapid::text_field()
+                        .name(format!("Draft {key}"))
+                        .value(draft)
+                        .on_value_change(move |value| draft.revise(|old| *old = value))
+                        .class(scope.bond(move || {
+                            if focused.get() {
+                                "editing-focused".into()
+                            } else {
+                                "editing".into()
+                            }
+                        }))
+                        .on(glory::render::EventKind::FocusChanged, move |event| {
+                            if let Event::FocusChanged(value) = event {
+                                focused.revise(|old| *old = value);
+                            }
+                        })
+                        .show_in(scope)
+                })
+            }),
+    )
+    .unwrap();
+    let editor = named(&app, "Draft a");
+    app.dispatch(editor, Event::FocusChanged(true)).unwrap();
+    let revision = match app.tree().node(editor).unwrap().descriptor.view().props {
+        Props::Input(props) => props.revision,
+        _ => panic!("expected draft input"),
+    };
+    app.dispatch(
+        editor,
+        Event::ValueChanged {
+            value: "Unsubmitted draft".into(),
+            revision,
+            composing: false,
+        },
+    )
+    .unwrap();
+    app.flush().unwrap();
+    query.revise(|q| {
+        q.hidden.insert("team".into());
+        q.request.page_size = 2;
+    });
+    app.flush().unwrap();
+    query.revise(|q| {
+        q.request.page_size = 1;
+        q.request.page = 2;
+    });
+    app.flush().unwrap();
+    assert_eq!(named(&app, "Draft a"), editor);
+    assert!(
+        matches!(app.tree().node(editor).unwrap().descriptor.view().props, Props::Input(p) if p.value == "Unsubmitted draft")
+    );
+    assert!(
+        app.tree()
+            .node(editor)
+            .unwrap()
+            .descriptor
+            .view()
+            .classes
+            .iter()
+            .any(|c| c == "editing-focused")
+    );
+    // The controlled page proposal is refused; its pending intent cannot replace
+    // the accepted page or discard the live row's local editing state.
+    app.dispatch(named(&app, "Next table page"), Event::Activate)
+        .unwrap();
+    app.flush().unwrap();
+    assert_eq!(query.with(|q| q.request.page), 2);
+    assert_eq!(named(&app, "Draft a"), editor);
+    assert!(
+        matches!(app.tree().node(editor).unwrap().descriptor.view().props, Props::Input(p) if p.value == "Unsubmitted draft")
+    );
+    query.revise(|q| {
+        q.request.page = 1;
+        q.hidden.clear();
+        q.request.page_size = 3;
+    });
+    app.flush().unwrap();
+    assert_eq!(named(&app, "Draft a"), editor);
+}
+
+#[test]
+fn replacing_data_and_changing_filter_sort_publish_the_current_page_without_stale_indices() {
+    let app = App::memory();
+    let source = app.scope().cage(records());
+    let query = app.scope().cage(DataTableQuery {
+        request: DataRequest {
+            page_size: 1,
+            filter: "Compiler".into(),
+            sort: Some(DataSort {
+                column: "name".into(),
+                descending: false,
+            }),
+            ..Default::default()
+        },
+        ..Default::default()
+    });
+    app.mount(
+        data_table("replace-matches")
+            .columns(columns())
+            .local_rows(source)
+            .query(query),
+    )
+    .unwrap();
+    assert!(app.tree().node(named(&app, "Select row a")).is_ok());
+    query.revise(|q| q.request.page = 2);
+    app.flush().unwrap();
+    assert!(app.tree().node(named(&app, "Select row b")).is_ok());
+    source.revise(|rows| {
+        *rows = vec![
+            DataRecord::new("d", ["Dean", "Compiler"]),
+            DataRecord::new("a", ["Ada updated", "Compiler"]),
+            DataRecord::new("b", ["Ben", "Runtime"]),
+        ]
+    });
+    app.flush().unwrap();
+    assert!(app.tree().node(named(&app, "Select row d")).is_ok());
+    query.revise(|q| {
+        q.request.page = 1;
+        q.request.sort.as_mut().unwrap().descending = true;
+    });
+    app.flush().unwrap();
+    assert!(app.tree().node(named(&app, "Select row d")).is_ok());
+    query.revise(|q| {
+        q.request.filter = "Runtime".into();
+        q.hidden.insert("team".into());
+    });
+    app.flush().unwrap();
+    assert!(
+        app.tree().node(named(&app, "Select row b")).is_ok(),
+        "hidden cells still participate in filtering"
+    );
+    source.revise(|rows| rows[2].cells[1] = "Compiler".into());
+    app.flush().unwrap();
+    assert!(rows(&app).is_empty());
+    source.revise(|rows| rows[0].key = "a".into());
+    assert!(app.flush().is_err());
+    assert!(
+        rows(&app).is_empty(),
+        "rejected data cannot publish a partial match set"
+    );
+    source.revise(|rows| rows[0].key = "d".into());
+    query.revise(|q| q.request.filter = "Compiler".into());
+    app.flush().unwrap();
+    assert!(app.tree().node(named(&app, "Select row d")).is_ok());
 }

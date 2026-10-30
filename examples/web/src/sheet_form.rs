@@ -1,6 +1,4 @@
-use glory::render::{
-    FocusMode, Layer, LayerPlacement, Role, SemanticId, Semantics, SheetConfig,
-};
+use glory::render::{FocusMode, Layer, LayerPlacement, Role, SemanticId, Semantics, SheetConfig};
 use glory::style::{Length, Overflow, Style};
 use glory::ui::{Widget, text, view, widget};
 use sapid::{

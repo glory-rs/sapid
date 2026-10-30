@@ -31,10 +31,7 @@ pub fn tab(key: impl Into<String>) -> Tab {
 impl Tab {
     item_methods!();
     /// Rich content inside the semantic Tab; label remains its name.
-    pub fn trigger_content<W: Widget>(
-        mut self,
-        mut factory: impl FnMut() -> W + 'static,
-    ) -> Self {
+    pub fn trigger_content<W: Widget>(mut self, mut factory: impl FnMut() -> W + 'static) -> Self {
         self.inner.trigger_content = Some(Box::new(move || Box::new(factory())));
         self
     }
@@ -160,8 +157,7 @@ impl Widget for Tabs {
             );
         }
         let root_id = composite::id("t", &self.key, "root", "root")?;
-        let keys: Rc<Vec<_>> =
-            Rc::new(self.items.iter().map(|item| item.key.clone()).collect());
+        let keys: Rc<Vec<_>> = Rc::new(self.items.iter().map(|item| item.key.clone()).collect());
         composite::validate_keys(&keys)?;
         if keys.is_empty() {
             return Err(

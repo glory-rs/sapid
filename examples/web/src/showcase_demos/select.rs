@@ -83,9 +83,7 @@ mod fixture {
                     .options((0..80).map(|index| {
                         select_option(format!("n{index}"), format!("Number {index:02}"))
                     })),
-                text().content(
-                    scope.bond(move || format!("Select changes: {}", proposals.get())),
-                ),
+                text().content(scope.bond(move || format!("Select changes: {}", proposals.get()))),
                 button().label("After choices"),
             ));
         (

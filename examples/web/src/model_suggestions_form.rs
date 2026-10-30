@@ -3,10 +3,7 @@ use sapid::{ModelRecord, Theme, model_selector, suggestion, suggestion_group};
 pub fn model_suggestions_form(theme: Theme) -> impl Widget {
     model_suggestions_form_with_selector(theme, true)
 }
-pub fn model_suggestions_form_with_selector(
-    theme: Theme,
-    include_selector: bool,
-) -> impl Widget {
+pub fn model_suggestions_form_with_selector(theme: Theme, include_selector: bool) -> impl Widget {
     widget(move |scope| {
         let selected = scope.cage(Some("atlas".to_owned()));
         let search = scope.cage("Atlas".to_owned());
@@ -36,9 +33,7 @@ pub fn model_suggestions_form_with_selector(
                         model_result.revise(|value| {
                             *value = proposal.as_ref().map_or_else(
                                 || "Model proposal: none".into(),
-                                |model| {
-                                    format!("Model proposal: {} = {}", model.key, model.value)
-                                },
+                                |model| format!("Model proposal: {} = {}", model.key, model.value),
                             )
                         });
                         if accept_model.get() {
@@ -88,8 +83,7 @@ pub fn model_suggestions_form_with_selector(
             .value("Standalone application payload")
             .source("Application")
             .on_choose(move |choice| {
-                suggestion_result
-                    .revise(|value| *value = format!("Standalone: {}", choice.value))
+                suggestion_result.revise(|value| *value = format!("Standalone: {}", choice.value))
             });
         let mut root = view().class("model-suggestions-fixture").style(
             glory::style::Style::new()

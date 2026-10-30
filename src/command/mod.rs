@@ -12,8 +12,8 @@ use crate::collection::{Collection, CollectionLimits, RovingFocus};
 use crate::composite::{self, Callback};
 use crate::state::{Control, Dirty, Value};
 use glory::render::{
-    ChoiceCommand, ComboboxKind, Event, EventKind, FocusMode, Layer, LayerPlacement,
-    Navigation, NodeId, OptionSemantics, Orientation, PopupKind, Role, SemanticId, Semantics,
+    ChoiceCommand, ComboboxKind, Event, EventKind, FocusMode, Layer, LayerPlacement, Navigation,
+    NodeId, OptionSemantics, Orientation, PopupKind, Role, SemanticId, Semantics,
 };
 use glory::style::{Display, Edges, FlexDirection, Length, Limit, Overflow, Style};
 use glory::ui::{Result, Widget};
@@ -328,9 +328,7 @@ impl Command {
         self.results = Some(value.into());
         self
     }
-    pub fn load_with<
-        F: Future<Output = std::result::Result<CommandResults, String>> + 'static,
-    >(
+    pub fn load_with<F: Future<Output = std::result::Result<CommandResults, String>> + 'static>(
         mut self,
         load: impl Fn(String) -> F + 'static,
     ) -> Self {
@@ -740,8 +738,7 @@ impl Widget for Command {
         self.declarations.validate()?;
         if (self.results.is_some() && self.loader.is_some())
             || ((self.results.is_some() || self.loader.is_some())
-                && (!self.declarations.actions.is_empty()
-                    || !self.declarations.groups.is_empty()))
+                && (!self.declarations.actions.is_empty() || !self.declarations.groups.is_empty()))
         {
             return Err(invalid(
                 "command static declarations, controlled results and loader are mutually exclusive",
@@ -1164,8 +1161,7 @@ fn mount_section(
                 let member = scope.cage(None::<crate::CollectionMember>);
                 let enabled_state = live.clone();
                 let enabled = scope.bond(move || {
-                    enabled_state.ready().unwrap_or(false)
-                        && !action.with(|action| action.disabled)
+                    enabled_state.ready().unwrap_or(false) && !action.with(|action| action.disabled)
                 });
                 let list_id = list_id.clone();
                 let meta = scope.bond(move || {

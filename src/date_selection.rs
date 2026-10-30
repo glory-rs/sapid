@@ -203,12 +203,9 @@ impl DateSelection {
                 }
                 Self::Multiple(values)
             }
-            Self::Range(DateRangeSelection::Start(start)) => {
-                Self::Range(DateRangeSelection::Complete(CivilRange::new(
-                    start.min(date),
-                    start.max(date),
-                )?))
-            }
+            Self::Range(DateRangeSelection::Start(start)) => Self::Range(
+                DateRangeSelection::Complete(CivilRange::new(start.min(date), start.max(date))?),
+            ),
             Self::Range(_) => Self::Range(DateRangeSelection::Start(date)),
         })
     }
@@ -277,8 +274,7 @@ mod tests {
         CivilDate::parse_iso(value).unwrap()
     }
     #[test]
-    fn multiple_admission_is_fixed_capacity_sorted_unique_and_never_consumes_a_large_iterator()
-    {
+    fn multiple_admission_is_fixed_capacity_sorted_unique_and_never_consumes_a_large_iterator() {
         let mut selected =
             SelectedDates::try_from_iter([d("2024-02-29"), d("2024-01-01"), d("2024-02-29")])
                 .unwrap();
@@ -354,9 +350,7 @@ mod tests {
         for text in ["2024-2-29", "2024-02-29Z", " 2024-02-29"] {
             assert!(DateSelection::parse_iso(DatePickerMode::Single, text).is_err());
         }
-        assert!(
-            DateSelection::parse_iso(DatePickerMode::Range, "2025-01-01/2024-01-01").is_err()
-        );
+        assert!(DateSelection::parse_iso(DatePickerMode::Range, "2025-01-01/2024-01-01").is_err());
         assert!(
             DateSelection::parse_iso(DatePickerMode::Multiple, &"8".repeat(1_000_000)).is_err()
         );

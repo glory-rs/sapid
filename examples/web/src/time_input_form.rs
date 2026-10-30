@@ -26,7 +26,19 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
     let submitted = scope.cage(String::new());
     let draft = scope.cage("Valid".to_owned());
     let order = scope.cage(String::new());
-    let status=scope.bond(move||format!("value={};draft={};changes={};commits={};rejects={};submits={};submitted={};order={}",value.get().map(|v|v.to_string()).unwrap_or_default(),draft.get(),changes.get(),commits.get(),rejects.get(),submits.get(),submitted.get(),order.get()));
+    let status = scope.bond(move || {
+        format!(
+            "value={};draft={};changes={};commits={};rejects={};submits={};submitted={};order={}",
+            value.get().map(|v| v.to_string()).unwrap_or_default(),
+            draft.get(),
+            changes.get(),
+            commits.get(),
+            rejects.get(),
+            submits.get(),
+            submitted.get(),
+            order.get()
+        )
+    });
     let field_theme = theme.clone();
     let primary = glory::ui::when(visible, move || {
         field("meeting-time")

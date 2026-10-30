@@ -95,14 +95,13 @@ impl Widget for Switch {
             self.readonly.clone(),
             self.invalid.clone(),
         );
-        let mut inner =
-            configure!(self.common, glory::ui::check(), scope, "sapid-switch", base)
-                .mode(glory::render::CheckMode::Switch)
-                .label(self.label.clone())
-                .checked(initial)
-                .enabled(enabled)
-                .semantics(metadata)
-                .node_ref(reference);
+        let mut inner = configure!(self.common, glory::ui::check(), scope, "sapid-switch", base)
+            .mode(glory::render::CheckMode::Switch)
+            .label(self.label.clone())
+            .checked(initial)
+            .enabled(enabled)
+            .semantics(metadata)
+            .node_ref(reference);
 
         let mut on_change = self.on_change.take();
         let mut handlers = self

@@ -4,8 +4,8 @@ use glory::render::{Capabilities, Input, Mutation, Query, QueryToken, Receipt, R
 use glory::render::{EventKind, InputProps, NodeId, Props};
 use glory::style::FieldSizing;
 use sapid::{
-    button, field, fieldset, input_addon, input_group, input_section, password_input,
-    text_field, textarea,
+    button, field, fieldset, input_addon, input_group, input_section, password_input, text_field,
+    textarea,
 };
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
@@ -273,17 +273,19 @@ fn input_group_decorations_do_not_replace_control_label_or_intrinsic_controls() 
     let app = App::memory();
     let clicks = Rc::new(Cell::new(0));
     let seen = clicks.clone();
-    app.mount(fieldset("account").legend("Account").fill(
-        field("domain").label("Site").control(move |context| {
-            input_group()
-                .start(input_addon().content("https://"))
-                .input(text_field().field(context).default_value("example"))
-                .end(input_section().fill(button().label("Visit site").on_press({
-                    let seen = seen.clone();
-                    move || seen.set(seen.get() + 1)
-                })))
-        }),
-    ))
+    app.mount(
+        fieldset("account")
+            .legend("Account")
+            .fill(field("domain").label("Site").control(move |context| {
+                input_group()
+                    .start(input_addon().content("https://"))
+                    .input(text_field().field(context).default_value("example"))
+                    .end(input_section().fill(button().label("Visit site").on_press({
+                        let seen = seen.clone();
+                        move || seen.set(seen.get() + 1)
+                    })))
+            })),
+    )
     .unwrap();
     let input = find(&app, "sapid-text-field");
     let addon = find(&app, "sapid-input-addon");

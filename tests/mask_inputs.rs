@@ -241,8 +241,7 @@ fn controlled_refusal_restores_accepted_display_and_invalid_paste_is_a_typed_rej
     assert!(app.flush().is_ok());
 }
 #[test]
-fn composition_is_owned_by_the_host_until_one_terminal_mapping_and_current_echo_is_suppressed()
-{
+fn composition_is_owned_by_the_host_until_one_terminal_mapping_and_current_echo_is_suppressed() {
     let (app, actions) = app();
     let r = app.scope().cage(None);
     let calls = Rc::new(RefCell::new(Vec::new()));

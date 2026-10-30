@@ -176,9 +176,7 @@ impl Widget for StepPanel {
                 ContentPolicy::KeepMounted => {
                     panel.fill(glory::ui::widget(move |scope| factory().show_in(scope)))
                 }
-                ContentPolicy::Unmount => {
-                    panel.fill(glory::ui::when(self.open.clone(), factory))
-                }
+                ContentPolicy::Unmount => panel.fill(glory::ui::when(self.open.clone(), factory)),
             };
         }
         panel.show_in(scope)?;
@@ -233,8 +231,7 @@ impl Widget for Stepper {
                 .collect(),
         );
         let refs = references.clone();
-        let restore: Vary<Option<NodeId>> =
-            scope.bond(move || refs[accepted.get()].get()).into();
+        let restore: Vary<Option<NodeId>> = scope.bond(move || refs[accepted.get()].get()).into();
         if self.common.name.is_none() {
             self.common.name = Some("Progress".into());
         }

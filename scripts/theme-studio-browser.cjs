@@ -30,7 +30,16 @@ const base=process.env.SAPID_SHOWCASE_BASE || 'http://127.0.0.1:8795';
   await value('Base shade 6','#7c3aedff');await value('Base canvas',oldCanvas);ok('Oklab generation preserves seed and neutral roles');
   await fill('Base canvas','#1');await disabled(button('Save & preview'),true);await disabled(button('Copy Rust definition'),true);
   await fill('Base canvas','#faf7ffff');await disabled(button('Save & preview'),false);ok('Incomplete exact hex never saves an invalid draft');
-  await button('Preview light').click();await input('Preview name').fill('Retained sample');await button('Preview action').click();
+  await button('Preview light').click();
+  // The preview's mode changes its Each key. Wait for the new sample before
+  // fill's separate focus/select and insertText operations can cross retirement.
+  // BEGIN PREVIEW COMMIT BARRIER
+  await until(()=>page.evaluate(()=>{
+   const sample=document.querySelector('.studio-demo.sapid-theme-studio-preview-light');
+   return !!sample&&getComputedStyle(sample).backgroundColor==='rgb(250, 247, 255)';
+  }),'Light preview did not commit before sample editing');
+  // END PREVIEW COMMIT BARRIER
+  await input('Preview name').fill('Retained sample');await button('Preview action').click();
   await fill('Base muted','#675879ff');await value('Preview name','Retained sample');assert(await page.getByText('Clicked 1 times',{exact:true}).count());ok('Live actual widgets retain sample state while theme changes');
   await button('Edit Dark colors').click();await fill('Dark canvas','#171322ff');await fill('Dark foreground','#f2edfaff');
   await fill('Dark backdrop','#281c4066');
@@ -86,6 +95,8 @@ const base=process.env.SAPID_SHOWCASE_BASE || 'http://127.0.0.1:8795';
   await page.evaluate(()=>localStorage.setItem('sapid.theme-studio.v1','broken'));
   await go('/showcase.html?widget=theme-studio');assert(await page.getByText(/Stored data was kept/).count());
   assert.equal(await page.evaluate(()=>localStorage.getItem('sapid.theme-studio.v1')),'broken');ok('Malformed local data is reported and preserved');
- }catch(error){report.errors.push(error.stack||String(error))}
+  report.timingRegression=await require('./test_theme_studio_browser.cjs').verifyPreviewCommitBoundary(browser,base);
+  ok('Controlled host-frame boundary rejects the old fill ordering and preserves committed preview state at 1x/8x CPU');
+ }catch(error){if(error.previewTiming)report.timingRegression=error.previewTiming;report.errors.push(error.stack||String(error))}
  finally{if(browser)await browser.close();fs.writeFileSync('D:/BuildCache/sapid/theme-studio-browser.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));if(report.errors.length)process.exitCode=1}
 })();

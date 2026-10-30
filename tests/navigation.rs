@@ -1,8 +1,7 @@
 use glory::prelude::*;
 use glory::render::{Current, EventKind, NodeId, Props, Role};
 use sapid::{
-    ContentPolicy, PageItem, breadcrumb_item, breadcrumbs, nav_link, pagination,
-    pagination_window,
+    ContentPolicy, PageItem, breadcrumb_item, breadcrumbs, nav_link, pagination, pagination_window,
 };
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
@@ -248,9 +247,7 @@ fn disabled_pagination_native_controls_reject_every_request() {
 }
 fn crumbs() -> Vec<sapid::BreadcrumbItem> {
     (0..7)
-        .map(|i| {
-            breadcrumb_item(format!("item{i}"), format!("Item {i}")).href(format!("/item{i}"))
-        })
+        .map(|i| breadcrumb_item(format!("item{i}"), format!("Item {i}")).href(format!("/item{i}")))
         .collect()
 }
 #[test]
@@ -260,9 +257,11 @@ fn breadcrumb_navigation_has_list_current_links_and_stable_folded_shells() {
         .unwrap();
     let ids = all(&app);
     assert_eq!(current(&app).len(), 1);
-    assert!(all(&app).iter().any(
-        |id| app.tree().node(*id).unwrap().descriptor.view().role == Some(Role::Navigation)
-    ));
+    assert!(
+        all(&app).iter().any(
+            |id| app.tree().node(*id).unwrap().descriptor.view().role == Some(Role::Navigation)
+        )
+    );
     let hidden = all(&app)
         .iter()
         .filter(|id| {

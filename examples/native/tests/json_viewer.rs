@@ -61,8 +61,7 @@ fn native_json_disclosures_four_theme_geometry_pixels_focus_search_and_owner_ret
         app.dispatch(branch, Event::Activate).unwrap();
         app.flush().unwrap();
         assert_eq!(nodes(app, "sapid-json-value").len(), 2);
-        let QueryValue::Bounds(rect) =
-            query(app, Query::Bounds(nodes(app, "sapid-json-value")[0]))
+        let QueryValue::Bounds(rect) = query(app, Query::Bounds(nodes(app, "sapid-json-value")[0]))
         else {
             panic!()
         };

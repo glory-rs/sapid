@@ -70,8 +70,7 @@ fn portal_with_missing(theme: Theme, missing: bool) -> impl Widget {
                                     .padding(glory::style::Edges::all(12.)),
                             )
                             .fill(when(a, move || {
-                                portal_target(&target_a, "a")
-                                    .fill(text().content("Destination A"))
+                                portal_target(&target_a, "a").fill(text().content("Destination A"))
                             })),
                         view()
                             .class("portal-destination-b")
@@ -82,8 +81,7 @@ fn portal_with_missing(theme: Theme, missing: bool) -> impl Widget {
                                     .padding(glory::style::Edges::all(12.)),
                             )
                             .fill(when(b, move || {
-                                portal_target(&target_b, "b")
-                                    .fill(text().content("Destination B"))
+                                portal_target(&target_b, "b").fill(text().content("Destination B"))
                             })),
                     )),
                 view()

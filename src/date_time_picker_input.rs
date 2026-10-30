@@ -3,8 +3,8 @@ use crate::appearance::{Common, common_methods};
 use crate::composite::{self, Callback, ContentPolicy};
 use crate::state::Value;
 use crate::{
-    DateTimeBounds, DateTimeDraft, DateTimeOutcome, DateTimePolicy, DateTimeStatus,
-    DatesProvider, FieldControl, LocalDateTime, TimeFormat, TimeGridSpec,
+    DateTimeBounds, DateTimeDraft, DateTimeOutcome, DateTimePolicy, DateTimeStatus, DatesProvider,
+    FieldControl, LocalDateTime, TimeFormat, TimeGridSpec,
 };
 use glory::render::{Direction, FormControl, NodeId};
 use glory::style::{Align, Display, Length, Style};
@@ -199,9 +199,7 @@ impl Widget for DateTimePicker {
                 .bytes()
                 .all(|b| b.is_ascii_alphanumeric() || b == b'-' || b == b'_')
         {
-            return Err(
-                glory::render::Error::InvalidProps("invalid date/time dialog key").into(),
-            );
+            return Err(glory::render::Error::InvalidProps("invalid date/time dialog key").into());
         }
         let control = std::mem::take(&mut self.value).mount(scope);
         let open = std::mem::take(&mut self.open).mount(scope);
@@ -220,9 +218,10 @@ impl Widget for DateTimePicker {
             scope,
             &snapshot.into(),
             move |v: &(Option<LocalDateTime>, DateTimeBounds, DatesProvider)| {
-                let provider = v.1.provider(v.2).map_err(|_| {
-                    glory::render::Error::InvalidProps("empty date/time interval")
-                })?;
+                let provider = v
+                    .1
+                    .provider(v.2)
+                    .map_err(|_| glory::render::Error::InvalidProps("empty date/time interval"))?;
                 if v.0.is_some_and(|value| {
                     format.validate(value.time()).is_err()
                         || !v.1.contains(value)
@@ -378,37 +377,34 @@ impl Widget for DateTimePicker {
                 let close = close_open.clone();
                 let opened = close_opened.clone();
                 let accepted_source = source.clone();
-                let mut picker = crate::inline_date_time_picker(
-                    key.clone(),
-                    provider.clone(),
-                    policy.clone(),
-                )
-                .value(source.clone())
-                .bounds(bounds.clone())
-                .reset_revision(revision.clone())
-                .format(format)
-                .theme(theme.clone())
-                .size(size)
-                .enabled(active.clone())
-                .readonly(readonly.clone())
-                .direction(direction)
-                .on_value_change(move |v| {
-                    if owner.is_alive() && c.accept(&v).is_ok() {
-                        changed.emit(owner, v);
-                    }
-                })
-                .on_draft_change(move |v| drafted.emit(owner, v))
-                .on_resolved(move |v| resolved.emit(owner, v))
-                .on_reject(move |v| rejected.emit(owner, v))
-                .on_commit(move |v| {
-                    committed.emit(owner, v);
-                    if owner.is_alive()
-                        && accepted_source.try_get().ok() == Some(v.map(|v| v.local))
-                        && close.accept(&false).is_ok()
-                    {
-                        opened.emit(owner, false);
-                    }
-                });
+                let mut picker =
+                    crate::inline_date_time_picker(key.clone(), provider.clone(), policy.clone())
+                        .value(source.clone())
+                        .bounds(bounds.clone())
+                        .reset_revision(revision.clone())
+                        .format(format)
+                        .theme(theme.clone())
+                        .size(size)
+                        .enabled(active.clone())
+                        .readonly(readonly.clone())
+                        .direction(direction)
+                        .on_value_change(move |v| {
+                            if owner.is_alive() && c.accept(&v).is_ok() {
+                                changed.emit(owner, v);
+                            }
+                        })
+                        .on_draft_change(move |v| drafted.emit(owner, v))
+                        .on_resolved(move |v| resolved.emit(owner, v))
+                        .on_reject(move |v| rejected.emit(owner, v))
+                        .on_commit(move |v| {
+                            committed.emit(owner, v);
+                            if owner.is_alive()
+                                && accepted_source.try_get().ok() == Some(v.map(|v| v.local))
+                                && close.accept(&false).is_ok()
+                            {
+                                opened.emit(owner, false);
+                            }
+                        });
                 if let Some(g) = grid {
                     picker = picker.grid(g);
                 }

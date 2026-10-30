@@ -92,8 +92,7 @@ impl FloatingTarget {
     fn pointer(&self) -> impl FnMut(Event) + 'static {
         let state = self.state.clone();
         move |event| {
-            if let (Some(state), Event::PointerWithin { phase, .. }) = (state.upgrade(), event)
-            {
+            if let (Some(state), Event::PointerWithin { phase, .. }) = (state.upgrade(), event) {
                 state.activity(TARGET_HOVER, phase != PointerPhase::Leave);
             }
         }
@@ -101,8 +100,7 @@ impl FloatingTarget {
     fn focus(&self) -> impl FnMut(Event) + 'static {
         let state = self.state.clone();
         move |event| {
-            if let (Some(state), Event::FocusWithin { focused, .. }) = (state.upgrade(), event)
-            {
+            if let (Some(state), Event::FocusWithin { focused, .. }) = (state.upgrade(), event) {
                 state.activity(TARGET_FOCUS, focused);
             }
         }
@@ -251,11 +249,7 @@ macro_rules! hint_api {
                 self.inner.dismiss = Some(Box::new(callback));
                 self
             }
-            pub fn on(
-                mut self,
-                kind: EventKind,
-                callback: impl FnMut(Event) + 'static,
-            ) -> Self {
+            pub fn on(mut self, kind: EventKind, callback: impl FnMut(Event) + 'static) -> Self {
                 self.inner
                     .common
                     .handlers
@@ -275,10 +269,7 @@ macro_rules! hint_api {
                 self.inner.placement = value;
                 self
             }
-            pub fn open_delay_with<
-                F: Fn() -> Fut + 'static,
-                Fut: Future<Output = ()> + 'static,
-            >(
+            pub fn open_delay_with<F: Fn() -> Fut + 'static, Fut: Future<Output = ()> + 'static>(
                 mut self,
                 factory: F,
             ) -> Self {
@@ -373,8 +364,7 @@ impl State {
         }
     }
     fn request(&self, value: bool) -> Result {
-        if self.owner.is_alive()
-            && glory::core::untracked(|| self.open.source.try_get())? != value
+        if self.owner.is_alive() && glory::core::untracked(|| self.open.source.try_get())? != value
         {
             self.open.accept(&value)?;
             glory::core::untracked(|| self.changed.emit(self.owner, value));
@@ -398,16 +388,14 @@ impl State {
 impl Hint {
     fn build(&mut self, scope: &Scope) -> Result {
         if !matches!(self.placement, LayerPlacement::Anchor(_)) {
-            return Err(glory::render::Error::InvalidProps(
-                "hints require an anchor placement",
-            )
-            .into());
+            return Err(
+                glory::render::Error::InvalidProps("hints require an anchor placement").into(),
+            );
         }
         if self.kind == Kind::HoverCard && self.content.is_none() {
-            return Err(glory::render::Error::InvalidProps(
-                "hover cards require explicit content",
-            )
-            .into());
+            return Err(
+                glory::render::Error::InvalidProps("hover cards require explicit content").into(),
+            );
         }
         let target_id = composite::id("hint", &self.key, "target", "root")?;
         let panel_id = composite::id("hint", &self.key, "panel", "root")?;
@@ -462,8 +450,7 @@ impl Hint {
             );
             target.button(builder).show_in(&owner)?;
         }
-        if !target.bound.get() || target.reference.try_get()?.is_none() || target.conflict.get()
-        {
+        if !target.bound.get() || target.reference.try_get()?.is_none() || target.conflict.get() {
             return Err(glory::render::Error::InvalidProps(
                 "hint target requires its typed control adapter and nonconflicting relations",
             )

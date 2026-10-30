@@ -193,14 +193,8 @@ fn gap_and_fold_are_drafts_and_done_rejects_without_changing_accepted_civil_valu
             if local.time().hour() == 11 {
                 if fold {
                     LocalResolution::Ambiguous {
-                        earlier: ResolvedDateTime::from_fixed(
-                            local,
-                            FixedOffset::new(60).unwrap(),
-                        ),
-                        later: ResolvedDateTime::from_fixed(
-                            local,
-                            FixedOffset::new(0).unwrap(),
-                        ),
+                        earlier: ResolvedDateTime::from_fixed(local, FixedOffset::new(60).unwrap()),
+                        later: ResolvedDateTime::from_fixed(local, FixedOffset::new(0).unwrap()),
                     }
                 } else {
                     LocalResolution::Gap
@@ -242,8 +236,7 @@ fn edge_time_bounds_validate_pair_without_faulting_child_when_date_changes() {
     let value = app.scope().cage(Some(dt("2024-02-28T09:00")));
     let status = app.scope().cage(DateTimeStatus::Empty);
     let bounds =
-        DateTimeBounds::new(Some(dt("2024-02-28T08:00")), Some(dt("2024-02-29T08:00")))
-            .unwrap();
+        DateTimeBounds::new(Some(dt("2024-02-28T08:00")), Some(dt("2024-02-29T08:00"))).unwrap();
     app.mount(
         inline_date_time_picker("edge", provider(), DateTimePolicy::Civil)
             .bounds(bounds)
@@ -491,9 +484,25 @@ fn resolver_and_draft_reentry_that_only_changes_reset_configuration_rejects_old_
             }
             LocalResolution::Unique(ResolvedDateTime::from_fixed(local, FixedOffset::UTC))
         });
-        app.mount(inline_date_time_picker("config-reentry",provider(),policy).reset_revision(revision).value(value).hour_ref(h)
-            .on_draft_change(move|d|{if in_draft&&matches!(d.status,DateTimeStatus::Valid(v)if v.local.time().hour()==11)&&!once_draft.replace(true){revision.revise(|n|*n+=1);}})
-            .on_value_change(move|v|{calls.revise(|n|*n+=1);value.revise(|old|*old=v)})).unwrap();
+        app.mount(
+            inline_date_time_picker("config-reentry", provider(), policy)
+                .reset_revision(revision)
+                .value(value)
+                .hour_ref(h)
+                .on_draft_change(move |d| {
+                    if in_draft
+                        && matches!(d.status,DateTimeStatus::Valid(v)if v.local.time().hour()==11)
+                        && !once_draft.replace(true)
+                    {
+                        revision.revise(|n| *n += 1);
+                    }
+                })
+                .on_value_change(move |v| {
+                    calls.revise(|n| *n += 1);
+                    value.revise(|old| *old = v)
+                }),
+        )
+        .unwrap();
         edit(&app, h.get().unwrap(), "11");
         app.flush().unwrap();
         assert!(once.get());

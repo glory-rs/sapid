@@ -98,9 +98,7 @@ mod fixture {
                                         sapid::button()
                                             .theme(theme_inner.clone())
                                             .label("Close nested scope")
-                                            .on_press(move || {
-                                                inner.revise(|value| *value = false)
-                                            }),
+                                            .on_press(move || inner.revise(|value| *value = false)),
                                     )),
                                 sapid::button()
                                     .theme(theme_inner.clone())

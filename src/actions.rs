@@ -39,10 +39,7 @@ macro_rules! action_methods {
             self.common.focus = focus;
             self
         }
-        pub fn node_ref(
-            mut self,
-            reference: glory::Cage<Option<glory::render::NodeId>>,
-        ) -> Self {
+        pub fn node_ref(mut self, reference: glory::Cage<Option<glory::render::NodeId>>) -> Self {
             self.common.node_ref = Some(reference);
             self
         }
@@ -192,12 +189,12 @@ impl Widget for ActionIcon {
             }
             crate::appearance::merge(base, own_style.get())
         };
-        self.common.style =
-            if self.common.enabled.is_reactive() || self.common.style.is_reactive() {
-                scope.bond(state_style).into()
-            } else {
-                state_style().into()
-            };
+        self.common.style = if self.common.enabled.is_reactive() || self.common.style.is_reactive()
+        {
+            scope.bond(state_style).into()
+        } else {
+            state_style().into()
+        };
         let class = format!("{} {}", self.class, self.variant.class());
         let mut button = configure!(
             self.common,

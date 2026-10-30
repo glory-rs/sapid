@@ -367,9 +367,8 @@ impl Widget for AvatarGroup {
         } else {
             None
         };
-        let mut visible = Vec::with_capacity(
-            self.visible.min(self.avatars.len()) + usize::from(overflow > 0),
-        );
+        let mut visible =
+            Vec::with_capacity(self.visible.min(self.avatars.len()) + usize::from(overflow > 0));
         for (index, ((_, mut avatar), id)) in self.avatars.drain(..).zip(ids).enumerate() {
             if index >= self.visible {
                 continue;

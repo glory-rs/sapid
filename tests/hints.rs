@@ -295,8 +295,7 @@ fn tooltip_text_budget_and_ssr_description_have_stable_shapes() {
     let snapshot =
         glory::ssr::snapshot(tooltip("ssr-tip").label("Save").text("Save the draft")).unwrap();
     assert!(
-        snapshot.html.contains("role=\"tooltip\"")
-            && snapshot.html.contains("aria-describedby=")
+        snapshot.html.contains("role=\"tooltip\"") && snapshot.html.contains("aria-describedby=")
     );
     assert!(
         !snapshot.html.contains("aria-haspopup")

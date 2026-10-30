@@ -302,10 +302,7 @@ pub struct DateInput {
     draft_changed: Option<Box<dyn FnMut(DateInputDraft)>>,
     rejected: Option<Box<dyn FnMut(DateDraftStatus)>>,
 }
-pub fn date_input(
-    key: impl Into<String>,
-    provider: impl Into<Vary<DatesProvider>>,
-) -> DateInput {
+pub fn date_input(key: impl Into<String>, provider: impl Into<Vary<DatesProvider>>) -> DateInput {
     DateInput {
         common: Common::default(),
         key: key.into(),
@@ -543,8 +540,7 @@ impl Widget for DateInput {
             EventKind::Composition,
         ] {
             let s = state.clone();
-            let observers =
-                Observers::new(self.common.handlers.remove(&kind).unwrap_or_default());
+            let observers = Observers::new(self.common.handlers.remove(&kind).unwrap_or_default());
             let cleanup = observers.clone();
             scope.on_cleanup(move || cleanup.clear())?;
             input = input.on(kind, move |e| {
@@ -635,8 +631,7 @@ impl Widget for DateInput {
             let theme = self.common.theme.clone();
             let size = self.common.size;
             let picker_value = state.control.source.clone();
-            let picker_selection =
-                scope.bond(move || DateSelection::Single(picker_value.get()));
+            let picker_selection = scope.bond(move || DateSelection::Single(picker_value.get()));
             let calendar_key = format!("{}-days", self.key);
             let dialog_key = format!("{}-picker", self.key);
             let close = composite::id("dialog", &dialog_key, "close", "root")?;

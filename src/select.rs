@@ -3,8 +3,8 @@ use std::{cell::RefCell, rc::Rc};
 
 use glory::render::{
     ChoiceCommand, ComboboxKind, Event, EventKind, FocusMode, FormControl, Layer, LayerFocus,
-    LayerPlacement, Navigation, OptionSemantics, Orientation, PopupKind, Props, Role,
-    SelectEntry, SelectGroup, SelectProps, SemanticId, Semantics,
+    LayerPlacement, Navigation, OptionSemantics, Orientation, PopupKind, Props, Role, SelectEntry,
+    SelectGroup, SelectProps, SemanticId, Semantics,
 };
 use glory::style::{
     BorderStyle, Color, Display, Edges, FlexDirection, Length, Limit, Overflow, Style,
@@ -331,10 +331,9 @@ impl Widget for Select {
             || self.placeholder.len() > 256
             || self.placeholder.contains(['\0', '\r'])
         {
-            return Err(glory::render::Error::InvalidProps(
-                "select configuration exceeds budget",
-            )
-            .into());
+            return Err(
+                glory::render::Error::InvalidProps("select configuration exceeds budget").into(),
+            );
         }
         let trigger_id = self
             .field
@@ -385,9 +384,7 @@ impl Widget for Select {
         let input_meta = metadata.clone();
         let enabled_for_edit = enabled.clone();
         let editable: Vary<bool> = scope
-            .bond(move || {
-                enabled_for_edit.get() && !input_meta.get().is_some_and(|s| s.readonly)
-            })
+            .bond(move || enabled_for_edit.get() && !input_meta.get().is_some_and(|s| s.readonly))
             .into();
         let source = open.source.clone();
         let enabled_for_panel = enabled.clone();
@@ -450,14 +447,15 @@ impl Widget for Select {
             value.controls = Some(listbox_name.clone());
             value.expanded = Some(button_state.visible.get());
             value.typeahead = true;
-            value.active_descendant =
-                if button_state.visible.get() {
-                    button_state.current().ok().flatten().and_then(|item| {
-                        composite::id("select", &key, "option", &item.key).ok()
-                    })
-                } else {
-                    None
-                };
+            value.active_descendant = if button_state.visible.get() {
+                button_state
+                    .current()
+                    .ok()
+                    .flatten()
+                    .and_then(|item| composite::id("select", &key, "option", &item.key).ok())
+            } else {
+                None
+            };
             Some(value)
         });
         let base = self.common.theme.control(self.common.size);

@@ -158,13 +158,11 @@ fn entry(
     let root = context.root(scope)?;
     valid_key(key)?;
     let reference = common.node_ref.unwrap_or_else(|| scope.cage(None));
-    let member = context.level.collection.register(
-        scope,
-        key,
-        reference,
-        common.enabled.clone(),
-        label,
-    )?;
+    let member =
+        context
+            .level
+            .collection
+            .register(scope, key, reference, common.enabled.clone(), label)?;
     let registered = root.register(
         scope,
         Entry {
@@ -209,8 +207,7 @@ impl Widget for NavigationMenuLink {
             self.inherit_size,
         );
         let label = super::label(scope, &self.label)?;
-        let (root, entry, member) =
-            entry(scope, context, &self.key, &self.common, label, None)?;
+        let (root, entry, member) = entry(scope, context, &self.key, &self.common, label, None)?;
         let parent = wrapper(scope)?;
         let owner = scope.id();
         let request = self.navigate.is_some();
@@ -256,8 +253,8 @@ impl Widget for NavigationMenuLink {
             if request {
                 let result = (|| {
                     let scope = weak.upgrade().ok_or(glory::ui::Error::Gone)?;
-                    let (href, open) = scope
-                        .link_request(reference.try_get()?.ok_or(glory::ui::Error::Gone)?)?;
+                    let (href, open) =
+                        scope.link_request(reference.try_get()?.ok_or(glory::ui::Error::Gone)?)?;
                     Ok::<_, glory::ui::Error>(crate::AnchorRequest { href, open })
                 })();
                 match result {
@@ -312,8 +309,7 @@ impl Widget for NavigationMenuLink {
                     }
                 ) {
                     let cancel = state.hover_intent.borrow().as_ref().is_some_and(|pending| {
-                        !pending.close
-                            && state.path(token).is_ok_and(|path| pending.path == path)
+                        !pending.close && state.path(token).is_ok_and(|path| pending.path == path)
                     });
                     if cancel {
                         state.cancel_hover()
@@ -478,8 +474,7 @@ impl Widget for NavigationMenuPanel {
                     }
                 ) {
                     let cancel = state.hover_intent.borrow().as_ref().is_some_and(|pending| {
-                        !pending.close
-                            && state.path(token).is_ok_and(|path| pending.path == path)
+                        !pending.close && state.path(token).is_ok_and(|path| pending.path == path)
                     });
                     if cancel {
                         state.cancel_hover()
@@ -582,16 +577,14 @@ impl Widget for NavigationMenuPanel {
                 }
             })
             .show_in(&parent)?;
-        let panel_scope =
-            scope.child_in(panel_ref.try_get()?.ok_or(glory::ui::Error::Gone)?)?;
+        let panel_scope = scope.child_in(panel_ref.try_get()?.ok_or(glory::ui::Error::Gone)?)?;
         let list_ref = scope.cage(None);
         glory::ui::view()
             .role(Role::List)
             .node_ref(list_ref)
             .style(composite::column(6.0))
             .show_in(&panel_scope)?;
-        let content_scope =
-            scope.child_in(list_ref.try_get()?.ok_or(glory::ui::Error::Gone)?)?;
+        let content_scope = scope.child_in(list_ref.try_get()?.ok_or(glory::ui::Error::Gone)?)?;
         if let Some(factory) = self.content.as_mut() {
             factory(
                 NavigationMenuContext {

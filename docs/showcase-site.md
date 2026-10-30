@@ -123,6 +123,10 @@ SVG 宽高均为 256；顶栏桌面显示 36 × 36，手机显示 32 × 32，保
 没有依赖展示站私有 `crate::…` 的片段。生成器 `--check` 验证同步；Rust 测试逐一挂载
 149 个指南、检查高亮预算和卸载后的节点/任务清理。
 
+生成器固定读取仓库的 `rustfmt.toml`，目录文件和示例模块使用同一格式流程。
+修改格式配置或夹具后运行 `python scripts/showcase-catalog.py`，再执行 `--check` 和
+`cargo fmt --manifest-path examples/web/Cargo.toml -- --check`；生成结果必须同时通过两项检查。
+
 复制的文件可作为 `src/lib.rs` 或应用内模块，调用 `demo(theme)` 后交给 Glory 宿主挂载。
 当前 Sapid 尚未发布，依赖使用本地 checkout；与此站相同的依赖配置见
 [Cargo.toml](../examples/web/Cargo.toml)。Web 的定时示例还使用该 manifest 中的

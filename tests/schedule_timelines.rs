@@ -1,8 +1,6 @@
 #![cfg(feature = "dates")]
 use glory::prelude::*;
-use glory::render::{
-    Direction, EventKind, FocusMode, GridCommand, NodeId, Props, TableMetadata,
-};
+use glory::render::{Direction, EventKind, FocusMode, GridCommand, NodeId, Props, TableMetadata};
 use sapid::prelude::*;
 fn d(s: &str) -> CivilDate {
     CivilDate::parse_iso(s).unwrap()

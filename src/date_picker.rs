@@ -3,8 +3,7 @@ use crate::appearance::{Common, common_methods};
 use crate::composite::{self, Callback};
 use crate::state::{Control, Dirty, Value};
 use crate::{
-    CivilDate, DatePickerMode, DateSelection, DateSelectionError, DatesProvider, Weekday,
-    YearMonth,
+    CivilDate, DatePickerMode, DateSelection, DateSelectionError, DatesProvider, Weekday, YearMonth,
 };
 use glory::render::{Direction, Error};
 use glory::ui::{Result, WeakScope, Widget};
@@ -98,10 +97,7 @@ pub struct DatePicker {
     rejected: Option<Box<dyn FnMut(DateSelectionError)>>,
     month_changed: Option<Box<dyn FnMut(YearMonth)>>,
 }
-pub fn date_picker(
-    key: impl Into<String>,
-    provider: impl Into<Vary<DatesProvider>>,
-) -> DatePicker {
+pub fn date_picker(key: impl Into<String>, provider: impl Into<Vary<DatesProvider>>) -> DatePicker {
     DatePicker {
         common: Common::default(),
         key: key.into(),

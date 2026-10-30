@@ -27,45 +27,46 @@ pub fn floating_indicator_form(theme: Theme) -> impl Widget {
             )
         });
         let content_theme = theme.clone();
-        let indicator =
-            floating_indicator("workspaces")
-                .theme(theme.clone())
-                .class("demo-floating-indicator")
-                .active(active)
-                .visible(visible)
-                .animated(animated)
-                .duration(duration)
-                .measurement_revision(revision)
-                .style(
-                    Style::new()
-                        .width(Length::Px(640.))
-                        .max_width(glory::style::Limit::Percent(100.))
-                        .overflow_x(glory::style::Overflow::Hidden),
-                )
-                .on_geometry_change(move |rect| {
-                    geometry.revise(|value| *value = rect);
-                    updates.revise(|value| *value += 1);
-                })
-                .content(move |context| {
-                    let theme = content_theme.clone();
-                    glory::ui::view()
-                        .class("floating-demo-layout")
-                        .style(vertical.map(|vertical| {
-                            Style {
-                                align: Some(glory::style::Align::Start),
-                                flex_wrap: Some(glory::style::FlexWrap::Wrap),
-                                ..Style::new()
-                                    .display(Display::Flex)
-                                    .flex_direction(if *vertical {
-                                        FlexDirection::Column
-                                    } else {
-                                        FlexDirection::Row
-                                    })
-                                    .gap(12.)
-                            }
-                        }))
-                        .fill(glory::ui::each(keys).key(|key| key.clone()).children(
-                            move |entry| {
+        let indicator = floating_indicator("workspaces")
+            .theme(theme.clone())
+            .class("demo-floating-indicator")
+            .active(active)
+            .visible(visible)
+            .animated(animated)
+            .duration(duration)
+            .measurement_revision(revision)
+            .style(
+                Style::new()
+                    .width(Length::Px(640.))
+                    .max_width(glory::style::Limit::Percent(100.))
+                    .overflow_x(glory::style::Overflow::Hidden),
+            )
+            .on_geometry_change(move |rect| {
+                geometry.revise(|value| *value = rect);
+                updates.revise(|value| *value += 1);
+            })
+            .content(move |context| {
+                let theme = content_theme.clone();
+                glory::ui::view()
+                    .class("floating-demo-layout")
+                    .style(vertical.map(|vertical| {
+                        Style {
+                            align: Some(glory::style::Align::Start),
+                            flex_wrap: Some(glory::style::FlexWrap::Wrap),
+                            ..Style::new()
+                                .display(Display::Flex)
+                                .flex_direction(if *vertical {
+                                    FlexDirection::Column
+                                } else {
+                                    FlexDirection::Row
+                                })
+                                .gap(12.)
+                        }
+                    }))
+                    .fill(
+                        glory::ui::each(keys)
+                            .key(|key| key.clone())
+                            .children(move |entry| {
                                 let key = entry.value;
                                 let context = context.clone();
                                 let theme = theme.clone();
@@ -118,9 +119,9 @@ pub fn floating_indicator_form(theme: Theme) -> impl Widget {
                                             .show_in(scope)
                                     }
                                 })
-                            },
-                        ))
-                });
+                            }),
+                    )
+            });
         glory::ui::view()
             .style(
                 Style::new()
@@ -139,25 +140,19 @@ pub fn floating_indicator_form(theme: Theme) -> impl Widget {
                         button()
                             .theme(theme.clone())
                             .label("Select projects")
-                            .on_press(move || {
-                                active.revise(|value| *value = Some("one".into()))
-                            }),
+                            .on_press(move || active.revise(|value| *value = Some("one".into()))),
                     )
                     .fill(
                         button()
                             .theme(theme.clone())
                             .label("Select teams")
-                            .on_press(move || {
-                                active.revise(|value| *value = Some("two".into()))
-                            }),
+                            .on_press(move || active.revise(|value| *value = Some("two".into()))),
                     )
                     .fill(
                         button()
                             .theme(theme.clone())
                             .label("Select draft")
-                            .on_press(move || {
-                                active.revise(|value| *value = Some("draft".into()))
-                            }),
+                            .on_press(move || active.revise(|value| *value = Some("draft".into()))),
                     )
                     .fill(
                         button()
@@ -205,9 +200,7 @@ pub fn floating_indicator_form(theme: Theme) -> impl Widget {
                         button()
                             .theme(theme.clone())
                             .label("Remove projects target")
-                            .on_press(move || {
-                                keys.revise(|keys| keys.retain(|key| key != "one"))
-                            }),
+                            .on_press(move || keys.revise(|keys| keys.retain(|key| key != "one"))),
                     )
                     .fill(
                         button()

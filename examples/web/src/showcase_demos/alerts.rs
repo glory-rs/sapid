@@ -62,12 +62,8 @@ mod fixture {
                                 .name("Decision note")
                                 .default_value("Retain my note")
                         })
-                        .on_confirm(move || {
-                            log.revise(|value| value.push_str("local-confirm;"))
-                        })
-                        .on_cancel(move |_| {
-                            log.revise(|value| value.push_str("local-cancel;"))
-                        }),
+                        .on_confirm(move || log.revise(|value| value.push_str("local-confirm;")))
+                        .on_cancel(move |_| log.revise(|value| value.push_str("local-cancel;"))),
                     alert_dialog("controlled-decision")
                         .theme(theme.clone())
                         .label("Open controlled decision")

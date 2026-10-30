@@ -23,10 +23,7 @@ pub fn accordion_item(key: impl Into<String>) -> AccordionItem {
 impl AccordionItem {
     item_methods!();
     /// Rich content inside the semantic Button; label remains its name.
-    pub fn trigger_content<W: Widget>(
-        mut self,
-        mut factory: impl FnMut() -> W + 'static,
-    ) -> Self {
+    pub fn trigger_content<W: Widget>(mut self, mut factory: impl FnMut() -> W + 'static) -> Self {
         self.inner.trigger_content = Some(Box::new(move || Box::new(factory())));
         self
     }
@@ -164,9 +161,7 @@ impl Widget for Accordion {
         let keys: Vec<_> = self.items.iter().map(|item| item.key.clone()).collect();
         composite::validate_keys(&keys)?;
         if !(1..=6).contains(&self.heading) {
-            return Err(
-                glory::render::Error::InvalidProps("heading level must be 1..=6").into(),
-            );
+            return Err(glory::render::Error::InvalidProps("heading level must be 1..=6").into());
         }
         if self.open.source.is_none()
             && !self.collapsible
@@ -215,8 +210,7 @@ impl Widget for Accordion {
                         expanded: Some(open.get()),
                         navigation_item: true,
                         disabled: !collapsible
-                            && selected
-                                .with(|value| value.len() == 1 && value.contains(&current)),
+                            && selected.with(|value| value.len() == 1 && value.contains(&current)),
                         ..Default::default()
                     })
                 }));

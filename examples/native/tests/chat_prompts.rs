@@ -129,9 +129,7 @@ fn native_prompt_has_real_multiline_geometry_preserves_selection_and_sends_accep
                 loop {
                     let tree = app.tree();
                     let node = tree.node(id).unwrap();
-                    if node.descriptor.view().field_part()
-                        == Some(glory::render::FieldPart::Form)
-                    {
+                    if node.descriptor.view().field_part() == Some(glory::render::FieldPart::Form) {
                         break Some(id);
                     }
                     match node.parent {

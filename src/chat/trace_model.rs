@@ -313,11 +313,7 @@ pub struct StackLocation {
 impl StackLocation {
     /// A display location, never an automatically generated filesystem URL.
     pub fn new(file: &str, line: u32, column: Option<u32>) -> Result<Self, TraceError> {
-        if !valid_text(file, 1024, false)
-            || file.contains('\n')
-            || line == 0
-            || column == Some(0)
-        {
+        if !valid_text(file, 1024, false) || file.contains('\n') || line == 0 || column == Some(0) {
             return Err(TraceError::InvalidText);
         }
         Ok(Self {

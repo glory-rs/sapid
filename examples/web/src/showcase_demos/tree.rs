@@ -21,9 +21,11 @@ mod fixture {
             TreeNode::new("docs", "Documents").kind(TreeKind::Branch),
             TreeNode::new("remote", "Remote files").kind(TreeKind::Lazy),
         ];
-        nodes.extend((0..96).map(|i| {
-            TreeNode::new(format!("doc{i}"), format!("Document {i:02}")).parent("docs")
-        }));
+        nodes.extend(
+            (0..96).map(|i| {
+                TreeNode::new(format!("doc{i}"), format!("Document {i:02}")).parent("docs")
+            }),
+        );
         nodes
     }
     pub fn tree_form(theme: sapid::Theme) -> impl Widget {

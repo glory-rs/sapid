@@ -251,8 +251,7 @@ mod browser {
             .ok_or_else(|| js("missing root"))?;
         let mut state = None;
         let build = |scope: &glory::Scope| {
-            let (widget, source) =
-                crate::overlay_form::form_themed(scope, initial, page_theme());
+            let (widget, source) = crate::overlay_form::form_themed(scope, initial, page_theme());
             state = Some(source);
             widget
         };

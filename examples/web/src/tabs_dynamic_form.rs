@@ -203,17 +203,13 @@ pub fn tabs_dynamic_form(theme: Theme) -> impl Widget {
                         button()
                             .theme(action_theme.clone())
                             .label("Select alpha from source")
-                            .on_press(move || {
-                                value.revise(|value| *value = "alpha".to_owned())
-                            }),
+                            .on_press(move || value.revise(|value| *value = "alpha".to_owned())),
                     )
                     .fill(
                         button()
                             .theme(action_theme)
                             .label("Select gamma from source")
-                            .on_press(move || {
-                                value.revise(|value| *value = "gamma".to_owned())
-                            }),
+                            .on_press(move || value.revise(|value| *value = "gamma".to_owned())),
                     ),
             )
             .fill(

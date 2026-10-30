@@ -54,9 +54,7 @@ mod fixture {
             sapid::button()
                 .label("Replace lightbox metadata")
                 .theme(theme.clone())
-                .on_press(move || {
-                    images.revise(|v| v[0].caption = "Updated first caption".into())
-                })
+                .on_press(move || images.revise(|v| v[0].caption = "Updated first caption".into()))
                 .show_in(&area)?;
             sapid::button()
                 .label("Toggle lightbox owner")

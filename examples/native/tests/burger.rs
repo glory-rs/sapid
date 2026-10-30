@@ -2,8 +2,7 @@ use glory::apace::shell::WindowApp;
 use glory::apace::{Config, Raster};
 use glory::render::{Event, MotionPreference};
 #[test]
-fn four_theme_burger_pixels_morph_with_stable_button_graphic_identity_and_no_frame_source_writes()
- {
+fn four_theme_burger_pixels_morph_with_stable_button_graphic_identity_and_no_frame_source_writes() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),
@@ -65,8 +64,7 @@ fn four_theme_burger_pixels_morph_with_stable_button_graphic_identity_and_no_fra
     }
 }
 #[test]
-fn native_default_reduced_motion_controlled_refusal_and_disabled_activation_keep_exact_pixels()
-{
+fn native_default_reduced_motion_controlled_refusal_and_disabled_activation_keep_exact_pixels() {
     let host = WindowApp::new();
     host.renderer().set_viewport(80, 80, 1.).unwrap();
     let open = host.app().scope().cage(false);

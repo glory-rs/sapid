@@ -1,8 +1,8 @@
 //! Read-only numeric progress, with shared finite line and Bezier views.
 use crate::appearance::{Common, configure, merge};
 use glory::render::{
-    GraphicPoint as Point, GraphicProps, GraphicStroke, NodeId, PathCommand as Path,
-    ProgressValue, Role, Semantics, StrokeCap,
+    GraphicPoint as Point, GraphicProps, GraphicStroke, NodeId, PathCommand as Path, ProgressValue,
+    Role, Semantics, StrokeCap,
 };
 use glory::style::{Color, Display, Length, Overflow, Position, Style};
 use glory::ui::{Result, Widget};
@@ -169,9 +169,8 @@ pub(crate) fn arc(
     if fraction > 0. {
         let segments = (fraction * sweep / (PI / 2.)).ceil() as usize;
         let step = fraction * sweep / segments as f64;
-        let point = |angle: f64| {
-            Point::new(center + radius * angle.cos(), center + radius * angle.sin())
-        };
+        let point =
+            |angle: f64| Point::new(center + radius * angle.cos(), center + radius * angle.sin());
         commands.push(Path::Move(point(start)));
         for index in 0..segments {
             let a = start + step * index as f64;

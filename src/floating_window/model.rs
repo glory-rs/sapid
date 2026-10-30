@@ -98,9 +98,7 @@ impl WindowLimits {
     ) -> Result<WindowBounds> {
         self.validate_bounds(start)?;
         if !dx.is_finite() || !dy.is_finite() {
-            return Err(
-                glory::render::Error::InvalidProps("window delta must be finite").into(),
-            );
+            return Err(glory::render::Error::InvalidProps("window delta must be finite").into());
         }
         let next = if resize {
             WindowBounds {

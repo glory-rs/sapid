@@ -238,8 +238,8 @@ fn owner_retirement_clears_refs_and_drops_callbacks() {
 }
 #[test]
 fn ssr_retains_full_escaped_text_and_explicit_disclosure_relationship() {
-    let html = glory::ssr::render(spoiler("server").content("Text <&> full").max_height(70.0))
-        .unwrap();
+    let html =
+        glory::ssr::render(spoiler("server").content("Text <&> full").max_height(70.0)).unwrap();
     assert!(html.contains("Text &lt;&amp;&gt; full"));
     assert!(html.contains("max-height:70px"));
     assert!(html.contains("aria-expanded=\"false\""));

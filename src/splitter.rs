@@ -169,8 +169,8 @@ impl Controller {
             return Ok(());
         }
         let extent = drag.extent.unwrap();
-        let value = (drag.value + (drag.latest - drag.start) / extent * 100.0)
-            .clamp(state.min, state.max);
+        let value =
+            (drag.value + (drag.latest - drag.start) / extent * 100.0).clamp(state.min, state.max);
         self.propose(value)?;
         if drag.phase == DragPhase::Drop {
             self.commit.emit(self.owner, value);
@@ -252,8 +252,7 @@ impl Controller {
                     }
                     {
                         let mut slot = controller.drag.borrow_mut();
-                        let Some(drag) = slot.as_mut().filter(|drag| drag.ticket == ticket)
-                        else {
+                        let Some(drag) = slot.as_mut().filter(|drag| drag.ticket == ticket) else {
                             return Ok(());
                         };
                         drag.extent = Some(extent);

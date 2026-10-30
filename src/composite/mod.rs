@@ -73,10 +73,9 @@ impl Observers {
 pub(crate) fn id(kind: &str, namespace: &str, part: &str, item: &str) -> Result<SemanticId> {
     for key in [namespace, item] {
         if key.len() > 64 {
-            return Err(glory::render::Error::InvalidProps(
-                "widget keys are limited to 64 bytes",
-            )
-            .into());
+            return Err(
+                glory::render::Error::InvalidProps("widget keys are limited to 64 bytes").into(),
+            );
         }
         SemanticId::new(key)?;
     }
@@ -292,9 +291,7 @@ impl Widget for Panel {
                 ContentPolicy::KeepMounted => {
                     panel.fill(glory::ui::widget(move |scope| factory().show_in(scope)))
                 }
-                ContentPolicy::Unmount => {
-                    panel.fill(glory::ui::when(self.open.clone(), factory))
-                }
+                ContentPolicy::Unmount => panel.fill(glory::ui::when(self.open.clone(), factory)),
             };
         }
         panel.show_in(scope)?;
@@ -378,10 +375,7 @@ macro_rules! item_methods {
             self.inner.trigger = Some(reference);
             self
         }
-        pub fn panel_ref(
-            mut self,
-            reference: glory::Cage<Option<glory::render::NodeId>>,
-        ) -> Self {
+        pub fn panel_ref(mut self, reference: glory::Cage<Option<glory::render::NodeId>>) -> Self {
             self.inner.panel = Some(reference);
             self
         }

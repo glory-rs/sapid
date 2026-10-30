@@ -40,7 +40,20 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
     let rejects = scope.cage(0usize);
     let range = scope.cage(MonthSelection::empty(DatePickerMode::Range));
     let multi = scope.cage(YearSelection::empty(DatePickerMode::Multiple));
-    let status=scope.bond(move||format!("month={};year={};page={};changes={};years={};submits={};range={};multi={};rejects={}",m.get().format_iso(),y.get().format_iso(),page.get(),changes.get(),years.get(),submits.get(),range.get().format_iso(),multi.get().format_iso(),rejects.get()));
+    let status = scope.bond(move || {
+        format!(
+            "month={};year={};page={};changes={};years={};submits={};range={};multi={};rejects={}",
+            m.get().format_iso(),
+            y.get().format_iso(),
+            page.get(),
+            changes.get(),
+            years.get(),
+            submits.get(),
+            range.get().format_iso(),
+            multi.get().format_iso(),
+            rejects.get()
+        )
+    });
     let field_theme = theme.clone();
     let primary = glory::ui::when(visible, move || {
         field("period-month-field")

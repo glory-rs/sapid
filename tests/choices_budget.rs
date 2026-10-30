@@ -29,11 +29,10 @@ fn choices_receive_at_most_budget_plus_one_items_from_large_iterators() {
     assert_eq!(app.stats().nodes, 0);
     reads.set(0);
     let seen = reads.clone();
-    let widget =
-        segmented_control("bounded-segment").segments((0..1_000_000).map(move |index| {
-            seen.set(seen.get() + 1);
-            segment(format!("s{index}"))
-        }));
+    let widget = segmented_control("bounded-segment").segments((0..1_000_000).map(move |index| {
+        seen.set(seen.get() + 1);
+        segment(format!("s{index}"))
+    }));
     assert_eq!(reads.get(), 1025);
     assert!(app.mount(widget).is_err());
     assert_eq!(app.stats().nodes, 0);

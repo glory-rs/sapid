@@ -31,10 +31,7 @@ impl Domain {
     pub fn units(self, value: f64) -> Result<u8, &'static str> {
         self.validate()?;
         let units = value * f64::from(self.precision.denominator());
-        if !value.is_finite()
-            || value < 0.
-            || value > f64::from(self.count)
-            || units.fract() != 0.
+        if !value.is_finite() || value < 0. || value > f64::from(self.count) || units.fract() != 0.
         {
             Err("rating must be an exact whole/half value inside 0..=count")
         } else {

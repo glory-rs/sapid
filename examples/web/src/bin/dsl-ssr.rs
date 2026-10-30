@@ -1,6 +1,5 @@
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let directory =
-        std::path::PathBuf::from(std::env::args().nth(1).ok_or("output directory")?);
+    let directory = std::path::PathBuf::from(std::env::args().nth(1).ok_or("output directory")?);
     let snapshot =
         glory::ssr::snapshot(sapid_web_example::dsl::fixture::demo(sapid::Theme::light()))?;
     let template = include_str!("../../dsl.html").replace(

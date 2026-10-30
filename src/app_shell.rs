@@ -3,8 +3,8 @@ use crate::appearance::{Common, configure, merge, observe};
 use crate::composite::{self, Callback, Observers};
 use crate::state::{Control, Value};
 use glory::render::{
-    Action, Change, Event, EventKind, FocusMode, Layer, LayerPlacement, NodeId, Patch,
-    PopupKind, Role, SemanticId, Semantics,
+    Action, Change, Event, EventKind, FocusMode, Layer, LayerPlacement, NodeId, Patch, PopupKind,
+    Role, SemanticId, Semantics,
 };
 use glory::style::{Display, Edges, FlexDirection, Length, Overflow, Style};
 use glory::ui::{Result, WeakScope, Widget};
@@ -637,9 +637,10 @@ impl Sidebar {
 }
 impl Widget for Sidebar {
     fn build(&mut self, scope: &Scope) -> Result {
-        let layout = self.layout.take().ok_or_else(|| {
-            invalid("standalone Sidebar requires an explicit ShellLayout driver")
-        })?;
+        let layout = self
+            .layout
+            .take()
+            .ok_or_else(|| invalid("standalone Sidebar requires an explicit ShellLayout driver"))?;
         let handle = self.controller(scope, layout)?;
         self.build_body(scope, handle, false)
     }
@@ -777,10 +778,7 @@ impl AppShell {
         self.footer = Some(Box::new(move |context| Box::new(factory(context))));
         self
     }
-    pub fn main<W: Widget>(
-        mut self,
-        mut factory: impl FnMut(ShellContext) -> W + 'static,
-    ) -> Self {
+    pub fn main<W: Widget>(mut self, mut factory: impl FnMut(ShellContext) -> W + 'static) -> Self {
         self.main = Some(Box::new(move |context| Box::new(factory(context))));
         self
     }

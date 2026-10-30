@@ -16,12 +16,7 @@ fn section(title: &str) -> impl Widget {
         .class("studio-heading")
         .content(title.to_owned())
 }
-fn update_picker(
-    draft: Cage<Draft>,
-    layer: Cage<Layer>,
-    target: Cage<Target>,
-    picker: Cage<Hsva>,
-) {
+fn update_picker(draft: Cage<Draft>, layer: Cage<Layer>, target: Cage<Target>, picker: Cage<Hsva>) {
     picker.revise(|v| *v = Hsva::from_rgba(draft.with(|d| d.color(layer.get(), target.get()))));
 }
 mod fields;
@@ -118,8 +113,7 @@ pub fn editor(theme: Theme, state: EditorState, return_to: String) -> impl Widge
             if valid.get() {
                 "Draft is valid. Save to add it to the top-right picker.".to_owned()
             } else {
-                "Fix the theme name or incomplete color values before saving or copying."
-                    .to_owned()
+                "Fix the theme name or incomplete color values before saving or copying.".to_owned()
             }
         });
         let save_return = return_to.clone();

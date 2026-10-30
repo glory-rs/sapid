@@ -14,14 +14,7 @@ fn query(app: &App, q: Query) -> QueryValue {
     app.pump().unwrap();
     reply.borrow_mut().take().unwrap()
 }
-fn edit(
-    app: &App,
-    id: NodeId,
-    value: &str,
-    after: usize,
-    before: usize,
-    intent: InputEditIntent,
-) {
+fn edit(app: &App, id: NodeId, value: &str, after: usize, before: usize, intent: InputEditIntent) {
     let revision = {
         let tree = app.tree();
         let Props::Input(p) = tree.node(id).unwrap().descriptor.view().props else {

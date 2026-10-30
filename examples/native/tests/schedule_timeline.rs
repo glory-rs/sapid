@@ -199,8 +199,8 @@ fn native_timeline_readonly_focus_owner_cleanup_and_slot_identity_after_page_dat
     assert_eq!(selected.get(), None);
     assert_eq!(query(app, Query::Focus(first)), QueryValue::Focus(true));
     source.revise(|value| {
-        *value = ScheduleData::new(ScheduleZone::Civil, value.window().shifted(1).unwrap(), [])
-            .unwrap()
+        *value =
+            ScheduleData::new(ScheduleZone::Civil, value.window().shifted(1).unwrap(), []).unwrap()
     });
     app.settle(16).unwrap();
     let next = button(app, "Monday, March 4, 2024 08:00:00");

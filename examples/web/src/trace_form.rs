@@ -145,9 +145,7 @@ pub fn form(scope: &Scope, theme: Theme, stack_only: bool) -> (impl Widget + use
                         }
                     })
                     .on_action(move |request| {
-                        events.revise(|v| {
-                            v.push_str(&format!("action:{};", request.key.as_str()))
-                        })
+                        events.revise(|v| v.push_str(&format!("action:{};", request.key.as_str())))
                     })
                     .on(EventKind::Activate, move |_| {
                         events.revise(|v| v.push_str("generic;"))

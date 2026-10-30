@@ -49,8 +49,7 @@ fn every_base_color_is_customizable_and_construction_has_no_light_or_dark_replac
         disabled_text: Color(73, 74, 75, 76),
         ..BLUE.base
     };
-    let definition =
-        ThemeDefinition::new("application-42", base).with_dark(PaletteOverrides::NONE);
+    let definition = ThemeDefinition::new("application-42", base).with_dark(PaletteOverrides::NONE);
     for scheme in [ColorScheme::Light, ColorScheme::Dark] {
         let theme = Theme::new(&definition, scheme).unwrap();
         assert_eq!(theme.shades, base.shades);
@@ -93,8 +92,7 @@ fn every_base_color_is_customizable_and_construction_has_no_light_or_dark_replac
         assert!(css.contains("--sp-input-focus:#2d2e2f30;"));
         let app = App::memory();
         app.mount(
-            sapid::theme_provider(theme.clone())
-                .fill(sapid::button().theme(theme).label("Custom")),
+            sapid::theme_provider(theme.clone()).fill(sapid::button().theme(theme).label("Custom")),
         )
         .unwrap();
         let tree = app.tree();
@@ -160,8 +158,7 @@ fn default_mode_requires_no_override_and_other_modes_require_explicit_support() 
         Theme::from_default(&light).unwrap().scheme,
         ColorScheme::Light
     );
-    let dark =
-        ThemeDefinition::new("dark-only", GREEN.base).with_default_scheme(ColorScheme::Dark);
+    let dark = ThemeDefinition::new("dark-only", GREEN.base).with_default_scheme(ColorScheme::Dark);
     assert_eq!(dark.default(), (ColorScheme::Dark, GREEN.base));
     assert_eq!(dark.dark(), Some(GREEN.base));
     assert_eq!(dark.light(), None);

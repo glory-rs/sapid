@@ -17,10 +17,9 @@ pub fn geometry(area: Rect, target: Rect) -> Result<Option<Geometry>> {
             || rect.width < 0.
             || rect.height < 0.
         {
-            return Err(glory::render::Error::InvalidResponse(
-                "invalid floating indicator bounds",
-            )
-            .into());
+            return Err(
+                glory::render::Error::InvalidResponse("invalid floating indicator bounds").into(),
+            );
         }
     }
     if area.width == 0. || area.height == 0. || target.width == 0. || target.height == 0. {

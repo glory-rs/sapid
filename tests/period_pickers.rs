@@ -238,8 +238,7 @@ fn year_page_large_page_and_row_navigation_are_finite_and_readonly_does_not_writ
     assert_eq!(value.get().format_iso(), "2024");
 }
 #[test]
-fn controlled_year_refusal_and_invalid_external_page_keep_accepted_cells_then_recover_silently()
-{
+fn controlled_year_refusal_and_invalid_external_page_keep_accepted_cells_then_recover_silently() {
     let app = App::memory();
     let reference = app.scope().cage(None);
     let page = app.scope().cage(year(2024));

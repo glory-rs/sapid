@@ -3,15 +3,13 @@ use sapid::chat::*;
 pub fn explanation() -> PublicExplanation {
     PublicExplanation {
         summary: "Read public explanation".into(),
-        body:
-            "Application-provided public summary. <script>window.badExplanation=true</script>"
-                .into(),
+        body: "Application-provided public summary. <script>window.badExplanation=true</script>"
+            .into(),
         steps: vec![
             ExplanationStep {
                 key: "review".into(),
                 label: "Review supplied records".into(),
-                summary: "The application reports that its supplied sources were compared."
-                    .into(),
+                summary: "The application reports that its supplied sources were compared.".into(),
                 status: ExplanationStatus::Complete,
                 elapsed_millis: Some(32),
             },
@@ -196,9 +194,7 @@ pub fn chat_evidence_form(theme: sapid::Theme, citations: bool) -> impl Widget {
             .show_in(&area)?;
             text()
                 .class("explanation-proposals")
-                .content(
-                    scope.bond(move || format!("Explanation proposals: {}", proposals.get())),
-                )
+                .content(scope.bond(move || format!("Explanation proposals: {}", proposals.get())))
                 .show_in(&area)?;
             chain_of_thought("fixture-steps")
                 .class("chain-secondary")

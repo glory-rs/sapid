@@ -530,9 +530,7 @@ impl Widget for Tour {
         if self.overflow || self.steps.is_empty() {
             return Err(invalid("Tour requires 1..=64 steps"));
         }
-        composite::validate_keys(
-            &self.steps.iter().map(|s| s.key.clone()).collect::<Vec<_>>(),
-        )?;
+        composite::validate_keys(&self.steps.iter().map(|s| s.key.clone()).collect::<Vec<_>>())?;
         for step in &self.steps {
             label(&step.title)?;
             label(&step.description)?;
@@ -638,11 +636,10 @@ impl Widget for Tour {
         let s = state.clone();
         let title = scope.bond(move || s.steps[s.current.source.get()].title.clone());
         let s = state.clone();
-        let description =
-            scope.bond(move || s.steps[s.current.source.get()].description.clone());
+        let description = scope.bond(move || s.steps[s.current.source.get()].description.clone());
         let s = state.clone();
-        let progress = scope
-            .bond(move || format!("Step {} of {}", s.current.source.get() + 1, s.steps.len()));
+        let progress =
+            scope.bond(move || format!("Step {} of {}", s.current.source.get() + 1, s.steps.len()));
         let h = TourHandle(Rc::downgrade(&state));
         let previous = h.clone();
         let next = h.clone();

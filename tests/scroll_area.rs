@@ -1,8 +1,8 @@
 use glory::prelude::*;
 use glory::render::memory::Memory;
 use glory::render::{
-    Action, Capabilities, Error, Input, Mutation, Query, QueryToken, QueryValue, Receipt,
-    Render, ScrollAxes, ScrollMetrics,
+    Action, Capabilities, Error, Input, Mutation, Query, QueryToken, QueryValue, Receipt, Render,
+    ScrollAxes, ScrollMetrics,
 };
 use sapid::{ScrollHandle, scroll_area};
 use std::{

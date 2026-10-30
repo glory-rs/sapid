@@ -160,8 +160,7 @@ impl CartesianScene {
             "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 {} {}\">",
             self.frame.width, self.frame.height
         );
-        let color =
-            |c: Color| format!("rgba({},{},{},{})", c.0, c.1, c.2, f64::from(c.3) / 255.);
+        let color = |c: Color| format!("rgba({},{},{},{})", c.0, c.1, c.2, f64::from(c.3) / 255.);
         for path in &self.paths {
             svg.push_str("<path d=\"");
             for command in &path.drawing.commands {
@@ -470,17 +469,13 @@ mod tests {
                     ChartSeries::new(
                         format!("s{s}"),
                         format!("Series {s}"),
-                        (0..count)
-                            .map(|i| Some((i as f64 - count as f64 / 2.) * (s + 1) as f64)),
+                        (0..count).map(|i| Some((i as f64 - count as f64 / 2.) * (s + 1) as f64)),
                     )
                 })
                 .collect(),
         }
     }
-    fn build(
-        data: &ChartData,
-        options: CartesianOptions,
-    ) -> Result<CartesianScene, ChartError> {
+    fn build(data: &ChartData, options: CartesianOptions) -> Result<CartesianScene, ChartError> {
         CartesianScene::build(
             data,
             ChartFrame::default(),

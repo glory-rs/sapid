@@ -9,9 +9,7 @@ mod fixture {
     use glory::render::Orientation;
     use glory::style::Length;
     use glory::ui::{Widget, text, widget};
-    use sapid::{
-        Theme, TimelineProgress, button, separator, text_field, timeline, timeline_item,
-    };
+    use sapid::{Theme, TimelineProgress, button, separator, text_field, timeline, timeline_item};
     pub fn timeline_form(theme: Theme) -> impl Widget {
         widget(move |scope| {
             let progress = scope.cage(TimelineProgress::Active("build".into()));
@@ -66,9 +64,8 @@ mod fixture {
                         .theme(theme.clone())
                         .label("Advance timeline")
                         .on_press(move || {
-                            progress.revise(|value| {
-                                *value = TimelineProgress::Active("ship".into())
-                            })
+                            progress
+                                .revise(|value| *value = TimelineProgress::Active("ship".into()))
                         }),
                     button()
                         .theme(theme.clone())

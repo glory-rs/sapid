@@ -4,7 +4,7 @@ use glory::ui::{App, button};
 use sapid::{Theme, loading_overlay, overlay};
 #[test]
 fn controlled_loading_publishes_busy_inert_and_mask_visibility_in_one_flush_and_preserves_sources()
- {
+{
     let app = App::memory();
     let loading = app.scope().cage(false);
     let clicks = app.scope().cage(0usize);
@@ -73,8 +73,7 @@ fn controlled_loading_publishes_busy_inert_and_mask_visibility_in_one_flush_and_
     assert_eq!(app.stats().handlers, 0);
 }
 #[test]
-fn decorative_overlay_never_sets_busy_inert_or_input_roles_and_pointer_targeting_is_transparent()
- {
+fn decorative_overlay_never_sets_busy_inert_or_input_roles_and_pointer_targeting_is_transparent() {
     let app = App::memory();
     let visible = app.scope().cage(true);
     let clicks = app.scope().cage(0usize);
