@@ -242,3 +242,26 @@ fn four_themes_have_distinct_surfaces_and_readable_semantic_text() {
     assert_ne!(Theme::blue_light().accent, Theme::green_light().accent);
     assert_ne!(Theme::blue_light().surface, Theme::blue_dark().surface);
 }
+
+#[test]
+fn keyboard_focus_rings_contrast_with_each_shipped_background() {
+    for theme in [
+        Theme::blue_light(),
+        Theme::blue_dark(),
+        Theme::green_light(),
+        Theme::green_dark(),
+    ] {
+        for background in [theme.canvas, theme.surface, theme.input] {
+            assert!(
+                contrast(theme.focus_ring, background) >= 3.0,
+                "{}: focus {:?} against {:?}",
+                theme.class(),
+                theme.focus_ring,
+                background
+            );
+        }
+    }
+    // Dark modes keep their brighter ring through explicit palette overrides.
+    assert_eq!(Theme::blue_dark().focus_ring, Color(0x74, 0xc0, 0xfc, 255));
+    assert_eq!(Theme::green_dark().focus_ring, Color(0x8c, 0xe9, 0x9a, 255));
+}
