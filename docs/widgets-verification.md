@@ -3,6 +3,11 @@
 2026-10-29 的 Glory 新 `main` 同步、`Vary` API、引擎固定版本及重新执行的验证，
 见 [Glory main 迁移记录](glory-main-migration-2026-10-29.md)。下文保留原目录验收批次。
 
+本文的 `D:/BuildCache/...` 链接是原始执行机器上的历史产物位置，不是仓库文件或公开下载地址。
+跨机器复核时，按 [验收证据归档说明](../RELEASING.md#acceptance-evidence) 获取对应 CI run 或
+GitHub Release 的报告及来源哈希；复跑结果应另记日期、产品/测试脚本 revision 与工具版本。
+Chrome AX、AccessKit 与自动输入协议证据不能替代 OS IME、读屏语音或实际设备验收。
+
 日期：2026-10-25。冻结目录的 268 个来源条目已归并为 149 项工作，
 当前 149 项均已实现并记录逐项证据，覆盖 14 个阶段。
 [路线图](widgets-roadmap.md)、[canonical inventory](widget-inventory.json)、
