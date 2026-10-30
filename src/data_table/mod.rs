@@ -1,5 +1,6 @@
 //! Bounded explicit local queries or authoritative server pages, displayed by
 //! Glory's keyed windowed rows. No source query runs on a scroll notification.
+mod local;
 mod model;
 use crate::{
     appearance::Common,
@@ -23,14 +24,19 @@ enum Source {
 }
 #[derive(Clone, Copy)]
 enum Accepted {
-    Local(Cage<Vec<DataRecord>>),
+    Local(Cage<Rc<Vec<DataRecord>>>),
     Server(Cage<Option<DataPage>>),
 }
 impl Accepted {
-    fn plan(self, columns: &[DataColumn], query: &DataTableQuery) -> Result<Resolved> {
+    fn plan(
+        self,
+        columns: &[DataColumn],
+        query: &DataTableQuery,
+        local: &RefCell<Option<local::Matches>>,
+    ) -> Result<Resolved> {
         let (plan, keys) = match self {
             Self::Local(rows) => rows.try_with(|rows| {
-                let plan = local_data_plan(columns, rows, query).map_err(error)?;
+                let plan = local::plan(columns, rows, query, &mut local.borrow_mut());
                 let keys = plan
                     .indices
                     .iter()
@@ -51,7 +57,7 @@ impl Accepted {
                         vec![],
                     ));
                 };
-                let plan = server_data_plan(columns, page, query).map_err(error)?;
+                let plan = model::server_page_plan(page, query);
                 let keys = plan
                     .indices
                     .iter()
@@ -81,7 +87,7 @@ impl Accepted {
                 .unwrap_or_default()
         };
         match self {
-            Self::Local(rows) => rows.with(read),
+            Self::Local(rows) => rows.with(|rows| read(rows)),
             Self::Server(page) => page.with(|page| {
                 page.as_ref()
                     .map(|page| read(&page.rows))
@@ -96,29 +102,53 @@ fn accept_server_page(
     columns: Rc<Vec<DataColumn>>,
     query: Cage<DataTableQuery>,
 ) -> Result<Cage<Option<DataPage>>> {
-    let read = |page: &DataPage, expected: &DataTableQuery| -> Result<Option<DataPage>> {
-        if page.request != expected.request {
+    // Column visibility does not change the server request or require the same
+    // accepted page's payload to be validated/copied again.
+    let request =
+        composite::validated(scope, &query.map(|q| q.request.clone()).into(), |_| Ok(()))?;
+    let read = |page: &DataPage, expected: &DataRequest| -> Result<Option<DataPage>> {
+        if &page.request != expected {
             return Ok(None);
         }
-        server_data_plan(&columns, page, expected).map_err(error)?;
+        server_data_plan(
+            &columns,
+            page,
+            &DataTableQuery {
+                request: expected.clone(),
+                hidden: BTreeSet::new(),
+            },
+        )
+        .map_err(error)?;
         Ok(Some(page.clone()))
     };
-    let initial = source.try_with(|page| read(page, &query.get_untracked()))??;
+    let initial =
+        glory::core::untracked(|| source.try_with(|page| read(page, &request.get_untracked())))??;
     let current = scope.cage(initial);
     let weak = scope.downgrade();
     scope.structural(move || {
         let Some(scope) = weak.upgrade() else { return };
         let result = (|| -> Result {
-            let expected = query.try_get()?;
+            let expected = request.try_get()?;
             let next = source.try_with(|page| {
-                if page.request != expected.request {
+                if page.request != expected {
                     return Ok(None);
                 }
-                server_data_plan(&columns, page, &expected).map_err(error)?;
+                if glory::core::untracked(|| current.with(|old| old.as_ref() == Some(page))) {
+                    return Ok(None);
+                }
+                server_data_plan(
+                    &columns,
+                    page,
+                    &DataTableQuery {
+                        request: expected.clone(),
+                        hidden: BTreeSet::new(),
+                    },
+                )
+                .map_err(error)?;
                 Ok::<_, glory::ui::Error>(Some(page.clone()))
             })??;
             if let Some(next) = next
-                && current.with(|old| old.as_ref() != Some(&next))
+                && current.with_untracked(|old| old.as_ref() != Some(&next))
             {
                 current.try_revise(|old| *old = Some(next))?;
             }
@@ -130,6 +160,7 @@ fn accept_server_page(
     });
     Ok(current)
 }
+
 fn error(value: DataTableError) -> glory::ui::Error {
     glory::render::Error::InvalidProps(value.message()).into()
 }
@@ -423,17 +454,14 @@ impl Widget for DataTable {
             .take()
             .ok_or_else(|| error(DataTableError::Rows))?
         {
-            Source::Local(source) => {
-                Accepted::Local(composite::validated(scope, &source, move |rows| {
-                    validate_data_records(&validation, rows).map_err(error)
-                })?)
-            }
+            Source::Local(source) => Accepted::Local(local::accept(scope, &source, validation)?),
             Source::Server(source) => {
                 Accepted::Server(accept_server_page(scope, source, validation, query)?)
             }
         };
         let validation = columns.clone();
-        let plan_source = scope.bond(move || data.plan(&validation, &query.get()));
+        let local = RefCell::new(None);
+        let plan_source = scope.bond(move || data.plan(&validation, &query.get(), &local));
         let initial = plan_source.get()?;
         let resolved = scope.cage(initial);
         let weak = scope.downgrade();
@@ -946,4 +974,116 @@ fn column_sort(query: &DataTableQuery, key: &str) -> Option<SortDirection> {
         }
         _ => SortDirection::None,
     })
+}
+
+#[cfg(test)]
+mod derivation_tests {
+    use super::*;
+    use model::work::{MATCH_PASSES, VALIDATION_PASSES};
+
+    #[test]
+    fn mounted_local_table_only_rederives_matching_on_admitted_data_filter_or_sort_changes() {
+        let app = glory::prelude::App::memory();
+        let rows = app.scope().cage(
+            (0..12)
+                .map(|i| {
+                    DataRecord::new(format!("r{i}"), [format!("Person {i}"), "Compiler".into()])
+                })
+                .collect::<Vec<_>>(),
+        );
+        let query = app.scope().cage(DataTableQuery {
+            request: DataRequest {
+                page_size: 3,
+                ..Default::default()
+            },
+            ..Default::default()
+        });
+        MATCH_PASSES.set(0);
+        VALIDATION_PASSES.set(0);
+        app.mount(
+            data_table("passes")
+                .columns([
+                    DataColumn::new("name", "Name"),
+                    DataColumn::new("team", "Team"),
+                ])
+                .local_rows(rows)
+                .query(query),
+        )
+        .unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (1, 1));
+        for page in [2, 3, 1] {
+            query.revise(|q| q.request.page = page);
+            app.flush().unwrap();
+        }
+        query.revise(|q| {
+            q.request.page_size = 4;
+            q.hidden.insert("team".into());
+        });
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (1, 1));
+        query.revise(|q| q.request.filter = "compiler".into());
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (2, 1));
+        query.revise(|q| q.request.filter = "COMPILER".into());
+        app.flush().unwrap();
+        assert_eq!(MATCH_PASSES.get(), 2);
+        query.revise(|q| {
+            q.request.sort = Some(DataSort {
+                column: "name".into(),
+                descending: true,
+            })
+        });
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (3, 1));
+        rows.revise(|rows| rows[0].cells[1] = "Runtime".into());
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (4, 2));
+        rows.revise(|rows| rows[1].key = rows[0].key.clone());
+        assert!(app.flush().is_err());
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (4, 3));
+        query.revise(|q| q.request.page = 2);
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (4, 3));
+        app.clear().unwrap();
+        assert_eq!(app.stats().nodes, 0);
+    }
+
+    #[test]
+    fn mounted_server_table_reuses_validated_page_for_visibility_and_waits_for_new_requests() {
+        let app = glory::prelude::App::memory();
+        let query = app.scope().cage(DataTableQuery::default());
+        let page = app.scope().cage(DataPage {
+            request: DataRequest::default(),
+            rows: vec![DataRecord::new("a", ["Ada", "Compiler"])],
+            total: Some(1),
+            has_next: false,
+        });
+        MATCH_PASSES.set(0);
+        VALIDATION_PASSES.set(0);
+        app.mount(
+            data_table("server-passes")
+                .columns([
+                    DataColumn::new("name", "Name"),
+                    DataColumn::new("team", "Team"),
+                ])
+                .server_page(page)
+                .query(query),
+        )
+        .unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (0, 1));
+        query.revise(|q| {
+            q.hidden.insert("team".into());
+        });
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (0, 1));
+        query.revise(|q| q.request.filter = "Runtime".into());
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (0, 1));
+        page.revise(|page| page.request = query.with(|q| q.request.clone()));
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (0, 2));
+        query.revise(|q| q.hidden.clear());
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (0, 2));
+    }
 }
