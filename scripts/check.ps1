@@ -39,6 +39,8 @@ try {
     & "$PSScriptRoot/format.ps1" -Check
     & python "$PSScriptRoot/test_format.py"
     if ($LASTEXITCODE -ne 0) { throw 'Independent workspace formatting regression failed' }
+    & python "$PSScriptRoot/test_dsl_paths.py"
+    if ($LASTEXITCODE -ne 0) { throw 'DSL compiler path regression failed' }
     Invoke-Cargo -Arguments @('test', '--locked')
     Invoke-Cargo -Arguments @('test', '--locked', '--all-features')
     Invoke-Cargo -Arguments @('clippy', '--locked', '--all-targets', '--', '-D', 'warnings')
