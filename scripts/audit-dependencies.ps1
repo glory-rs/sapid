@@ -26,17 +26,24 @@ try {
     New-Item -ItemType Directory -Force -Path $BuildRoot,$env:TEMP | Out-Null
     $version = (& $AuditBinary --version | Out-String).Trim()
     if ($LASTEXITCODE -ne 0 -or $version -ne $report.tool) { throw "Expected $($report.tool), got $version" }
+    # Only the library root is local. Missing application locks remain errors.
+    & python "$PSScriptRoot/library_lock.py" --manifest-path Cargo.toml
+    if ($LASTEXITCODE -ne 0) { throw 'Audit library lock preparation failed' }
     $revision = $null
     $index = 0
     foreach ($manifest in @('Cargo.toml','examples/web/Cargo.toml','examples/native/Cargo.toml')) {
         $lock = if ($manifest -eq 'Cargo.toml') { 'Cargo.lock' } else { Join-Path (Split-Path $manifest -Parent) 'Cargo.lock' }
         $entry = @{ manifest = $manifest; lockfile = $lock; status = 'failed'; warnings = @(); vulnerabilities = @() }
+        $snapshot = Join-Path $BuildRoot "audit-$index.lock"
+        if (Test-Path -LiteralPath $snapshot) { Remove-Item -LiteralPath $snapshot -Force }
         try {
             $metadata = & cargo metadata --locked --manifest-path $manifest --no-deps --format-version 1 | ConvertFrom-Json
             if ($LASTEXITCODE -ne 0 -or [IO.Path]::GetFullPath($metadata.target_directory) -ne [IO.Path]::GetFullPath($env:CARGO_TARGET_DIR)) {
                 throw "Unexpected metadata target for $manifest"
             }
             $entry.sha256 = (Get-FileHash -LiteralPath $lock -Algorithm SHA256).Hash
+            Copy-Item -LiteralPath $lock -Destination $snapshot
+            $entry.snapshot = "audit-$index.lock"
             $fetch = @()
             if ($NoFetch -or $index -gt 0) { $fetch = @('--no-fetch') }
             $raw = & $AuditBinary audit --file $lock --db $Database --json @fetch 2> (Join-Path $BuildRoot "audit-$index.stderr.log")

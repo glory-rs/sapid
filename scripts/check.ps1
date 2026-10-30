@@ -36,6 +36,8 @@ try {
     $env:CARGO_PROFILE_TEST_DEBUG = '0'
     New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
     Confirm-Target 'Cargo.toml'
+    & python "$PSScriptRoot/library_lock.py" --manifest-path Cargo.toml
+    if ($LASTEXITCODE -ne 0) { throw 'Library lock preparation failed' }
     & "$PSScriptRoot/format.ps1" -Check
     & python "$PSScriptRoot/test_format.py"
     if ($LASTEXITCODE -ne 0) { throw 'Independent workspace formatting regression failed' }
@@ -46,6 +48,8 @@ try {
     Invoke-Cargo -Arguments @('clippy', '--locked', '--all-targets', '--', '-D', 'warnings')
     Invoke-Cargo -Arguments @('clippy', '--locked', '--all-features', '--all-targets', '--', '-D', 'warnings')
     Confirm-Target '../glory/Cargo.toml'
+    & python "$PSScriptRoot/library_lock.py" --manifest-path ../glory/Cargo.toml
+    if ($LASTEXITCODE -ne 0) { throw 'Glory library lock preparation failed' }
     Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-style', '-p', 'glory-core', '-p', 'glory-render', '-p', 'glory-ui', '-p', 'glory-html', '-p', 'glory-ssr', '--all-features')
     Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-style', '-p', 'glory-core', '-p', 'glory-render', '-p', 'glory-ui', '-p', 'glory-html', '-p', 'glory-ssr', '--all-features', '--all-targets', '--', '-D', 'warnings')
     if ($Native) {

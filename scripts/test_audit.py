@@ -1,5 +1,6 @@
 """Run the real RustSec auditor on isolated, dependency-free Cargo workspaces."""
 import json
+import hashlib
 import os
 from pathlib import Path
 import shutil
@@ -84,6 +85,32 @@ class AdvisoryGateTests(unittest.TestCase):
             report = json.loads((output / "results.json").read_text(encoding="utf-8-sig"))
             self.assertTrue(report["complete"])
             self.assertTrue(all(entry["status"] == "passed" for entry in report["locks"]))
+
+            # A fresh checkout has no library root lock. Run the real gate,
+            # including Cargo generation, while preserving both application locks.
+            application_locks = {lock: lock.read_bytes() for lock in project.glob("examples/*/Cargo.lock")}
+            (project / "Cargo.lock").unlink()
+            fresh = audit()
+            self.assertEqual(fresh.returncode, 0, fresh.stdout + fresh.stderr)
+            report = json.loads((output / "results.json").read_text(encoding="utf-8-sig"))
+            self.assertTrue(report["complete"])
+            generated = (project / "Cargo.lock").read_bytes()
+            self.assertEqual(report["locks"][0]["sha256"].lower(), hashlib.sha256(generated).hexdigest())
+            self.assertEqual((output / "audit-0.lock").read_bytes(), generated)
+            for lock, before in application_locks.items():
+                self.assertEqual(lock.read_bytes(), before)
+
+            # Application locks are committed inputs, not another missing-lock
+            # fallback. Refuse a missing one rather than manufacturing a pass.
+            web_lock = project / "examples/web/Cargo.lock"
+            web_lock.unlink()
+            missing_app = audit()
+            self.assertNotEqual(missing_app.returncode, 0)
+            self.assertFalse(web_lock.exists())
+            missing_report = json.loads((output / "results.json").read_text(encoding="utf-8-sig"))
+            self.assertEqual([entry["status"] for entry in missing_report["locks"]], ["passed", "failed", "passed"])
+            self.assertFalse((output / "audit-1.lock").exists(), "Do not preserve a stale application snapshot")
+            web_lock.write_bytes(application_locks[web_lock])
 
             # Informational maintenance notices remain visible without becoming
             # vulnerability failures, matching cargo-audit's default policy.

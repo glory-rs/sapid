@@ -90,6 +90,7 @@ jobs:
           sparse-checkout: |
             .gitattributes
             scripts/release.py
+            scripts/library_lock.py
             scripts/browser.cjs
             examples/web/*acceptance.js
           sparse-checkout-cone-mode: false

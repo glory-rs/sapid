@@ -6,6 +6,7 @@ import io
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import tempfile
 import tarfile
@@ -56,6 +57,7 @@ class ReleasePlanTests(unittest.TestCase):
             root=Path(directory)
             target=root/'target'
             (root/'Cargo.toml').write_text('[workspace.package]\nversion="0.6.0"\n[package]\nversion="0.0.1"\n',encoding='utf-8')
+            (root/'Cargo.lock').write_text('version = 4\n',encoding='utf-8')
             plan={'repository':'example/owned','allowed_prefixes':['owned'],'tag_prefix':'v','uniform_version':True,
                   'packages':['owned-base','owned-app']}
             packages=[{'name':name,'version':'0.6.0','repository':'https://github.com/example/owned','dependencies':[],
@@ -140,17 +142,21 @@ class AcceptanceAssetTests(unittest.TestCase):
             root = Path(directory)
             provenance = root / 'browser-provenance.json'
             results = root / 'browser-results.json'
+            checked_lock = root / publisher.LIBRARY_LOCK_ARTIFACT
             provenance.write_bytes(b'{"validation_attempt":1}\n')
             results.write_bytes(b'{"complete":true}\n')
-            original = {path.name: path.read_bytes() for path in (provenance, results)}
+            checked_lock.write_bytes(b'version = 4\n')
+            original = {path.name: path.read_bytes() for path in (provenance, results, checked_lock)}
             first = publisher.acceptance_assets(provenance, '123', '1')
             second = publisher.acceptance_assets(provenance, '123', '2')
             self.assertEqual([path.name for path in first], [
-                'browser-results-run-123-attempt-1.json', 'browser-provenance-run-123-attempt-1.json'])
+                'browser-results-run-123-attempt-1.json', 'browser-provenance-run-123-attempt-1.json',
+                'library-Cargo-run-123-attempt-1.lock'])
             self.assertEqual([path.name for path in second], [
-                'browser-results-run-123-attempt-2.json', 'browser-provenance-run-123-attempt-2.json'])
+                'browser-results-run-123-attempt-2.json', 'browser-provenance-run-123-attempt-2.json',
+                'library-Cargo-run-123-attempt-2.lock'])
             for paths in (first, second):
-                self.assertEqual([path.read_bytes() for path in paths], [original[results.name], original[provenance.name]])
+                self.assertEqual([path.read_bytes() for path in paths], [original[results.name], original[provenance.name], original[checked_lock.name]])
             self.assertEqual(publisher.acceptance_assets(provenance, '123', '2'), second)
             results.write_bytes(b'{"different":true}\n')
             with self.assertRaisesRegex(SystemExit, 'different contents'):
@@ -184,6 +190,9 @@ class ReleaseProvenanceTests(unittest.TestCase):
         self.commit(self.glory)
         self.glory_commit = self.git(self.glory, 'rev-parse', 'HEAD')
         self.git(self.root, 'init')
+        (self.root / '.gitignore').write_text('/Cargo.lock\n', encoding='utf-8')
+        self.root_lock = self.root / 'Cargo.lock'
+        self.root_lock.write_bytes(b'version = 4\n# Resolution used by successful checks\n')
         (self.root / 'Cargo.toml').write_text('[package]\nname="owned"\nversion="0.6.0"\n', encoding='utf-8')
         self.plan = {'repository': 'example/owned'}
         (self.root / 'release.json').write_text(json.dumps(self.plan), encoding='utf-8')
@@ -198,6 +207,8 @@ class ReleaseProvenanceTests(unittest.TestCase):
         self.git(self.root, 'remote', 'add', 'origin', str(self.origin))
         self.git(self.root, 'push', 'origin', 'refs/tags/v0.6.0')
         self.provenance = self.base / 'browser-provenance.json'
+        self.checked_lock = self.provenance.with_name(publisher.LIBRARY_LOCK_ARTIFACT)
+        self.checked_lock.write_bytes(self.root_lock.read_bytes())
         self.harness = self.base / 'harness'
         (self.harness / 'scripts').mkdir(parents=True)
         (self.harness / 'examples/web').mkdir(parents=True)
@@ -223,6 +234,7 @@ class ReleaseProvenanceTests(unittest.TestCase):
             'glory_commit': self.glory_commit,
             'browser_results_sha256': hashlib.sha256(self.results.read_bytes()).hexdigest(),
             'browser_runner_sha256': hashlib.sha256(runner).hexdigest(),
+            'library_lock_sha256': hashlib.sha256(self.checked_lock.read_bytes()).hexdigest(),
         }
         self.write_evidence()
         self.environment = {
@@ -316,8 +328,95 @@ class ReleaseProvenanceTests(unittest.TestCase):
         self.assertEqual(uploads[0][:6], ('gh', 'release', 'upload', 'v0.6.0', '--repo', 'example/owned'))
         assets = [Path(value) for value in uploads[0][6:]]
         self.assertEqual([path.name for path in assets], [
-            'browser-results-run-123-attempt-2.json', 'browser-provenance-run-123-attempt-2.json'])
-        self.assertEqual([path.read_bytes() for path in assets], [self.results.read_bytes(), self.provenance.read_bytes()])
+            'browser-results-run-123-attempt-2.json', 'browser-provenance-run-123-attempt-2.json',
+            'library-Cargo-run-123-attempt-2.lock'])
+        self.assertEqual([path.read_bytes() for path in assets], [self.results.read_bytes(), self.provenance.read_bytes(), self.checked_lock.read_bytes()])
+
+    def test_missing_root_lock_is_restored_before_the_first_cargo_operation(self):
+        self.root_lock.unlink()
+        original_run = publisher.run
+
+        class CheckedBeforeCargo(Exception):
+            pass
+
+        def run(*args, **kwargs):
+            if args[0] == 'cargo':
+                self.assertEqual(args[1], 'metadata')
+                self.assertEqual(self.root_lock.read_bytes(), self.checked_lock.read_bytes())
+                raise CheckedBeforeCargo()
+            return original_run(*args, **kwargs)
+
+        arguments = ['release.py', '--product-root', str(self.root), '--publish', '--tag', 'v0.6.0',
+                     '--expected-commit', self.product_commit, '--acceptance-commit', self.acceptance_commit,
+                     '--harness-root', str(self.harness), '--provenance', str(self.provenance)]
+        with patch.object(publisher, 'ROOT', self.root), patch.dict(os.environ, self.environment), \
+             patch.object(publisher.sys, 'argv', arguments), patch.object(publisher, 'run', side_effect=run), \
+             patch.object(publisher.urllib.request, 'urlopen') as registry, \
+             patch.object(publisher, 'publish') as upload, patch.object(publisher, 'prepare_library_lock') as generate:
+            with self.assertRaises(CheckedBeforeCargo):
+                publisher.main()
+            registry.assert_not_called()
+            upload.assert_not_called()
+            generate.assert_not_called()
+
+    def test_independently_resolved_publisher_lock_is_rejected_without_overwriting_it(self):
+        different = b'version = 4\n# Different resolution generated in the publishing job\n'
+        self.root_lock.write_bytes(different)
+        self.assert_rejected_before_registry('Publisher library lockfile differs')
+        self.assertEqual(self.root_lock.read_bytes(), different)
+
+    def test_checked_lock_tampering_or_missing_evidence_cannot_regenerate_a_lock(self):
+        self.root_lock.unlink()
+        self.checked_lock.write_bytes(self.checked_lock.read_bytes() + b'# tampered\n')
+        self.assert_rejected_before_registry('Checked library lockfile digest differs')
+        self.assertFalse(self.root_lock.exists())
+        self.checked_lock.unlink()
+        self.assert_rejected_before_registry('Missing or unreadable checked library lockfile')
+        self.assertFalse(self.root_lock.exists())
+
+    def test_missing_lock_digest_in_otherwise_successful_provenance_is_rejected(self):
+        self.root_lock.unlink()
+        del self.evidence['library_lock_sha256']
+        self.write_evidence()
+        self.assert_rejected_before_registry('Checked library lockfile digest differs')
+        self.assertFalse(self.root_lock.exists())
+
+    def test_invalid_provenance_digest_cannot_restore_the_root_lock(self):
+        self.root_lock.unlink()
+        self.provenance.write_bytes(self.provenance.read_bytes() + b'\n')
+        self.assert_rejected_before_registry('provenance digest differs')
+        self.assertFalse(self.root_lock.exists())
+
+    def test_historical_tag_tracked_lock_is_preserved_byte_for_byte(self):
+        original = self.root_lock.read_bytes()
+        self.git(self.root, 'add', '-f', 'Cargo.lock')
+        self.commit(self.root)
+        self.product_commit = self.git(self.root, 'rev-parse', 'HEAD')
+        self.git(self.root, 'tag', '-f', 'v0.6.0')
+        self.git(self.root, 'push', '--force', 'origin', 'refs/tags/v0.6.0')
+        self.options.expected_commit = self.product_commit
+        self.evidence['product_commit'] = self.product_commit
+        self.write_evidence()
+        self.gate()
+        self.assertEqual(self.root_lock.read_bytes(), original)
+        self.assertEqual(self.git(self.root, 'status', '--porcelain'), '')
+        self.checked_lock.write_bytes(b'version = 4\n# different checked lock\n')
+        self.evidence['library_lock_sha256'] = hashlib.sha256(self.checked_lock.read_bytes()).hexdigest()
+        self.write_evidence()
+        self.assert_rejected_before_registry('Publisher library lockfile differs')
+        self.assertEqual(self.root_lock.read_bytes(), original)
+
+    def test_recording_provenance_requires_and_copies_the_actual_checked_root_lock(self):
+        with patch.object(publisher, 'ROOT', self.root), patch.dict(os.environ, self.environment):
+            publisher.record_acceptance(self.options)
+            evidence = json.loads(self.provenance.read_text())
+            self.assertEqual(self.checked_lock.read_bytes(), self.root_lock.read_bytes())
+            self.assertEqual(evidence['library_lock_sha256'], hashlib.sha256(self.root_lock.read_bytes()).hexdigest())
+            self.root_lock.unlink()
+            self.provenance.unlink()
+            with self.assertRaisesRegex(SystemExit, 'actual checked library lockfile'):
+                publisher.record_acceptance(self.options)
+            self.assertFalse(self.provenance.exists())
 
     def test_rate_limit_wait_rechecks_the_real_remote_tag_before_a_second_upload(self):
         original_subprocess = subprocess.run
@@ -442,6 +541,53 @@ class ReleaseProvenanceTests(unittest.TestCase):
             self.gate()
         self.environment['GITHUB_REPOSITORY'] = 'different/repository'
         self.assert_rejected_before_registry('gated Actions release workflow')
+
+
+class SparseReleaseToolsTests(unittest.TestCase):
+    def test_both_workflow_sparse_checkouts_can_execute_release_cli(self):
+        source = Path(__file__).resolve().parents[1]
+        parent = Path(os.environ.get('CARGO_TARGET_DIR', 'D:/BuildCache/sapid/fixes/pr12-review/target')).parent.resolve()
+        parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix='sparse-release-', dir=parent) as directory:
+            base = Path(directory).resolve()
+            self.assertTrue(base.is_relative_to(parent))
+            repository = base / 'repository'
+            repository.mkdir()
+            files = ('.gitattributes', 'scripts/release.py', 'scripts/library_lock.py',
+                     'scripts/browser.cjs', 'examples/web/acceptance.js')
+            for name in files:
+                target = repository / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source / name, target)
+            ReleaseProvenanceTests.git(repository, 'init')
+            ReleaseProvenanceTests.git(repository, 'add', '.')
+            ReleaseProvenanceTests.git(repository, 'commit', '-m', 'Workflow tool snapshot')
+            for index, workflow in enumerate(('ci.yml', 'release.yml')):
+                lines = (source / '.github/workflows' / workflow).read_text(encoding='utf-8').splitlines()
+                blocks = []
+                for position, line in enumerate(lines):
+                    if line.strip() != 'sparse-checkout: |':
+                        continue
+                    indentation = len(line) - len(line.lstrip())
+                    patterns = []
+                    for candidate in lines[position + 1:]:
+                        if candidate.strip() and len(candidate) - len(candidate.lstrip()) <= indentation:
+                            break
+                        if candidate.strip():
+                            patterns.append(candidate.strip())
+                    blocks.append(patterns)
+                self.assertEqual(len(blocks), 1, f'Identify the release-tools sparse block in {workflow}')
+                checkout = base / f'checkout-{index}'
+                ReleaseProvenanceTests.git(base, 'clone', '--no-checkout', '--no-hardlinks', str(repository), str(checkout))
+                ReleaseProvenanceTests.git(checkout, 'sparse-checkout', 'set', '--no-cone', *blocks[0])
+                ReleaseProvenanceTests.git(checkout, 'checkout', 'HEAD')
+                with self.subTest(workflow=workflow):
+                    result = subprocess.run([publisher.sys.executable, str(checkout / 'scripts/release.py'), '--help'],
+                                            cwd=checkout, text=True, encoding='utf-8', stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                    self.assertEqual(result.returncode, 0, result.stdout)
+                    self.assertIn('--record-acceptance', result.stdout)
+                    self.assertEqual((checkout / 'scripts/library_lock.py').read_bytes(),
+                                     (repository / 'scripts/library_lock.py').read_bytes())
 
 
 if __name__ == '__main__':

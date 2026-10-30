@@ -11,7 +11,12 @@ warnings remain visible in the Actions summary and JSON artifacts. The gate
 rejects configured advisory ignores, severity cutoffs and platform filters;
 it does not hide dependencies that are unreachable on the current runner.
 The uploaded `sapid-dependency-audit` artifact contains each lockfile digest,
-database revision and complete results, including failures.
+the actual audited lockfiles, database revision and complete results, including failures.
+The library root lock is local: checks, MSRV, audits and release entrypoints
+generate it only when absent, using Rust-version-compatible resolution before
+continuing with `--locked`. Existing root locks are preserved byte for byte.
+Web and Native application locks remain committed; a missing application lock
+fails the audit rather than silently creating a replacement.
 
 The 2026-10-30 scan found no known vulnerabilities and four maintenance notices
 in the Native lockfile:

@@ -121,6 +121,7 @@ jobs:
             .gitattributes
             scripts/browser.cjs
             scripts/release.py
+            scripts/library_lock.py
             examples/web
           sparse-checkout-cone-mode: false
       - name: Actual widget browser acceptance
@@ -160,4 +161,5 @@ jobs:
             D:/BuildCache/sapid/browser-results.json
             D:/BuildCache/sapid/browser-progress.json
             D:/BuildCache/sapid/browser-provenance.json
+            D:/BuildCache/sapid/library-Cargo.lock
           if-no-files-found: ignore

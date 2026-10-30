@@ -12,11 +12,23 @@ Browser acceptance scripts are independently versioned by the workflow commit. R
 
 Successful checks return an exact attempt-specific artifact name and a SHA-256 digest of its provenance. Failed or partial browser runs use a separate artifact name. Before Cargo metadata or any registry operation, the publisher verifies that provenance digest, the complete report digest, `complete: true`, no errors, the entire suite list and every suite source hash against the workflow checkout. Provenance must identify this repository and workflow run, the frozen product SHA, the Glory repository/pinned SHA and the acceptance SHA; the publisher's local product, Glory and harness checkouts must agree. CI also verifies the report's fixture hashes against the actual built files before recording successful provenance.
 
+The root library `Cargo.lock` is local development state. Successful checks
+copy their actual root resolution into `library-Cargo.lock` in the same acceptance
+artifact and bind its SHA-256 in provenance. After validating the complete
+source/evidence/tag gate, the publisher restores that exact lock only when its
+root lock is missing, before any Cargo metadata, packaging or publishing command.
+An existing root lock must match byte for byte; historical tags with a tracked
+lock keep their original file. A missing artifact, changed lock or missing lock
+digest fails the gate instead of generating a new release resolution. After
+updating this evidence format, rerun checks to obtain the required lock artifact
+and digest, including when publishing an older product tag.
+
 A publication retry may reuse the exact successful artifact from an earlier attempt of the same workflow run when all source identities and digests still match. The attempt number remains in provenance; artifacts from another run, future attempt, failed suite, changed source or changed tag fail the gate. Evidence is downloaded and checked before any registry upload, and the remote tag is checked again immediately before every upload attempt, including retries after a registry rate-limit wait. Direct local `--publish` without the workflow's frozen identities and successful evidence is rejected. Local plan validation remains `python scripts/release.py`.
 
 Release attachments use `browser-results-run-<run_id>-attempt-<publication_attempt>.json` and
-`browser-provenance-run-<run_id>-attempt-<publication_attempt>.json`. A manual rerun of an
-existing tag adds a new pair instead of overwriting earlier reports or colliding with
+`browser-provenance-run-<run_id>-attempt-<publication_attempt>.json`, alongside the
+checked `library-Cargo-run-<run_id>-attempt-<publication_attempt>.lock`. A manual rerun of an
+existing tag adds new evidence instead of overwriting earlier reports or colliding with
 the original unversioned attachments. The provenance still records the successful
 validation attempt when a later publication attempt reuses its evidence. The
 `--attach-acceptance` helper revalidates the same gate before uploading those files.

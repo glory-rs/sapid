@@ -16,7 +16,10 @@ import tomllib
 import urllib.error
 import urllib.request
 
+from library_lock import prepare_library_lock
+
 ROOT = Path(__file__).resolve().parents[1]
+LIBRARY_LOCK_ARTIFACT = "library-Cargo.lock"
 
 
 def run(*args, capture=False):
@@ -95,8 +98,9 @@ def acceptance_assets(provenance, run_id, attempt):
     output = provenance.parent / "release-assets"
     output.mkdir(parents=True, exist_ok=True)
     assets = []
-    for source in (provenance.with_name("browser-results.json"), provenance):
-        destination = output / f"{source.stem}-run-{run_id}-attempt-{attempt}.json"
+    for source in (provenance.with_name("browser-results.json"), provenance,
+                   provenance.with_name(LIBRARY_LOCK_ARTIFACT)):
+        destination = output / f"{source.stem}-run-{run_id}-attempt-{attempt}{source.suffix}"
         payload = source.read_bytes()
         if destination.exists():
             if destination.read_bytes() != payload:
@@ -158,12 +162,18 @@ def record_acceptance(options):
         raise SystemExit("Acceptance product checkout differs from the frozen commit")
     if options.acceptance_commit and harness != options.acceptance_commit:
         raise SystemExit("Acceptance harness checkout differs from the workflow commit")
+    try:
+        library_lock = (ROOT / "Cargo.lock").read_bytes()
+        Path(options.provenance).with_name(LIBRARY_LOCK_ARTIFACT).write_bytes(library_lock)
+    except OSError as failure:
+        raise SystemExit("Acceptance requires the actual checked library lockfile") from failure
     evidence = {"schema": 1, "repository": os.environ["GITHUB_REPOSITORY"],
                 "workflow_run_id": os.environ["GITHUB_RUN_ID"],
                 "workflow_run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
                 "product_commit": product, "glory_repository": dependency["repository"],
                 "glory_commit": glory, "acceptance_commit": harness,
-                "fixture_protocol": "HTTP/1.1", "browser_isolation": "suite", **digests}
+                "fixture_protocol": "HTTP/1.1", "browser_isolation": "suite",
+                "library_lock_sha256": hashlib.sha256(library_lock).hexdigest(), **digests}
     Path(options.provenance).write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
 
 
@@ -224,6 +234,26 @@ def validate_release_gate(options, plan, tag, head):
     if run("git", "-C", str(ROOT.parent / "glory"), "rev-parse", "HEAD", capture=True) != glory_revision:
         raise SystemExit("Publisher Glory checkout differs from the validated dependency pin")
     verify_remote_tag(tag, head)
+    restore_checked_library_lock(options.provenance, evidence.get("library_lock_sha256"))
+
+
+def restore_checked_library_lock(provenance, expected_digest):
+    """Reuse checks' resolution; never independently resolve a release checkout."""
+    try:
+        checked = Path(provenance).with_name(LIBRARY_LOCK_ARTIFACT).read_bytes()
+        if (not isinstance(expected_digest, str) or not re.fullmatch(r"[a-f0-9]{64}", expected_digest)
+                or hashlib.sha256(checked).hexdigest() != expected_digest):
+            raise SystemExit("Checked library lockfile digest differs from acceptance provenance")
+        destination = ROOT / "Cargo.lock"
+        if destination.exists():
+            # This also preserves historical tags whose lockfile is tracked.
+            if destination.read_bytes() != checked:
+                raise SystemExit("Publisher library lockfile differs from the validated resolution")
+        else:
+            with destination.open("xb") as target:
+                target.write(checked)
+    except OSError as failure:
+        raise SystemExit("Missing or unreadable checked library lockfile") from failure
 
 
 def main():
@@ -277,6 +307,8 @@ def main():
         raise SystemExit("Set and verify CARGO_TARGET_DIR before releasing")
     if os.name == "nt" and not str(target).replace("\\", "/").lower().startswith("d:/buildcache/"):
         raise SystemExit("Windows release artifacts must stay under D:/BuildCache")
+    # Keep the same missing-lock policy as checks, MSRV and dependency audits.
+    prepare_library_lock(ROOT / "Cargo.toml", metadata=metadata, runner=run)
     packages = {p["name"]: p for p in metadata["packages"]}
     for relative in plan.get("extra_manifests", []):
         extra = json.loads(run("cargo", "metadata", "--manifest-path", str(ROOT / relative),

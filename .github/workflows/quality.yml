@@ -23,8 +23,10 @@ jobs:
       CARGO_HOME: D:/BuildCache/sapid/quality/cargo
       CARGO_TARGET_DIR: D:/BuildCache/sapid/quality/msrv-target
       RUSTUP_HOME: D:/BuildCache/sapid/quality/rustup
+      RUSTUP_TOOLCHAIN: '1.94.0'
       TEMP: D:/BuildCache/sapid/quality/tmp
       TMP: D:/BuildCache/sapid/quality/tmp
+      PYTHONPYCACHEPREFIX: D:/BuildCache/sapid/quality/pycache
       CARGO_INCREMENTAL: '0'
       CARGO_PROFILE_DEV_DEBUG: '0'
       CARGO_BUILD_JOBS: '1'
@@ -48,6 +50,9 @@ jobs:
           repository: ${{ steps.dependency.outputs.repository }}
           ref: ${{ steps.dependency.outputs.revision }}
           path: glory
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.13'
       - name: Check declared Rust 1.94.0 MSRV
         env:
           FEATURE_SET: ${{ matrix.features }}
@@ -55,13 +60,9 @@ jobs:
           New-Item -ItemType Directory -Force $env:CARGO_HOME,$env:CARGO_TARGET_DIR,$env:RUSTUP_HOME,$env:TEMP | Out-Null
           rustup toolchain install 1.94.0 --profile minimal
           if ($LASTEXITCODE) { throw 'MSRV toolchain installation failed' }
-          if ((Get-Content Cargo.toml -Raw) -notmatch 'rust-version\s*=\s*"1\.94"') { throw 'Update the MSRV gate when the declared MSRV changes' }
-          $metadata = cargo +1.94.0 metadata --locked --no-deps --format-version 1 | ConvertFrom-Json
-          if ($LASTEXITCODE -or [IO.Path]::GetFullPath($metadata.target_directory) -ne [IO.Path]::GetFullPath($env:CARGO_TARGET_DIR)) { throw 'Unexpected MSRV target' }
-          $arguments = @('+1.94.0','check','--locked','--all-targets')
-          if ($env:FEATURE_SET -eq 'all') { $arguments += '--all-features' }
-          cargo @arguments
-          if ($LASTEXITCODE) { throw 'Declared MSRV does not compile' }
+          ./scripts/check-msrv.ps1 -FeatureSet $env:FEATURE_SET
+          python -m unittest discover -s scripts -p test_library_lock.py
+          if ($LASTEXITCODE) { throw 'Fresh library lock regressions failed' }
   dependencies:
     runs-on: windows-latest
     timeout-minutes: 45

@@ -63,7 +63,7 @@ jobs:
             D:/BuildCache/sapid/pages-ci/rustup
             D:/BuildCache/sapid/pages-ci/target
             D:/BuildCache/sapid/pages-ci/tools
-          key: sapid-pages-tools-v2-${{ runner.os }}-1.98.0-${{ hashFiles('sapid/Cargo.lock', 'sapid/examples/web/Cargo.lock', 'sapid/deploy/dependencies.json', 'sapid/deploy/build-tools.json', 'sapid/deploy/tools/package-lock.json') }}
+          key: sapid-pages-tools-v2-${{ runner.os }}-1.98.0-${{ hashFiles('sapid/Cargo.toml', 'sapid/examples/web/Cargo.lock', 'sapid/deploy/dependencies.json', 'sapid/deploy/build-tools.json', 'sapid/deploy/tools/package-lock.json') }}
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24'

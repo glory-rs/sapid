@@ -37,6 +37,8 @@ try {
     Set-DslBuildPaths -Root $taskBuild
     $env:CARGO_INCREMENTAL = '0'; $env:CARGO_PROFILE_DEV_DEBUG = '0'; $env:CARGO_PROFILE_TEST_DEBUG = '0'; $env:CARGO_BUILD_JOBS = '2'
     Confirm-Target 'Cargo.toml'
+    & python "$PSScriptRoot/library_lock.py" --manifest-path Cargo.toml
+    if ($LASTEXITCODE -ne 0) { throw 'Library lock preparation failed' }
     Invoke-Cargo -Arguments @('test','--locked','--test','dsl')
     Invoke-Cargo -Arguments @('clippy','--locked','--example','dsl','--','-D','warnings')
     if ($Browser) {
