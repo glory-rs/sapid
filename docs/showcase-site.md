@@ -1,5 +1,20 @@
 # Glory + Sapid 展示站
 
+## Glory routing 接入
+
+展示站应用启用 `glory/routing`，组件库本身继续独立于路由。Router 是 URL 与历史的唯一来源，
+RouteViews 挂载现有页面 Widget；组件、主题、编辑记录等 query 解码在共享 Rust 模块中。
+`Page` 保存解析后的主题展示模型，编辑工作区仍归应用根 Scope 所有，不保存第二套历史游标。
+
+BrowserHistory 管理 EntryKey、popstate/hashchange、window 滚动和 fragment；应用仅处理组件切换
+的置顶策略及横向调色板位置。应用只使用新 routing 的历史状态，不迁移旧格式。
+SSR 别名与 query 使用同一解码器，静态文档携带 routing
+bootstrap，先接管实际 SSR 页面，再处理 WASM 加载期间变化的地址。
+
+新增 `examples/web/tests/showcase_routing.rs` 和 `scripts/showcase-routing-browser.cjs`，并接入
+`check-showcase.ps1` 的测试/浏览器流程；它们覆盖编码、36 个 SSR 别名、历史身份、页内导航、
+默认参数及未知 query 保留、加载期间 URL 改变。生产构建依赖固定到包含新 routing 的 Glory 合并提交。
+
 标签、图标动作和选择输入的视觉修复与 Mantine API 对照见
 [样式复核](showcase-style-review.md)。共享修复位于 Sapid 本身；新增专项浏览器
 矩阵覆盖四主题、桌面/手机及 CSR/SSR 接管。展示站现生成 36 个代表性 SSR 页面。
@@ -88,7 +103,7 @@ SVG 宽高均为 256；顶栏桌面显示 36 × 36，手机显示 32 × 32，保
 从 Sapid 目录执行：
 
 ```powershell
-./scripts/check-showcase.ps1 -Serve -Browser
+./scripts/check-showcase.ps1 -Release -Serve -Browser
 ```
 
 脚本设置 D 盘 Cargo、target 和临时目录，并通过 `cargo metadata` 核对实际 target。

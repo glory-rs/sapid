@@ -20,7 +20,7 @@ fn label(entry: &Entry) -> &'static str {
 
 fn link(label: impl Into<String>, href: impl Into<String>, class: &str) -> sapid::Anchor {
     let href = href.into();
-    let internal = href.starts_with("showcase.html?");
+    let internal = href.starts_with("showcase.html?") || href.starts_with('#');
     let anchor = sapid::anchor()
         .unstyled()
         .label(label.into())
@@ -551,10 +551,21 @@ fn documentation(entry: &'static Entry, theme: Theme, tab: Cage<u8>) -> impl Wid
 }
 
 pub fn site(theme: Theme, selection: String) -> impl Widget {
+    let initial = crate::showcase_navigation::Route::new(selection.clone(), &theme).location();
+    site_at(theme, selection, initial)
+}
+pub fn site_at(theme: Theme, selection: String, initial: glory::routing::Location) -> impl Widget {
     widget(move |scope| {
+        let definitions = crate::showcase_navigation::routes();
+        let router = glory::routing::Router::new(
+            scope,
+            definitions.clone(),
+            std::rc::Rc::new(glory::routing::MemoryHistory::new(initial.clone())),
+        )
+        .map_err(|error| glory::render::Error::Backend(error.to_string()))?;
         let page = crate::showcase_navigation::Page::builtin(theme.clone(), selection.clone());
         let state = crate::showcase_navigation::State::new(scope, page, Vec::new(), false);
-        crate::showcase_navigation::app(state).show_in(scope)
+        crate::showcase_navigation::routed_app(state, definitions, router.handle()).show_in(scope)
     })
 }
 pub fn site_with_state(
