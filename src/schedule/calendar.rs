@@ -39,7 +39,7 @@ struct Prepared {
     cells: Vec<PeriodCell>,
     events: Vec<AgendaRow>,
 }
-fn prepare(data: &ScheduleData, view: ScheduleView, week_start: Weekday) -> Prepared {
+fn prepare(data: &snapshot::Snapshot, view: ScheduleView, week_start: Weekday) -> Prepared {
     let first = data.window().start().date();
     let dates: Vec<Option<CivilDate>> = if view == ScheduleView::Year {
         (1..=12)
@@ -72,7 +72,7 @@ fn prepare(data: &ScheduleData, view: ScheduleView, week_start: Weekday) -> Prep
         })
         .collect();
     let mut events = vec![];
-    for occurrence in data.expand(MAX_SCHEDULE_OCCURRENCES).unwrap() {
+    for occurrence in data.occurrences.iter().copied() {
         let event = data.event(occurrence).unwrap();
         let index = events.len();
         events.push(AgendaRow {
