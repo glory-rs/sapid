@@ -161,117 +161,6 @@ fn accept_server_page(
     Ok(current)
 }
 
-#[cfg(test)]
-mod derivation_tests {
-    use super::*;
-    use model::work::{MATCH_PASSES, VALIDATION_PASSES};
-
-    #[test]
-    fn mounted_local_table_only_rederives_matching_on_admitted_data_filter_or_sort_changes() {
-        let app = glory::prelude::App::memory();
-        let rows = app.scope().cage(
-            (0..12)
-                .map(|i| {
-                    DataRecord::new(format!("r{i}"), [format!("Person {i}"), "Compiler".into()])
-                })
-                .collect::<Vec<_>>(),
-        );
-        let query = app.scope().cage(DataTableQuery {
-            request: DataRequest {
-                page_size: 3,
-                ..Default::default()
-            },
-            ..Default::default()
-        });
-        MATCH_PASSES.set(0);
-        VALIDATION_PASSES.set(0);
-        app.mount(
-            data_table("passes")
-                .columns([
-                    DataColumn::new("name", "Name"),
-                    DataColumn::new("team", "Team"),
-                ])
-                .local_rows(rows)
-                .query(query),
-        )
-        .unwrap();
-        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (1, 1));
-        for page in [2, 3, 1] {
-            query.revise(|q| q.request.page = page);
-            app.flush().unwrap();
-        }
-        query.revise(|q| {
-            q.request.page_size = 4;
-            q.hidden.insert("team".into());
-        });
-        app.flush().unwrap();
-        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (1, 1));
-        query.revise(|q| q.request.filter = "compiler".into());
-        app.flush().unwrap();
-        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (2, 1));
-        query.revise(|q| q.request.filter = "COMPILER".into());
-        app.flush().unwrap();
-        assert_eq!(MATCH_PASSES.get(), 2);
-        query.revise(|q| {
-            q.request.sort = Some(DataSort {
-                column: "name".into(),
-                descending: true,
-            })
-        });
-        app.flush().unwrap();
-        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (3, 1));
-        rows.revise(|rows| rows[0].cells[1] = "Runtime".into());
-        app.flush().unwrap();
-        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (4, 2));
-        rows.revise(|rows| rows[1].key = rows[0].key.clone());
-        assert!(app.flush().is_err());
-        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (4, 3));
-        query.revise(|q| q.request.page = 2);
-        app.flush().unwrap();
-        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (4, 3));
-        app.clear().unwrap();
-        assert_eq!(app.stats().nodes, 0);
-    }
-
-    #[test]
-    fn mounted_server_table_reuses_validated_page_for_visibility_and_waits_for_new_requests() {
-        let app = glory::prelude::App::memory();
-        let query = app.scope().cage(DataTableQuery::default());
-        let page = app.scope().cage(DataPage {
-            request: DataRequest::default(),
-            rows: vec![DataRecord::new("a", ["Ada", "Compiler"])],
-            total: Some(1),
-            has_next: false,
-        });
-        MATCH_PASSES.set(0);
-        VALIDATION_PASSES.set(0);
-        app.mount(
-            data_table("server-passes")
-                .columns([
-                    DataColumn::new("name", "Name"),
-                    DataColumn::new("team", "Team"),
-                ])
-                .server_page(page)
-                .query(query),
-        )
-        .unwrap();
-        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (0, 1));
-        query.revise(|q| {
-            q.hidden.insert("team".into());
-        });
-        app.flush().unwrap();
-        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (0, 1));
-        query.revise(|q| q.request.filter = "Runtime".into());
-        app.flush().unwrap();
-        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (0, 1));
-        page.revise(|page| page.request = query.with(|q| q.request.clone()));
-        app.flush().unwrap();
-        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (0, 2));
-        query.revise(|q| q.hidden.clear());
-        app.flush().unwrap();
-        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (0, 2));
-    }
-}
 fn error(value: DataTableError) -> glory::ui::Error {
     glory::render::Error::InvalidProps(value.message()).into()
 }
@@ -1085,4 +974,116 @@ fn column_sort(query: &DataTableQuery, key: &str) -> Option<SortDirection> {
         }
         _ => SortDirection::None,
     })
+}
+
+#[cfg(test)]
+mod derivation_tests {
+    use super::*;
+    use model::work::{MATCH_PASSES, VALIDATION_PASSES};
+
+    #[test]
+    fn mounted_local_table_only_rederives_matching_on_admitted_data_filter_or_sort_changes() {
+        let app = glory::prelude::App::memory();
+        let rows = app.scope().cage(
+            (0..12)
+                .map(|i| {
+                    DataRecord::new(format!("r{i}"), [format!("Person {i}"), "Compiler".into()])
+                })
+                .collect::<Vec<_>>(),
+        );
+        let query = app.scope().cage(DataTableQuery {
+            request: DataRequest {
+                page_size: 3,
+                ..Default::default()
+            },
+            ..Default::default()
+        });
+        MATCH_PASSES.set(0);
+        VALIDATION_PASSES.set(0);
+        app.mount(
+            data_table("passes")
+                .columns([
+                    DataColumn::new("name", "Name"),
+                    DataColumn::new("team", "Team"),
+                ])
+                .local_rows(rows)
+                .query(query),
+        )
+        .unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (1, 1));
+        for page in [2, 3, 1] {
+            query.revise(|q| q.request.page = page);
+            app.flush().unwrap();
+        }
+        query.revise(|q| {
+            q.request.page_size = 4;
+            q.hidden.insert("team".into());
+        });
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (1, 1));
+        query.revise(|q| q.request.filter = "compiler".into());
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (2, 1));
+        query.revise(|q| q.request.filter = "COMPILER".into());
+        app.flush().unwrap();
+        assert_eq!(MATCH_PASSES.get(), 2);
+        query.revise(|q| {
+            q.request.sort = Some(DataSort {
+                column: "name".into(),
+                descending: true,
+            })
+        });
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (3, 1));
+        rows.revise(|rows| rows[0].cells[1] = "Runtime".into());
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (4, 2));
+        rows.revise(|rows| rows[1].key = rows[0].key.clone());
+        assert!(app.flush().is_err());
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (4, 3));
+        query.revise(|q| q.request.page = 2);
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (4, 3));
+        app.clear().unwrap();
+        assert_eq!(app.stats().nodes, 0);
+    }
+
+    #[test]
+    fn mounted_server_table_reuses_validated_page_for_visibility_and_waits_for_new_requests() {
+        let app = glory::prelude::App::memory();
+        let query = app.scope().cage(DataTableQuery::default());
+        let page = app.scope().cage(DataPage {
+            request: DataRequest::default(),
+            rows: vec![DataRecord::new("a", ["Ada", "Compiler"])],
+            total: Some(1),
+            has_next: false,
+        });
+        MATCH_PASSES.set(0);
+        VALIDATION_PASSES.set(0);
+        app.mount(
+            data_table("server-passes")
+                .columns([
+                    DataColumn::new("name", "Name"),
+                    DataColumn::new("team", "Team"),
+                ])
+                .server_page(page)
+                .query(query),
+        )
+        .unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (0, 1));
+        query.revise(|q| {
+            q.hidden.insert("team".into());
+        });
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (0, 1));
+        query.revise(|q| q.request.filter = "Runtime".into());
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (0, 1));
+        page.revise(|page| page.request = query.with(|q| q.request.clone()));
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (0, 2));
+        query.revise(|q| q.hidden.clear());
+        app.flush().unwrap();
+        assert_eq!((MATCH_PASSES.get(), VALIDATION_PASSES.get()), (0, 2));
+    }
 }
