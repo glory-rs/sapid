@@ -6,8 +6,7 @@ pub fn display_form(theme: Theme) -> impl Widget {
     widget(move |scope| {
         let visible = scope.cage(true);
         let proposals = scope.cage(0_u32);
-        let proposals_text =
-            scope.bond(move || format!("Remove proposals: {}", proposals.get()));
+        let proposals_text = scope.bond(move || format!("Remove proposals: {}", proposals.get()));
         card()
             .theme(theme.clone())
             .class("display-fixture")

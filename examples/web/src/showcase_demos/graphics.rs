@@ -8,9 +8,7 @@ pub fn demo(theme: sapid::Theme) -> impl Widget {
 mod fixture {
     use glory::style::{Edges, Length, Style};
     use glory::ui::{Widget, widget};
-    use sapid::{
-        Icon, IndicatorPosition, Theme, ThemeIconVariant, button, indicator, theme_icon,
-    };
+    use sapid::{Icon, IndicatorPosition, Theme, ThemeIconVariant, button, indicator, theme_icon};
     pub fn graphics_form(theme: Theme) -> impl Widget {
         widget(move |scope| {
             let visible = scope.cage(true);

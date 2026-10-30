@@ -88,9 +88,7 @@ mod fixture {
                                 .visible_limit(2)
                                 .clock(clock())
                                 .pause_on_hover(true)
-                                .on_ready(move |handle| {
-                                    ready.borrow_mut().handle = Some(handle)
-                                }),
+                                .on_ready(move |handle| ready.borrow_mut().handle = Some(handle)),
                         ),
                 ))
                 .show_in(scope)
@@ -132,8 +130,8 @@ mod fixture {
                     if operation == 1 || operation == 5 {
                         request = request.timeout(Duration::from_millis(900))
                     } else {
-                        request = request
-                            .action("Undo save", move || actions.revise(|value| *value += 1))
+                        request =
+                            request.action("Undo save", move || actions.revise(|value| *value += 1))
                     }
                     let token = handle.show(request)?;
                     if operation == 0 || operation == 2 {

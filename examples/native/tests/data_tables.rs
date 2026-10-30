@@ -1,8 +1,6 @@
 use glory::apace::{Raster, shell::WindowApp};
 use glory::prelude::*;
-use glory::render::{
-    Action, Event, NodeId, Props, Query, QueryValue, Rect, Role, TableMetadata,
-};
+use glory::render::{Action, Event, NodeId, Props, Query, QueryValue, Rect, Role, TableMetadata};
 use std::{cell::RefCell, rc::Rc};
 #[path = "../../web/src/data_table_form.rs"]
 mod fixture;
@@ -84,8 +82,7 @@ fn named(app: &App, name: &str) -> NodeId {
         .find(|id| {
             let tree = app.tree();
             let d = tree.node(*id).unwrap().descriptor.view();
-            d.name.as_deref() == Some(name)
-                || matches!(d.props,Props::Button(p) if p.label==name)
+            d.name.as_deref() == Some(name) || matches!(d.props,Props::Button(p) if p.label==name)
         })
         .unwrap_or_else(|| panic!("missing {name}"))
 }
@@ -186,9 +183,7 @@ fn four_theme_native_data_tables_have_real_tracks_bounded_windows_and_focused_ro
         observe(&host);
         let live = all(app)
             .into_iter()
-            .filter(|id| {
-                app.tree().node(*id).unwrap().descriptor.view().role == Some(Role::Row)
-            })
+            .filter(|id| app.tree().node(*id).unwrap().descriptor.view().role == Some(Role::Row))
             .count();
         assert!(live <= 13, "unbounded mounted rows: {live}");
         assert_eq!(
@@ -198,8 +193,7 @@ fn four_theme_native_data_tables_have_real_tracks_bounded_windows_and_focused_ro
             engine
         );
         assert_eq!(query(app, Query::Focus(editor)), QueryValue::Focus(true));
-        let QueryValue::ScrollMetrics(metrics) =
-            query(app, Query::ScrollMetrics(list_viewport))
+        let QueryValue::ScrollMetrics(metrics) = query(app, Query::ScrollMetrics(list_viewport))
         else {
             panic!("metrics")
         };

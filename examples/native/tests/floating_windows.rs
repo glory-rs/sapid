@@ -41,8 +41,7 @@ fn drag(app: &App, target: NodeId, phase: DragPhase, x: f64, y: f64) {
     .unwrap();
 }
 #[test]
-fn four_theme_windows_move_resize_real_boxes_keep_native_editor_identity_and_paint_the_surface()
-{
+fn four_theme_windows_move_resize_real_boxes_keep_native_editor_identity_and_paint_the_surface() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),
@@ -111,8 +110,7 @@ fn four_theme_windows_move_resize_real_boxes_keep_native_editor_identity_and_pai
         let mut raster = Raster::new();
         raster.draw(host.renderer()).unwrap();
         let frame = raster.frame().unwrap();
-        let offset =
-            ((sized.y as usize + 330) * frame.width as usize + sized.x as usize + 100) * 4;
+        let offset = ((sized.y as usize + 330) * frame.width as usize + sized.x as usize + 100) * 4;
         assert_eq!(
             &raster.pixels()[offset..offset + 4],
             &[expected.0, expected.1, expected.2, expected.3]

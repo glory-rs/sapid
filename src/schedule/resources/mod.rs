@@ -269,8 +269,7 @@ impl ResourceController {
                     .into_iter()
                     .find_map(|occ| {
                         let event = m.data().event(occ)?;
-                        (event.key() == &chosen.event
-                            && occ.candidate_index() == chosen.candidate)
+                        (event.key() == &chosen.event && occ.candidate_index() == chosen.candidate)
                             .then(|| EditTarget {
                                 event: chosen.event.clone(),
                                 candidate: chosen.candidate,
@@ -310,9 +309,7 @@ impl ResourceController {
             let minutes = i64::from(steps) * if all_day { 1440 } else { i64::from(self.step) };
             let proposed = match kind {
                 ScheduleEditKind::Move => target.interval.shifted_minutes(minutes),
-                ScheduleEditKind::ResizeStart => {
-                    target.interval.resize_start_by_minutes(minutes)
-                }
+                ScheduleEditKind::ResizeStart => target.interval.resize_start_by_minutes(minutes),
                 ScheduleEditKind::ResizeEnd => target.interval.resize_end_by_minutes(minutes),
             };
             let Ok(proposed) = proposed else {
@@ -381,8 +378,7 @@ impl ResourceController {
                         && m.visible_resources()
                             .iter()
                             .any(|r| Some(r.key()) == e.resource_key())
-                        && (e.edit_permissions().move_event
-                            || e.edit_permissions().resize_event))
+                        && (e.edit_permissions().move_event || e.edit_permissions().resize_event))
                         .then(|| EditTarget {
                             event: e.key().clone(),
                             candidate: occ.candidate_index(),
@@ -598,8 +594,7 @@ impl Widget for ResourceSchedule {
         }
         let view = self.view;
         let time = self.time;
-        let accepted =
-            composite::validated(scope, &self.data, move |m| validate(m, view, time))?;
+        let accepted = composite::validated(scope, &self.data, move |m| validate(m, view, time))?;
         let enabled = self.common.enabled.clone();
         let readonly = self.readonly.clone();
         let enabled_flags = enabled.clone();
@@ -922,8 +917,7 @@ fn build_editor(
                 .into_iter()
                 .filter_map(|occ| {
                     let event = m.data().event(occ).unwrap();
-                    ((event.edit_permissions().move_event
-                        || event.edit_permissions().resize_event)
+                    ((event.edit_permissions().move_event || event.edit_permissions().resize_event)
                         && m.visible_resources()
                             .iter()
                             .any(|r| Some(r.key()) == event.resource_key()))

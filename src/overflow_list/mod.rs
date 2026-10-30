@@ -322,9 +322,7 @@ impl Controller {
     }
     fn set_open(self: &Rc<Self>, open: bool) -> Result {
         self.scope()?;
-        if open
-            && (self.count.try_get()? >= self.total.try_get()? || !self.enabled.try_get()?)
-        {
+        if open && (self.count.try_get()? >= self.total.try_get()? || !self.enabled.try_get()?) {
             return Ok(());
         }
         if self.open.source.try_get()? == open {
@@ -406,9 +404,9 @@ impl Controller {
         let lost = focused
             .as_ref()
             .is_some_and(|(key, _)| !rows.iter().any(|row| &row.key == key));
-        let hidden = focused.as_ref().is_some_and(|(key, _)| {
-            !open && rows.iter().skip(count).any(|row| &row.key == key)
-        });
+        let hidden = focused
+            .as_ref()
+            .is_some_and(|(key, _)| !open && rows.iter().skip(count).any(|row| &row.key == key));
         let can_focus = self.enabled.try_get()? && scope.capabilities()?.focus;
         if (lost || hidden) && can_focus {
             self.handoff.set(true);
@@ -642,9 +640,7 @@ fn row(
             style
         }))
         .on(EventKind::FocusWithin, move |event| {
-            if let (Some(state), Event::FocusWithin { node, focused }) =
-                (focus.upgrade(), event)
-            {
+            if let (Some(state), Event::FocusWithin { node, focused }) = (focus.upgrade(), event) {
                 if focused {
                     *state.focus.borrow_mut() = Some((focus_key.clone(), node));
                 } else if state
@@ -971,8 +967,7 @@ impl Widget for OverflowList {
                 }))
                 .show_in(&line_scope)?;
             state.more_box.set(more_ref.try_get()?);
-            let more_scope =
-                scope.child_in(more_ref.try_get()?.ok_or(glory::ui::Error::Gone)?)?;
+            let more_scope = scope.child_in(more_ref.try_get()?.ok_or(glory::ui::Error::Gone)?)?;
             let panel_ref = scope.cage(None);
             let open = state.open.source.clone();
             let on_open = Rc::downgrade(&state);
@@ -1027,9 +1022,7 @@ impl Widget for OverflowList {
                         state.handoff.set(false);
                         state.cancel_focus();
                         let _ = state.sync_pending();
-                        if let Err(error) =
-                            state.reconcile(false).and_then(|_| state.schedule())
-                        {
+                        if let Err(error) = state.reconcile(false).and_then(|_| state.schedule()) {
                             state.report(error)
                         }
                     }

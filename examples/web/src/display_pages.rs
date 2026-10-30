@@ -275,11 +275,7 @@ mod browser {
         mount(hydrate, 16, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_notifications(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_notifications(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 18, hue, scheme)
     }
     #[wasm_bindgen]
@@ -287,11 +283,7 @@ mod browser {
         mount(hydrate, 21, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_color_swatch(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_color_swatch(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 22, hue, scheme)
     }
     #[wasm_bindgen]
@@ -303,11 +295,7 @@ mod browser {
         mount(hydrate, 23, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_tabs_dynamic(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_tabs_dynamic(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 24, hue, scheme)
     }
     #[wasm_bindgen]
@@ -343,11 +331,7 @@ mod browser {
         mount(hydrate, 30, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_overflow_list(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_overflow_list(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 26, hue, scheme)
     }
     #[wasm_bindgen]
@@ -371,19 +355,11 @@ mod browser {
         mount(hydrate, 39, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_focus_scope(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_focus_scope(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 55, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_environment(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_environment(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 74, hue, scheme)
     }
     #[wasm_bindgen]
@@ -407,11 +383,7 @@ mod browser {
         mount(hydrate, 94, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_questionnaire(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_questionnaire(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 93, hue, scheme)
     }
     #[wasm_bindgen]
@@ -427,27 +399,15 @@ mod browser {
         mount(hydrate, 54, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_portal_missing(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_portal_missing(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 57, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_translation(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_translation(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 32, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_text_motion(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_text_motion(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 33, hue, scheme)
     }
     #[wasm_bindgen]
@@ -455,11 +415,7 @@ mod browser {
         mount(hydrate, 45, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_tree_select(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_tree_select(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 46, hue, scheme)
     }
     #[wasm_bindgen]
@@ -475,43 +431,23 @@ mod browser {
         mount(hydrate, 67, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_polar_charts(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_polar_charts(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 68, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_point_charts(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_point_charts(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 69, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_shape_charts(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_shape_charts(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 70, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_matrix_charts(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_matrix_charts(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 71, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_range_charts(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_range_charts(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 72, hue, scheme)
     }
     #[wasm_bindgen]
@@ -523,11 +459,7 @@ mod browser {
         mount(hydrate, 73, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_rich_editor(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_rich_editor(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 82, hue, scheme)
     }
     #[wasm_bindgen]
@@ -559,11 +491,7 @@ mod browser {
         mount(hydrate, 99, hue, scheme)
     }
     #[wasm_bindgen]
-    pub fn mount_confirmation(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_confirmation(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 98, hue, scheme)
     }
     #[wasm_bindgen]
@@ -576,17 +504,12 @@ mod browser {
             .and_then(|window| window.document())
             .and_then(|document| document.get_element_by_id("files-stream-root"))
             .ok_or_else(|| js("missing files stream root"))?;
-        let app =
-            glory::web::hydrate(root, crate::files_form::files_stream_probe()).map_err(js)?;
+        let app = glory::web::hydrate(root, crate::files_form::files_stream_probe()).map_err(js)?;
         APP.with(|slot| *slot.borrow_mut() = Some(app));
         Ok(())
     }
     #[wasm_bindgen]
-    pub fn mount_copy_button(
-        hydrate: bool,
-        hue: String,
-        scheme: String,
-    ) -> Result<(), JsValue> {
+    pub fn mount_copy_button(hydrate: bool, hue: String, scheme: String) -> Result<(), JsValue> {
         mount(hydrate, 44, hue, scheme)
     }
     #[wasm_bindgen]
@@ -599,9 +522,8 @@ mod browser {
             .and_then(|window| window.document())
             .and_then(|document| document.get_element_by_id("collapse-stream-root"))
             .ok_or_else(|| js("missing collapse stream root"))?;
-        let app =
-            glory::web::hydrate(root, crate::collapse_stream_probe::collapse_stream_probe())
-                .map_err(js)?;
+        let app = glory::web::hydrate(root, crate::collapse_stream_probe::collapse_stream_probe())
+            .map_err(js)?;
         APP.with(|slot| *slot.borrow_mut() = Some(app));
         Ok(())
     }
@@ -611,8 +533,7 @@ mod browser {
             .and_then(|w| w.document())
             .and_then(|d| d.get_element_by_id("sheet-stream-root"))
             .ok_or_else(|| js("missing sheet stream root"))?;
-        let app =
-            glory::web::hydrate(root, crate::sheet_form::sheet_stream_probe()).map_err(js)?;
+        let app = glory::web::hydrate(root, crate::sheet_form::sheet_stream_probe()).map_err(js)?;
         APP.with(|slot| *slot.borrow_mut() = Some(app));
         Ok(())
     }

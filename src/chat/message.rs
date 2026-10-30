@@ -2,8 +2,7 @@ use crate::appearance::{Common, merge};
 use crate::{Size, Theme};
 use glory::render::{NodeId, SemanticId, Semantics, TextKind};
 use glory::style::{
-    Align, BorderStyle, Display, Edges, FlexDirection, Length, Limit, Overflow, Style,
-    WhiteSpace,
+    Align, BorderStyle, Display, Edges, FlexDirection, Length, Limit, Overflow, Style, WhiteSpace,
 };
 use glory::ui::{Children, IntoChildren, Result, Widget};
 use glory::{Cage, Scope, Vary};
@@ -20,9 +19,7 @@ fn label(value: &str, limit: usize) -> Result {
     }
     Ok(())
 }
-pub fn message_id(
-    key: impl AsRef<str>,
-) -> std::result::Result<SemanticId, glory::render::Error> {
+pub fn message_id(key: impl AsRef<str>) -> std::result::Result<SemanticId, glory::render::Error> {
     let key = key.as_ref();
     if key.len() > 64 {
         return Err(glory::render::Error::InvalidProps(
@@ -213,9 +210,8 @@ impl Widget for Bubble {
                 custom.get(),
             )
         });
-        let content = scope.bond(move || {
-            text.with(|text| glory::render::normalize_text(text, true).into_owned())
-        });
+        let content = scope
+            .bond(move || text.with(|text| glory::render::normalize_text(text, true).into_owned()));
         let mut root = glory::ui::view().class(class).style(style);
         if let Some(reference) = self.common.node_ref {
             root = root.node_ref(reference);
@@ -327,9 +323,7 @@ impl Widget for Message {
         let mut root = glory::ui::view()
             .class(class)
             .style(style)
-            .name(
-                scope.bond(move || data.with(|value| format!("Message from {}", value.author))),
-            )
+            .name(scope.bond(move || data.with(|value| format!("Message from {}", value.author))))
             .semantics(Some(Box::new(Semantics {
                 id: Some(id),
                 ..Default::default()
@@ -414,16 +408,15 @@ impl Widget for Message {
                 .and_then(|quote| quote.target.clone())
                 .unwrap_or_else(|| SemanticId::new("unavailable-message-reference").unwrap())
         });
-        let mut reference =
-            marker(quote_target)
-                .theme(theme.clone())
-                .size(size)
-                .label(data.map(|value| {
-                    value
-                        .quote
-                        .as_ref()
-                        .map_or_else(|| "Reference".to_owned(), |quote| quote.source.clone())
-                }));
+        let mut reference = marker(quote_target)
+            .theme(theme.clone())
+            .size(size)
+            .label(data.map(|value| {
+                value
+                    .quote
+                    .as_ref()
+                    .map_or_else(|| "Reference".to_owned(), |quote| quote.source.clone())
+            }));
         if unstyled {
             reference = reference.unstyled();
         }

@@ -14,9 +14,8 @@ fn nodes() -> Vec<TreeNode> {
         TreeNode::new("remote", "Remote files").kind(TreeKind::Lazy),
     ];
     nodes.extend(
-        (0..96).map(|i| {
-            TreeNode::new(format!("doc{i}"), format!("Document {i:02}")).parent("docs")
-        }),
+        (0..96)
+            .map(|i| TreeNode::new(format!("doc{i}"), format!("Document {i:02}")).parent("docs")),
     );
     nodes
 }
@@ -104,9 +103,7 @@ pub fn tree_form(theme: sapid::Theme) -> impl Widget {
                         data.revise(|nodes| {
                             if nodes[5].kind == TreeKind::Lazy {
                                 nodes[5].kind = TreeKind::Branch;
-                                nodes.push(
-                                    TreeNode::new("loaded", "Loaded file").parent("remote"),
-                                );
+                                nodes.push(TreeNode::new("loaded", "Loaded file").parent("remote"));
                             }
                         })
                     }),

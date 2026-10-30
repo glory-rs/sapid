@@ -162,8 +162,7 @@ impl Measure {
     }
     fn schedule(self: &Rc<Self>) -> Result {
         let scope = self.weak.upgrade().ok_or(glory::ui::Error::Gone)?;
-        if !self.owner.is_alive() || !self.enabled.try_get()? || !scope.capabilities()?.measure
-        {
+        if !self.owner.is_alive() || !self.enabled.try_get()? || !scope.capabilities()?.measure {
             self.stop();
             return self.reset();
         }
@@ -276,8 +275,8 @@ impl Measure {
         if distance > 1_000_000. {
             return Err(invalid("marquee cycle exceeds 1000000 CSS pixels"));
         }
-        let next = (root.width > 0. && first.height > 0. && first.width > root.width)
-            .then_some(distance);
+        let next =
+            (root.width > 0. && first.height > 0. && first.width > root.width).then_some(distance);
         if self.distance.try_get()? != next {
             self.distance.try_revise(|value| *value = next)?;
         }

@@ -42,13 +42,12 @@ fn sapid_paths_aliases_and_custom_functions_are_widgets_on_semantic_hosts() {
     let html = glory::ssr::render(view! {<Panel><Button label="child"/></Panel>}).unwrap();
     assert!(html.contains("sapid-card"));
     assert!(html.contains("child"));
-    let html = glory::ssr::render(
-        view! {<Panel><Button label="first"/><Button label="second"/></Panel>},
-    )
-    .unwrap();
+    let html =
+        glory::ssr::render(view! {<Panel><Button label="first"/><Button label="second"/></Panel>})
+            .unwrap();
     assert!(html.contains("first") && html.contains("second"));
-    let html = glory::ssr::render(view! {<><Button label="first"/><Button label="second"/></>})
-        .unwrap();
+    let html =
+        glory::ssr::render(view! {<><Button label="first"/><Button label="second"/></>}).unwrap();
     assert!(html.contains("first") && html.contains("second"));
     let html = glory::ssr::render(view! {
         <sapid::ActionIcon init={sapid::action_icon("Refresh")} icon={glory::ui::text().content("+")}/>

@@ -290,8 +290,8 @@ impl Widget for Chart {
                     options.kind = kind;
                 }
                 data.try_with(|data| {
-                    let scene = CartesianScene::build(data, frame, &options, &palette)
-                        .map_err(invalid)?;
+                    let scene =
+                        CartesianScene::build(data, frame, &options, &palette).map_err(invalid)?;
                     Ok(Rc::new(Model {
                         table_revision: 0,
                         data: data.clone(),
@@ -422,9 +422,8 @@ impl Widget for Chart {
             .on_press(move || clear.choose(None))
             .show_in(&control_scope)?;
         area.retain(control_scope)?;
-        let details = area.bond(move || {
-            model.with(|m| selection.with(|s| s.as_ref().and_then(|s| m.point(s))))
-        });
+        let details = area
+            .bond(move || model.with(|m| selection.with(|s| s.as_ref().and_then(|s| m.point(s)))));
         glory::ui::text()
             .class("sapid-chart-point-detail")
             .content(area.bond(move || {
@@ -474,12 +473,7 @@ impl Widget for Chart {
     }
 }
 
-fn build_plot(
-    scope: &Scope,
-    state: &State,
-    frame: ChartFrame,
-    pointer_selection: bool,
-) -> Result {
+fn build_plot(scope: &Scope, state: &State, frame: ChartFrame, pointer_selection: bool) -> Result {
     let reference = scope.cage(None);
     glory::ui::view()
         .class("sapid-chart-plot")
@@ -516,8 +510,7 @@ fn build_plot(
             .content(plot.bond(move || model.with(|m| m.scene.ticks[index].value.to_string())))
             .show_in(&plot)?;
     }
-    let labels =
-        plot.bond(move || model.with(|m| (0..m.scene.labels.len()).collect::<Vec<_>>()));
+    let labels = plot.bond(move || model.with(|m| (0..m.scene.labels.len()).collect::<Vec<_>>()));
     glory::ui::each(labels)
         .key(|index| *index)
         .children(move |entry| {
@@ -656,9 +649,7 @@ fn build_plot(
                     .focus(FocusMode::Programmatic)
                     .enabled(state.enabled.clone())
                     .name(scope.bond(move || {
-                        model.with(|m| {
-                            m.point(&label_key).map_or_else(String::new, |p| p.text())
-                        })
+                        model.with(|m| m.point(&label_key).map_or_else(String::new, |p| p.text()))
                     }))
                     .style(style)
                     .on(EventKind::Activate, move |_| {
@@ -796,17 +787,15 @@ fn build_table(
                         }
                         let mut body = crate::table_body();
                         for (i, c) in data.categories.iter().enumerate() {
-                            let mut row = crate::table_row(format!("r{i}")).cell(
-                                crate::table_row_header("category").text(c.label.clone()),
-                            );
+                            let mut row = crate::table_row(format!("r{i}"))
+                                .cell(crate::table_row_header("category").text(c.label.clone()));
                             for (j, s) in data.series.iter().enumerate() {
-                                row =
-                                    row.cell(crate::table_cell(format!("s{j}")).text(
-                                        s.values[i].map_or_else(
-                                            || "No value".into(),
-                                            |v| v.to_string(),
-                                        ),
-                                    ));
+                                row = row.cell(
+                                    crate::table_cell(format!("s{j}")).text(
+                                        s.values[i]
+                                            .map_or_else(|| "No value".into(), |v| v.to_string()),
+                                    ),
+                                );
                             }
                             body = body.row(row);
                         }

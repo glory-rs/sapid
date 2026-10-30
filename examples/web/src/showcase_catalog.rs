@@ -181,9 +181,7 @@ mod tests {
             assert!(ENTRIES[..index].iter().all(|other| other.id != entry.id));
             assert_eq!(find(entry.id).unwrap().name, entry.name);
             assert!(
-                !entry.name.is_empty()
-                    && !entry.group.is_empty()
-                    && !entry.description.is_empty()
+                !entry.name.is_empty() && !entry.group.is_empty() && !entry.description.is_empty()
             );
             assert!(entry.code.contains("fn ") && !entry.code.contains("iframe"));
         }

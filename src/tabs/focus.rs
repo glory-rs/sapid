@@ -40,8 +40,7 @@ impl FocusRestore {
                     state.pending.try_revise(|pending| *pending = true)?;
                 }
                 let restoring = glory::core::untracked(|| state.restoring.try_get())?;
-                if restoring
-                    .is_some_and(|(_, key)| !current.iter().any(|config| config.key == key))
+                if restoring.is_some_and(|(_, key)| !current.iter().any(|config| config.key == key))
                 {
                     state.cancel()?;
                 }
@@ -70,9 +69,7 @@ impl FocusRestore {
                 }
                 let target = preferred
                     .as_ref()
-                    .and_then(|key| {
-                        candidates.iter().find(|config| &config.key == key).copied()
-                    })
+                    .and_then(|key| candidates.iter().find(|config| &config.key == key).copied())
                     .or_else(|| candidates.first().copied());
                 let node = target
                     .map(|config| config.trigger.try_get())
@@ -103,8 +100,7 @@ impl FocusRestore {
         let query = glory::core::untracked(|| self.query.try_get())?;
         self.query.try_revise(|query| *query = None)?;
         if let Some(query) = query
-            && let Some(requester) =
-                glory::core::untracked(|| self.requester.try_get())?.upgrade()
+            && let Some(requester) = glory::core::untracked(|| self.requester.try_get())?.upgrade()
         {
             requester.cancel_request(query)?;
         }

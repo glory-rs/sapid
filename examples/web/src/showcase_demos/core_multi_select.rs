@@ -19,8 +19,7 @@ pub fn demo(theme: Theme) -> impl Widget {
         let commands_enabled = scope.bond(move || enabled.get() && !readonly.get());
         let weak_all = scope.downgrade();
         let weak_clear = scope.downgrade();
-        let status =
-            scope.bond(move || format!("{} countries selected", values.with(Vec::len)));
+        let status = scope.bond(move || format!("{} countries selected", values.with(Vec::len)));
         sapid::stack()
             .theme(theme.clone())
             .gap(18.0)
@@ -113,15 +112,29 @@ pub fn demo(theme: Theme) -> impl Widget {
 fn limited_choices(theme: Theme) -> impl Widget {
     widget(move |scope| {
         let values = scope.cage(vec!["rust".to_owned()]);
-        sapid::field("showcase-tools").theme(theme.clone()).label("Tools")
-            .description("Select up to two tools. Selected options are hidden; clearing keeps your search.")
+        sapid::field("showcase-tools")
+            .theme(theme.clone())
+            .label("Tools")
+            .description(
+                "Select up to two tools. Selected options are hidden; clearing keeps your search.",
+            )
             .control(move |field| {
-                sapid::multi_select("showcase-tools").field(field).value(values)
-                    .max_values(2).hide_picked_options(true).clearable(true).clear_label("Clear tools")
+                sapid::multi_select("showcase-tools")
+                    .field(field)
+                    .value(values)
+                    .max_values(2)
+                    .hide_picked_options(true)
+                    .clearable(true)
+                    .clear_label("Clear tools")
                     .placeholder("Search tools")
-                    .group(sapid::select_group("Runtime").option(select_option("rust", "Rust")).option(select_option("glory", "Glory")))
+                    .group(
+                        sapid::select_group("Runtime")
+                            .option(select_option("rust", "Rust"))
+                            .option(select_option("glory", "Glory")),
+                    )
                     .group(sapid::select_group("Design").option(select_option("sapid", "Sapid")))
                     .on_value_change(move |proposal| values.revise(|current| *current = proposal))
-            }).show_in(scope)
+            })
+            .show_in(scope)
     })
 }

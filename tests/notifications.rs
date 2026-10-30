@@ -109,8 +109,7 @@ fn button(app: &App, label: &str) -> NodeId {
     let mut pending = std::collections::VecDeque::from(tree.roots().to_vec());
     while let Some(id) = pending.pop_front() {
         let node = tree.node(id).unwrap();
-        if matches!(node.descriptor.view().props,glory::render::Props::Button(p)if p.label==label)
-        {
+        if matches!(node.descriptor.view().props,glory::render::Props::Button(p)if p.label==label) {
             return id;
         }
         pending.extend(&node.children)
@@ -180,8 +179,7 @@ fn removing_a_focused_row_releases_its_pause_without_a_retired_focus_event() {
         .unwrap();
     handle
         .show(
-            notification_request("timed", "Second", "Details")
-                .timeout(Duration::from_millis(100)),
+            notification_request("timed", "Second", "Details").timeout(Duration::from_millis(100)),
         )
         .unwrap();
     app.flush().unwrap();
@@ -294,10 +292,7 @@ fn admission_budget_foreign_tokens_invalid_data_and_clock_requirements_are_atomi
         out.borrow()
             .as_ref()
             .unwrap()
-            .show(
-                notification_request("timed", "Title", "Message")
-                    .timeout(Duration::from_secs(1))
-            )
+            .show(notification_request("timed", "Title", "Message").timeout(Duration::from_secs(1)))
             .is_err()
     );
 }
@@ -474,10 +469,7 @@ fn cancellation_destructor_can_flush_row_retirement_without_restoring_its_focus_
         command.clear().unwrap();
         callback_app.flush().unwrap();
         command
-            .show(
-                notification_request("new", "New", "Details")
-                    .timeout(Duration::from_millis(100)),
-            )
+            .show(notification_request("new", "New", "Details").timeout(Duration::from_millis(100)))
             .unwrap();
         callback_app.flush().unwrap();
     }));

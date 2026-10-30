@@ -5,9 +5,9 @@ use crate::composite::{self, Callback, Observers};
 use crate::state::{Control, DelayFactory, OwnerDelay, Value};
 use glory::core::InstanceId;
 use glory::render::{
-    Action, Change, Direction, DismissReason, Event, EventKind, Layer, LayerFocus,
-    LayerPlacement, NavigationPanel, NavigationPanelCommand, NodeId, Orientation, Patch,
-    PointerPhase, Role, SemanticId, Semantics,
+    Action, Change, Direction, DismissReason, Event, EventKind, Layer, LayerFocus, LayerPlacement,
+    NavigationPanel, NavigationPanelCommand, NodeId, Orientation, Patch, PointerPhase, Role,
+    SemanticId, Semantics,
 };
 use glory::style::{Display, Edges, FlexDirection, Length, Style};
 use glory::ui::{Result, WeakScope, Widget};
@@ -215,9 +215,10 @@ impl Root {
         let mut parent = None;
         let mut path = Vec::new();
         for key in accepted {
-            let Some(entry) = entries.iter().find(|entry| {
-                entry.parent == parent && entry.key == key && entry.panel.is_some()
-            }) else {
+            let Some(entry) = entries
+                .iter()
+                .find(|entry| entry.parent == parent && entry.key == key && entry.panel.is_some())
+            else {
                 break;
             };
             path.push(key);
@@ -253,10 +254,8 @@ impl Root {
             registry.next
         };
         entry.token = token;
-        entry.trigger_id =
-            SemanticId::new(format!("sapid-nav-{}-item-{token}", self.namespace))?;
-        entry.panel_id =
-            SemanticId::new(format!("sapid-nav-{}-panel-{token}", self.namespace))?;
+        entry.trigger_id = SemanticId::new(format!("sapid-nav-{}-item-{token}", self.namespace))?;
+        entry.panel_id = SemanticId::new(format!("sapid-nav-{}-panel-{token}", self.namespace))?;
         self.registry.borrow_mut().entries.push(entry.clone());
         self.pulse.try_revise(|_| ())?;
         let root = Rc::downgrade(self);
@@ -422,12 +421,7 @@ impl Root {
                 .map_or(Ok(()), |parent| self.close(parent, true)),
         }
     }
-    fn navigate(
-        &self,
-        level: &Level,
-        from: NodeId,
-        command: glory::render::Navigation,
-    ) -> Result {
+    fn navigate(&self, level: &Level, from: NodeId, command: glory::render::Navigation) -> Result {
         self.ensure()?;
         self.cancel_hover();
         let Some(destination) = level.roving.destination(from, command)? else {
@@ -438,9 +432,10 @@ impl Root {
             scope.action(Action::Focus(destination.node))?;
         }
         if level.parent.is_none() && !self.live_path()?.is_empty() {
-            let entry = self.snapshot()?.into_iter().find(|entry| {
-                entry.reference.try_get().ok().flatten() == Some(destination.node)
-            });
+            let entry = self
+                .snapshot()?
+                .into_iter()
+                .find(|entry| entry.reference.try_get().ok().flatten() == Some(destination.node));
             if let Some(entry) = entry {
                 if entry.panel.is_some() {
                     self.open(entry.token, false, false)?
@@ -473,9 +468,7 @@ impl Root {
         for key in &path {
             let entry = entries
                 .iter()
-                .find(|entry| {
-                    entry.parent == parent && entry.key == *key && entry.panel.is_some()
-                })
+                .find(|entry| entry.parent == parent && entry.key == *key && entry.panel.is_some())
                 .ok_or(glory::ui::Error::Gone)?;
             parent = Some(entry.token)
         }
@@ -569,9 +562,7 @@ impl Root {
         for key in &path {
             let entry = entries
                 .iter()
-                .find(|entry| {
-                    entry.parent == parent && entry.key == *key && entry.panel.is_some()
-                })
+                .find(|entry| entry.parent == parent && entry.key == *key && entry.panel.is_some())
                 .ok_or_else(|| invalid("navigation path refers to an unknown mounted panel"))?;
             parent = Some(entry.token)
         }
@@ -1023,8 +1014,7 @@ impl Widget for NavigationMenu {
                     .padding(Edges::all(0.0)),
             )
             .show_in(&list_scope)?;
-        let content_scope =
-            scope.child_in(list_ref.try_get()?.ok_or(glory::ui::Error::Gone)?)?;
+        let content_scope = scope.child_in(list_ref.try_get()?.ok_or(glory::ui::Error::Gone)?)?;
         let state = Rc::downgrade(&root);
         let open = scope.bond(move || {
             state

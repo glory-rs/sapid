@@ -58,9 +58,7 @@ pub fn loading_overlay_form(theme: Theme) -> impl Widget {
                                 .theme(theme.clone())
                                 .name("Region editor")
                                 .value(value)
-                                .on_value_change(move |next| {
-                                    value.revise(|value| *value = next)
-                                }),
+                                .on_value_change(move |next| value.revise(|value| *value = next)),
                             button()
                                 .theme(theme.clone())
                                 .label("Run region action")

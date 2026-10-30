@@ -248,15 +248,14 @@ impl Widget for ColorInput {
         let composing = scope.cage(false);
         let read = readonly.clone();
         let active = enabled.clone();
-        let picker_enabled =
-            scope.bond(move || active.get() && !read.get() && !composing.get());
+        let picker_enabled = scope.bond(move || active.get() && !read.get() && !composing.get());
         let parse_message = scope.bond(move || match status.get() {
             ColorValidity::Invalid(error) => error.to_string(),
             _ => String::new(),
         });
         let invalid = self.invalid.clone();
-        let error = scope
-            .bond(move || invalid.get() || matches!(status.get(), ColorValidity::Invalid(_)));
+        let error =
+            scope.bond(move || invalid.get() || matches!(status.get(), ColorValidity::Invalid(_)));
         let mut input = crate::text_field()
             .theme(self.common.theme.clone())
             .size(self.common.size)

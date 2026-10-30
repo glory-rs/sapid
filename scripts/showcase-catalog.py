@@ -283,7 +283,8 @@ def fixture_source(module):
 
 
 def formatted(text):
-    result = subprocess.run(["rustfmt", "--edition", "2024", "--emit", "stdout"],
+    result = subprocess.run(["rustfmt", "--edition", "2024", "--config-path", str(ROOT / "rustfmt.toml"),
+                             "--emit", "stdout"],
                             input=text, text=True, encoding="utf-8", capture_output=True, check=True)
     return result.stdout.replace("\r\n", "\n")
 
@@ -396,12 +397,17 @@ for key in sorted(modules):
     registry += f"mod {key};\n"
     registry += f"pub fn {key}_widget(theme: sapid::Theme) -> Box<dyn Widget> {{ Box::new({key}::demo(theme)) }}\n"
 outputs[WEB / "src/showcase_demos/mod.rs"] = formatted(registry)
-outputs[CATALOG] = catalog
+outputs[CATALOG] = formatted(catalog)
+stale = []
 for path, content in outputs.items():
     if args.check:
         if not path.is_file() or path.read_text(encoding="utf-8") != content:
-            raise SystemExit(f"stale generated showcase: {path}")
+            stale.append(path.relative_to(ROOT).as_posix())
     else:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8", newline="\n")
+if stale:
+    raise SystemExit(f"stale generated showcase files ({len(stale)}):\n"
+                     + "\n".join(f"  {path}" for path in stale)
+                     + "\nRun python scripts/showcase-catalog.py to regenerate them.")
 print(f"showcase catalogue: {len(entries)} entries, {len(pages)} Rust families, {len(CORE)} clean demos; all source modules compiled")

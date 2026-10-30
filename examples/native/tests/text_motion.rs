@@ -1,8 +1,6 @@
 use glory::apace::{Config, Raster, shell::WindowApp};
 use glory::prelude::*;
-use glory::render::{
-    Action, MotionPreference, NodeId, Query, QueryValue, Rect, TranslationKind,
-};
+use glory::render::{Action, MotionPreference, NodeId, Query, QueryValue, Rect, TranslationKind};
 use std::{cell::RefCell, rc::Rc};
 fn observe(host: &WindowApp) {
     for _ in 0..10 {

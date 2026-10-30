@@ -44,10 +44,7 @@ impl Widget for TimeValue {
             if s.len() <= 64 && !s.contains(['\0', '\r', '\n']) {
                 Ok(())
             } else {
-                Err(
-                    glory::render::Error::InvalidProps("invalid finite empty time label")
-                        .into(),
-                )
+                Err(glory::render::Error::InvalidProps("invalid finite empty time label").into())
             }
         })?;
         let base = Style {

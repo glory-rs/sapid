@@ -183,9 +183,7 @@ impl FocusRestore {
                 }
                 let target = preferred
                     .as_ref()
-                    .and_then(|key| {
-                        candidates.iter().find(|config| &config.key == key).copied()
-                    })
+                    .and_then(|key| candidates.iter().find(|config| &config.key == key).copied())
                     .or_else(|| candidates.first().copied());
                 let node = target
                     .map(|config| config.trigger.try_get())

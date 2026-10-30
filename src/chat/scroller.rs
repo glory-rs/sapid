@@ -90,9 +90,7 @@ impl MessageScrollerHandle {
     pub fn seek(&self, logical: f64) -> Result {
         self.inner.scope()?;
         if !logical.is_finite() || !(0. ..=glory::ui::list::MAX_EXTENT).contains(&logical) {
-            return Err(
-                glory::render::Error::InvalidProps("invalid logical message seek").into(),
-            );
+            return Err(glory::render::Error::InvalidProps("invalid logical message seek").into());
         }
         let position = logical.min(self.inner.maximum.get());
         self.pause()?;
@@ -236,10 +234,7 @@ impl Widget for MessageScroller {
         });
         let name = self.common.name.take().unwrap_or_else(|| "Messages".into());
         let name = crate::composite::validated(scope, &name, |value| {
-            if value.len() > 128
-                || value.trim().is_empty()
-                || value.contains(['\0', '\r', '\n'])
-            {
+            if value.len() > 128 || value.trim().is_empty() || value.contains(['\0', '\r', '\n']) {
                 return Err(glory::render::Error::InvalidProps(
                     "invalid bounded message window name",
                 )
@@ -345,10 +340,9 @@ impl Widget for Chat {
             || self.title.trim().is_empty()
             || self.title.contains(['\0', '\r', '\n'])
         {
-            return Err(glory::render::Error::InvalidProps(
-                "invalid bounded conversation name",
-            )
-            .into());
+            return Err(
+                glory::render::Error::InvalidProps("invalid bounded conversation name").into(),
+            );
         }
         let (class, custom) = self.common.appearance(scope, "sapid-chat", Style::new());
         let style = scope.bond(move || {

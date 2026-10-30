@@ -19,8 +19,7 @@ mod fixture {
             let toolbar_calls = scope.cage(0_u32);
             let toolbar_status =
                 scope.bond(move || format!("Toolbar activations: {}", toolbar_calls.get()));
-            let caption =
-                scope.bond(move || format!("Disclosure proposals: {}", proposals.get()));
+            let caption = scope.bond(move || format!("Disclosure proposals: {}", proposals.get()));
             glory::ui::col()
                 .class("actions-fixture")
                 .fill((

@@ -209,8 +209,7 @@ fn tool_and_subagent_validate_kind_and_recover_accepted_record_without_callbacks
     assert!(app.flush().is_err());
     assert_eq!(trigger, button(&app, "Tool · call"));
     assert_eq!(calls.get(), 0);
-    source
-        .revise(|r| *r = TraceRecord::new(key("call"), TraceKind::Tool, "Recovered").unwrap());
+    source.revise(|r| *r = TraceRecord::new(key("call"), TraceKind::Tool, "Recovered").unwrap());
     app.flush().unwrap();
     assert_eq!(trigger, button(&app, "Tool · Recovered"));
     let rejected = App::memory();

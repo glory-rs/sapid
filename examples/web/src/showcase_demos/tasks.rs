@@ -149,8 +149,7 @@ mod fixture {
                 .theme(theme.clone())
                 .class("task-requests")
                 .content(
-                    scope
-                        .bond(move || format!("Application task requests: {}", requests.get())),
+                    scope.bond(move || format!("Application task requests: {}", requests.get())),
                 )
                 .show_in(&area)?;
             scope.retain(area)?;

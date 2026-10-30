@@ -44,8 +44,7 @@ fn day(app: &App, date: CivilDate) -> NodeId {
         .find(|id| {
             let tree = app.tree();
             let view = tree.node(*id).unwrap().descriptor.view();
-            matches!(view.props, Props::Button(_))
-                && view.name.as_deref() == Some(name.as_str())
+            matches!(view.props, Props::Button(_)) && view.name.as_deref() == Some(name.as_str())
         })
         .unwrap_or_else(|| panic!("missing {date}"))
 }
@@ -173,8 +172,7 @@ fn multiple_full_selection_rejects_once_without_fault_or_growing_and_can_deselec
     let app = App::memory();
     let start = d("2024-02-01");
     let values =
-        SelectedDates::try_from_iter((0..32).map(|i| start.checked_add_days(i).unwrap()))
-            .unwrap();
+        SelectedDates::try_from_iter((0..32).map(|i| start.checked_add_days(i).unwrap())).unwrap();
     let rejected = app.scope().cage(0usize);
     let accepted = app.scope().cage(0usize);
     app.mount(
@@ -362,8 +360,7 @@ fn input_controlled_selection_and_open_refusal_remain_independent_and_field_meta
     assert!(open.get());
 }
 #[test]
-fn invalid_configuration_is_rejected_before_business_callback_and_exclusion_iterator_is_bounded()
- {
+fn invalid_configuration_is_rejected_before_business_callback_and_exclusion_iterator_is_bounded() {
     let app = App::memory();
     assert!(
         app.mount(
@@ -376,11 +373,10 @@ fn invalid_configuration_is_rejected_before_business_callback_and_exclusion_iter
     let app = App::memory();
     let count = Rc::new(Cell::new(0));
     let out = count.clone();
-    let picker =
-        date_picker_input("budget", p()).exclude_dates((0..1_000_000).map(move |_| {
-            out.set(out.get() + 1);
-            CivilDate::MIN
-        }));
+    let picker = date_picker_input("budget", p()).exclude_dates((0..1_000_000).map(move |_| {
+        out.set(out.get() + 1);
+        CivilDate::MIN
+    }));
     assert_eq!(count.get(), MAX_CALENDAR_EXCLUDED_DATES + 1);
     assert!(app.mount(picker).is_err());
     let app = App::memory();
@@ -391,8 +387,7 @@ fn invalid_configuration_is_rejected_before_business_callback_and_exclusion_iter
 }
 
 #[test]
-fn range_and_multiple_inputs_preserve_partial_and_multi_open_policy_and_exact_successful_text()
-{
+fn range_and_multiple_inputs_preserve_partial_and_multi_open_policy_and_exact_successful_text() {
     for mode in [DatePickerMode::Range, DatePickerMode::Multiple] {
         let app = App::memory();
         let input = app.scope().cage(None);

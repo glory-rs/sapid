@@ -57,11 +57,8 @@ pub fn files_form(theme: sapid::Theme) -> impl Widget {
                             })
                             .on(glory::render::EventKind::Files, move |_| {
                                 log.revise(|value| {
-                                    *value = format!(
-                                        "generic:{:?}:{}",
-                                        status.get(),
-                                        files.get().len()
-                                    )
+                                    *value =
+                                        format!("generic:{:?}:{}", status.get(), files.get().len())
                                 })
                             })
                     }),
@@ -190,9 +187,7 @@ pub fn files_form(theme: sapid::Theme) -> impl Widget {
                     sapid::button()
                         .theme(theme.clone())
                         .label("Restrict file size")
-                        .on_press(move || {
-                            configuration.revise(|value| value.max_file_bytes = 3)
-                        }),
+                        .on_press(move || configuration.revise(|value| value.max_file_bytes = 3)),
                     sapid::button()
                         .theme(theme.clone())
                         .label("Reset file configuration")

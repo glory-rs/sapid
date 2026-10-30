@@ -72,8 +72,7 @@ fn nav_link_unmount_after_hidden_transition_releases_native_layout_children() {
     )));
 }
 #[test]
-fn navigation_uses_real_native_controls_current_metadata_and_stable_engine_nodes_in_four_themes()
- {
+fn navigation_uses_real_native_controls_current_metadata_and_stable_engine_nodes_in_four_themes() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),

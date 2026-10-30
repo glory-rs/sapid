@@ -31,10 +31,7 @@ pub struct DataRecord {
     pub cells: Vec<String>,
 }
 impl DataRecord {
-    pub fn new(
-        key: impl Into<String>,
-        cells: impl IntoIterator<Item = impl Into<String>>,
-    ) -> Self {
+    pub fn new(key: impl Into<String>, cells: impl IntoIterator<Item = impl Into<String>>) -> Self {
         Self {
             key: key.into(),
             cells: cells
@@ -115,9 +112,7 @@ impl DataTableError {
                 "data table local source exceeds 4096 current records or its column shape"
             }
             Self::Payload => "data table current text payload exceeds 8 MiB",
-            Self::Query => {
-                "data table query exceeds finite bounds or references an unknown column"
-            }
+            Self::Query => "data table query exceeds finite bounds or references an unknown column",
             Self::Page => "data table server page conflicts with its echoed request or total",
         }
     }

@@ -10,26 +10,26 @@ mod fixture {
     use sapid::chat::*;
     pub fn explanation() -> PublicExplanation {
         PublicExplanation {
-        summary: "Read public explanation".into(),
-        body:
-            "Application-provided public summary. <script>window.badExplanation=true</script>"
-                .into(),
-        steps: vec![
-            ExplanationStep {
-                key: "review".into(),
-                label: "Review supplied records".into(),
-                summary: "The application reports that its supplied sources were compared."
+            summary: "Read public explanation".into(),
+            body:
+                "Application-provided public summary. <script>window.badExplanation=true</script>"
                     .into(),
-                status: ExplanationStatus::Complete,
-                elapsed_millis: Some(32),
-            },
-            ExplanationStep::new(
-                "draft",
-                "Prepare a response",
-                "Only a public status summary is shown here.",
-            ),
-        ],
-    }
+            steps: vec![
+                ExplanationStep {
+                    key: "review".into(),
+                    label: "Review supplied records".into(),
+                    summary: "The application reports that its supplied sources were compared."
+                        .into(),
+                    status: ExplanationStatus::Complete,
+                    elapsed_millis: Some(32),
+                },
+                ExplanationStep::new(
+                    "draft",
+                    "Prepare a response",
+                    "Only a public status summary is shown here.",
+                ),
+            ],
+        }
     }
     pub fn source() -> SourceRecord {
         SourceRecord {
@@ -37,8 +37,7 @@ mod fixture {
             title: "Design notes".into(),
             url: "#citation-target".into(),
             preview: Some(
-                "Explicit application preview. <img src=x onerror=window.badCitation=true>"
-                    .into(),
+                "Explicit application preview. <img src=x onerror=window.badCitation=true>".into(),
             ),
             trust: SourceTrust::Unverified,
         }
@@ -206,9 +205,7 @@ mod fixture {
                 text()
                     .class("explanation-proposals")
                     .content(
-                        scope.bond(move || {
-                            format!("Explanation proposals: {}", proposals.get())
-                        }),
+                        scope.bond(move || format!("Explanation proposals: {}", proposals.get())),
                     )
                     .show_in(&area)?;
                 chain_of_thought("fixture-steps")

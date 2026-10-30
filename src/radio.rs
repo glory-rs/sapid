@@ -395,8 +395,7 @@ impl Widget for RadioGroup {
             let form_value = item.form_value.take().unwrap_or_else(|| key.clone());
             let flag = item.common.enabled.clone();
             let root = enabled.clone();
-            let member_enabled: Vary<bool> =
-                scope.bond(move || root.get() && flag.get()).into();
+            let member_enabled: Vary<bool> = scope.bond(move || root.get() && flag.get()).into();
             let member_label = item.label.clone();
             let member_key = item.key.clone();
             let token = tokens[index];
@@ -413,9 +412,10 @@ impl Widget for RadioGroup {
             .checked(initial == item.key)
             .enabled(member_enabled.clone())
             .focus(scope.bond(move || {
-                if token.get().is_some_and(|member| {
-                    focus_controller.is_tab_stop(&member).unwrap_or(false)
-                }) {
+                if token
+                    .get()
+                    .is_some_and(|member| focus_controller.is_tab_stop(&member).unwrap_or(false))
+                {
                     FocusMode::TabStop
                 } else {
                     FocusMode::Programmatic
@@ -457,13 +457,12 @@ impl Widget for RadioGroup {
         let axis = self.orientation;
         let direction = self.direction;
         let has_typeahead = self.typeahead.is_some();
-        let label =
-            glory::ui::text()
-                .content(self.label.clone())
-                .semantics(composite::metadata(Semantics {
-                    id: Some(label_id.clone()),
-                    ..Default::default()
-                }));
+        let label = glory::ui::text()
+            .content(self.label.clone())
+            .semantics(composite::metadata(Semantics {
+                id: Some(label_id.clone()),
+                ..Default::default()
+            }));
         let root_id = self.common.node_ref.unwrap_or_else(|| scope.cage(None));
         let base = composite::column(8.0);
         let mut root = configure!(

@@ -109,8 +109,7 @@ fn native_calendar_four_themes_have_actual_42_cell_geometry_selection_pixels_foc
         assert_eq!(query(app, Query::Focus(selected)), QueryValue::Focus(true));
         let mut raster = Raster::new();
         raster.draw(host.renderer()).unwrap();
-        let offset = (((rect.y + 5.).round() as usize)
-            * raster.frame().unwrap().width as usize
+        let offset = (((rect.y + 5.).round() as usize) * raster.frame().unwrap().width as usize
             + (rect.x + 5.).round() as usize)
             * 4;
         for (a, b) in raster.pixels()[offset..offset + 4].iter().zip([

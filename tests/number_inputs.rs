@@ -330,9 +330,7 @@ fn field_labels_successful_names_errors_and_readonly_bind_to_the_actual_input() 
         assert_eq!(metadata.form_control.as_ref().unwrap().name, "amount");
         assert!(metadata.form_control.as_ref().unwrap().value.is_none());
         assert!(
-            metadata.labelled_by.is_some()
-                && metadata.described_by.is_some()
-                && metadata.required
+            metadata.labelled_by.is_some() && metadata.described_by.is_some() && metadata.required
         );
     }
     error.revise(|v| *v = "Pick an amount".into());

@@ -36,8 +36,7 @@ fn button(app: &App, label: &str) -> NodeId {
     let mut pending = tree.roots().to_vec();
     while let Some(id) = pending.pop() {
         let n = tree.node(id).unwrap();
-        if matches!(n.descriptor.view().props,glory::render::Props::Button(p) if p.label==label)
-        {
+        if matches!(n.descriptor.view().props,glory::render::Props::Button(p) if p.label==label) {
             return id;
         }
         pending.extend(&n.children)
@@ -198,9 +197,7 @@ fn owner_retirement_drops_callbacks_without_emission_and_invalidates_all_handles
     let count = log.clone();
     let mounted = app
         .scope()
-        .mount_with(|| {
-            modals_manager("retire").on_ready(move |h| *saved.borrow_mut() = Some(h))
-        })
+        .mount_with(|| modals_manager("retire").on_ready(move |h| *saved.borrow_mut() = Some(h)))
         .unwrap();
     let handle = out.borrow_mut().take().unwrap();
     let token = handle

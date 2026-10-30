@@ -48,8 +48,7 @@ fn button(app: &App, name: &str) -> NodeId {
         .unwrap()
 }
 #[test]
-fn native_time_segments_four_themes_have_real_spin_editors_geometry_focus_and_shared_grid_value()
- {
+fn native_time_segments_four_themes_have_real_spin_editors_geometry_focus_and_shared_grid_value() {
     for theme in [
         Theme::blue_light(),
         Theme::blue_dark(),
@@ -152,7 +151,7 @@ fn native_time_segments_four_themes_have_real_spin_editors_geometry_focus_and_sh
 }
 #[test]
 fn native_time_grid_queued_navigation_skips_disabled_and_readonly_keeps_focus_without_value_change()
- {
+{
     let host = WindowApp::new();
     host.renderer().set_viewport(800, 500, 1.).unwrap();
     let app = host.app();

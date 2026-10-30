@@ -36,12 +36,8 @@ mod fixture {
                     "2024-01-01T10:00",
                 )
                 .recurring(
-                    ScheduleRecurrence::new(
-                        RecurrenceFrequency::Daily,
-                        1,
-                        RecurrenceEnd::Never,
-                    )
-                    .unwrap(),
+                    ScheduleRecurrence::new(RecurrenceFrequency::Daily, 1, RecurrenceEnd::Never)
+                        .unwrap(),
                 )
                 .unwrap(),
                 ScheduleEvent::new(

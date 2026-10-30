@@ -1,8 +1,8 @@
 use glory::prelude::*;
 use glory::render::memory::Memory;
 use glory::render::{
-    Action, Capabilities, DragPhase, Error, Input, Mutation, NodeId, Query, QueryToken,
-    QueryValue, RangeCommand, Receipt, Rect, Render,
+    Action, Capabilities, DragPhase, Error, Input, Mutation, NodeId, Query, QueryToken, QueryValue,
+    RangeCommand, Receipt, Rect, Render,
 };
 use sapid::splitter;
 use std::{
@@ -120,9 +120,7 @@ fn local_same_tick_keys_accumulate_and_typed_callbacks_precede_generic_observers
     app.mount(
         splitter("local")
             .on_value_change(move |value| changed.borrow_mut().push(format!("change:{value}")))
-            .on_value_commit(move |value| {
-                committed.borrow_mut().push(format!("commit:{value}"))
-            })
+            .on_value_commit(move |value| committed.borrow_mut().push(format!("commit:{value}")))
             .on(glory::render::EventKind::Range, move |_| {
                 generic.borrow_mut().push("generic".into())
             }),
@@ -324,9 +322,7 @@ fn pending_drag_coalesces_absolute_points_and_commits_before_its_generic_drop() 
     let observer = trace.clone();
     app.mount(
         splitter("drag")
-            .on_value_change(move |value| {
-                change.borrow_mut().push(format!("change:{value:.2}"))
-            })
+            .on_value_change(move |value| change.borrow_mut().push(format!("change:{value:.2}")))
             .on_value_commit(move |value| {
                 commit_observer
                     .borrow_mut()

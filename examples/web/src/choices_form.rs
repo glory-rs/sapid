@@ -1,7 +1,7 @@
 use glory::prelude::*;
 use sapid::{
-    CheckState, ChipMode, Theme, checkbox_group, checkbox_item, chip, chip_group, chip_item,
-    field, mixed_checkbox, radio, radio_group, segment, segmented_control, switch,
+    CheckState, ChipMode, Theme, checkbox_group, checkbox_item, chip, chip_group, chip_item, field,
+    mixed_checkbox, radio, radio_group, segment, segmented_control, switch,
 };
 
 pub struct State {
@@ -32,63 +32,64 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
     let languages = scope.cage(Vec::<String>::new());
     let search = scope.cage("alpha".to_owned());
     let enabled = scope.bond(move || !disabled.get());
-    let widgets =
-        view()
-            .style(
-                Style::new()
-                    .display(Display::Flex)
-                    .flex_direction(FlexDirection::Column)
-                    .gap(24.0),
-            )
-            .fill((
-                field("mixed-choice")
-                    .label("Partial selection")
-                    .description("Native indeterminate selection")
-                    .theme(theme.clone())
-                    .readonly(readonly)
-                    .enabled(enabled)
-                    .control(move |field| {
-                        mixed_checkbox().field(field).state(mixed).on_state_change(
-                            move |state| {
-                                if !reject.get() {
-                                    mixed.revise(|old| *old = state);
-                                }
-                            },
-                        )
-                    }),
-                field("notification-switch")
-                    .label("Notifications")
-                    .description("Email updates")
-                    .required(true)
-                    .theme(theme.clone())
-                    .readonly(readonly)
-                    .enabled(enabled)
-                    .control(move |field| {
-                        switch().field(field).checked(switched).on_checked_change(
-                            move |value| {
-                                if !reject.get() {
-                                    switched.revise(|old| *old = value);
-                                }
-                            },
-                        )
-                    }),
-                checkbox_group("permissions")
-                    .theme(theme.clone())
-                    .label("Permissions")
-                    .select_all_label("All editable permissions")
-                    .enabled(enabled)
-                    .selected(selected)
-                    .items([
-                        checkbox_item("read", "Read"),
-                        checkbox_item("write", "Write"),
-                        checkbox_item("inherited", "Inherited").enabled(false),
-                    ])
-                    .on_selected_change(move |value| {
-                        if !reject.get() {
-                            selected.revise(|old| *old = value);
-                        }
-                    }),
-            ));
+    let widgets = view()
+        .style(
+            Style::new()
+                .display(Display::Flex)
+                .flex_direction(FlexDirection::Column)
+                .gap(24.0),
+        )
+        .fill((
+            field("mixed-choice")
+                .label("Partial selection")
+                .description("Native indeterminate selection")
+                .theme(theme.clone())
+                .readonly(readonly)
+                .enabled(enabled)
+                .control(move |field| {
+                    mixed_checkbox()
+                        .field(field)
+                        .state(mixed)
+                        .on_state_change(move |state| {
+                            if !reject.get() {
+                                mixed.revise(|old| *old = state);
+                            }
+                        })
+                }),
+            field("notification-switch")
+                .label("Notifications")
+                .description("Email updates")
+                .required(true)
+                .theme(theme.clone())
+                .readonly(readonly)
+                .enabled(enabled)
+                .control(move |field| {
+                    switch()
+                        .field(field)
+                        .checked(switched)
+                        .on_checked_change(move |value| {
+                            if !reject.get() {
+                                switched.revise(|old| *old = value);
+                            }
+                        })
+                }),
+            checkbox_group("permissions")
+                .theme(theme.clone())
+                .label("Permissions")
+                .select_all_label("All editable permissions")
+                .enabled(enabled)
+                .selected(selected)
+                .items([
+                    checkbox_item("read", "Read"),
+                    checkbox_item("write", "Write"),
+                    checkbox_item("inherited", "Inherited").enabled(false),
+                ])
+                .on_selected_change(move |value| {
+                    if !reject.get() {
+                        selected.revise(|old| *old = value);
+                    }
+                }),
+        ));
     let widgets = view()
         .style(
             Style::new()

@@ -114,9 +114,7 @@ pub fn floating_window_form(theme: Theme) -> impl Widget {
                             .bounds(bounds)
                             .open(open)
                             .enabled(enabled)
-                            .on_ready(move |handle| {
-                                primary.revise(|value| *value = Some(handle))
-                            })
+                            .on_ready(move |handle| primary.revise(|value| *value = Some(handle)))
                             .on_bounds_change(move |next| {
                                 proposals.revise(|value| *value += 1);
                                 if !reject.get() {
@@ -142,9 +140,7 @@ pub fn floating_window_form(theme: Theme) -> impl Widget {
                                 width: 440.,
                                 height: 340.,
                             })
-                            .on_ready(move |handle| {
-                                secondary.revise(|value| *value = Some(handle))
-                            })
+                            .on_ready(move |handle| secondary.revise(|value| *value = Some(handle)))
                             .content(|| text().content("Independent nonmodal window")),
                     ))
                 }),

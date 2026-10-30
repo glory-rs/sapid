@@ -75,9 +75,7 @@ impl StackTrace {
 impl Widget for StackTrace {
     fn build(&mut self, scope: &Scope) -> Result {
         if !self.payload_height.is_finite() || !(80. ..=640.).contains(&self.payload_height) {
-            return Err(
-                glory::render::Error::InvalidProps("invalid stack payload height").into(),
-            );
+            return Err(glory::render::Error::InvalidProps("invalid stack payload height").into());
         }
         let accepted = composite::validated(scope, &self.data, |_: &StackTraceData| Ok(()))?;
         let state = Rc::new(State {
@@ -238,9 +236,8 @@ impl Widget for FrameRow {
             )
             .show_in(&area)?;
         let key = self.key.clone();
-        let has_location = scope.bond(move || {
-            accepted.with(|d| d.frame(&key).is_some_and(|f| f.source().is_some()))
-        });
+        let has_location = scope
+            .bond(move || accepted.with(|d| d.frame(&key).is_some_and(|f| f.source().is_some())));
         let key = self.key.clone();
         let state = self.state.clone();
         glory::ui::when(has_location, move || LocationWidget {

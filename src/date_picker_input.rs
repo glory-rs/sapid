@@ -235,8 +235,7 @@ impl Widget for DatePickerInput {
             s.value
                 .validate(mode, s.provider.date_bounds())
                 .map_err(|_| {
-                    glory::render::Error::InvalidProps("invalid date picker input selection")
-                        .into()
+                    glory::render::Error::InvalidProps("invalid date picker input selection").into()
                 })
         })?;
         let owner = scope.id();

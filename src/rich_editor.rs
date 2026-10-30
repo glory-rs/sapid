@@ -288,9 +288,7 @@ impl EditorController {
     pub fn insert(&self, text: impl Into<String>, marks: RichMarks) -> Result<QueryToken> {
         let text = text.into();
         if text.len() > render::MAX_RICH_TEXT_BYTES {
-            return Err(
-                render::Error::InvalidProps("rich insertion exceeds text budget").into(),
-            );
+            return Err(render::Error::InvalidProps("rich insertion exceeds text budget").into());
         }
         marks.validate()?;
         self.query(move |snapshot| {
@@ -452,10 +450,7 @@ impl RichTextEditor {
         self.controller_ref = Some(value);
         self
     }
-    pub fn on_document_change(
-        mut self,
-        callback: impl FnMut(Rc<RichDocument>) + 'static,
-    ) -> Self {
+    pub fn on_document_change(mut self, callback: impl FnMut(Rc<RichDocument>) + 'static) -> Self {
         self.changed = Some(Box::new(callback));
         self
     }
@@ -657,8 +652,7 @@ impl Widget for RichTextEditor {
                     selected
                         .selection
                         .try_revise(|value| *value = snapshot.selection)?;
-                    if snapshot.document == selected.accepted.try_get()? && !snapshot.composing
-                    {
+                    if snapshot.document == selected.accepted.try_get()? && !snapshot.composing {
                         selected
                             .accepted_selection
                             .try_revise(|value| *value = snapshot.selection)?;

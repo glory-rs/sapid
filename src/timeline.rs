@@ -83,11 +83,7 @@ impl Timeline {
         self
     }
     pub fn item(mut self, item: TimelineItem) -> Self {
-        crate::document::extend_bounded(
-            &mut self.items,
-            std::iter::once(item),
-            MAX_TIMELINE_ITEMS,
-        );
+        crate::document::extend_bounded(&mut self.items, std::iter::once(item), MAX_TIMELINE_ITEMS);
         self
     }
     pub fn items(mut self, items: impl IntoIterator<Item = TimelineItem>) -> Self {
@@ -141,7 +137,10 @@ impl Widget for Timeline {
                 .iter()
                 .any(|label| label.trim().is_empty() || label.len() > 256)
         {
-            return Err(glory::render::Error::InvalidProps("timeline requires <=256 items, heading 1..=6 and nonempty <=256-byte state labels").into());
+            return Err(glory::render::Error::InvalidProps(
+                "timeline requires <=256 items, heading 1..=6 and nonempty <=256-byte state labels",
+            )
+            .into());
         }
         let root_id = crate::composite::id("timeline", &self.key, "root", "root")?;
         let mut keys = HashMap::with_capacity(self.items.len());

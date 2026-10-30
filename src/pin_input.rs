@@ -5,9 +5,7 @@ use crate::composite::{self, Callback, Observers};
 use crate::field::control_metadata;
 use crate::pin_model::{PinAlphabet, PinDomain, PinRejection};
 use crate::state::{Control, Dirty, Value};
-use glory::render::{
-    Event, EventKind, InputAssist, InputAutofill, InputMode, Purpose, Semantics,
-};
+use glory::render::{Event, EventKind, InputAssist, InputAutofill, InputMode, Purpose, Semantics};
 use glory::style::{
     BorderStyle, Color, Display, Edges, Family, Length, PointerEvents, Position, Style,
 };
@@ -499,8 +497,7 @@ impl Widget for PinInput {
             EventKind::Composition,
         ] {
             let s = state.clone();
-            let observers =
-                Observers::new(self.common.handlers.remove(&kind).unwrap_or_default());
+            let observers = Observers::new(self.common.handlers.remove(&kind).unwrap_or_default());
             let cleanup = observers.clone();
             scope.on_cleanup(move || cleanup.clear())?;
             input = input.on(kind, move |event| { if s.ensure().is_err() { return; } s.report(s.event(&event)); if !matches!(&event, Event::ValueChanged {value, ..} | Event::Commit {value, ..} if value.len() > MAX_PREEDIT_BYTES) { observers.emit(s.owner, event); } });

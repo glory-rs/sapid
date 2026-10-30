@@ -78,9 +78,7 @@ impl ChartError {
         match self {
             Self::Budget => "chart exceeds its finite points, series or text budget",
             Self::Key => "chart keys require distinct 1..64 ASCII semantic tokens",
-            Self::Label => {
-                "chart labels require nonempty canonical text within 256 UTF-8 bytes"
-            }
+            Self::Label => "chart labels require nonempty canonical text within 256 UTF-8 bytes",
             Self::Values => "chart values must match categories and be finite within +/-1e12",
             Self::Domain => "chart scale requires a finite strictly increasing domain",
             Self::Brush => "chart brush must select an ordered in-bounds category interval",

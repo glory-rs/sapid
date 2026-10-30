@@ -192,8 +192,7 @@ impl Index {
         }
         let work = self.batch.borrow_mut().take();
         let viewport = self.viewport.borrow().clone();
-        if let (Some(work), Some(scope)) =
-            (work, viewport.and_then(|value| value.scope.upgrade()))
+        if let (Some(work), Some(scope)) = (work, viewport.and_then(|value| value.scope.upgrade()))
         {
             for token in work.tokens {
                 let _ = scope.cancel_request(token);
@@ -618,10 +617,7 @@ pub fn toc_document(context: TocContext, key: impl Into<String>) -> TocDocument 
     }
 }
 impl TocDocument {
-    pub fn content<W: Widget>(
-        mut self,
-        mut value: impl FnMut(TocContext) -> W + 'static,
-    ) -> Self {
+    pub fn content<W: Widget>(mut self, mut value: impl FnMut(TocContext) -> W + 'static) -> Self {
         self.content = Some(Box::new(move |context| Box::new(value(context))));
         self
     }
@@ -689,8 +685,12 @@ impl Widget for TocDocument {
                     let result = (|| -> Result {
                         let node = reference.try_get()?.ok_or(glory::ui::Error::Gone)?;
                         for entry in ready.0.ordered() {
-                            if entry.scope.upgrade().is_none() || !scope.contains_node(node, entry.node)? {
-                                return Err(invalid("registered headings must belong to their scrolling document"));
+                            if entry.scope.upgrade().is_none()
+                                || !scope.contains_node(node, entry.node)?
+                            {
+                                return Err(invalid(
+                                    "registered headings must belong to their scrolling document",
+                                ));
                             }
                         }
                         *ready.0.viewport.borrow_mut() = Some(Viewport {

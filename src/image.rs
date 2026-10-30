@@ -144,9 +144,7 @@ impl Widget for Image {
             )
             .into());
         }
-        if self.decorative
-            && (self.common.name.is_some() || self.common.focus != FocusMode::Auto)
-        {
+        if self.decorative && (self.common.name.is_some() || self.common.focus != FocusMode::Auto) {
             return Err(glory::render::Error::InvalidProps(
                 "decorative image cannot have a name or focus",
             )
@@ -166,9 +164,8 @@ impl Widget for Image {
             scope.effect(move || {
                 let Some(scope) = weak.upgrade() else { return };
                 let result = (|| -> Result {
-                    let next = source.try_with(|source| {
-                        validate_source(source).map(|()| source.clone())
-                    })??;
+                    let next = source
+                        .try_with(|source| validate_source(source).map(|()| source.clone()))??;
                     if selection.try_with_untracked(|old| old.primary != next)? {
                         selection.try_revise(|value| {
                             *value = Selection {

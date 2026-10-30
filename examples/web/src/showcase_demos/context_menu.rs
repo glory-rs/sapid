@@ -10,8 +10,7 @@ mod fixture {
     use sapid::{
         Theme,
         menu::{
-            context_menu, menu_checkbox, menu_item, menu_radio_group, menu_radio_item,
-            menu_submenu,
+            context_menu, menu_checkbox, menu_item, menu_radio_group, menu_radio_item, menu_submenu,
         },
     };
     pub struct State {
@@ -109,9 +108,8 @@ mod fixture {
                     main,
                     button().label("After context"),
                     override_editor,
-                    text().content(
-                        scope.bond(move || format!("Context actions: {}", actions.get())),
-                    ),
+                    text()
+                        .content(scope.bond(move || format!("Context actions: {}", actions.get()))),
                 )),
             State {
                 open,

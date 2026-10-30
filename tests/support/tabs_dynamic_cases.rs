@@ -289,9 +289,7 @@ fn manual_automatic_and_generic_callbacks_keep_proposal_order_and_source_silence
                 } else {
                     sapid::TabActivation::Manual
                 })
-                .on_value_change(move |next| {
-                    log.revise(|log| log.push(format!("typed:{next}")))
-                })
+                .on_value_change(move |next| log.revise(|log| log.push(format!("typed:{next}"))))
                 .on(EventKind::Activate, move |_| {
                     log.revise(|log| log.push("generic".to_owned()))
                 })
@@ -495,8 +493,7 @@ fn dynamic_tabs_fixture_has_deterministic_four_theme_semantics_and_rich_labels()
         assert_eq!(first.html.matches("role=\"tablist\"").count(), 2);
         assert_eq!(first.html.matches("role=\"tabpanel\"").count(), 6);
         assert!(
-            first.html.contains("Document sections")
-                && first.html.contains("dynamic-tab-caption")
+            first.html.contains("Document sections") && first.html.contains("dynamic-tab-caption")
         );
     }
 }

@@ -99,8 +99,7 @@ fn sidebar(query: Cage<String>, selected: &'static str, theme: Theme) -> impl Wi
                             text().class("site-nav-title").content(category),
                             each(items).key(|id| *id).children(move |entry| {
                                 let id = entry.value;
-                                let entry =
-                                    find(id.get()).expect("catalogued navigation entry");
+                                let entry = find(id.get()).expect("catalogued navigation entry");
                                 link(
                                     label(entry),
                                     route(entry.id, &theme),
@@ -110,21 +109,18 @@ fn sidebar(query: Cage<String>, selected: &'static str, theme: Theme) -> impl Wi
                                         "site-nav-link"
                                     },
                                 )
-                                .current(
-                                    if entry.id == selected {
-                                        Some(Current::Page)
-                                    } else {
-                                        None
-                                    },
-                                )
+                                .current(if entry.id == selected {
+                                    Some(Current::Page)
+                                } else {
+                                    None
+                                })
                             }),
                         ))
                         .show_in(scope)
                 })
             })));
         }
-        let none =
-            scope.bond(move || !ENTRIES.iter().any(|entry| matching(entry, &query.get())));
+        let none = scope.bond(move || !ENTRIES.iter().any(|entry| matching(entry, &query.get())));
         children.push(Box::new(when(none, || {
             text()
                 .class("site-nav-empty")
@@ -150,8 +146,7 @@ fn search_results(query: Cage<String>, theme: Theme) -> impl Widget {
                 .map(|entry| entry.id)
                 .collect::<Vec<_>>()
         });
-        let none =
-            scope.bond(move || !ENTRIES.iter().any(|entry| matching(entry, &query.get())));
+        let none = scope.bond(move || !ENTRIES.iter().any(|entry| matching(entry, &query.get())));
         view()
             .class("site-search-results")
             .name("Search results")
@@ -301,11 +296,7 @@ fn header(
     })
 }
 
-fn palette_choices(
-    theme: &Theme,
-    selected: &str,
-    catalog: Cage<Vec<ThemeRecord>>,
-) -> impl Widget {
+fn palette_choices(theme: &Theme, selected: &str, catalog: Cage<Vec<ThemeRecord>>) -> impl Widget {
     let theme = theme.clone();
     let selected = selected.to_owned();
     widget(move |scope| {
@@ -418,11 +409,10 @@ fn saved_actions(
                         .variant(sapid::ButtonVariant::Danger)
                         .label("Delete theme")
                         .on_press(move || {
-                            let result =
-                                crate::theme_studio::host::remove(&id).and_then(|()| {
-                                    editor.forget_saved(&id);
-                                    crate::showcase_host::navigate(&fallback)
-                                });
+                            let result = crate::theme_studio::host::remove(&id).and_then(|()| {
+                                editor.forget_saved(&id);
+                                crate::showcase_host::navigate(&fallback)
+                            });
                             if let Err(error) = result {
                                 notice.revise(|value| *value = error);
                             }

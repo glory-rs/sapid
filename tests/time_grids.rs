@@ -63,8 +63,9 @@ fn real_time_grid_rows_cells_buttons_selected_and_off_step_focus_are_distinct() 
     assert_eq!(
         all(&app)
             .into_iter()
-            .filter(|id| app.tree().node(*id).unwrap().descriptor.view().role
-                == Some(Role::GridCell))
+            .filter(
+                |id| app.tree().node(*id).unwrap().descriptor.view().role == Some(Role::GridCell)
+            )
             .count(),
         48
     );

@@ -238,11 +238,10 @@ impl Widget for Title {
             margin: Some(Edges::all(0.0)),
             ..Style::new().font_family([Family::System])
         };
-        let mut widget =
-            configure!(self.common, glory::ui::text(), scope, "sapid-title", style)
-                .kind(TextKind::Heading(self.level))
-                .content(self.content.clone())
-                .selectable(self.selectable.clone());
+        let mut widget = configure!(self.common, glory::ui::text(), scope, "sapid-title", style)
+            .kind(TextKind::Heading(self.level))
+            .content(self.content.clone())
+            .selectable(self.selectable.clone());
         let owner = scope.id();
         for (kind, mut handlers) in std::mem::take(&mut self.common.handlers) {
             widget = widget.on(kind, move |event| observe(&mut handlers, owner, event));

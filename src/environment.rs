@@ -348,8 +348,7 @@ impl Widget for ThemeProvider {
         let style = scope.bond(move || crate::appearance::merge(base.clone(), custom.get()));
         let extra = self.class.clone();
         let prefix = self.context.theme.class();
-        let class =
-            scope.bond(move || format!("sapid-theme-provider {prefix} {}", extra.get()));
+        let class = scope.bond(move || format!("sapid-theme-provider {prefix} {}", extra.get()));
         let mut root = glory::ui::view()
             .class(class)
             .style(style)

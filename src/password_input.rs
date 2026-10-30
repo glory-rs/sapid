@@ -40,11 +40,7 @@ impl PasswordInput {
         self
     }
     /// Localized action names must both be nonempty.
-    pub fn visibility_labels(
-        mut self,
-        show: impl Into<String>,
-        hide: impl Into<String>,
-    ) -> Self {
+    pub fn visibility_labels(mut self, show: impl Into<String>, hide: impl Into<String>) -> Self {
         self.show_label = show.into();
         self.hide_label = hide.into();
         self

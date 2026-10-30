@@ -125,13 +125,13 @@ impl OwnerDelay {
         let Some(factory) = factory else {
             return callback();
         };
-        let ticket =
-            self.next
-                .get()
-                .checked_add(1)
-                .ok_or(glory::render::Error::InvalidProps(
-                    "widget delay identity exhausted",
-                ))?;
+        let ticket = self
+            .next
+            .get()
+            .checked_add(1)
+            .ok_or(glory::render::Error::InvalidProps(
+                "widget delay identity exhausted",
+            ))?;
         self.next.set(ticket);
         self.ticket.set(Some(ticket));
         // User future construction and cancellation run without state borrows.

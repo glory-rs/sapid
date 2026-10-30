@@ -60,9 +60,8 @@ fn explicit_inline_mode_keeps_real_four_theme_intrinsic_widths_and_editor_identi
                 .theme(theme.clone())
                 .style(width.map(|width| Style::new().width(Length::Px(*width))))
                 .item(
-                    sapid::overflow_item("label").content(move || {
-                        sapid::button().theme(button_theme.clone()).label(title)
-                    }),
+                    sapid::overflow_item("label")
+                        .content(move || sapid::button().theme(button_theme.clone()).label(title)),
                 )
                 .item(sapid::overflow_item("editor").width(140.).content(move || {
                     glory::ui::input()
@@ -71,8 +70,7 @@ fn explicit_inline_mode_keeps_real_four_theme_intrinsic_widths_and_editor_identi
                         .style(Style::new().width(Length::Percent(100.)))
                 }))
                 .item(
-                    sapid::overflow_item("tail")
-                        .content(|| glory::ui::text().content("Last item")),
+                    sapid::overflow_item("tail").content(|| glory::ui::text().content("Last item")),
                 ),
         )
         .unwrap();

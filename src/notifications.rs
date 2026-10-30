@@ -181,11 +181,7 @@ impl NotificationRequest {
         self.timeout = Some(value);
         self
     }
-    pub fn action(
-        mut self,
-        label: impl Into<String>,
-        callback: impl FnMut() + 'static,
-    ) -> Self {
+    pub fn action(mut self, label: impl Into<String>, callback: impl FnMut() + 'static) -> Self {
         self.action = Some((label.into(), Box::new(callback)));
         self
     }
@@ -506,9 +502,7 @@ impl Controller {
         let mut changes = Vec::new();
         for &(id, remaining, deadline) in &times {
             match (paused, deadline) {
-                (true, Some(deadline)) => {
-                    changes.push((id, deadline.saturating_sub(now), None))
-                }
+                (true, Some(deadline)) => changes.push((id, deadline.saturating_sub(now), None)),
                 (false, None) => changes.push((
                     id,
                     remaining,
@@ -523,9 +517,7 @@ impl Controller {
         if !changes.is_empty() {
             self.queue.try_revise(|q| {
                 for (id, remaining, deadline) in changes {
-                    if let Some(e) =
-                        q.entries.iter_mut().take(self.visible).find(|e| e.id == id)
-                    {
+                    if let Some(e) = q.entries.iter_mut().take(self.visible).find(|e| e.id == id) {
                         e.remaining = Some(remaining);
                         e.deadline = deadline;
                     }
@@ -777,11 +769,9 @@ impl Widget for Toaster {
                             let token = token.clone();
                             let weak = scope.downgrade();
                             row = row.action(label.clone(), move || {
-                                if let Err(error) = action.resolve(
-                                    &token,
-                                    NotificationCloseReason::Action,
-                                    true,
-                                ) && let Some(scope) = weak.upgrade()
+                                if let Err(error) =
+                                    action.resolve(&token, NotificationCloseReason::Action, true)
+                                    && let Some(scope) = weak.upgrade()
                                 {
                                     scope.report_error(error)
                                 }
@@ -805,9 +795,7 @@ impl Widget for Toaster {
                             let weak = scope.downgrade();
                             wrapper = wrapper.on(kind, move |event| {
                                 let active = match event {
-                                    glory::render::Event::FocusWithin { focused, .. } => {
-                                        focused
-                                    }
+                                    glory::render::Event::FocusWithin { focused, .. } => focused,
                                     glory::render::Event::PointerWithin { phase, .. } => {
                                         phase != glory::render::PointerPhase::Leave
                                     }

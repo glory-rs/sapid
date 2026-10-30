@@ -31,14 +31,10 @@ mod fixture {
                             .feedback_delay(|| Box::pin(super::menu_form::local_delay(350)))
                             .on_result(move |outcome| {
                                 calls.revise(|v| *v += 1);
-                                log.revise(|v| {
-                                    *v = format!("typed:{outcome:?}:{:?}", state.get())
-                                });
+                                log.revise(|v| *v = format!("typed:{outcome:?}:{:?}", state.get()));
                             })
                             .on(glory::render::EventKind::Clipboard, move |_| {
-                                log.revise(|v| {
-                                    v.push_str(&format!(";generic:{:?}", state.get()))
-                                })
+                                log.revise(|v| v.push_str(&format!(";generic:{:?}", state.get())))
                             })
                     }),
                     sapid::copy_button()

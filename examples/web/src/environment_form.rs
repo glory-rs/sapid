@@ -1,9 +1,7 @@
 use glory::render::{Direction, MotionPreference, Orientation};
 use glory::style::{Display, FlexDirection, Length, Style};
 use glory::ui::Widget;
-use sapid::{
-    Locale, LocaleMessage, Size, Theme, ThemeTokens, TypographyMetrics, TypographyRole,
-};
+use sapid::{Locale, LocaleMessage, Size, Theme, ThemeTokens, TypographyMetrics, TypographyRole};
 
 pub fn environment_form(theme: Theme) -> impl Widget {
     let tokens = ThemeTokens::default()

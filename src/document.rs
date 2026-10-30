@@ -255,10 +255,9 @@ impl TextList {
 impl Widget for TextList {
     fn build(&mut self, scope: &Scope) -> Result {
         if self.items.len() > MAX_DOCUMENT_ITEMS {
-            return Err(glory::render::Error::InvalidProps(
-                "text list accepts at most 256 items",
-            )
-            .into());
+            return Err(
+                glory::render::Error::InvalidProps("text list accepts at most 256 items").into(),
+            );
         }
         let mut style = self.common.theme.label(self.common.size);
         style.font_weight = Some(400.0);
@@ -431,10 +430,9 @@ impl DataList {
 impl Widget for DataList {
     fn build(&mut self, scope: &Scope) -> Result {
         if self.items.len() > MAX_DOCUMENT_ITEMS {
-            return Err(glory::render::Error::InvalidProps(
-                "data list accepts at most 256 items",
-            )
-            .into());
+            return Err(
+                glory::render::Error::InvalidProps("data list accepts at most 256 items").into(),
+            );
         }
         let mut base = Style::new();
         base.margin = Some(Edges::all(0.0));
@@ -509,9 +507,9 @@ impl Widget for DataListItem {
             left: 16.0,
             right: 0.0,
         });
-        let (classes, style) =
-            self.common
-                .appearance(scope, "sapid-data-list-definition", base);
+        let (classes, style) = self
+            .common
+            .appearance(scope, "sapid-data-list-definition", base);
         glory::ui::view()
             .class(classes)
             .style(style)
@@ -637,10 +635,9 @@ fn highlight_ranges(
             return Ok(());
         }
         if ranges.len() == 1024 {
-            return Err(glory::render::Error::InvalidProps(
-                "highlight exceeds 1024 text ranges",
-            )
-            .into());
+            return Err(
+                glory::render::Error::InvalidProps("highlight exceeds 1024 text ranges").into(),
+            );
         }
         ranges.push((start, end, marked));
         Ok(())

@@ -81,8 +81,7 @@ impl Controller {
         let snapshot = self.accepted.try_get()?;
         let value = self.control.source.try_get()?;
         Ok(
-            if value
-                .is_none_or(|d| snapshot.bounds.contains(d) && self.format.validate(d).is_ok())
+            if value.is_none_or(|d| snapshot.bounds.contains(d) && self.format.validate(d).is_ok())
             {
                 value
             } else {
@@ -500,8 +499,7 @@ impl Widget for TimeInput {
             EventKind::Composition,
         ] {
             let s = state.clone();
-            let observers =
-                Observers::new(self.common.handlers.remove(&kind).unwrap_or_default());
+            let observers = Observers::new(self.common.handlers.remove(&kind).unwrap_or_default());
             let cleanup = observers.clone();
             scope.on_cleanup(move || cleanup.clear())?;
             input = input.on(kind, move |e| {

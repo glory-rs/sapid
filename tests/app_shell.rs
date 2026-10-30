@@ -88,7 +88,13 @@ fn shell_has_real_landmarks_and_a_captured_skip_link_to_programmatic_main() {
         Role::Navigation,
         Role::Main,
     ] {
-        assert_eq!(nodes(&app).iter().filter(|id|app.tree().node(**id).unwrap().descriptor.view().role==Some(role)).count(),1);
+        assert_eq!(
+            nodes(&app)
+                .iter()
+                .filter(|id| app.tree().node(**id).unwrap().descriptor.view().role == Some(role))
+                .count(),
+            1
+        );
     }
     let main = class(&app, "sapid-shell-main");
     assert_eq!(

@@ -128,8 +128,7 @@ fn command_is_real_dialog_editor_grouped_listbox_and_application_actions_without
     assert!(!open(&app));
 }
 #[test]
-fn command_controlled_search_and_open_refusal_echo_atomically_and_composition_blocks_execution()
-{
+fn command_controlled_search_and_open_refusal_echo_atomically_and_composition_blocks_execution() {
     let app = App::memory();
     let query = app.scope().cage(String::new());
     let visible = app.scope().cage(true);
@@ -442,8 +441,7 @@ fn asynchronous_command_invalid_response_and_error_budgets_do_not_install_unboun
 }
 
 #[test]
-fn asynchronous_command_cold_ssr_and_browser_pending_shapes_agree_when_closed_or_initially_open()
- {
+fn asynchronous_command_cold_ssr_and_browser_pending_shapes_agree_when_closed_or_initially_open() {
     fn shapes(app: &App) -> Vec<glory::html::Shape> {
         let tree = app.tree();
         nodes(app)
@@ -473,8 +471,7 @@ fn asynchronous_command_cold_ssr_and_browser_pending_shapes_agree_when_closed_or
 }
 
 #[test]
-fn palette_scope_routes_only_the_nearest_live_owner_and_retirement_removes_external_registration()
- {
+fn palette_scope_routes_only_the_nearest_live_owner_and_retirement_removes_external_registration() {
     let app = App::memory();
     let outer = app.scope().cage(None);
     let inner = app.scope().cage(None);

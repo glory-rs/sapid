@@ -62,12 +62,7 @@ impl PinDomain {
     pub fn complete(self, value: &str) -> bool {
         self.validate_value(value).is_ok() && value.len() == self.length
     }
-    pub fn completed_user_transition(
-        self,
-        before: &str,
-        proposal: &str,
-        accepted: &str,
-    ) -> bool {
+    pub fn completed_user_transition(self, before: &str, proposal: &str, accepted: &str) -> bool {
         before != proposal && proposal == accepted && self.complete(proposal)
     }
 }

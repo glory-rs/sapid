@@ -16,8 +16,7 @@ fn invalid(message: &'static str) -> glory::ui::Error {
     glory::render::Error::InvalidProps(message).into()
 }
 pub(super) fn grid(rows: &[Vec<Span>]) -> Result<Grid> {
-    if rows.len() > MAX_TABLE_ROWS || rows.iter().map(Vec::len).sum::<usize>() > MAX_TABLE_CELLS
-    {
+    if rows.len() > MAX_TABLE_ROWS || rows.iter().map(Vec::len).sum::<usize>() > MAX_TABLE_CELLS {
         return Err(invalid("table exceeds its live row/cell budget"));
     }
     let mut occupied = [0u16; MAX_TABLE_COLUMNS];
@@ -27,10 +26,7 @@ pub(super) fn grid(rows: &[Vec<Span>]) -> Result<Grid> {
         let mut cursor = 0;
         let mut cells = Vec::with_capacity(row.len());
         for span in row {
-            if span.rows == 0
-                || span.columns == 0
-                || usize::from(span.rows) > rows.len() - index
-            {
+            if span.rows == 0 || span.columns == 0 || usize::from(span.rows) > rows.len() - index {
                 return Err(invalid("table span must remain within its row group"));
             }
             while cursor < MAX_TABLE_COLUMNS && occupied[cursor] > 0 {

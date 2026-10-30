@@ -238,14 +238,12 @@ pub(super) fn build(scope: &Scope, root: Rc<Controller>, config: Config) -> Resu
     } = config;
     let accepted = root.accepted;
     let date_days = if month { 1 } else { days };
-    let period = month.then(|| {
-        accepted.with(|m| m.data().window().start().date().year_month().days() as usize)
-    });
+    let period = month
+        .then(|| accepted.with(|m| m.data().window().start().date().year_month().days() as usize));
     let steps = period.unwrap_or(time.len());
     let days = accepted.with(|m| m.visible_resources().len()) * date_days;
-    let prepared = scope.bond(move || {
-        accepted.with(|data| prepare(data, date_days, time, column_width, month))
-    });
+    let prepared = scope
+        .bond(move || accepted.with(|data| prepare(data, date_days, time, column_width, month)));
     let state = Rc::new(TimelineState {
         owner: scope.id(),
         weak: scope.downgrade(),

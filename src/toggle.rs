@@ -360,9 +360,7 @@ impl Widget for ToggleGroup {
                 .keys
                 .iter()
                 .enumerate()
-                .find_map(|(index, key)| {
-                    (flags[index] && current.contains(key)).then_some(index)
-                })
+                .find_map(|(index, key)| (flags[index] && current.contains(key)).then_some(index))
                 .or_else(|| flags.iter().position(|enabled| *enabled))
                 .unwrap_or(usize::MAX)
         });

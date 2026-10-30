@@ -68,20 +68,16 @@ mod fixture {
                             .fill((
                                 text().content("Ada builds thoughtful developer tools."),
                                 link().label("Read Ada profile").target("#ada"),
-                                button().label("Follow Ada").on(activate, move |_| {
-                                    followed.revise(|value| *value += 1)
-                                }),
+                                button()
+                                    .label("Follow Ada")
+                                    .on(activate, move |_| followed.revise(|value| *value += 1)),
                             ))
                     }),
                 tooltip("search-tip")
                     .text("Search by title or author.")
                     .theme(theme)
-                    .target(|target| {
-                        target.input(input().name("Search").value("initial query"))
-                    }),
-                text().content(
-                    scope.bond(move || format!("Dismissed tips: {}", dismissed.get())),
-                ),
+                    .target(|target| target.input(input().name("Search").value("initial query"))),
+                text().content(scope.bond(move || format!("Dismissed tips: {}", dismissed.get()))),
                 text().content(scope.bond(move || format!("Followed: {}", followed.get()))),
                 button().label("Outside hints"),
             ));

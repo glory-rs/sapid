@@ -47,9 +47,7 @@ fn named(app: &App, name: &str) -> NodeId {
 fn items(app: &App) -> Vec<NodeId> {
     all(app)
         .into_iter()
-        .filter(|id| {
-            app.tree().node(*id).unwrap().descriptor.view().role == Some(Role::TreeItem)
-        })
+        .filter(|id| app.tree().node(*id).unwrap().descriptor.view().role == Some(Role::TreeItem))
         .collect()
 }
 fn navigate(app: &App, root: NodeId, from: NodeId, command: TreeCommand) {
@@ -194,8 +192,7 @@ fn keyboard_focus_and_selection_are_independent_skip_disabled_and_compose_within
     assert_eq!(items(&app).len(), 2);
 }
 #[test]
-fn lazy_children_are_explicit_requests_and_current_model_replacement_preserves_parent_identity()
-{
+fn lazy_children_are_explicit_requests_and_current_model_replacement_preserves_parent_identity() {
     let app = App::memory();
     let data = app.scope().cage(nodes());
     let root = app.scope().cage(None);
@@ -416,14 +413,11 @@ fn disabled_tree_uses_a_real_fieldset_for_custom_inputs_and_excludes_item_tab_st
             .view()
             .semantics
             .as_ref()
-            .is_some_and(|s| {
-                s.field_part == Some(glory::render::FieldPart::Fieldset) && s.disabled
-            })
+            .is_some_and(|s| s.field_part == Some(glory::render::FieldPart::Fieldset) && s.disabled)
     }));
     assert!(
         items(&app)
             .iter()
-            .all(|id| app.tree().node(*id).unwrap().descriptor.view().focus
-                != FocusMode::TabStop)
+            .all(|id| app.tree().node(*id).unwrap().descriptor.view().focus != FocusMode::TabStop)
     );
 }

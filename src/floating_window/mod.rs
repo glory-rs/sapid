@@ -471,8 +471,7 @@ impl Widget for FloatingWindow {
         let title_id = composite::id("window", &self.key, "title", "root")?;
         let title = composite::validated(scope, &self.title, |value| text(value))?;
         if let Some(name) = &self.common.name {
-            self.common.name =
-                Some(composite::validated(scope, name, |value| text(value))?.into())
+            self.common.name = Some(composite::validated(scope, name, |value| text(value))?.into())
         }
         self.common.style = composite::validated(scope, &self.common.style, decoration)?.into();
         let mut bounds = std::mem::take(&mut self.bounds).mount(scope);
@@ -651,9 +650,7 @@ impl Widget for FloatingWindow {
                                 let mut button = glory::ui::button()
                                     .label(label)
                                     .enabled(s.enabled.clone())
-                                    .on(EventKind::Activate, move |_| {
-                                        s.report(s.command(command))
-                                    });
+                                    .on(EventKind::Activate, move |_| s.report(s.command(command)));
                                 if !unstyled {
                                     button = button.style(theme.control(size));
                                 }

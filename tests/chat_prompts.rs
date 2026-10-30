@@ -224,8 +224,7 @@ fn bounded_declarations_stop_consuming_and_invalid_source_is_rejected_before_ren
     assert!(app.tree().roots().is_empty());
 }
 #[test]
-fn suggestions_only_propose_text_cancel_only_runs_the_application_callback_and_owner_cleans_up()
-{
+fn suggestions_only_propose_text_cancel_only_runs_the_application_callback_and_owner_cleans_up() {
     let app = App::memory();
     let busy = app.scope().cage(false);
     let source = app.scope().cage("Original".to_owned());
@@ -286,9 +285,14 @@ fn deferred_send_has_a_real_query_barrier_and_pending_owner_retirement_cancels_p
             .on_send(move |_| {
                 let scope = weak.upgrade().unwrap();
                 let output = output.clone();
-                scope.request(Query::Focus(input.get().unwrap()),move |result| {
-            assert!(result.is_err());output.set(output.get()+1);
-        }).expect("business callback runs after flush, so its query can flush a real barrier");
+                scope
+                    .request(Query::Focus(input.get().unwrap()), move |result| {
+                        assert!(result.is_err());
+                        output.set(output.get() + 1);
+                    })
+                    .expect(
+                        "business callback runs after flush, so its query can flush a real barrier",
+                    );
             }),
     )
     .unwrap();

@@ -74,8 +74,7 @@ fn circular_progress_uses_bounded_real_paths_for_all_themes_and_endpoints() {
                     .unwrap();
                 let arc = find(&app, "sapid-progress-arc");
                 let tree = app.tree();
-                let Props::Graphic(props) = tree.node(arc).unwrap().descriptor.view().props
-                else {
+                let Props::Graphic(props) = tree.node(arc).unwrap().descriptor.view().props else {
                     panic!()
                 };
                 props.validate().unwrap();

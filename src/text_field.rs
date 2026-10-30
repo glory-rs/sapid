@@ -216,8 +216,7 @@ impl Widget for TextField {
             let owner = scope.id();
             inner = inner.on(kind, move |event| {
                 let Some(scope) = weak.upgrade() else { return };
-                if let Event::ValueChanged { value, .. } | Event::Commit { value, .. } = &event
-                {
+                if let Event::ValueChanged { value, .. } | Event::Commit { value, .. } = &event {
                     if let Err(error) = accept.accept(value).and_then(|()| pulse.touch()) {
                         scope.report_error(error);
                         return;

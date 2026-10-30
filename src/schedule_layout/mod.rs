@@ -224,9 +224,7 @@ impl ScheduleData {
             let event = self
                 .event(*occurrence)
                 .ok_or(ScheduleError::StaleOccurrence)?;
-            if event.is_all_day()
-                || resource.is_some_and(|key| event.resource_key() != Some(key))
-            {
+            if event.is_all_day() || resource.is_some_and(|key| event.resource_key() != Some(key)) {
                 continue;
             }
             let a = ticks(occurrence.interval().start()).max(start);

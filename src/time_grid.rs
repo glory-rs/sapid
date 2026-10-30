@@ -54,9 +54,10 @@ impl Controller {
     }
     fn allowed(&self, s: Snapshot, at: usize) -> bool {
         s.enabled
-            && self.spec.at(at).is_some_and(|v| {
-                s.bounds.contains(v) && self.disabled.binary_search(&v).is_err()
-            })
+            && self
+                .spec
+                .at(at)
+                .is_some_and(|v| s.bounds.contains(v) && self.disabled.binary_search(&v).is_err())
     }
     fn nearest(&self, s: Snapshot, at: usize) -> Option<usize> {
         for distance in 0..self.spec.len() {
@@ -126,9 +127,7 @@ impl Controller {
                 row * cols,
                 ((row + 1) * cols - 1).min(len - 1),
             ),
-            GridCommand::PreviousPage => {
-                (at.saturating_sub(cols * 4) as i32, -1, len, 0, len - 1)
-            }
+            GridCommand::PreviousPage => (at.saturating_sub(cols * 4) as i32, -1, len, 0, len - 1),
             GridCommand::NextPage => ((at + cols * 4).min(len - 1) as i32, 1, len, 0, len - 1),
             GridCommand::PreviousLargePage => (0, 1, len, 0, len - 1),
             GridCommand::NextLargePage => ((len - 1) as i32, -1, len, 0, len - 1),
@@ -439,9 +438,7 @@ impl Widget for TimeGrid {
                     )
                     .semantics(scope.bond(move || {
                         Some(Box::new(Semantics {
-                            selected: Some(
-                                value.is_some() && accepted.with(|s| s.value == value),
-                            ),
+                            selected: Some(value.is_some() && accepted.with(|s| s.value == value)),
                             table: Some(TableMetadata::Cell {
                                 row: row as u32,
                                 column: col as u16,

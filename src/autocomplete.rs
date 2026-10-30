@@ -1,7 +1,5 @@
 //! Free text completion over the shared editable choice controller.
-use crate::{
-    Combobox, ComboboxFilter, FieldControl, NativeOption, NativeOptionGroup, Size, Theme,
-};
+use crate::{Combobox, ComboboxFilter, FieldControl, NativeOption, NativeOptionGroup, Size, Theme};
 use glory::render::{Event, EventKind, FocusMode, NodeId};
 use glory::style::Style;
 use glory::ui::{Result, Widget};

@@ -58,9 +58,8 @@ mod fixture {
                 .label("Appointment date and time")
                 .required(true)
                 .control(move |f| {
-                    let policy = DateTimePolicy::application(
-                        AmbiguityPolicy::Reject,
-                        |local| match local.time().hour() {
+                    let policy = DateTimePolicy::application(AmbiguityPolicy::Reject, |local| {
+                        match local.time().hour() {
                             2 => LocalResolution::Gap,
                             1 => LocalResolution::Ambiguous {
                                 earlier: ResolvedDateTime::from_fixed(
@@ -76,8 +75,8 @@ mod fixture {
                                 local,
                                 FixedOffset::new(60).unwrap(),
                             )),
-                        },
-                    );
+                        }
+                    });
                     date_time_picker(
                         "appointment-date-time",
                         DatesProvider::new(date("2024-02-29")),
@@ -161,9 +160,7 @@ mod fixture {
                 .reset_revision(reset)
                 .value(inline_value)
                 .on_value_change(move |v| inline_value.revise(|s| *s = v))
-                .on_draft_change(move |v| {
-                    inline_draft.revise(|s| *s = status(v.status).into())
-                }),
+                .on_draft_change(move |v| inline_draft.revise(|s| *s = status(v.status).into())),
                 sapid::text()
                     .theme(theme.clone())
                     .class("inline-date-time-summary")

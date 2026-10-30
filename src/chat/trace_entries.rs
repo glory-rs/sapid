@@ -100,10 +100,7 @@ macro_rules! entry_widget {
             common: Common,
             entry: Entry,
         }
-        pub fn $constructor(
-            key: impl Into<String>,
-            record: impl Into<Vary<TraceRecord>>,
-        ) -> $name {
+        pub fn $constructor(key: impl Into<String>, record: impl Into<Vary<TraceRecord>>) -> $name {
             $name {
                 common: Common::default(),
                 entry: Entry::new(key.into(), record.into(), TraceKind::$kind),

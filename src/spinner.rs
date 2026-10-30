@@ -129,9 +129,8 @@ impl Widget for Spinner {
             name.try_with(|name| valid_name(name))??;
         }
         if let Some(name) = self.common.name.take() {
-            self.common.name = Some(
-                crate::composite::validated(scope, &name, |name| valid_name(name))?.into(),
-            );
+            self.common.name =
+                Some(crate::composite::validated(scope, &name, |name| valid_name(name))?.into());
         }
         let color = if self.common.unstyled {
             self.common.theme.foreground

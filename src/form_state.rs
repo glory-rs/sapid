@@ -149,10 +149,7 @@ impl<T> FieldOptions<T> {
         self
     }
     /// The factory borrows one field. Clone only data actually needed by its future.
-    pub fn validate_async(
-        mut self,
-        callback: impl Fn(&T) -> ValidationFuture + 'static,
-    ) -> Self {
+    pub fn validate_async(mut self, callback: impl Fn(&T) -> ValidationFuture + 'static) -> Self {
         self.async_validator = Some(Rc::new(callback));
         self
     }
@@ -277,8 +274,7 @@ impl Inner {
             status.touched += usize::from(state.touched);
             status.dirty += usize::from(state.dirty);
             status.validating += usize::from(state.validating);
-            status.invalid +=
-                usize::from(!state.errors.is_empty() || state.validation_overflow);
+            status.invalid += usize::from(!state.errors.is_empty() || state.validation_overflow);
         }
         let ready = self.preparing.get() == 0
             && status.submit == SubmitStatus::Validating
@@ -366,8 +362,7 @@ impl FormState {
         if !self.0.is_live() || !scope.is_alive() {
             return Err(FormError::Retired);
         }
-        if value.runtime() != scope.id().runtime() || value.runtime() != self.0.status.runtime()
-        {
+        if value.runtime() != scope.id().runtime() || value.runtime() != self.0.status.runtime() {
             return Err(FormError::InvalidKey);
         }
         let key = key.into();
@@ -466,10 +461,7 @@ impl FormState {
         Ok(FormField(field))
     }
     /// Validates the live registry before handing a completion token to application code.
-    pub fn submit(
-        &self,
-        callback: impl FnOnce(SubmitToken) + 'static,
-    ) -> Result<(), FormError> {
+    pub fn submit(&self, callback: impl FnOnce(SubmitToken) + 'static) -> Result<(), FormError> {
         if !self.0.is_live() {
             return Err(FormError::Retired);
         }
@@ -550,9 +542,7 @@ impl FormState {
                 continue;
             };
             let values = match value {
-                ControlValue::Missing | ControlValue::Checked { checked: false, .. } => {
-                    Vec::new()
-                }
+                ControlValue::Missing | ControlValue::Checked { checked: false, .. } => Vec::new(),
                 ControlValue::Text(value)
                 | ControlValue::Checked {
                     checked: true,

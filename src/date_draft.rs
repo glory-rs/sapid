@@ -120,7 +120,7 @@ mod tests {
     }
     #[test]
     fn rejected_huge_input_does_not_call_application_parser_and_custom_parser_gets_bounded_borrow()
-     {
+    {
         assert_eq!(
             classify_date_draft(&"x".repeat(1_000_000), DateBounds::default(), |_| panic!(
                 "must not call"

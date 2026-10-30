@@ -4,8 +4,8 @@ use crate::appearance::{Common, common_methods};
 use crate::composite::{self, Callback, Observers};
 use crate::state::Value;
 use glory::render::{
-    Direction, Event, EventKind, FocusMode, GraphicPoint, GraphicProps, GraphicStroke,
-    Orientation, PathCommand,
+    Direction, Event, EventKind, FocusMode, GraphicPoint, GraphicProps, GraphicStroke, Orientation,
+    PathCommand,
 };
 use glory::style::{BorderStyle, Edges, Length, Overflow, PointerEvents, Position, Style};
 use glory::ui::{Result, Widget};
@@ -325,12 +325,11 @@ impl Widget for Rating {
                                 }
                             });
                         if clear {
-                            wrapper =
-                                wrapper.fill(glory::ui::text().content("×").style(Style {
-                                    color: Some(foreground),
-                                    font_size: Some(side * 0.8),
-                                    ..Default::default()
-                                }));
+                            wrapper = wrapper.fill(glory::ui::text().content("×").style(Style {
+                                color: Some(foreground),
+                                font_size: Some(side * 0.8),
+                                ..Default::default()
+                            }));
                         } else {
                             let theme = theme.clone();
                             wrapper = wrapper.fill(

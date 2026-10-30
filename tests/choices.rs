@@ -17,8 +17,7 @@ fn find(app: &App, class: &str) -> Vec<NodeId> {
     found
 }
 fn props(app: &App, id: NodeId) -> CheckProps {
-    let Props::Check(props) = app.tree().node(id).unwrap().descriptor.view().props.clone()
-    else {
+    let Props::Check(props) = app.tree().node(id).unwrap().descriptor.view().props.clone() else {
         panic!("not a check")
     };
     props
@@ -176,8 +175,7 @@ fn group_rejected_proposals_leave_child_and_select_all_models_unchanged() {
 fn explicit_group_rejects_duplicate_unknown_and_excessive_items_before_creating_nodes() {
     let app = App::memory();
     for widget in [
-        checkbox_group("duplicate")
-            .items([checkbox_item("a", "A"), checkbox_item("a", "Again")]),
+        checkbox_group("duplicate").items([checkbox_item("a", "A"), checkbox_item("a", "Again")]),
         checkbox_group("unknown")
             .item(checkbox_item("a", "A"))
             .default_selected(["missing".to_owned()]),

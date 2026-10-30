@@ -659,9 +659,7 @@ fn program_selecting_a_disabled_tab_restores_its_panel_without_proposing_another
     app.mount(
         tabs("disabled-restore")
             .value(source)
-            .on_value_change(|_| {
-                panic!("programmatic focus restoration must not change selection")
-            })
+            .on_value_change(|_| panic!("programmatic focus restoration must not change selection"))
             .tab(tab("a").content(move || text_field().node_ref(reference)))
             .tab(tab("b").enabled(false)),
     )

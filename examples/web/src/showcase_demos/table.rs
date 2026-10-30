@@ -8,8 +8,8 @@ pub fn demo(theme: sapid::Theme) -> impl Widget {
 mod fixture {
     use glory::prelude::*;
     use sapid::{
-        Theme, button, table, table_body, table_cell, table_foot, table_head,
-        table_header_cell, table_row, table_row_header,
+        Theme, button, table, table_body, table_cell, table_foot, table_head, table_header_cell,
+        table_row, table_row_header,
     };
     pub fn table_form(theme: Theme) -> impl Widget {
         widget(move |scope| {

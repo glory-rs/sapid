@@ -1,8 +1,6 @@
 //! Bounded multiple selection with an editable search and live keyed tags.
 pub use crate::combobox::MultiSelectHandle;
-use crate::{
-    Combobox, ComboboxFilter, FieldControl, NativeOption, NativeOptionGroup, Size, Theme,
-};
+use crate::{Combobox, ComboboxFilter, FieldControl, NativeOption, NativeOptionGroup, Size, Theme};
 use glory::render::{Event, EventKind, FocusMode, NodeId};
 use glory::style::Style;
 use glory::ui::{Result, Widget};

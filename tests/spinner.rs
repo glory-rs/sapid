@@ -34,9 +34,7 @@ fn named_status_has_a_real_decorative_finite_graphic_and_no_input_handlers() {
     assert_eq!(app.stats().handlers, 0);
     let html = glory::ssr::render(loader().name("Loading files")).unwrap();
     assert!(html.contains("role=\"status\"") && html.contains("aria-busy=\"true\""));
-    assert!(
-        html.contains("data-gly-rotate=\"\"") && html.contains("animation-duration:1000ms")
-    );
+    assert!(html.contains("data-gly-rotate=\"\"") && html.contains("animation-duration:1000ms"));
     assert!(html.contains("<svg") && !html.contains("tabindex"));
 }
 
@@ -96,8 +94,7 @@ fn every_theme_size_and_unstyled_keep_visible_content_and_explicit_overrides() {
     let tree = app.tree();
     let d = tree.node(tree.roots()[0]).unwrap().descriptor.view();
     assert!(
-        d.classes.iter().any(|v| v == "sapid-spinner")
-            && d.classes.iter().any(|v| v == "custom")
+        d.classes.iter().any(|v| v == "sapid-spinner") && d.classes.iter().any(|v| v == "custom")
     );
     assert_eq!(d.style.background, Some(Color(1, 2, 3, 255)));
 }

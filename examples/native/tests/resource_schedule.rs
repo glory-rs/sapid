@@ -25,8 +25,7 @@ fn data(month: bool) -> ResourceScheduleData {
                 ScheduleEvent::new(
                     key("planning"),
                     "Planning",
-                    ScheduleInterval::new(dt("2024-02-29T09:00"), dt("2024-02-29T10:00"))
-                        .unwrap(),
+                    ScheduleInterval::new(dt("2024-02-29T09:00"), dt("2024-02-29T10:00")).unwrap(),
                 )
                 .unwrap()
                 .resource(key("room0"))
@@ -38,8 +37,7 @@ fn data(month: bool) -> ResourceScheduleData {
                 ScheduleEvent::new(
                     key("review"),
                     "Review",
-                    ScheduleInterval::new(dt("2024-02-29T09:00"), dt("2024-02-29T10:00"))
-                        .unwrap(),
+                    ScheduleInterval::new(dt("2024-02-29T09:00"), dt("2024-02-29T10:00")).unwrap(),
                 )
                 .unwrap()
                 .resource(key("room1")),
@@ -259,8 +257,7 @@ fn native_resource_month_real_resource_day_grid_rtl_readonly_and_owner_release()
     assert_eq!(app.stats().nodes, 0);
 }
 #[test]
-fn native_resource_month_drag_moves_one_civil_day_and_changes_resource_without_writing_source()
-{
+fn native_resource_month_drag_moves_one_civil_day_and_changes_resource_without_writing_source() {
     for axis in [ResourceAxis::Columns, ResourceAxis::Rows] {
         let host = WindowApp::new();
         host.renderer().set_viewport(900, 900, 1.).unwrap();

@@ -47,12 +47,9 @@ mod fixture {
                                 select_option("starter", "Starter").value("start-value"),
                                 select_option("pro", "Professional").value("pro-value"),
                             ])
-                            .group(
-                                select_group("Unavailable").disabled(true).option(
-                                    select_option("enterprise", "Enterprise")
-                                        .value("enterprise-value"),
-                                ),
-                            )
+                            .group(select_group("Unavailable").disabled(true).option(
+                                select_option("enterprise", "Enterprise").value("enterprise-value"),
+                            ))
                             .on_value_change(move |value| {
                                 proposals.revise(|count| *count += 1);
                                 if !reject.get() {
@@ -83,9 +80,8 @@ mod fixture {
                     .form_name("empty")
                     .placeholder("Nothing selected")
                     .option(select_option("empty-value", "Explicit empty value").value("")),
-                text().content(
-                    scope.bond(move || format!("Select proposals: {}", proposals.get())),
-                ),
+                text()
+                    .content(scope.bond(move || format!("Select proposals: {}", proposals.get()))),
                 button().label("After select"),
             ));
         (

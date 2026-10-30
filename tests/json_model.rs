@@ -19,10 +19,8 @@ fn exact_tokens_and_duplicate_keys_survive_formatting() {
 
 #[test]
 fn empty_containers_and_escaped_punctuation_have_correct_indentation() {
-    let original =
-        r#"{"empty":{},"list":[],"escaped":"[,\\\"]","items":[1,true,null,{"a":2}]}"#;
-    let formatted =
-        format_json(original, JsonFormat::PrettyTwo, JsonLimits::default()).unwrap();
+    let original = r#"{"empty":{},"list":[],"escaped":"[,\\\"]","items":[1,true,null,{"a":2}]}"#;
+    let formatted = format_json(original, JsonFormat::PrettyTwo, JsonLimits::default()).unwrap();
     assert!(formatted.contains("\n  \"items\": [\n    1,"));
     assert!(formatted.contains("\"empty\": {}"));
     assert_eq!(

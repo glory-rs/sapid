@@ -93,9 +93,7 @@ mod fixture {
                     button().label("After menubar"),
                     rtl,
                     input().name("Menubar draft").value("Draft text"),
-                    text().content(
-                        scope.bond(move || format!("Menu actions: {}", actions.get())),
-                    ),
+                    text().content(scope.bond(move || format!("Menu actions: {}", actions.get()))),
                 )),
             State {
                 value,

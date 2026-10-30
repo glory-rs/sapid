@@ -18,16 +18,14 @@ pub(super) fn role_rows(
                         && d.overridden(layer, field)
                 })
             });
-            let supported = scope.bond(move || {
-                draft.with(|d| layer.scheme().is_none_or(|s| d.record.supports(s)))
-            });
+            let supported = scope
+                .bond(move || draft.with(|d| layer.scheme().is_none_or(|s| d.record.supports(s))));
             let overridden = scope.bond(move || draft.with(|d| d.overridden(layer, field)));
             let style = scope.bond(move || Style {
                 background: Some(draft.with(|d| d.color(layer, field))),
                 ..Style::new()
             });
-            let invalid =
-                scope.bond(move || parse_invalid(&draft.with(|d| d.text(layer, field))));
+            let invalid = scope.bond(move || parse_invalid(&draft.with(|d| d.text(layer, field))));
             let rowclass = scope.bond(move || {
                 if invalid.get() {
                     "studio-color-row is-invalid".to_owned()
@@ -49,9 +47,7 @@ pub(super) fn role_rows(
                         .on_checked_change(move |on| {
                             draft.revise(|d| d.inherit(layer, field, on));
                             picker.revise(|v| {
-                                *v = Hsva::from_rgba(
-                                    draft.with(|d| d.color(layer, target.get())),
-                                )
+                                *v = Hsva::from_rgba(draft.with(|d| d.color(layer, target.get())))
                             });
                         }),
                 )

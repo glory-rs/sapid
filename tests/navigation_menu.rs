@@ -110,9 +110,7 @@ fn controlled_requests_are_ordered_and_rejection_does_not_open_or_mutate_source(
     app.mount(
         fixture()
             .open_path(path)
-            .on_open_path_change(move |path| {
-                changed.borrow_mut().push(format!("typed:{path:?}"))
-            })
+            .on_open_path_change(move |path| changed.borrow_mut().push(format!("typed:{path:?}")))
             .on(EventKind::Activate, move |_| {
                 observed.borrow_mut().push("generic".into())
             }),

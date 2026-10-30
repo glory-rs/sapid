@@ -643,8 +643,7 @@ impl ThemeStore {
         }
         if self.themes.len() >= MAX_THEMES {
             return Err(
-                "Eight previews are saved. Edit an existing preview or remove one first."
-                    .into(),
+                "Eight previews are saved. Edit an existing preview or remove one first.".into(),
             );
         }
         self.next_id = self
@@ -745,8 +744,7 @@ mod tests {
         let mut record = ThemeRecord::from_definition(&sapid::GREEN);
         record.base.canvas = Color(3, 4, 5, 6);
         store.save(record).unwrap();
-        let mut legacy: serde_json::Value =
-            serde_json::from_str(&store.json().unwrap()).unwrap();
+        let mut legacy: serde_json::Value = serde_json::from_str(&store.json().unwrap()).unwrap();
         legacy["version"] = 1.into();
         legacy["themes"][0]["base"]["colors"]
             .as_object_mut()

@@ -19,11 +19,9 @@ mod browser {
             .unwrap();
         let make = || fixture::demo(sapid::Theme::light());
         let app = if hydrate {
-            glory::web::hydrate(root, make())
-                .map_err(|error| JsValue::from_str(&error.to_string()))
+            glory::web::hydrate(root, make()).map_err(|error| JsValue::from_str(&error.to_string()))
         } else {
-            glory::web::launch(root, make())
-                .map_err(|error| JsValue::from_str(&error.to_string()))
+            glory::web::launch(root, make()).map_err(|error| JsValue::from_str(&error.to_string()))
         }?;
         APP.with(|slot| *slot.borrow_mut() = Some(app));
         Ok(())

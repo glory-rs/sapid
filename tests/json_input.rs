@@ -23,8 +23,7 @@ fn find(app: &App, class: &str) -> NodeId {
     panic!("missing {class}")
 }
 fn props(app: &App, id: NodeId) -> InputProps {
-    let Props::Input(value) = app.tree().node(id).unwrap().descriptor.view().props.clone()
-    else {
+    let Props::Input(value) = app.tree().node(id).unwrap().descriptor.view().props.clone() else {
         panic!("input")
     };
     value
@@ -240,10 +239,9 @@ fn invalid_initial_configuration_is_rejected_and_oversized_source_can_recover() 
 
 #[test]
 fn ssr_escapes_draft_text_and_owner_retirement_releases_handlers_and_references() {
-    let html = glory::ssr::render(
-        json_input("ssr").default_value(r#"{"html":"</textarea><script>"}"#),
-    )
-    .unwrap();
+    let html =
+        glory::ssr::render(json_input("ssr").default_value(r#"{"html":"</textarea><script>"}"#))
+            .unwrap();
     assert!(html.contains("<textarea"));
     assert!(html.contains("&lt;/textarea&gt;&lt;script&gt;"));
     assert!(!html.contains("<script>"));

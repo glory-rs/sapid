@@ -396,8 +396,7 @@ struct Row {
 }
 impl Widget for TagsInput {
     fn build(&mut self, scope: &Scope) -> Result {
-        let placeholder =
-            crate::text_input::placeholder(scope, self.placeholder.take(), false)?;
+        let placeholder = crate::text_input::placeholder(scope, self.placeholder.take(), false)?;
         let settings = self.settings;
         if settings.max_tags == 0 || settings.max_tags > MAX_TAGS_INPUT_VALUES {
             return Err(invalid("tags input max_tags must be 1..=256"));
@@ -597,8 +596,7 @@ impl Widget for TagsInput {
         ] {
             let command = controller.clone();
             let weak = scope.downgrade();
-            let observers =
-                Observers::new(self.common.handlers.remove(&kind).unwrap_or_default());
+            let observers = Observers::new(self.common.handlers.remove(&kind).unwrap_or_default());
             input = input.on(kind, move |event| {
                 let Some(scope) = weak.upgrade() else { return };
                 let result = match &event {
@@ -756,8 +754,7 @@ mod tests {
     }
     fn input(app: &App) -> InputProps {
         let tree = app.tree();
-        let Props::Input(value) = tree.node(editor(app)).unwrap().descriptor.view().props
-        else {
+        let Props::Input(value) = tree.node(editor(app)).unwrap().descriptor.view().props else {
             panic!()
         };
         value.clone()
@@ -775,8 +772,7 @@ mod tests {
     }
     fn values(app: &App) -> Vec<String> {
         let tree = app.tree();
-        let Props::Select(value) = tree.node(proxy(app)).unwrap().descriptor.view().props
-        else {
+        let Props::Select(value) = tree.node(proxy(app)).unwrap().descriptor.view().props else {
             panic!()
         };
         assert!(value.multiple);
@@ -1119,9 +1115,7 @@ mod tests {
     }
     #[test]
     fn all_same_revision_tag_edits_and_commits_in_one_drained_tick_are_processed() {
-        use glory::render::{
-            Capabilities, Input, Mutation, Query, QueryToken, Receipt, Render,
-        };
+        use glory::render::{Capabilities, Input, Mutation, Query, QueryToken, Receipt, Render};
         struct Queued {
             memory: glory::render::memory::Memory,
             queue: Rc<std::cell::RefCell<Vec<Input>>>,

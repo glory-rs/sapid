@@ -125,8 +125,7 @@ fn native_agenda_four_themes_real_lists_hit_focus_selection_pixels_and_keyed_ide
                 [ScheduleEvent::new(
                     ScheduleKey::new("planning").unwrap(),
                     "Changed planning",
-                    ScheduleInterval::new(dt("2024-02-29T09:00"), dt("2024-02-29T11:00"))
-                        .unwrap(),
+                    ScheduleInterval::new(dt("2024-02-29T09:00"), dt("2024-02-29T11:00")).unwrap(),
                 )
                 .unwrap()],
             )
@@ -162,9 +161,8 @@ fn native_agenda_window_requests_readonly_empty_state_and_owner_retirement() {
             .readonly(readonly)
             .on_window_request(move |request| {
                 requests.revise(|n| *n += 1);
-                source.revise(|v| {
-                    *v = ScheduleData::new(request.zone, request.window, []).unwrap()
-                });
+                source
+                    .revise(|v| *v = ScheduleData::new(request.zone, request.window, []).unwrap());
             })
     }))
     .unwrap();

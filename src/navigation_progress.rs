@@ -127,10 +127,7 @@ pub fn navigation_progress() -> NavigationProgress {
     }
 }
 impl NavigationProgress {
-    pub fn on_ready(
-        mut self,
-        callback: impl FnMut(NavigationProgressHandle) + 'static,
-    ) -> Self {
+    pub fn on_ready(mut self, callback: impl FnMut(NavigationProgressHandle) + 'static) -> Self {
         self.ready = Some(Box::new(callback));
         self
     }

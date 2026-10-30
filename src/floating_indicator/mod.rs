@@ -2,8 +2,8 @@
 use crate::appearance::{Common, configure, merge, observe};
 use crate::composite::{self, Callback};
 use glory::render::{
-    Event, EventKind, GraphicProps, GraphicStroke, GraphicTransition, NodeId, Query,
-    QueryToken, QueryValue, Rect, Semantics, StrokeCap,
+    Event, EventKind, GraphicProps, GraphicStroke, GraphicTransition, NodeId, Query, QueryToken,
+    QueryValue, Rect, Semantics, StrokeCap,
 };
 use glory::style::{Color, Length, PointerEvents, Position, Style};
 use glory::ui::{Children, IntoChildren, Result, WeakScope, Widget};
@@ -608,10 +608,11 @@ impl Widget for FloatingIndicator {
                     }),
                     alternative: None,
                     animation: None,
-                    transition: (current.transition && animated.get() && duration.get() > 0)
-                        .then(|| GraphicTransition {
+                    transition: (current.transition && animated.get() && duration.get() > 0).then(
+                        || GraphicTransition {
                             duration_millis: duration.get(),
-                        }),
+                        },
+                    ),
                 }
             }));
         let origin = glory::ui::view()
@@ -665,8 +666,7 @@ impl Widget for FloatingIndicator {
             root = root.on(kind, move |event| observe(&mut handlers, owner, event));
         }
         root.show_in(scope)?;
-        let parent =
-            scope.child_in(root_reference.try_get()?.ok_or(glory::ui::Error::Gone)?)?;
+        let parent = scope.child_in(root_reference.try_get()?.ok_or(glory::ui::Error::Gone)?)?;
         origin.show_in(&parent)?;
         let area_scope = scope.child_in(container.try_get()?.ok_or(glory::ui::Error::Gone)?)?;
         if let Some(factory) = factory.as_mut() {

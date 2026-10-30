@@ -216,8 +216,7 @@ impl Widget for Reasoning {
                         .show_in(scope)?;
                     let area = scope.child_in(root.get().ok_or(glory::ui::Error::Gone)?)?;
                     let keys = area.bond(move || {
-                        accepted
-                            .with(|d| d.steps.iter().map(|s| s.key.clone()).collect::<Vec<_>>())
+                        accepted.with(|d| d.steps.iter().map(|s| s.key.clone()).collect::<Vec<_>>())
                     });
                     glory::ui::each(keys)
                         .key(|key| key.clone())
@@ -246,10 +245,10 @@ impl Widget for Reasoning {
                                                         "{} · {}{}",
                                                         s.label,
                                                         s.status.label(),
-                                                        s.elapsed_millis.map_or_else(
-                                                            String::new,
-                                                            |v| format!(" · {v} ms")
-                                                        )
+                                                        s.elapsed_millis
+                                                            .map_or_else(String::new, |v| format!(
+                                                                " · {v} ms"
+                                                            ))
                                                     )
                                                 })
                                             })),

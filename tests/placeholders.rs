@@ -93,10 +93,9 @@ fn input_families_lower_real_hints_and_multiline_is_not_a_business_value() {
 #[cfg(feature = "json")]
 #[test]
 fn json_input_forwards_multiline_hint_without_supplying_a_document_value() {
-    let html =
-        glory::ssr::snapshot(sapid::json_input("json-hint").placeholder("Paste JSON\n{}"))
-            .unwrap()
-            .html;
+    let html = glory::ssr::snapshot(sapid::json_input("json-hint").placeholder("Paste JSON\n{}"))
+        .unwrap()
+        .html;
     assert!(html.contains("placeholder=\"Paste JSON\n{}\""));
     assert!(!html.contains("value=\"Paste JSON"));
 }

@@ -173,8 +173,7 @@ impl Widget for Toolbar {
             .name
             .as_ref()
             .ok_or_else(|| invalid("toolbar requires a name"))?;
-        self.common.name =
-            Some(composite::validated(scope, name, |value| label(value))?.into());
+        self.common.name = Some(composite::validated(scope, name, |value| label(value))?.into());
         let collection = crate::Collection::new(
             scope,
             crate::CollectionLimits {
@@ -372,8 +371,7 @@ impl Widget for ActionBar {
     fn build(&mut self, scope: &Scope) -> Result {
         let count = self.count.clone();
         let enabled = self.toolbar.common.enabled.clone();
-        self.toolbar.common.enabled =
-            scope.bond(move || count.get() > 0 && enabled.get()).into();
+        self.toolbar.common.enabled = scope.bond(move || count.get() > 0 && enabled.get()).into();
         let count = self.count.clone();
         let visible = self
             .visible

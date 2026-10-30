@@ -1,9 +1,7 @@
 use glory::prelude::*;
 use glory::render::{NodeId, Props};
 use glory::style::{Length, Position, Style};
-use sapid::{
-    AffixContext, AffixHorizontal, AffixOffset, AffixVertical, affix, affix_container,
-};
+use sapid::{AffixContext, AffixHorizontal, AffixOffset, AffixVertical, affix, affix_container};
 use std::{cell::Cell, rc::Rc};
 fn style(app: &App, node: NodeId) -> Style {
     app.tree()

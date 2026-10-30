@@ -45,8 +45,7 @@ fn rgba(color: glory::style::Color) -> [u8; 4] {
     [color.0, color.1, color.2, color.3]
 }
 #[test]
-fn native_progress_has_real_fraction_geometry_circular_widgets_and_stable_updates_in_all_themes()
- {
+fn native_progress_has_real_fraction_geometry_circular_widgets_and_stable_updates_in_all_themes() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),

@@ -2,8 +2,8 @@ use glory::render::{DocumentPart, NodeId, Props, TextKind};
 use glory::style::{Family, Style};
 use glory::ui::App;
 use sapid::{
-    KbdKey, KbdPlatform, Theme, blockquote, code, data_list, data_list_item, highlight, item,
-    kbd, mark, text_list, text_list_item,
+    KbdKey, KbdPlatform, Theme, blockquote, code, data_list, data_list_item, highlight, item, kbd,
+    mark, text_list, text_list_item,
 };
 fn find(app: &App, class: &str) -> NodeId {
     let tree = app.tree();
