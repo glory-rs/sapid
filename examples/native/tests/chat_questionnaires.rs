@@ -39,8 +39,7 @@ fn observe(host: &WindowApp) {
     }
 }
 #[test]
-fn native_typed_questionnaire_validates_real_text_and_checkbox_preserving_hidden_editor_identity()
- {
+fn native_typed_questionnaire_validates_real_text_and_checkbox_preserving_hidden_editor_identity() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),

@@ -7,8 +7,7 @@ fn button(app: &glory::App, label: &str) -> NodeId {
     let mut pending = tree.roots().to_vec();
     while let Some(id) = pending.pop() {
         let node = tree.node(id).unwrap();
-        if matches!(node.descriptor.view().props, Props::Button(props) if props.label == label)
-        {
+        if matches!(node.descriptor.view().props, Props::Button(props) if props.label == label) {
             return id;
         }
         pending.extend(&node.children);

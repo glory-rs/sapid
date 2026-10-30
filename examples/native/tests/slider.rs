@@ -142,8 +142,7 @@ fn slider_native_four_themes_axes_and_rtl_use_real_bounds_and_keep_identity() {
     }
 }
 #[test]
-fn slider_native_field_readonly_controlled_rejection_and_accepted_source_preserve_live_identity()
- {
+fn slider_native_field_readonly_controlled_rejection_and_accepted_source_preserve_live_identity() {
     let host = WindowApp::new();
     let app = host.app();
     let source = app.scope().cage(40.);

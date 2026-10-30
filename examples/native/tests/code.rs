@@ -59,8 +59,7 @@ fn four_theme_native_code_has_real_multiline_geometry_colors_scroll_and_identity
             .renderer()
             .engine_id(first, glory::html::Part::Main)
             .unwrap();
-        let QueryValue::Bounds(body) =
-            query(app, Query::Bounds(ids(app, "sapid-code-source")[0]))
+        let QueryValue::Bounds(body) = query(app, Query::Bounds(ids(app, "sapid-code-source")[0]))
         else {
             panic!()
         };
@@ -72,8 +71,7 @@ fn four_theme_native_code_has_real_multiline_geometry_colors_scroll_and_identity
             .action(Action::Focus(input.get().unwrap()))
             .unwrap();
         app.flush().unwrap();
-        source
-            .revise(|s| *s = format!("fn other() {{\n  // {}\n}}\n", "long text ".repeat(50)));
+        source.revise(|s| *s = format!("fn other() {{\n  // {}\n}}\n", "long text ".repeat(50)));
         app.flush().unwrap();
         assert_eq!(
             host.renderer()
@@ -82,8 +80,7 @@ fn four_theme_native_code_has_real_multiline_geometry_colors_scroll_and_identity
             physical
         );
         let viewport = ids(app, "sapid-code-scroll")[0];
-        let QueryValue::ScrollMetrics(metrics) = query(app, Query::ScrollMetrics(viewport))
-        else {
+        let QueryValue::ScrollMetrics(metrics) = query(app, Query::ScrollMetrics(viewport)) else {
             panic!()
         };
         assert!(

@@ -3,8 +3,8 @@ use glory::html::Part;
 use glory::render::{Event, NodeId, Query};
 use glory::ui::App;
 use sapid::{
-    CheckState, ChipMode, chip, chip_group, chip_item, field, mixed_checkbox, radio,
-    radio_group, segment, segmented_control,
+    CheckState, ChipMode, chip, chip_group, chip_item, field, mixed_checkbox, radio, radio_group,
+    segment, segmented_control,
 };
 fn find(app: &App, class: &str) -> Vec<NodeId> {
     let tree = app.tree();

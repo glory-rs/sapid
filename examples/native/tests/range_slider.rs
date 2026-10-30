@@ -38,8 +38,7 @@ fn value(app: &App, id: NodeId) -> f64 {
 }
 
 #[test]
-fn range_slider_native_four_themes_share_real_track_geometry_and_preserve_both_thumb_identities()
- {
+fn range_slider_native_four_themes_share_real_track_geometry_and_preserve_both_thumb_identities() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),
@@ -165,8 +164,7 @@ fn range_slider_native_four_themes_share_real_track_geometry_and_preserve_both_t
     }
 }
 #[test]
-fn range_slider_native_readonly_singleton_thumb_stays_focusable_and_recovers_without_replacement()
- {
+fn range_slider_native_readonly_singleton_thumb_stays_focusable_and_recovers_without_replacement() {
     let host = WindowApp::new();
     let app = host.app();
     let lower = app.scope().cage(None);

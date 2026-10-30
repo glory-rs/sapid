@@ -67,8 +67,7 @@ fn bounds(app: &App, id: NodeId) -> Rect {
     r
 }
 #[test]
-fn plans_tasks_and_queues_have_native_four_theme_progress_actions_focus_keyed_updates_and_pixels()
- {
+fn plans_tasks_and_queues_have_native_four_theme_progress_actions_focus_keyed_updates_and_pixels() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),

@@ -42,8 +42,7 @@ fn bounds(app: &App, id: NodeId) -> Rect {
     rect
 }
 #[test]
-fn four_theme_cartesian_charts_have_real_native_geometry_vector_pixels_hit_controls_and_cleanup()
- {
+fn four_theme_cartesian_charts_have_real_native_geometry_vector_pixels_hit_controls_and_cleanup() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),

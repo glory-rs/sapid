@@ -21,8 +21,7 @@ fn find(app: &App, class: &str) -> NodeId {
     panic!("missing {class}")
 }
 fn props(app: &App, id: NodeId) -> InputProps {
-    let Props::Input(value) = app.tree().node(id).unwrap().descriptor.view().props.clone()
-    else {
+    let Props::Input(value) = app.tree().node(id).unwrap().descriptor.view().props.clone() else {
         panic!("input")
     };
     value

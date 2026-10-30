@@ -43,8 +43,7 @@ fn class(app: &App, name: &str) -> NodeId {
 }
 fn content(app: &App, name: &str) -> String {
     let tree = app.tree();
-    let Props::Text(value) = tree.node(class(app, name)).unwrap().descriptor.view().props
-    else {
+    let Props::Text(value) = tree.node(class(app, name)).unwrap().descriptor.view().props else {
         panic!()
     };
     value.content.clone()
@@ -162,9 +161,7 @@ fn four_theme_native_images_load_fallback_avatar_text_recovery_and_background_co
         );
         assert_eq!(app.tree().node(avatar).unwrap().children[0], avatar_image);
         let background = bounds(app, class(app, "image-background"));
-        assert!(
-            (background.width - 300.0).abs() < 0.1 && (background.height - 140.0).abs() < 0.1
-        );
+        assert!((background.width - 300.0).abs() < 0.1 && (background.height - 140.0).abs() < 0.1);
         app.dispatch(button(app, "Background action"), Event::Activate)
             .unwrap();
         assert_eq!(content(app, "image-status"), "Background action pressed");

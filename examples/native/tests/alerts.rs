@@ -214,8 +214,7 @@ fn native_floating_dialog_preserves_background_focus_and_releases_its_owner() {
     assert_eq!(app.stats().handlers, 0);
 }
 #[test]
-fn native_skeleton_keeps_explicit_geometry_and_decorative_engine_identity_when_loading_changes()
-{
+fn native_skeleton_keeps_explicit_geometry_and_decorative_engine_identity_when_loading_changes() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),

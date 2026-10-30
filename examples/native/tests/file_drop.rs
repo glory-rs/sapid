@@ -52,10 +52,8 @@ impl DataTransfer for Metadata {
 impl wingy::raw_window_handle::HasDisplayHandle for Loop {
     fn display_handle(
         &self,
-    ) -> Result<
-        wingy::raw_window_handle::DisplayHandle<'_>,
-        wingy::raw_window_handle::HandleError,
-    > {
+    ) -> Result<wingy::raw_window_handle::DisplayHandle<'_>, wingy::raw_window_handle::HandleError>
+    {
         Err(wingy::raw_window_handle::HandleError::Unavailable)
     }
 }
@@ -191,8 +189,9 @@ fn drop(host: &WindowApp, source: &Loop, n: i64, uris: Vec<String>) {
         Some(&true),
         "drop={n} rect={rect:?} position={position:?} stats={:?} hit={:?}",
         host.renderer().resource_stats(),
-        host.renderer().inspect(|doc| doc
-            .element_from_point((position.x / scale) as f32, (position.y / scale) as f32))
+        host.renderer()
+            .inspect(|doc| doc
+                .element_from_point((position.x / scale) as f32, (position.y / scale) as f32))
     );
     host.handle_native_file_event(
         &WindowEvent::DragDropped {

@@ -1,8 +1,6 @@
 use glory::apace::{Raster, shell::WindowApp};
 use glory::prelude::*;
-use glory::render::{
-    Action, DocumentPart, NodeId, Props, Query, QueryValue, Rect, TableMetadata,
-};
+use glory::render::{Action, DocumentPart, NodeId, Props, Query, QueryValue, Rect, TableMetadata};
 use std::{cell::RefCell, rc::Rc};
 #[path = "../../web/src/table_form.rs"]
 mod fixture;
@@ -74,8 +72,10 @@ fn four_theme_native_tables_align_real_cells_and_preserve_editing_identity() {
                     .iter()
                     .all(|rect| rect.width > 50. && rect.height > 25.)
             );
-            assert!(rects.iter().all(|rect| (rect.x - rects[0].x).abs() < 1.
-                && (rect.width - rects[0].width).abs() < 1.));
+            assert!(
+                rects.iter().all(|rect| (rect.x - rects[0].x).abs() < 1.
+                    && (rect.width - rects[0].width).abs() < 1.)
+            );
             columns.push(rects[0]);
         }
         assert!(columns[0].x + columns[0].width <= columns[1].x + 1.);

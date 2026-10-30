@@ -61,7 +61,7 @@ fn bounds(app: &App, id: NodeId) -> Rect {
 }
 #[test]
 fn output_has_real_native_four_theme_viewports_focus_disclosures_pixels_and_bounded_large_sources()
- {
+{
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),

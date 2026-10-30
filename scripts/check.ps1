@@ -36,7 +36,9 @@ try {
     $env:CARGO_PROFILE_TEST_DEBUG = '0'
     New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
     Confirm-Target 'Cargo.toml'
-    Invoke-Cargo -Arguments @('fmt', '--all', '--', '--check')
+    & "$PSScriptRoot/format.ps1" -Check
+    & python "$PSScriptRoot/test_format.py"
+    if ($LASTEXITCODE -ne 0) { throw 'Independent workspace formatting regression failed' }
     Invoke-Cargo -Arguments @('test', '--locked')
     Invoke-Cargo -Arguments @('test', '--locked', '--all-features')
     Invoke-Cargo -Arguments @('clippy', '--locked', '--all-targets', '--', '-D', 'warnings')
@@ -56,7 +58,6 @@ try {
         Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-apace', '--features', 'shell,accesskit,raster', '--all-targets', '--', '--test-threads=1')
         Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-apace', '--features', 'accesskit,raster', '--all-targets', '--', '-D', 'warnings')
         Confirm-Target 'examples/native/Cargo.toml'
-        Invoke-Cargo -Arguments @('fmt', '--manifest-path', 'examples/native/Cargo.toml', '--', '--check')
         Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', 'examples/native/Cargo.toml', '--all-features', '--', '--test-threads=1')
         Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', 'examples/native/Cargo.toml', '--all-features', '--all-targets', '--', '-D', 'warnings')
         $env:CARGO_TARGET_DIR = "$taskBuild/target"
@@ -67,7 +68,6 @@ try {
     if ($Web) {
         $manifest = 'examples/web/Cargo.toml'
         Confirm-Target $manifest
-        Invoke-Cargo -Arguments @('fmt', '--manifest-path', $manifest, '--', '--check')
         Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', $manifest, '--all-targets', '--', '-D', 'warnings')
         Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', $manifest, '--lib', '--target', 'wasm32-unknown-unknown', '--', '-D', 'warnings')
         if ((& $Bindgen --version).Trim() -ne 'wasm-bindgen 0.2.129') { throw 'Requires wasm-bindgen-cli 0.2.129 (pass -Bindgen for a specific executable)' }

@@ -14,14 +14,7 @@ fn query(app: &App, q: Query) -> QueryValue {
     app.pump().unwrap();
     reply.borrow_mut().take().unwrap()
 }
-fn edit(
-    app: &App,
-    id: NodeId,
-    value: &str,
-    after: usize,
-    before: usize,
-    intent: InputEditIntent,
-) {
+fn edit(app: &App, id: NodeId, value: &str, after: usize, before: usize, intent: InputEditIntent) {
     let revision = {
         let tree = app.tree();
         let Props::Input(p) = tree.node(id).unwrap().descriptor.view().props else {
@@ -173,8 +166,7 @@ fn native_date_input_four_themes_preserve_drafts_actual_editor_caret_geometry_an
     }
 }
 #[test]
-fn native_date_input_default_dialog_updates_same_editor_and_readonly_disabled_unstyled_are_real()
- {
+fn native_date_input_default_dialog_updates_same_editor_and_readonly_disabled_unstyled_are_real() {
     let host = WindowApp::new();
     host.renderer().set_viewport(800, 650, 1.).unwrap();
     let app = host.app();

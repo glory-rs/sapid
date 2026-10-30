@@ -45,8 +45,7 @@ fn focused(app: &App, node: NodeId) -> bool {
     result.borrow_mut().take().unwrap() == QueryValue::Focus(true)
 }
 #[test]
-fn native_tour_reveals_current_real_target_anchors_dialog_and_preserves_identity_across_steps()
-{
+fn native_tour_reveals_current_real_target_anchors_dialog_and_preserves_identity_across_steps() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),

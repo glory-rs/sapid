@@ -22,8 +22,7 @@ fn pixel(raster: &Raster, x: f64, y: f64) -> [u8; 4] {
     raster.pixels()[offset..offset + 4].try_into().unwrap()
 }
 #[test]
-fn native_loading_mask_has_real_alpha_geometry_hit_blocking_and_an_opaque_spinner_in_four_themes()
- {
+fn native_loading_mask_has_real_alpha_geometry_hit_blocking_and_an_opaque_spinner_in_four_themes() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),

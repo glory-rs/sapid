@@ -94,9 +94,7 @@ fn native_month_dialog_four_themes_uses_real_grid_hit_pixels_keyboard_and_focus_
         let next = period(app, "March 2024");
         let cell = bounds(app, selected);
         assert!(cell.width >= 75. && cell.height >= 30.);
-        assert!(
-            cell.x >= rect.x && cell.y >= rect.y && cell.x + cell.width <= rect.x + rect.width
-        );
+        assert!(cell.x >= rect.x && cell.y >= rect.y && cell.x + cell.width <= rect.x + rect.width);
         let hit = host.renderer().inspect(|dom| {
             dom.hit((cell.x + 18.) as f32, (cell.y + 18.) as f32)
                 .unwrap()
@@ -214,9 +212,7 @@ fn native_year_dialog_four_themes_uses_real_grid_hit_pixels_keyboard_and_focus_r
         let next = period(app, "2025");
         let cell = bounds(app, selected);
         assert!(cell.width >= 45. && cell.height >= 30.);
-        assert!(
-            cell.x >= rect.x && cell.y >= rect.y && cell.x + cell.width <= rect.x + rect.width
-        );
+        assert!(cell.x >= rect.x && cell.y >= rect.y && cell.x + cell.width <= rect.x + rect.width);
         let hit = host.renderer().inspect(|dom| {
             dom.hit((cell.x + 18.) as f32, (cell.y + 18.) as f32)
                 .unwrap()
