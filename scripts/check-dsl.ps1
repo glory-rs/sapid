@@ -1,7 +1,7 @@
 param(
     [switch]$Browser,
     [switch]$Native,
-    [string]$Bindgen = 'D:/BuildCache/glory-v2-dioxus-20261028/tools/wasm-bindgen-0.2.129-x86_64-pc-windows-msvc/wasm-bindgen.exe',
+    [string]$Bindgen = 'D:/BuildCache/glory-v2-dioxus-20261028/tools/wasm-bindgen-0.2.130-x86_64-pc-windows-msvc/wasm-bindgen.exe',
     [string]$BuildRoot = 'D:/BuildCache/sapid'
 )
 $ErrorActionPreference = 'Stop'
@@ -47,7 +47,7 @@ try {
         Invoke-Cargo -Arguments @('clippy','--locked','--manifest-path',$manifest,'--lib','--target','wasm32-unknown-unknown','--','-D','warnings')
         Invoke-Cargo -Arguments @('build','--locked','--manifest-path',$manifest,'--lib','--target','wasm32-unknown-unknown')
         New-Item -ItemType Directory -Force -Path $env:SAPID_DSL_SITE | Out-Null
-        if ((& $Bindgen --version).Trim() -ne 'wasm-bindgen 0.2.129') { throw 'Expected wasm-bindgen 0.2.129' }
+        if ((& $Bindgen --version).Trim() -ne 'wasm-bindgen 0.2.130') { throw 'Expected wasm-bindgen 0.2.130' }
         & $Bindgen "$env:CARGO_TARGET_DIR/wasm32-unknown-unknown/debug/sapid_web_example.wasm" --target web --out-dir $env:SAPID_DSL_SITE
         if ($LASTEXITCODE -ne 0) { throw 'wasm-bindgen failed' }
         Copy-Item -LiteralPath styles/sapid.css -Destination "$env:SAPID_DSL_SITE/sapid.css"

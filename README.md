@@ -6,15 +6,15 @@ and rendering hosts. Sapid adds ready-to-use controls, layouts, and themes;
 its widgets compose with Glory's built-in widgets and optional `view!` DSL
 across Web, SSR, hydration, and native hosts.
 
-Sapid 0.6.0 targets [Glory 0.6.0](https://glory.taidge.org/). Native examples use
+Sapid 0.6.1 targets [Glory 0.6.1](https://glory.taidge.org/). Native examples use
 `glory::apace` and its `apace-*` features. See [crate release instructions](RELEASING.md).
-Both [Sapid 0.6.0](https://crates.io/crates/sapid/0.6.0) and
-[Glory 0.6.0](https://crates.io/crates/glory/0.6.0) are published on crates.io.
+These are unpublished development versions requiring Rust 1.95 or later. Keep
+sapid, glory, apace, takia and wingy in the same parent directory.
 
 ```toml
 [dependencies]
-sapid = "=0.6.0"
-glory = { version = "=0.6.0", default-features = false, features = ["dsl"] }
+sapid = { path = "../sapid", version = "=0.6.1" }
+glory = { path = "../glory/crates/glory", version = "=0.6.1", default-features = false, features = ["dsl"] }
 ```
 
 Add the host features needed by your application, such as `ssr`, `hydrate`,
@@ -105,7 +105,7 @@ Source development uses the sibling `../glory` checkout through the `path` and
 exact `version` in `Cargo.toml`. CI and showcase deployment check out the full
 Glory revision recorded in [deploy/dependencies.json](deploy/dependencies.json);
 use that revision locally to reproduce those builds. Registry consumers use
-the published `glory = "=0.6.0"` dependency and need no sibling checkout.
+the exact Glory 0.6.1 sibling source dependency during this development cycle.
 The release's [registry-only consumer check](scripts/verify-registry.py)
 verifies the packaged dependency graph separately from source integration.
 Reactive property sources use `Vary<T>`, and native examples pin the same engine
@@ -707,5 +707,9 @@ The [WASM size baseline](docs/wasm-size.md) compares unused features and actual 
 The library root `Cargo.lock` is generated locally and is not tracked. The check,
 MSRV, audit and release scripts create it when absent using Cargo's Rust-version-compatible
 resolver, then retain `--locked` for the rest of that run. Existing local locks are preserved; use `cargo update` explicitly
-to refresh them. The Web and native example applications keep committed
-`Cargo.lock` files for repeatable application builds.
+to refresh them. The Web and native example applications use the same ignored
+local lock policy. Only the separate website repository keeps a committed Cargo.lock.
+
+## License
+
+Licensed under Apache-2.0. See [LICENSE](LICENSE), [NOTICE](NOTICE), and [licensing details](docs/licensing.md) for historical and third-party notices.

@@ -2,5 +2,6 @@
 /dist/
 **/node_modules/
 
-# Library resolution is local; application examples retain their locks.
-/Cargo.lock
+
+# Library, example and benchmark resolutions are generated locally.
+**/Cargo.lock

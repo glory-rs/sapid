@@ -76,7 +76,7 @@ try {
         Confirm-Target $manifest
         Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', $manifest, '--all-targets', '--', '-D', 'warnings')
         Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', $manifest, '--lib', '--target', 'wasm32-unknown-unknown', '--', '-D', 'warnings')
-        if ((& $Bindgen --version).Trim() -ne 'wasm-bindgen 0.2.129') { throw 'Requires wasm-bindgen-cli 0.2.129 (pass -Bindgen for a specific executable)' }
+        if ((& $Bindgen --version).Trim() -ne 'wasm-bindgen 0.2.130') { throw 'Requires wasm-bindgen-cli 0.2.130 (pass -Bindgen for a specific executable)' }
         Invoke-Cargo -Arguments @('build', '--locked', '--manifest-path', $manifest, '--lib', '--target', 'wasm32-unknown-unknown')
         & $Bindgen "$taskBuild/target/wasm32-unknown-unknown/debug/sapid_web_example.wasm" --target web --out-dir "$taskBuild/web"
         if ($LASTEXITCODE -ne 0) { throw 'wasm-bindgen failed' }

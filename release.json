@@ -9,7 +9,7 @@
     "sapid"
   ],
   "external_path_dependencies": {
-    "glory": "=0.6.0"
+    "glory": "=0.6.1"
   },
   "registry_verifier": "scripts/verify-registry.py",
   "uniform_version": true

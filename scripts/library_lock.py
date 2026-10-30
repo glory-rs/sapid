@@ -42,4 +42,10 @@ if __name__ == "__main__":
     parser.add_argument("--manifest-path", default="Cargo.toml")
     parser.add_argument("--toolchain")
     options = parser.parse_args()
-    print(json.dumps(prepare_library_lock(options.manifest_path, toolchain=options.toolchain)))
+    result = prepare_library_lock(options.manifest_path, toolchain=options.toolchain)
+    if Path(options.manifest_path).resolve() == Path(__file__).resolve().parents[1] / "Cargo.toml":
+        for relative in ("examples/native/Cargo.toml", "examples/web/Cargo.toml"):
+            manifest = Path(__file__).resolve().parents[1] / relative
+            if manifest.is_file():
+                prepare_library_lock(manifest, toolchain=options.toolchain)
+    print(json.dumps(result))

@@ -21,7 +21,7 @@ class LibraryLockTests(unittest.TestCase):
         (self.project / "src").mkdir(parents=True)
         (self.project / "Cargo.toml").write_text(
             '[package]\nname="owned-lock-fixture"\nversion="0.6.0"\nedition="2024"\n'
-            'rust-version="1.94"\nlicense="MIT"\ndescription="Lock policy regression"\n'
+            'rust-version="1.95"\nlicense="MIT"\ndescription="Lock policy regression"\n'
             'repository="https://github.com/example/owned"\n'
             '[features]\nextra=[]\n[workspace]\n', encoding="utf-8")
         (self.project / "src/lib.rs").write_text("pub fn ready() {}\n", encoding="utf-8")

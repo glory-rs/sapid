@@ -33,6 +33,8 @@ try {
     $env:TMP = $env:TEMP
     $env:PYTHONPYCACHEPREFIX = "$BuildRoot/pycache"
     New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
+    & python "$PSScriptRoot/library_lock.py" --manifest-path Cargo.toml
+    if ($LASTEXITCODE -ne 0) { throw 'Library dependency resolution failed' }
     # A clean output prevents removed assets or obsolete HTML from leaking into a release.
     if (Test-Path -LiteralPath $showcaseBuild) { Remove-Item -LiteralPath $showcaseBuild -Recurse -Force }
     New-Item -ItemType Directory -Force -Path $showcaseBuild | Out-Null
@@ -52,7 +54,7 @@ try {
     Invoke-ShowcaseCargo -Arguments @('test','--locked','--manifest-path','examples/web/Cargo.toml','--lib')
     Invoke-ShowcaseCargo -Arguments @('clippy','--locked','--manifest-path','examples/web/Cargo.toml','--all-targets','--','-D','warnings')
     Invoke-ShowcaseCargo -Arguments @('clippy','--locked','--manifest-path','examples/web/Cargo.toml','--lib','--target','wasm32-unknown-unknown','--','-D','warnings')
-    if ((& $Bindgen --version).Trim() -ne 'wasm-bindgen 0.2.129') { throw 'showcase requires wasm-bindgen-cli 0.2.129' }
+    if ((& $Bindgen --version).Trim() -ne 'wasm-bindgen 0.2.130') { throw 'showcase requires wasm-bindgen-cli 0.2.130' }
     $profileName = if ($Release) { 'release' } else { 'debug' }
     $buildArguments = @('build','--locked','--manifest-path','examples/web/Cargo.toml','--lib','--target','wasm32-unknown-unknown')
     if ($Release) { $buildArguments += '--release' }

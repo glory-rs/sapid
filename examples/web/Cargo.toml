@@ -2,11 +2,14 @@
 name = "sapid-web-example"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.94"
+rust-version = "1.95"
 publish = false
+
+license = "Apache-2.0"
 
 [workspace]
 
+resolver = "3"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
@@ -17,8 +20,8 @@ sapid = { path = "../..", features = ["json", "code", "dates", "files", "charts"
 glory = { path = "../../../glory/crates/glory", default-features = false, features = ["web", "ssr", "hydrate", "dsl", "routing"] }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-wasm-bindgen = "=0.2.129"
-web-sys = { version = "=0.3.106", features = ["Window", "Document", "Element", "Performance", "Location", "UrlSearchParams", "Storage", "HtmlElement", "CssStyleDeclaration", "Url", "History", "PopStateEvent", "EventTarget"] }
+wasm-bindgen = "=0.2.130"
+web-sys = { version = "=0.3.107", features = ["Window", "Document", "Element", "Performance", "Location", "UrlSearchParams", "Storage", "HtmlElement", "CssStyleDeclaration", "Url", "History", "PopStateEvent", "EventTarget"] }
 
 [profile.release]
 opt-level = "z"

@@ -1,9 +1,10 @@
 [package]
 name = "sapid"
-version = "0.6.0"
+version = "0.6.1"
 edition = "2024"
-rust-version = "1.94"
-license = "MIT OR Apache-2.0"
+authors = ["Chris Young <chris@veco.id>"]
+rust-version = "1.95"
+license = "Apache-2.0"
 description = "Composable semantic widgets for Glory"
 homepage = "https://sapid.taidge.org"
 repository = "https://github.com/sapid-ui/sapid"
@@ -20,11 +21,11 @@ dates = []
 
 [dependencies]
 libm = { version = "=0.2.16", default-features = false, optional = true }
-glory = { version = "=0.6.0", path = "../glory/crates/glory", default-features = false }
+glory = { version = "=0.6.1", path = "../glory/crates/glory", default-features = false }
 serde_json = { version = "=1.0.154", features = ["raw_value"], optional = true }
 
 [dev-dependencies]
-glory = { version = "=0.6.0", path = "../glory/crates/glory", default-features = false, features = ["ssr", "dsl"] }
+glory = { version = "=0.6.1", path = "../glory/crates/glory", default-features = false, features = ["ssr", "dsl"] }
 
 [lints.rust]
 unsafe_code = "forbid"
@@ -35,3 +36,6 @@ all = "warn"
 [[example]]
 name = "schedule_layout_bench"
 required-features = ["dates"]
+
+[workspace]
+resolver = "3"

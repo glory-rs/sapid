@@ -1,5 +1,10 @@
 # Sapid
 
+- The 0.6.1 development versions are unpublished, require Rust 1.95 and use
+  resolver 3. Keep sapid/glory/apace/takia/wingy as sibling repositories. All
+  library and example Cargo.lock files are ignored and prepared locally before
+  --locked checks. See docs/development-versions.md and docs/licensing.md.
+
 - Continue the widget queue in `docs/widgets-roadmap.md`. Its canonical source
   is `docs/widget-inventory.json`; update status and evidence for each completed
   batch, run `python scripts/widget-plan.py`, then `--check`. Baseline coverage

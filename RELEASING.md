@@ -1,6 +1,11 @@
 # Releases
 
-Push an annotated `v<version>` tag after updating manifests, lockfiles and reviewed `releases/<version>.md` notes.
+The 2026-10-30 version bumps are unpublished development versions. Do not publish
+or create release tags for this change. Library, example and benchmark locks are
+local ignored files; generate and validate them without adding them to Git.
+
+
+Push an annotated `v<version>` tag after updating manifests, local resolutions and reviewed `releases/<version>.md` notes.
 The release workflow first resolves the requested tag to a commit SHA. Repository checks and the publisher both check out that frozen SHA before publishing the dependency-ordered `release.json` allowlist to crates.io and creating a GitHub Release. A push must still resolve to the event's commit; a tag that moves after validation is rejected before publication.
 Configure the repository Actions secret `CARGO_REGISTRY_TOKEN`. Never commit credentials.
 Run `python scripts/release.py` with the approved Cargo artifact directory to validate the plan locally.
