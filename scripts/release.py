@@ -96,6 +96,10 @@ def main():
         raise SystemExit("Set and verify CARGO_TARGET_DIR before releasing")
     if os.name == "nt" and not str(target).replace("\\", "/").lower().startswith("d:/buildcache/"):
         raise SystemExit("Windows release artifacts must stay under D:/BuildCache")
+    # Library locks are local. Keep one resolution for subsequent --locked steps.
+    if not (ROOT / "Cargo.lock").is_file():
+        run("cargo", "--config", 'resolver.incompatible-rust-versions="fallback"',
+            "generate-lockfile", "--manifest-path", str(ROOT / "Cargo.toml"))
     packages = {p["name"]: p for p in metadata["packages"]}
     for relative in plan.get("extra_manifests", []):
         extra = json.loads(run("cargo", "metadata", "--manifest-path", str(ROOT / relative),

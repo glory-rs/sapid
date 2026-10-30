@@ -62,7 +62,7 @@ jobs:
             D:/BuildCache/sapid-pages-ci/rustup
             D:/BuildCache/sapid-pages-ci/target
             D:/BuildCache/sapid-pages-ci/tools
-          key: sapid-pages-${{ runner.os }}-1.98.0-0.2.129-${{ hashFiles('sapid/Cargo.lock', 'sapid/examples/web/Cargo.lock', 'sapid/deploy/dependencies.json') }}
+          key: sapid-pages-${{ runner.os }}-1.98.0-0.2.129-${{ hashFiles('sapid/Cargo.toml', 'sapid/examples/web/Cargo.lock', 'sapid/deploy/dependencies.json') }}
       - name: Install pinned Rust and wasm-bindgen
         run: |
           rustup toolchain install 1.98.0 --profile minimal --component clippy,rustfmt --target wasm32-unknown-unknown

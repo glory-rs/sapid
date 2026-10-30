@@ -25,6 +25,9 @@ try {
     $env:CARGO_INCREMENTAL = '0'; $env:CARGO_PROFILE_DEV_DEBUG = '0'; $env:CARGO_PROFILE_TEST_DEBUG = '0'; $env:CARGO_BUILD_JOBS = '2'
     New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
     Confirm-Target 'Cargo.toml'
+    if (-not (Test-Path -LiteralPath 'Cargo.lock' -PathType Leaf)) {
+        Invoke-Cargo -Arguments @('--config', 'resolver.incompatible-rust-versions="fallback"', 'generate-lockfile', '--manifest-path', 'Cargo.toml')
+    }
     Invoke-Cargo -Arguments @('test','--locked','--test','dsl')
     Invoke-Cargo -Arguments @('clippy','--locked','--example','dsl','--','-D','warnings')
     if ($Browser) {

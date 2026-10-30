@@ -36,12 +36,18 @@ try {
     $env:CARGO_PROFILE_TEST_DEBUG = '0'
     New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
     Confirm-Target 'Cargo.toml'
+    if (-not (Test-Path -LiteralPath 'Cargo.lock' -PathType Leaf)) {
+        Invoke-Cargo -Arguments @('--config', 'resolver.incompatible-rust-versions="fallback"', 'generate-lockfile', '--manifest-path', 'Cargo.toml')
+    }
     Invoke-Cargo -Arguments @('fmt', '--all', '--', '--check')
     Invoke-Cargo -Arguments @('test', '--locked')
     Invoke-Cargo -Arguments @('test', '--locked', '--all-features')
     Invoke-Cargo -Arguments @('clippy', '--locked', '--all-targets', '--', '-D', 'warnings')
     Invoke-Cargo -Arguments @('clippy', '--locked', '--all-features', '--all-targets', '--', '-D', 'warnings')
     Confirm-Target '../glory/Cargo.toml'
+    if (-not (Test-Path -LiteralPath '../glory/Cargo.lock' -PathType Leaf)) {
+        Invoke-Cargo -Arguments @('--config', 'resolver.incompatible-rust-versions="fallback"', 'generate-lockfile', '--manifest-path', '../glory/Cargo.toml')
+    }
     Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-style', '-p', 'glory-core', '-p', 'glory-render', '-p', 'glory-ui', '-p', 'glory-html', '-p', 'glory-ssr', '--all-features')
     Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-style', '-p', 'glory-core', '-p', 'glory-render', '-p', 'glory-ui', '-p', 'glory-html', '-p', 'glory-ssr', '--all-features', '--all-targets', '--', '-D', 'warnings')
     if ($Native) {

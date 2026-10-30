@@ -694,3 +694,9 @@ workspace while browsing or changing the site's palette/scheme. Saved preview
 payloads from the earlier schema are backed up and upgraded on load.
 
 The [WASM size baseline](docs/wasm-size.md) compares unused features and actual widget use against Glory, with reproducible builds and browser checks.
+
+The library root `Cargo.lock` is generated locally and is not tracked. The check
+and release scripts create it when absent using Cargo's Rust-version-compatible
+resolver, then retain `--locked` for the rest of that run. Existing local locks are preserved; use `cargo update` explicitly
+to refresh them. The Web and native example applications keep committed
+`Cargo.lock` files for repeatable application builds.

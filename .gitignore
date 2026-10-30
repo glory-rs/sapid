@@ -1,3 +1,6 @@
 /target/
 /dist/
 **/node_modules/
+
+# Library resolution is local; application examples retain their locks.
+/Cargo.lock
