@@ -15,6 +15,9 @@ on:
         type: string
 permissions:
   contents: read
+concurrency:
+  group: sapid-ci-${{ github.ref }}-${{ inputs.release_ref || 'branch' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   widgets:
     runs-on: windows-latest

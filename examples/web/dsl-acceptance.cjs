@@ -2,7 +2,8 @@
 const fs = require('node:fs'), path = require('node:path'), http = require('node:http'), assert = require('node:assert/strict');
 const { chromium } = require(process.env.SAPID_PLAYWRIGHT || 'D:/BuildCache/glory-v2-dioxus-20261028/tools/node_modules/playwright');
 const root = path.resolve(process.env.SAPID_DSL_SITE || 'D:/BuildCache/sapid/dsl');
-process.env.TEMP = process.env.TMP = 'D:/BuildCache/sapid/tmp';
+process.env.TEMP = process.env.TMP = path.join(path.dirname(root), 'tmp');
+fs.mkdirSync(process.env.TEMP, { recursive: true });
 const server = http.createServer((req, res) => {
     const file = path.resolve(root, '.' + new URL(req.url, 'http://localhost').pathname);
     if (!file.startsWith(root + path.sep) || !fs.existsSync(file)) { res.statusCode = 404; res.end(); return; }
