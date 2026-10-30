@@ -47,11 +47,11 @@ try {
     Invoke-Cargo -Arguments @('test', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-style', '-p', 'glory-core', '-p', 'glory-render', '-p', 'glory-ui', '-p', 'glory-html', '-p', 'glory-ssr', '--all-features')
     Invoke-Cargo -Arguments @('clippy', '--locked', '--manifest-path', '../glory/Cargo.toml', '-p', 'glory-style', '-p', 'glory-core', '-p', 'glory-render', '-p', 'glory-ui', '-p', 'glory-html', '-p', 'glory-ssr', '--all-features', '--all-targets', '--', '-D', 'warnings')
     if ($Native) {
-        # Reuse the verified D-drive engine target; no native dependencies enter
-        # Sapid's default production graph.
-        $env:CARGO_TARGET_DIR = 'D:/BuildCache/glory-semantic-ui/target'
+        # Isolate this gate's native output as well as its portable output.
+        # The shared Cargo home still reuses downloaded engine dependencies.
+        $env:CARGO_TARGET_DIR = "$taskBuild/native-target"
         $env:CARGO_BUILD_JOBS = '1'
-        $env:TEMP = 'D:/BuildCache/glory-semantic-ui/tmp'
+        $env:TEMP = "$taskBuild/tmp"
         $env:TMP = $env:TEMP
         New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
         Confirm-Target '../glory/Cargo.toml'
