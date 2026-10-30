@@ -52,7 +52,8 @@ async (hostPage) => {
     }
     const triggerClasses = ['sapid-accordion-trigger', 'sapid-tab', 'sapid-collapsible-trigger',
       'sapid-dialog-trigger', 'sapid-alert-dialog-trigger', 'sapid-drawer-trigger', 'sapid-popover-trigger',
-      'sapid-command-trigger', 'sapid-hint-trigger', 'sapid-menu-trigger', 'sapid-navigation-menu-trigger'];
+      'sapid-command-trigger', 'sapid-hint-trigger', 'sapid-menu-trigger', 'sapid-menu-submenu-trigger',
+      'sapid-navigation-menu-trigger', 'sapid-sidebar-trigger', 'sapid-spoiler-trigger', 'sapid-stepper-trigger'];
     const isolation = await page.locator('#fixture').evaluate((root, classes) => {
       root.replaceChildren();
       const cursor = (className, disabled = false, unstyledParent = false, ariaDisabled = false) => {
