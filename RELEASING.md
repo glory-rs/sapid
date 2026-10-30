@@ -28,8 +28,8 @@ The static fixture server uses HTTP/1.1 persistent connections and each complete
 `D:/BuildCache/...` paths in the capability and verification records identify the
 original machine-local runs; those files are not part of a Git checkout. For a
 release, use the assets on the repository's [GitHub Releases](https://github.com/sapid-ui/sapid/releases)
-page. The workflow attaches `browser-results.json` and `browser-provenance.json`,
-including product/harness revisions and source/fixture hashes. Before release,
+page. Its browser results and provenance JSON assets include product/harness
+revisions and source/fixture hashes. Before release,
 the same browser reports are available in the run's browser-acceptance Actions
 artifacts, whose exact names are shown by the checks. Download artifacts needed for a review while they remain
 available, and keep the reports and their provenance together.
