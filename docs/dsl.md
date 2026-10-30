@@ -64,9 +64,15 @@ compile this exact file; the simple SSR example renders it too:
 ```powershell
 cargo run --example dsl > D:/BuildCache/sapid/dsl.html
 ./scripts/check-dsl.ps1 -Browser -Native
+# Optional isolated outputs, including the native target and compiler temporaries:
+./scripts/check-dsl.ps1 -Browser -Native -BuildRoot D:/BuildCache/sapid/dsl-check
 ```
 
 The script uses verified D-drive caches and owns its temporary browser/server.
+`-BuildRoot` defaults to `D:/BuildCache/sapid`; portable/native targets, DSL output
+and compiler temporaries use its `target`, `native-target`, `dsl` and `tmp`
+directories. Each stage creates its directories before invoking Cargo, including
+standalone native checks. An existing D-drive `CARGO_HOME` is preserved.
 Browser outputs are `D:/BuildCache/sapid/dsl/dsl.html` and `dsl-hydrate.html`.
 Checks exercise real CSR, Rust SSR adoption with dirty input/selection retained,
 all four button spellings, controlled editing, branch replacement and cleanup.
