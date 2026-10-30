@@ -1,0 +1,10 @@
+{
+  "node_min_major": 22,
+  "wasm_bindgen": {
+    "version": "0.2.129",
+    "package": "wasm-bindgen-0.2.129-x86_64-pc-windows-msvc",
+    "archive_url": "https://github.com/wasm-bindgen/wasm-bindgen/releases/download/0.2.129/wasm-bindgen-0.2.129-x86_64-pc-windows-msvc.tar.gz",
+    "archive_sha256": "79e348c169d0c10c0b287647f1e753d0985353ca96800bc29be8f4261baf13e6",
+    "executable_sha256": "7923ed91d8ece7a2986dc5de9395bff2a8e5cae483330b13d0ec97a955b0e351"
+  }
+}

@@ -2,24 +2,25 @@ name: Deploy Sapid showcase to Cloudflare Pages
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: sapid-pages-production
-  cancel-in-progress: false
+  group: sapid-pages-${{ github.event_name == 'pull_request' && github.ref || 'production' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 env:
-  BUILD_ROOT: D:/BuildCache/sapid-pages-ci
-  CARGO_HOME: D:/BuildCache/sapid-pages-ci/cargo
-  CARGO_TARGET_DIR: D:/BuildCache/sapid-pages-ci/target
-  RUSTUP_HOME: D:/BuildCache/sapid-pages-ci/rustup
-  TEMP: D:/BuildCache/sapid-pages-ci/tmp
-  TMP: D:/BuildCache/sapid-pages-ci/tmp
-  PYTHONPYCACHEPREFIX: D:/BuildCache/sapid-pages-ci/pycache
+  BUILD_ROOT: D:/BuildCache/sapid/pages-ci
+  CARGO_HOME: D:/BuildCache/sapid/pages-ci/cargo
+  CARGO_TARGET_DIR: D:/BuildCache/sapid/pages-ci/target
+  RUSTUP_HOME: D:/BuildCache/sapid/pages-ci/rustup
+  TEMP: D:/BuildCache/sapid/pages-ci/tmp
+  TMP: D:/BuildCache/sapid/pages-ci/tmp
+  PYTHONPYCACHEPREFIX: D:/BuildCache/sapid/pages-ci/pycache
   CARGO_INCREMENTAL: '0'
   CARGO_BUILD_JOBS: '2'
-  npm_config_cache: D:/BuildCache/sapid-pages-ci/npm
-  PLAYWRIGHT_BROWSERS_PATH: D:/BuildCache/sapid-pages-ci/browsers
+  npm_config_cache: D:/BuildCache/sapid/pages-ci/npm
+  PLAYWRIGHT_BROWSERS_PATH: D:/BuildCache/sapid/pages-ci/browsers
   WRANGLER_SEND_METRICS: 'false'
   PYTHONUTF8: '1'
 jobs:
@@ -58,67 +59,56 @@ jobs:
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: |
-            D:/BuildCache/sapid-pages-ci/cargo
-            D:/BuildCache/sapid-pages-ci/rustup
-            D:/BuildCache/sapid-pages-ci/target
-            D:/BuildCache/sapid-pages-ci/tools
-          key: sapid-pages-${{ runner.os }}-1.98.0-0.2.129-${{ hashFiles('sapid/Cargo.lock', 'sapid/examples/web/Cargo.lock', 'sapid/deploy/dependencies.json') }}
-      - name: Install pinned Rust and wasm-bindgen
+            D:/BuildCache/sapid/pages-ci/cargo
+            D:/BuildCache/sapid/pages-ci/rustup
+            D:/BuildCache/sapid/pages-ci/target
+            D:/BuildCache/sapid/pages-ci/tools
+          key: sapid-pages-tools-v2-${{ runner.os }}-1.98.0-${{ hashFiles('sapid/Cargo.lock', 'sapid/examples/web/Cargo.lock', 'sapid/deploy/dependencies.json', 'sapid/deploy/build-tools.json', 'sapid/deploy/tools/package-lock.json') }}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+      - name: Install pinned Rust
         run: |
           rustup toolchain install 1.98.0 --profile minimal --component clippy,rustfmt --target wasm32-unknown-unknown
           if ($LASTEXITCODE -ne 0) { throw 'Rust installation failed' }
           rustup default 1.98.0
           if ($LASTEXITCODE -ne 0) { throw 'Rust selection failed' }
-          $package = 'wasm-bindgen-0.2.129-x86_64-pc-windows-msvc'
-          $tools = "$env:BUILD_ROOT/tools"
-          if (-not (Test-Path "$tools/$package/wasm-bindgen.exe")) {
-            New-Item -ItemType Directory -Force $tools | Out-Null
-            Invoke-WebRequest "https://github.com/wasm-bindgen/wasm-bindgen/releases/download/0.2.129/$package.tar.gz" -OutFile "$tools/$package.tar.gz"
-            tar -xzf "$tools/$package.tar.gz" -C $tools
-            if ($LASTEXITCODE -ne 0) { throw 'wasm-bindgen extraction failed' }
-          }
-          "$tools/$package" >> $env:GITHUB_PATH
+      - name: Install verified build and deployment tools without credentials
+        run: |
+          $tools = ./scripts/install-build-tools.ps1 -BuildRoot $env:BUILD_ROOT
+          "SAPID_BINDGEN=$($tools.Bindgen)" >> $env:GITHUB_ENV
+          "SAPID_PLAYWRIGHT=$($tools.Playwright)" >> $env:GITHUB_ENV
+          "SAPID_TOOLS_RECEIPT_SHA256=$($tools.ReceiptSha256)" >> $env:GITHUB_ENV
+          node (Join-Path $tools.Playwright 'cli.js') install chromium
+          if ($LASTEXITCODE) { throw 'Chromium installation failed' }
+      - name: Test tool integrity rejection paths
+        run: python -m unittest discover -s scripts -p test_tools.py
       - name: Validate library and shared adapters
         run: ./scripts/check.ps1 -BuildRoot $env:BUILD_ROOT
       - name: Verify immutable assets and release retention
         run: python scripts/test-site-assets.py
 
       - name: Validate and build production showcase
-        run: ./scripts/check-showcase.ps1 -Release -BuildRoot $env:BUILD_ROOT -Bindgen wasm-bindgen
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
-        with:
-          node-version: '22'
+        run: |
+          ./scripts/install-build-tools.ps1 -BuildRoot $env:BUILD_ROOT -VerifyOnly | Out-Null
+          ./scripts/check-showcase.ps1 -Release -BuildRoot $env:BUILD_ROOT -Bindgen $env:SAPID_BINDGEN
       - name: Browser acceptance of actual release assets
         run: |
-          npm install --prefix "$env:BUILD_ROOT/browser-tools" --no-package-lock --no-audit --no-fund playwright@1.60.0
-          if ($LASTEXITCODE -ne 0) { throw 'Playwright installation failed' }
-          & "$env:BUILD_ROOT/browser-tools/node_modules/.bin/playwright.cmd" install chromium
-          if ($LASTEXITCODE -ne 0) { throw 'Chromium installation failed' }
-          $env:SAPID_PLAYWRIGHT = "$env:BUILD_ROOT/browser-tools/node_modules/playwright"
-          $env:SAPID_SHOWCASE_BASE = 'http://127.0.0.1:8795'
-          $server = Start-Process python -ArgumentList @('-m','http.server','8795','--bind','127.0.0.1','--directory',"$env:BUILD_ROOT/showcase") -WindowStyle Hidden -PassThru
-          try {
-            $ready = $false
-            for ($attempt=0; $attempt -lt 30; $attempt++) {
-              try { Invoke-WebRequest "$env:SAPID_SHOWCASE_BASE/showcase.html" | Out-Null; $ready=$true; break }
-              catch { Start-Sleep -Seconds 1 }
-            }
-            if (-not $ready) { throw 'Showcase preview did not start' }
-            node scripts/showcase-browser.cjs
-            if ($LASTEXITCODE -ne 0) { throw 'Showcase browser acceptance failed' }
-            node scripts/cache-browser.cjs "$env:BUILD_ROOT/showcase"
-            if ($LASTEXITCODE -ne 0) { throw 'Browser cache rollover acceptance failed' }
-            node scripts/palette-order-browser.cjs
-            if ($LASTEXITCODE -ne 0) { throw 'Palette order browser acceptance failed' }
-          } finally { Stop-Process -Id $server.Id -ErrorAction SilentlyContinue }
+          ./scripts/install-build-tools.ps1 -BuildRoot $env:BUILD_ROOT -VerifyOnly | Out-Null
+          node scripts/showcase-acceptance.cjs --directory "$env:BUILD_ROOT/showcase" --output "$env:BUILD_ROOT/acceptance"
+          if ($LASTEXITCODE) { throw 'Showcase acceptance failed' }
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
         with:
           name: sapid-showcase-dist
-          path: D:/BuildCache/sapid-pages-ci/showcase
-          if-no-files-found: error
+          path: |
+            D:/BuildCache/sapid/pages-ci/showcase
+            D:/BuildCache/sapid/pages-ci/acceptance
+          if-no-files-found: warn
           retention-days: 30
       - name: Deploy to Cloudflare Pages
+        if: github.event_name != 'pull_request'
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: ./scripts/deploy-pages.ps1 -Directory "$env:BUILD_ROOT/showcase"
+        run: ./scripts/deploy-pages.ps1 -Directory "$env:BUILD_ROOT/showcase" -BuildRoot $env:BUILD_ROOT

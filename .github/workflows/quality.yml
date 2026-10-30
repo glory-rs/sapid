@@ -1,0 +1,130 @@
+name: MSRV and dependency quality
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '17 2 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: sapid-quality-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+jobs:
+  msrv:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        features: [default, all]
+    env:
+      CARGO_HOME: D:/BuildCache/sapid/quality/cargo
+      CARGO_TARGET_DIR: D:/BuildCache/sapid/quality/msrv-target
+      RUSTUP_HOME: D:/BuildCache/sapid/quality/rustup
+      TEMP: D:/BuildCache/sapid/quality/tmp
+      TMP: D:/BuildCache/sapid/quality/tmp
+      CARGO_INCREMENTAL: '0'
+      CARGO_PROFILE_DEV_DEBUG: '0'
+      CARGO_BUILD_JOBS: '1'
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: sapid
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: sapid
+      - name: Read pinned Glory source
+        id: dependency
+        run: |
+          $dependency = (Get-Content deploy/dependencies.json -Raw | ConvertFrom-Json).glory
+          if ($dependency.revision -notmatch '^[a-f0-9]{40}$') { throw 'Invalid Glory revision' }
+          "repository=$($dependency.repository)" >> $env:GITHUB_OUTPUT
+          "revision=$($dependency.revision)" >> $env:GITHUB_OUTPUT
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: ${{ steps.dependency.outputs.repository }}
+          ref: ${{ steps.dependency.outputs.revision }}
+          path: glory
+      - name: Check declared Rust 1.94.0 MSRV
+        env:
+          FEATURE_SET: ${{ matrix.features }}
+        run: |
+          New-Item -ItemType Directory -Force $env:CARGO_HOME,$env:CARGO_TARGET_DIR,$env:RUSTUP_HOME,$env:TEMP | Out-Null
+          rustup toolchain install 1.94.0 --profile minimal
+          if ($LASTEXITCODE) { throw 'MSRV toolchain installation failed' }
+          if ((Get-Content Cargo.toml -Raw) -notmatch 'rust-version\s*=\s*"1\.94"') { throw 'Update the MSRV gate when the declared MSRV changes' }
+          $metadata = cargo +1.94.0 metadata --locked --no-deps --format-version 1 | ConvertFrom-Json
+          if ($LASTEXITCODE -or [IO.Path]::GetFullPath($metadata.target_directory) -ne [IO.Path]::GetFullPath($env:CARGO_TARGET_DIR)) { throw 'Unexpected MSRV target' }
+          $arguments = @('+1.94.0','check','--locked','--all-targets')
+          if ($env:FEATURE_SET -eq 'all') { $arguments += '--all-features' }
+          cargo @arguments
+          if ($LASTEXITCODE) { throw 'Declared MSRV does not compile' }
+  dependencies:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    env:
+      CARGO_HOME: D:/BuildCache/sapid/quality/cargo
+      CARGO_TARGET_DIR: D:/BuildCache/sapid/quality/target
+      RUSTUP_HOME: D:/BuildCache/sapid/quality/rustup
+      TEMP: D:/BuildCache/sapid/quality/tmp
+      TMP: D:/BuildCache/sapid/quality/tmp
+      PYTHONPYCACHEPREFIX: D:/BuildCache/sapid/quality/pycache
+      CARGO_INCREMENTAL: '0'
+      CARGO_PROFILE_RELEASE_DEBUG: '0'
+      CARGO_BUILD_JOBS: '1'
+      SAPID_CARGO_AUDIT: D:/BuildCache/sapid/quality-tools/bin/cargo-audit.exe
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: sapid
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: sapid
+      - name: Read pinned Glory source
+        id: dependency
+        run: |
+          $dependency = (Get-Content deploy/dependencies.json -Raw | ConvertFrom-Json).glory
+          if ($dependency.revision -notmatch '^[a-f0-9]{40}$') { throw 'Invalid Glory revision' }
+          "repository=$($dependency.repository)" >> $env:GITHUB_OUTPUT
+          "revision=$($dependency.revision)" >> $env:GITHUB_OUTPUT
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: ${{ steps.dependency.outputs.repository }}
+          ref: ${{ steps.dependency.outputs.revision }}
+          path: glory
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 24
+      - name: Install pinned RustSec auditor
+        run: |
+          New-Item -ItemType Directory -Force $env:CARGO_HOME,$env:CARGO_TARGET_DIR,$env:RUSTUP_HOME,$env:TEMP | Out-Null
+          rustup toolchain install 1.98.0 --profile minimal
+          if ($LASTEXITCODE) { throw 'Audit compiler installation failed' }
+          rustup default 1.98.0
+          $metadata = cargo metadata --locked --no-deps --format-version 1 | ConvertFrom-Json
+          if ($LASTEXITCODE -or [IO.Path]::GetFullPath($metadata.target_directory) -ne [IO.Path]::GetFullPath($env:CARGO_TARGET_DIR)) { throw 'Unexpected tool target' }
+          # Version verified from https://crates.io/api/v1/crates/cargo-audit/0.22.2.
+          cargo install cargo-audit --version 0.22.2 --locked --root D:/BuildCache/sapid/quality-tools
+          if ($LASTEXITCODE) { throw 'Pinned audit installation failed' }
+      - name: Regression checks for the audit gate
+        run: |
+          node --test scripts/test_showcase_acceptance.cjs
+          if ($LASTEXITCODE) { throw 'Showcase runner regressions failed' }
+          python -m unittest discover -s scripts -p test_audit.py
+          if ($LASTEXITCODE) { throw 'Audit gate regressions failed' }
+      - name: Audit all three lockfiles against the current RustSec database
+        run: ./scripts/audit-dependencies.ps1 -BuildRoot D:/BuildCache/sapid/quality/audit
+      - name: Preserve dependency audit reports, including warnings and failures
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: sapid-dependency-audit
+          path: D:/BuildCache/sapid/quality/audit
+          if-no-files-found: error
