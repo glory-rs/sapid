@@ -12,7 +12,14 @@ Browser acceptance scripts are independently versioned by the workflow commit. R
 
 Successful checks return an exact attempt-specific artifact name and a SHA-256 digest of its provenance. Failed or partial browser runs use a separate artifact name. Before Cargo metadata or any registry operation, the publisher verifies that provenance digest, the complete report digest, `complete: true`, no errors, the entire suite list and every suite source hash against the workflow checkout. Provenance must identify this repository and workflow run, the frozen product SHA, the Glory repository/pinned SHA and the acceptance SHA; the publisher's local product, Glory and harness checkouts must agree. CI also verifies the report's fixture hashes against the actual built files before recording successful provenance.
 
-A publication retry may reuse the exact successful artifact from an earlier attempt of the same workflow run when all source identities and digests still match. The attempt number remains in provenance; artifacts from another run, future attempt, failed suite, changed source or changed tag fail the gate. Evidence is downloaded and checked before any registry upload, and the remote tag is checked again immediately before each upload. Direct local `--publish` without the workflow's frozen identities and successful evidence is rejected. Local plan validation remains `python scripts/release.py`.
+A publication retry may reuse the exact successful artifact from an earlier attempt of the same workflow run when all source identities and digests still match. The attempt number remains in provenance; artifacts from another run, future attempt, failed suite, changed source or changed tag fail the gate. Evidence is downloaded and checked before any registry upload, and the remote tag is checked again immediately before every upload attempt, including retries after a registry rate-limit wait. Direct local `--publish` without the workflow's frozen identities and successful evidence is rejected. Local plan validation remains `python scripts/release.py`.
+
+Release attachments use `browser-results-run-<run_id>-attempt-<publication_attempt>.json` and
+`browser-provenance-run-<run_id>-attempt-<publication_attempt>.json`. A manual rerun of an
+existing tag adds a new pair instead of overwriting earlier reports or colliding with
+the original unversioned attachments. The provenance still records the successful
+validation attempt when a later publication attempt reuses its evidence. The
+`--attach-acceptance` helper revalidates the same gate before uploading those files.
 
 The static fixture server uses HTTP/1.1 persistent connections and each complete suite receives a fresh browser process. This bounds networking and browser resources over the full matrix: Windows CI previously failed to load pages or WASM with Winsock's `ERR_NO_BUFFER_SPACE`. All modes and identity/focus assertions within each suite still share their original browser lifetime. Do not hide infrastructure failures by dropping suites or converting missing-page failures into passes.
 

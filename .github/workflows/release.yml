@@ -125,5 +125,5 @@ jobs:
       - name: Attach browser acceptance provenance
         run: |
           $evidence = Join-Path $env:CARGO_TARGET_DIR 'browser-acceptance'
-          gh release upload $env:RELEASE_TAG (Join-Path $evidence 'browser-results.json') (Join-Path $evidence 'browser-provenance.json')
+          python ../release-tools/scripts/release.py --product-root . --harness-root ../release-tools --attach-acceptance --tag $env:RELEASE_TAG --expected-commit $env:RELEASE_COMMIT --acceptance-commit $env:ACCEPTANCE_COMMIT --provenance (Join-Path $evidence 'browser-provenance.json')
           if ($LASTEXITCODE) { throw 'Browser evidence upload failed' }

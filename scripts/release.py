@@ -25,9 +25,11 @@ def run(*args, capture=False):
     return result.stdout.strip() if capture else None
 
 
-def publish(command):
+def publish(command, *, before_upload=None):
     """Retry only an explicit registry rate limit, at the server's stated time."""
     for attempt in range(12):
+        if before_upload is not None:
+            before_upload()
         result = subprocess.run(command, cwd=ROOT, text=True, encoding="utf-8", errors="replace",
                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         print(result.stdout, end="", flush=True)
@@ -83,6 +85,27 @@ def verify_remote_tag(tag, expected_commit):
     commit = revisions.get(f"refs/tags/{tag}^{{}}", revisions.get(f"refs/tags/{tag}"))
     if commit != expected_commit:
         raise SystemExit("Release tag moved from the frozen, validated commit")
+
+
+def acceptance_assets(provenance, run_id, attempt):
+    """Stage attempt-specific evidence without overwriting any previous asset."""
+    if any(not re.fullmatch(r"[1-9][0-9]*", value or "") for value in (run_id, attempt)):
+        raise SystemExit("Acceptance assets require a positive workflow run ID and attempt")
+    provenance = Path(provenance)
+    output = provenance.parent / "release-assets"
+    output.mkdir(parents=True, exist_ok=True)
+    assets = []
+    for source in (provenance.with_name("browser-results.json"), provenance):
+        destination = output / f"{source.stem}-run-{run_id}-attempt-{attempt}.json"
+        payload = source.read_bytes()
+        if destination.exists():
+            if destination.read_bytes() != payload:
+                raise SystemExit("Existing attempt-specific acceptance asset has different contents")
+        else:
+            with destination.open("xb") as target:
+                target.write(payload)
+        assets.append(destination)
+    return assets
 
 
 def acceptance_report(results_path, harness_root, fixtures_root=None):
@@ -207,6 +230,7 @@ def main():
     global ROOT
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--publish", action="store_true")
+    parser.add_argument("--attach-acceptance", action="store_true", help="attach validated browser evidence with run/attempt-specific asset names")
     parser.add_argument("--tag")
     parser.add_argument("--check-package", help="package and inspect one owned crate without uploading")
     parser.add_argument("--product-root", type=Path, help="frozen product checkout when using workflow-versioned release tools")
@@ -217,6 +241,8 @@ def main():
     parser.add_argument("--fixtures-root", type=Path, help="actual built fixture directory when recording acceptance")
     parser.add_argument("--record-acceptance", action="store_true", help="record provenance only for complete successful browser acceptance")
     options = parser.parse_args()
+    if options.attach_acceptance and (options.publish or options.check_package or options.record_acceptance):
+        parser.error("Attaching acceptance cannot publish, package or record acceptance")
     if options.product_root:
         ROOT = options.product_root.resolve()
     if options.record_acceptance:
@@ -233,13 +259,17 @@ def main():
     tag = options.tag or event_tag or expected_tag
     if tag != expected_tag:
         raise SystemExit(f"Tag {tag!r} must match manifest version: {expected_tag}")
-    if options.publish:
+    if options.publish or options.attach_acceptance:
         if not (ROOT / "releases" / (version + ".md")).is_file():
             raise SystemExit("A reviewed release-notes file is required")
         if run("git", "status", "--porcelain", capture=True):
             raise SystemExit("Publication requires a clean checkout")
         head = run("git", "rev-parse", "HEAD", capture=True)
         validate_release_gate(options, plan, tag, head)
+    if options.attach_acceptance:
+        assets = acceptance_assets(options.provenance, os.environ.get("GITHUB_RUN_ID"), os.environ.get("GITHUB_RUN_ATTEMPT"))
+        run("gh", "release", "upload", tag, "--repo", plan["repository"], *map(str, assets))
+        return
     metadata = json.loads(run("cargo", "metadata", "--no-deps", "--format-version", "1", capture=True))
     target = Path(metadata["target_directory"]).resolve()
     configured = os.environ.get("CARGO_TARGET_DIR")
@@ -344,8 +374,7 @@ def main():
                 command.append("--no-verify")
             # Packaging can take time. Refuse a tag change immediately before
             # each irreversible upload as well as at the initial gate.
-            verify_remote_tag(tag, head)
-            publish(command)
+            publish(command, before_upload=lambda: verify_remote_tag(tag, head))
         # Let sparse-index propagation finish before building dependent crates.
         ready = False
         for attempt in range(30):
