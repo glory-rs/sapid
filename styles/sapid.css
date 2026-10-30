@@ -22,7 +22,7 @@
 .sapid-button:where(:not(.sapid-unstyled)):focus-visible,.sapid-checkbox:where(:not(.sapid-unstyled)) input:focus-visible{outline:2px solid var(--sp-ring);outline-offset:2px}
 .sapid-layer:where(:not(.sapid-unstyled)){border:1px solid var(--sp-border);box-shadow:0 10px 42px var(--sp-shadow)}
 /* Composite triggers inherit unstyled from their widget root. */
-:is(.sapid-accordion-trigger,.sapid-tab,.sapid-collapsible-trigger,.sapid-dialog-trigger,.sapid-alert-dialog-trigger,.sapid-drawer-trigger,.sapid-popover-trigger,.sapid-command-trigger,.sapid-hint-trigger,.sapid-menu-trigger,.sapid-navigation-menu-trigger):where(:not(.sapid-unstyled,.sapid-unstyled *,[aria-disabled=true])):enabled{cursor:pointer}
+:is(.sapid-accordion-trigger,.sapid-tab,.sapid-collapsible-trigger,.sapid-dialog-trigger,.sapid-alert-dialog-trigger,.sapid-drawer-trigger,.sapid-popover-trigger,.sapid-command-trigger,.sapid-hint-trigger,.sapid-menu-trigger,.sapid-menu-submenu-trigger,.sapid-navigation-menu-trigger,.sapid-sidebar-trigger,.sapid-spoiler-trigger,.sapid-stepper-trigger):where(:not(.sapid-unstyled,.sapid-unstyled *,[aria-disabled=true])):enabled{cursor:pointer}
 @media(prefers-reduced-motion:reduce){.sapid-text-field:where(:not(.sapid-unstyled)),.sapid-button:where(:not(.sapid-unstyled)){transition:none}}
 
 /* The semantic switch remains a native checkbox input for keyboard activation. */
