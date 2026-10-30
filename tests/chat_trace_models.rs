@@ -61,8 +61,7 @@ fn whole_forest_accepts_out_of_order_parents_and_rejects_duplicates_missing_and_
         TraceError::Cycle
     );
     assert_eq!(
-        TraceData::new([record("a").parent(key("b")), record("b").parent(key("a"))])
-            .unwrap_err(),
+        TraceData::new([record("a").parent(key("b")), record("b").parent(key("a"))]).unwrap_err(),
         TraceError::Cycle
     );
 }

@@ -56,21 +56,16 @@ pub fn timeline_form(theme: Theme) -> impl Widget {
                     .theme(theme.clone())
                     .label("Advance timeline")
                     .on_press(move || {
-                        progress
-                            .revise(|value| *value = TimelineProgress::Active("ship".into()))
+                        progress.revise(|value| *value = TimelineProgress::Active("ship".into()))
                     }),
                 button()
                     .theme(theme.clone())
                     .label("Complete timeline")
-                    .on_press(move || {
-                        progress.revise(|value| *value = TimelineProgress::Complete)
-                    }),
+                    .on_press(move || progress.revise(|value| *value = TimelineProgress::Complete)),
                 button()
                     .theme(theme.clone())
                     .label("Reset timeline")
-                    .on_press(move || {
-                        progress.revise(|value| *value = TimelineProgress::Pending)
-                    }),
+                    .on_press(move || progress.revise(|value| *value = TimelineProgress::Pending)),
             ))
             .show_in(scope)
     })

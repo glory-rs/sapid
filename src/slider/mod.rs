@@ -221,13 +221,7 @@ impl Controller {
         }
         Ok(())
     }
-    fn publish_drag(
-        &self,
-        ticket: u64,
-        point: (f64, f64),
-        phase: DragPhase,
-        rect: Rect,
-    ) -> Result {
+    fn publish_drag(&self, ticket: u64, point: (f64, f64), phase: DragPhase, rect: Rect) -> Result {
         if self.active.get() != Some(ticket) || self.ensure().is_err() {
             return Ok(());
         }
@@ -645,8 +639,7 @@ impl Widget for Slider {
                 Ok::<_, glory::ui::Error>(text.clone())
             })??;
             if default_text && snapshot.range.value_text.is_none() {
-                snapshot.range.value_text =
-                    Some(format!("{} degrees", snapshot.range.range.value));
+                snapshot.range.value_text = Some(format!("{} degrees", snapshot.range.range.value));
             }
             Ok(snapshot)
         };

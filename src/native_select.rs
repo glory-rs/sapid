@@ -2,8 +2,7 @@
 use std::rc::Rc;
 
 use glory::render::{
-    Event, EventKind, FormControl, SelectEntry, SelectGroup, SelectOption, SelectProps,
-    SemanticId,
+    Event, EventKind, FormControl, SelectEntry, SelectGroup, SelectOption, SelectProps, SemanticId,
 };
 use glory::ui::{Result, Widget};
 use glory::{Scope, Vary};
@@ -215,8 +214,7 @@ impl NativeSelect {
     }
     pub fn group(mut self, group: NativeOptionGroup) -> Self {
         if self.count <= MAX_NATIVE_SELECT_OPTIONS
-            && self.entries.len()
-                <= MAX_NATIVE_SELECT_OPTIONS + glory::render::MAX_SELECT_GROUPS
+            && self.entries.len() <= MAX_NATIVE_SELECT_OPTIONS + glory::render::MAX_SELECT_GROUPS
         {
             self.count += group.options.len();
             self.entries.push(Entry::Group(group));
@@ -234,10 +232,9 @@ fn canonical(config: &SelectProps, value: &[String]) -> Result<Vec<SemanticId>> 
         }
         || value.iter().any(|key| key.len() > 64)
     {
-        return Err(glory::render::Error::InvalidProps(
-            "native select selection exceeds budget",
-        )
-        .into());
+        return Err(
+            glory::render::Error::InvalidProps("native select selection exceeds budget").into(),
+        );
     }
     let requested: std::collections::HashSet<_> = value.iter().map(String::as_str).collect();
     if requested.len() != value.len() {

@@ -341,10 +341,9 @@ impl Widget for Pagination {
                 }
             });
             if let Some(slot) = slot {
-                let visible = scope
-                    .bond(move || matches!(window.get().get(slot), Some(PageItem::Page(_))));
-                let gap =
-                    scope.bond(move || matches!(window.get().get(slot), Some(PageItem::Gap)));
+                let visible =
+                    scope.bond(move || matches!(window.get().get(slot), Some(PageItem::Page(_))));
+                let gap = scope.bond(move || matches!(window.get().get(slot), Some(PageItem::Gap)));
                 root = root.fill(
                     glory::ui::view()
                         .class("sapid-page-slot")
@@ -386,10 +385,7 @@ pub struct BreadcrumbItem {
     label: Vary<String>,
     href: Option<Vary<String>>,
 }
-pub fn breadcrumb_item(
-    key: impl Into<String>,
-    label: impl Into<Vary<String>>,
-) -> BreadcrumbItem {
+pub fn breadcrumb_item(key: impl Into<String>, label: impl Into<Vary<String>>) -> BreadcrumbItem {
     BreadcrumbItem {
         key: key.into(),
         label: label.into(),
@@ -566,27 +562,28 @@ impl Widget for Breadcrumbs {
                         });
                     }
                 });
-            shell = if let Some(href) = item.href {
-                let mut link = crate::anchor()
-                    .href(href)
-                    .label(item.label)
-                    .current(state)
-                    .theme(self.common.theme.clone())
-                    .size(self.common.size);
-                if self.common.unstyled {
-                    link = link.unstyled();
-                }
-                shell.fill(link)
-            } else {
-                shell.fill(glory::ui::text().content(item.label).semantics(scope.bond(
-                    move || {
-                        composite::metadata(Semantics {
-                            current: state.get(),
-                            ..Default::default()
-                        })
-                    },
-                )))
-            };
+            shell =
+                if let Some(href) = item.href {
+                    let mut link = crate::anchor()
+                        .href(href)
+                        .label(item.label)
+                        .current(state)
+                        .theme(self.common.theme.clone())
+                        .size(self.common.size);
+                    if self.common.unstyled {
+                        link = link.unstyled();
+                    }
+                    shell.fill(link)
+                } else {
+                    shell.fill(glory::ui::text().content(item.label).semantics(scope.bond(
+                        move || {
+                            composite::metadata(Semantics {
+                                current: state.get(),
+                                ..Default::default()
+                            })
+                        },
+                    )))
+                };
             list = list.fill(shell);
         }
         let open = expanded;

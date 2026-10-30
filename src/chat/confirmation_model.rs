@@ -7,9 +7,7 @@ fn invalid(message: &'static str) -> glory::ui::Error {
     glory::render::Error::InvalidProps(message).into()
 }
 fn text(value: &str, maximum: usize, empty: bool) -> bool {
-    value.len() <= maximum
-        && !value.contains(['\0', '\r'])
-        && (empty || !value.trim().is_empty())
+    value.len() <= maximum && !value.contains(['\0', '\r']) && (empty || !value.trim().is_empty())
 }
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum ConfirmationStatus {

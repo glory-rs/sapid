@@ -122,16 +122,15 @@ pub fn validate_json(value: &str, limits: JsonLimits) -> JsonValidity {
             }
         }
         // Budget the nesting before invoking the parser. No business tree is decoded.
-        let _: &serde_json::value::RawValue =
-            serde_json::from_str(trimmed).map_err(|failure| {
-                let failure: serde_json::Error = failure;
-                JsonError {
-                    kind: JsonErrorKind::Syntax,
-                    line: Some(failure.line()),
-                    column: Some(failure.column()),
-                    message: failure.to_string().chars().take(256).collect(),
-                }
-            })?;
+        let _: &serde_json::value::RawValue = serde_json::from_str(trimmed).map_err(|failure| {
+            let failure: serde_json::Error = failure;
+            JsonError {
+                kind: JsonErrorKind::Syntax,
+                line: Some(failure.line()),
+                column: Some(failure.column()),
+                message: failure.to_string().chars().take(256).collect(),
+            }
+        })?;
         Ok(Some(match trimmed.as_bytes()[0] {
             b'n' => JsonKind::Null,
             b't' | b'f' => JsonKind::Boolean,

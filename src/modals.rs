@@ -118,9 +118,10 @@ impl ModalsHandle {
         if !Weak::ptr_eq(&token.controller, &Rc::downgrade(&self.0)) {
             return Err(invalid("modal token belongs to another manager"));
         }
-        Ok(self.0.entries.try_with_untracked(|entries| {
-            entries.iter().position(|entry| entry.id == token.id)
-        })?)
+        Ok(self
+            .0
+            .entries
+            .try_with_untracked(|entries| entries.iter().position(|entry| entry.id == token.id))?)
     }
     /// Enqueues FIFO. At most one request has a mounted Layer at any instant.
     pub fn open(&self, request: ModalRequest) -> Result<ModalToken> {

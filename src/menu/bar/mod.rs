@@ -76,10 +76,7 @@ impl Menubar {
             .sum::<usize>()
             + 1
             + menu.inner.entries.iter().map(entry_size).sum::<usize>();
-        if self.menus.len() >= MAX_MENUBAR_ROOTS
-            || total > MAX_MENU_ITEMS
-            || menu.inner.overflow
-        {
+        if self.menus.len() >= MAX_MENUBAR_ROOTS || total > MAX_MENU_ITEMS || menu.inner.overflow {
             self.overflow = true;
         } else {
             self.menus.push(menu);
@@ -509,9 +506,7 @@ impl Widget for Menubar {
             let visible = enabled.clone();
             root.inner.open.source = Some(
                 scope
-                    .bond(move || {
-                        visible.get() && selected.get().as_deref() == Some(&selected_key)
-                    })
+                    .bond(move || visible.get() && selected.get().as_deref() == Some(&selected_key))
                     .into(),
             );
             let handle = Rc::downgrade(&state);

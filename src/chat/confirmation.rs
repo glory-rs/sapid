@@ -108,29 +108,30 @@ impl Widget for Confirmation {
         let cleanup = callback.clone();
         scope.on_cleanup(move || cleanup.clear())?;
         let labels = self.labels.clone();
-        let mut root = container(&mut self.common, scope, "sapid-confirmation").fill((
-            glory::ui::text()
-                .kind(TextKind::Heading(3))
-                .class("sapid-confirmation-title")
-                .style(prose())
-                .content(scope.bond(move || accepted.with(|value| value.title.clone()))),
-            glory::ui::text()
-                .kind(TextKind::Paragraph)
-                .class("sapid-confirmation-description")
-                .style(prose())
-                .content(scope.bond(move || accepted.with(|value| value.description.clone()))),
-            glory::ui::text()
-                .class("sapid-confirmation-status")
-                .style(prose())
-                .content(scope.bond(move || {
-                    accepted.with(|value| labels.status(value.status).to_owned())
-                })),
-            glory::ui::text()
-                .kind(TextKind::Paragraph)
-                .class("sapid-confirmation-details")
-                .style(prose())
-                .content(scope.bond(move || accepted.with(|value| value.details.clone()))),
-        ));
+        let mut root =
+            container(&mut self.common, scope, "sapid-confirmation").fill((
+                glory::ui::text()
+                    .kind(TextKind::Heading(3))
+                    .class("sapid-confirmation-title")
+                    .style(prose())
+                    .content(scope.bond(move || accepted.with(|value| value.title.clone()))),
+                glory::ui::text()
+                    .kind(TextKind::Paragraph)
+                    .class("sapid-confirmation-description")
+                    .style(prose())
+                    .content(scope.bond(move || accepted.with(|value| value.description.clone()))),
+                glory::ui::text()
+                    .class("sapid-confirmation-status")
+                    .style(prose())
+                    .content(scope.bond(move || {
+                        accepted.with(|value| labels.status(value.status).to_owned())
+                    })),
+                glory::ui::text()
+                    .kind(TextKind::Paragraph)
+                    .class("sapid-confirmation-details")
+                    .style(prose())
+                    .content(scope.bond(move || accepted.with(|value| value.details.clone()))),
+            ));
         let mut buttons = Vec::with_capacity(2);
         for (decision, label, class) in [
             (
@@ -166,12 +167,10 @@ impl Widget for Confirmation {
                         return;
                     }
                     let request = accepted.with(|value| {
-                        (value.status == ConfirmationStatus::Pending).then(|| {
-                            ConfirmationRequest {
-                                key: key.clone(),
-                                revision: value.revision,
-                                decision,
-                            }
+                        (value.status == ConfirmationStatus::Pending).then(|| ConfirmationRequest {
+                            key: key.clone(),
+                            revision: value.revision,
+                            decision,
                         })
                     });
                     if let Some(request) = request {
@@ -276,30 +275,31 @@ impl Widget for Checkpoint {
         if self.common.unstyled {
             button = button.unstyled();
         }
-        let mut root = container(&mut self.common, scope, "sapid-checkpoint").fill((
-            glory::ui::text()
-                .kind(TextKind::Heading(3))
-                .class("sapid-checkpoint-title")
-                .style(prose())
-                .content(scope.bond(move || accepted.with(|value| value.title.clone()))),
-            glory::ui::text()
-                .kind(TextKind::Paragraph)
-                .class("sapid-checkpoint-description")
-                .style(prose())
-                .content(scope.bond(move || accepted.with(|value| value.description.clone()))),
-            glory::ui::text()
-                .class("sapid-checkpoint-status")
-                .style(prose())
-                .content(scope.bond(move || {
-                    accepted.with(|value| labels.status(value.status).to_owned())
-                })),
-            glory::ui::text()
-                .kind(TextKind::Paragraph)
-                .class("sapid-checkpoint-details")
-                .style(prose())
-                .content(scope.bond(move || accepted.with(|value| value.details.clone()))),
-            button,
-        ));
+        let mut root =
+            container(&mut self.common, scope, "sapid-checkpoint").fill((
+                glory::ui::text()
+                    .kind(TextKind::Heading(3))
+                    .class("sapid-checkpoint-title")
+                    .style(prose())
+                    .content(scope.bond(move || accepted.with(|value| value.title.clone()))),
+                glory::ui::text()
+                    .kind(TextKind::Paragraph)
+                    .class("sapid-checkpoint-description")
+                    .style(prose())
+                    .content(scope.bond(move || accepted.with(|value| value.description.clone()))),
+                glory::ui::text()
+                    .class("sapid-checkpoint-status")
+                    .style(prose())
+                    .content(scope.bond(move || {
+                        accepted.with(|value| labels.status(value.status).to_owned())
+                    })),
+                glory::ui::text()
+                    .kind(TextKind::Paragraph)
+                    .class("sapid-checkpoint-details")
+                    .style(prose())
+                    .content(scope.bond(move || accepted.with(|value| value.details.clone()))),
+                button,
+            ));
         for (kind, mut handlers) in std::mem::take(&mut self.common.handlers) {
             let owner = scope.id();
             root = root.on(kind, move |event| observe(&mut handlers, owner, event));

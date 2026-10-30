@@ -168,7 +168,7 @@ fn fixture() -> Fixture {
 }
 #[test]
 fn two_real_queries_follow_only_the_current_registered_target_without_focus_or_selection_semantics()
- {
+{
     let (app, executor, wire, context, active, _) = fixture();
     settle(&app, &executor);
     assert_eq!(context.registered(), 2);
@@ -211,8 +211,7 @@ fn two_real_queries_follow_only_the_current_registered_target_without_focus_or_s
     }
 }
 #[test]
-fn old_queries_are_revoked_on_new_active_and_owner_retirement_without_retaining_visit_history()
-{
+fn old_queries_are_revoked_on_new_active_and_owner_retirement_without_retaining_visit_history() {
     let (app, executor, wire, context, active, _) = fixture();
     settle(&app, &executor);
     wire.defer.set(true);
@@ -322,8 +321,7 @@ fn unknown_hosts_keep_deterministic_hidden_ssr_and_target_registration_is_bounde
                 .theme(theme.clone())
                 .active(Some("a".to_owned()))
                 .content(|context| {
-                    floating_indicator_target(context, "a")
-                        .fill(glory::ui::text().content("One"))
+                    floating_indicator_target(context, "a").fill(glory::ui::text().content("One"))
                 }),
         )
         .unwrap();
@@ -332,8 +330,7 @@ fn unknown_hosts_keep_deterministic_hidden_ssr_and_target_registration_is_bounde
                 .theme(theme)
                 .active(Some("a".to_owned()))
                 .content(|context| {
-                    floating_indicator_target(context, "a")
-                        .fill(glory::ui::text().content("One"))
+                    floating_indicator_target(context, "a").fill(glory::ui::text().content("One"))
                 }),
         )
         .unwrap();

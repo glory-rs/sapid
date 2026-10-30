@@ -1,7 +1,5 @@
 use glory::prelude::*;
-use sapid::{
-    ModalToken, ModalsHandle, Theme, confirmation_request, modal_request, modals_manager,
-};
+use sapid::{ModalToken, ModalsHandle, Theme, confirmation_request, modal_request, modals_manager};
 use std::{cell::RefCell, rc::Rc};
 #[derive(Default)]
 struct Control {
@@ -27,15 +25,18 @@ pub fn modals_form(theme: Theme) -> impl Widget {
             let control = control.clone();
             let weak = scope.downgrade();
             let content_theme = theme.clone();
-            controls.push(sapid::button().theme(theme.clone()).label(label).on_press(
-                move || {
-                    if let Err(error) = command(&control, operation, log, count, &content_theme)
-                        && let Some(scope) = weak.upgrade()
-                    {
-                        scope.report_error(error);
-                    }
-                },
-            ));
+            controls.push(
+                sapid::button()
+                    .theme(theme.clone())
+                    .label(label)
+                    .on_press(move || {
+                        if let Err(error) = command(&control, operation, log, count, &content_theme)
+                            && let Some(scope) = weak.upgrade()
+                        {
+                            scope.report_error(error);
+                        }
+                    }),
+            );
         }
         sapid::stack()
             .theme(theme.clone())

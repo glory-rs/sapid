@@ -1,8 +1,6 @@
 #![cfg(feature = "dates")]
 use glory::prelude::*;
-use glory::render::{
-    Direction, DragPhase, EventKind, GridCommand, NodeId, Props, TableMetadata,
-};
+use glory::render::{Direction, DragPhase, EventKind, GridCommand, NodeId, Props, TableMetadata};
 use sapid::prelude::*;
 use std::{cell::RefCell, rc::Rc};
 fn date(s: &str) -> CivilDate {
@@ -191,9 +189,7 @@ fn key(s: &str) -> ScheduleKey {
 }
 fn resources(n: usize) -> ScheduleResources {
     ScheduleResources::new(
-        (0..n).map(|i| {
-            ScheduleResource::new(key(&format!("r{i}")), format!("Room {i}")).unwrap()
-        }),
+        (0..n).map(|i| ScheduleResource::new(key(&format!("r{i}")), format!("Room {i}")).unwrap()),
     )
     .unwrap()
 }
@@ -212,8 +208,7 @@ fn model(days: u16, first: usize, count: usize) -> ResourceScheduleData {
                 ScheduleEvent::new(
                     key("a"),
                     "Planning",
-                    ScheduleInterval::new(dt("2024-02-29T09:00"), dt("2024-02-29T10:00"))
-                        .unwrap(),
+                    ScheduleInterval::new(dt("2024-02-29T09:00"), dt("2024-02-29T10:00")).unwrap(),
                 )
                 .unwrap()
                 .resource(key("r0"))
@@ -221,8 +216,7 @@ fn model(days: u16, first: usize, count: usize) -> ResourceScheduleData {
                 ScheduleEvent::new(
                     key("b"),
                     "Review",
-                    ScheduleInterval::new(dt("2024-02-29T09:00"), dt("2024-02-29T10:00"))
-                        .unwrap(),
+                    ScheduleInterval::new(dt("2024-02-29T09:00"), dt("2024-02-29T10:00")).unwrap(),
                 )
                 .unwrap()
                 .resource(key("r1"))
@@ -397,8 +391,7 @@ fn last_partial_resource_page_returns_with_original_stride_and_request_refusal_i
     let calls = out.clone();
     let source = app.scope().cage(model(1, 0, 2));
     app.mount(
-        resources_day_view("pages", source)
-            .on_window_request(move |r| calls.borrow_mut().push(r)),
+        resources_day_view("pages", source).on_window_request(move |r| calls.borrow_mut().push(r)),
     )
     .unwrap();
     let next = button(&app, "Next resources");
@@ -487,8 +480,7 @@ fn same_tick_edit_fifo_accumulates_controlled_refusal_and_respects_resize_bounda
     assert_eq!(calls[1].proposed.start(), dt("2024-02-29T09:00"));
 }
 #[test]
-fn same_tick_accepted_edit_uses_latest_original_and_generic_readonly_cancels_following_intents()
-{
+fn same_tick_accepted_edit_uses_latest_original_and_generic_readonly_cancels_following_intents() {
     let app = App::memory();
     let source = app.scope().cage(model(1, 0, 2));
     let readonly = app.scope().cage(false);

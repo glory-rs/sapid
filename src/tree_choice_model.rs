@@ -103,10 +103,7 @@ impl TreeChoiceModel {
     pub fn multiple(&self) -> bool {
         self.multiple
     }
-    pub(crate) fn validate_columns(
-        &self,
-        expanded: &BTreeSet<String>,
-    ) -> Result<(), TreeError> {
+    pub(crate) fn validate_columns(&self, expanded: &BTreeSet<String>) -> Result<(), TreeError> {
         self.tree.validate_column_path(expanded)
     }
     pub fn path(&self, key: &str) -> Result<TreePath, TreeError> {

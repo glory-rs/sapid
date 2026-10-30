@@ -46,9 +46,7 @@ impl fmt::Display for CivilYear {
 impl sealed::Sealed for CivilYear {}
 impl sealed::Sealed for YearMonth {}
 /// Sealed to the two small civil period values; user business types cannot widen storage.
-pub trait DatePeriod:
-    sealed::Sealed + Copy + Ord + fmt::Debug + fmt::Display + 'static
-{
+pub trait DatePeriod: sealed::Sealed + Copy + Ord + fmt::Debug + fmt::Display + 'static {
     const TEXT_BYTES: usize;
     const MONTH: bool;
     fn ordinal(self) -> u32;
@@ -197,9 +195,7 @@ impl<T: DatePeriod> SelectedPeriods<T> {
             len: 0,
         }
     }
-    pub fn try_from_iter(
-        values: impl IntoIterator<Item = T>,
-    ) -> Result<Self, DateSelectionError> {
+    pub fn try_from_iter(values: impl IntoIterator<Item = T>) -> Result<Self, DateSelectionError> {
         let mut out = Self::new();
         for (index, value) in values.into_iter().enumerate() {
             if index == MAX_SELECTED_DATES {
@@ -499,9 +495,7 @@ mod tests {
             assert_eq!(MonthSelection::parse_iso(mode, v).unwrap().format_iso(), v);
         }
         assert!(YearSelection::parse_iso(DatePickerMode::Range, "2024/2023").is_err());
-        assert!(
-            MonthSelection::parse_iso(DatePickerMode::Single, &"8".repeat(1_000_000)).is_err()
-        );
+        assert!(MonthSelection::parse_iso(DatePickerMode::Single, &"8".repeat(1_000_000)).is_err());
         assert!(
             YearSelection::empty(DatePickerMode::Single)
                 .validate(DatePickerMode::Range, YearBounds::default())

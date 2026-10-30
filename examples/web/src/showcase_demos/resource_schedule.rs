@@ -22,17 +22,16 @@ mod fixture {
         page: ScheduleResourceWindow,
         title: &str,
     ) -> ResourceScheduleData {
-        let make =
-            |id: &str, title: &str, start: &str, end: &str, resource: &str, permissions| {
-                ScheduleEvent::new(
-                    key(id),
-                    title,
-                    ScheduleInterval::new(dt(start), dt(end)).unwrap(),
-                )
-                .unwrap()
-                .resource(key(resource))
-                .permissions(permissions)
-            };
+        let make = |id: &str, title: &str, start: &str, end: &str, resource: &str, permissions| {
+            ScheduleEvent::new(
+                key(id),
+                title,
+                ScheduleInterval::new(dt(start), dt(end)).unwrap(),
+            )
+            .unwrap()
+            .resource(key(resource))
+            .permissions(permissions)
+        };
         let permissions = SchedulePermissions {
             select: true,
             move_event: true,
@@ -66,8 +65,7 @@ mod fixture {
                     ScheduleEvent::new(
                         key("holiday"),
                         "Holiday",
-                        ScheduleInterval::all_day(date("2024-02-29"), date("2024-03-01"))
-                            .unwrap(),
+                        ScheduleInterval::all_day(date("2024-02-29"), date("2024-03-01")).unwrap(),
                     )
                     .unwrap()
                     .all_day()
@@ -106,8 +104,7 @@ mod fixture {
                     .unwrap()
             });
             *old = ResourceScheduleData::new(
-                ScheduleData::new(old.data().zone().clone(), old.data().window(), events)
-                    .unwrap(),
+                ScheduleData::new(old.data().zone().clone(), old.data().window(), events).unwrap(),
                 old.resources().clone(),
                 old.resource_window(),
             )
@@ -168,9 +165,7 @@ mod fixture {
                 .on_window_request(move |r| {
                     requests.revise(|n| *n += 1);
                     if accept.get_untracked() {
-                        data.revise(|old| {
-                            *old = data_for(r.window, r.resource_window, "Planning")
-                        })
+                        data.revise(|old| *old = data_for(r.window, r.resource_window, "Planning"))
                     }
                 })
                 .on_edit(move |e| {

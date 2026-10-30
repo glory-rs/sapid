@@ -15,8 +15,7 @@ pub(super) fn preview_panel(state: EditorState, theme: Theme) -> impl Widget {
             [ColorScheme::Light, ColorScheme::Dark]
                 .into_iter()
                 .map(|scheme| {
-                    let supported =
-                        scope.bond(move || draft.with(|d| d.record.supports(scheme)));
+                    let supported = scope.bond(move || draft.with(|d| d.record.supports(scheme)));
                     let active = scope.bond(move || {
                         if mode.get() == scheme {
                             "studio-tab is-active".to_owned()

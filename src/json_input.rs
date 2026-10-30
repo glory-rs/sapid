@@ -260,8 +260,8 @@ impl Widget for JsonInput {
             .map(|field| field.readonly_state(scope, self.readonly.clone()))
             .unwrap_or_else(|| self.readonly.clone());
         let invalid = self.invalid.clone();
-        let error_state = scope
-            .bond(move || invalid.get() || matches!(status.get(), JsonValidity::Invalid(_)));
+        let error_state =
+            scope.bond(move || invalid.get() || matches!(status.get(), JsonValidity::Invalid(_)));
         let custom = self.common.style.clone();
         let unstyled = self.common.unstyled;
         let style = scope.bond(move || {
@@ -368,12 +368,14 @@ impl Widget for JsonInput {
             message = message.role(Role::Status)
         }
         root = root.fill(message);
-        root = root.fill(glory::ui::text().class("sapid-json-format-error").content(
-            scope.bond(move || {
-                format_failure
-                    .with(|error| error.as_ref().map(ToString::to_string).unwrap_or_default())
-            }),
-        ));
+        root = root.fill(
+            glory::ui::text()
+                .class("sapid-json-format-error")
+                .content(scope.bond(move || {
+                    format_failure
+                        .with(|error| error.as_ref().map(ToString::to_string).unwrap_or_default())
+                })),
+        );
         if self.formatter {
             let format = self.format;
             let ready = enabled.clone();

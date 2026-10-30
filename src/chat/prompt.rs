@@ -245,8 +245,7 @@ impl Widget for PromptInput {
             configuration.validate()?;
         }
         let control = std::mem::take(&mut self.value).mount(scope);
-        let accepted =
-            composite::validated(scope, &control.source, |value| validate_text(value))?;
+        let accepted = composite::validated(scope, &control.source, |value| validate_text(value))?;
         let composing = scope.cage(false);
         let files = scope.cage(Vec::<FileInfo>::new());
         let picker_status = scope.cage(FileStatus::Idle);

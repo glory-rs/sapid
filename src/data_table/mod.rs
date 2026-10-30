@@ -272,10 +272,7 @@ impl DataTable {
         self.selected.default = value;
         self
     }
-    pub fn on_selection_change(
-        mut self,
-        value: impl FnMut(BTreeSet<String>) + 'static,
-    ) -> Self {
+    pub fn on_selection_change(mut self, value: impl FnMut(BTreeSet<String>) + 'static) -> Self {
         self.selection_changed = Some(Box::new(value));
         self
     }
@@ -542,8 +539,7 @@ impl Widget for DataTable {
             let active = scope.bond(move || {
                 source.get()
                     && (query.with(|q| {
-                        q.hidden.contains(&visibility_key)
-                            || q.hidden.len() + 1 < validation.len()
+                        q.hidden.contains(&visibility_key) || q.hidden.len() + 1 < validation.len()
                     }))
             });
             let mut check = crate::checkbox()
@@ -590,8 +586,7 @@ impl Widget for DataTable {
                         .sum::<u32>(),
             )
         });
-        let table_style =
-            scope.bond(move || Style::new().min_width(Length::Px(total_width.get())));
+        let table_style = scope.bond(move || Style::new().min_width(Length::Px(total_width.get())));
         let column_count = columns.len();
         let total = scope.bond(move || {
             metadata(TableMetadata::Table {

@@ -172,9 +172,8 @@ impl Widget for RollingNumber {
         let area = scope.child_in(reference.try_get()?.ok_or(glory::ui::Error::Gone)?)?;
         crate::visually_hidden().content(formatted).show_in(&area)?;
         let line = 24.;
-        let keys = scope.bond(move || {
-            formatted.with(|value| (0..value.chars().count()).collect::<Vec<_>>())
-        });
+        let keys = scope
+            .bond(move || formatted.with(|value| (0..value.chars().count()).collect::<Vec<_>>()));
         glory::ui::view()
             .class("sapid-rolling-number-visual")
             .semantics(Some(Box::new(Semantics {
@@ -255,15 +254,11 @@ impl Widget for RollingNumber {
                                                             glory::ui::text()
                                                                 .content(number.to_string())
                                                                 .style(Style {
-                                                                    display: Some(
-                                                                        Display::Block,
-                                                                    ),
+                                                                    display: Some(Display::Block),
                                                                     line_height: Some(line),
                                                                     ..Style::new()
                                                                         .width(Length::Ch(1.))
-                                                                        .height(Length::Px(
-                                                                            line,
-                                                                        ))
+                                                                        .height(Length::Px(line))
                                                                 })
                                                         })
                                                         .collect::<Vec<_>>(),
@@ -276,9 +271,7 @@ impl Widget for RollingNumber {
                                 glory::ui::widget(move |scope| {
                                     glory::ui::text()
                                         .class("sapid-rolling-number-literal")
-                                        .content(
-                                            scope.bond(move || character.get().to_string()),
-                                        )
+                                        .content(scope.bond(move || character.get().to_string()))
                                         .style(Style {
                                             line_height: Some(line),
                                             ..Style::new().height(Length::Px(line))

@@ -79,9 +79,7 @@ pub fn focus_scope_form_with_prefix(theme: Theme, prefix: &'static str) -> impl 
                                 .on_press(move || inner.revise(|value| *value = true)),
                             focus_scope()
                                 .active(inner)
-                                .semantic_id(
-                                    SemanticId::new(format!("{prefix}-inner")).unwrap(),
-                                )
+                                .semantic_id(SemanticId::new(format!("{prefix}-inner")).unwrap())
                                 .fill((
                                     sapid::text_field()
                                         .theme(theme_inner.clone())

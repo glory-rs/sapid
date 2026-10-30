@@ -348,7 +348,6 @@ fn branch_leaf_policy_and_owner_retirement_do_not_publish_hidden_choices() {
     assert!(
         all(&app)
             .iter()
-            .all(|id| app.tree().node(*id).unwrap().descriptor.view().role
-                != Some(Role::TreeItem))
+            .all(|id| app.tree().node(*id).unwrap().descriptor.view().role != Some(Role::TreeItem))
     );
 }

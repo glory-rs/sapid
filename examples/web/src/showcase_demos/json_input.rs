@@ -47,9 +47,7 @@ mod fixture {
                         }
                     })
                     .on_format(move |_| formats.revise(|old| *old += 1))
-                    .on_validation(move |state| {
-                        validity.revise(|old| *old = format!("{state:?}"))
-                    })
+                    .on_validation(move |state| validity.revise(|old| *old = format!("{state:?}")))
             });
         let root = view().class("json-demo").fill((
             sapid::button().theme(theme.clone()).label("Before JSON"),

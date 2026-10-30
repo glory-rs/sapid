@@ -168,8 +168,7 @@ fn custom_parser_keeps_native_spelling_until_explicit_commit_and_callbacks_prece
     assert_eq!(order.borrow().as_slice(), ["change", "generic", "commit"]);
 }
 #[test]
-fn controlled_refusal_reconciles_valid_proposals_after_the_whole_tick_and_all_edits_are_observed()
- {
+fn controlled_refusal_reconciles_valid_proposals_after_the_whole_tick_and_all_edits_are_observed() {
     let app = App::memory();
     let r = app.scope().cage(None);
     let value = app.scope().cage(Some(d("2024-02-26")));

@@ -100,19 +100,19 @@ mod fixture {
                     text()
                         .class("window-bounds-status")
                         .content(scope.bond(move || {
-                        let value = bounds.get();
-                        format!(
-                            "x={} y={} width={} height={} proposals={} reject={} enabled={} {}",
-                            value.x,
-                            value.y,
-                            value.width,
-                            value.height,
-                            proposals.get(),
-                            reject.get(),
-                            enabled.get(),
-                            stale.get()
-                        )
-                    })),
+                            let value = bounds.get();
+                            format!(
+                                "x={} y={} width={} height={} proposals={} reject={} enabled={} {}",
+                                value.x,
+                                value.y,
+                                value.width,
+                                value.height,
+                                proposals.get(),
+                                reject.get(),
+                                enabled.get(),
+                                stale.get()
+                            )
+                        })),
                     when(mounted, move || {
                         let theme = window_theme.clone();
                         view().fill((

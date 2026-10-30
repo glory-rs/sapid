@@ -216,8 +216,7 @@ impl Drag {
         let mut column = ((coordinate - gutter) / extent)
             .floor()
             .clamp(0., (count - 1) as f64) as usize;
-        if self.axis == ResourceAxis::Columns && self.direction == glory::render::Direction::Rtl
-        {
+        if self.axis == ResourceAxis::Columns && self.direction == glory::render::Direction::Rtl {
             column = count - 1 - column
         }
         let mut delta = delta;

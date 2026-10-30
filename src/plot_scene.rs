@@ -244,8 +244,7 @@ mod tests {
     }
     #[test]
     fn waffle_uses_exactly_one_hundred_cells_and_deterministic_remainders() {
-        let data =
-            PlotData::values((0..3).map(|i| ValueDatum::new(format!("k{i}"), "Equal", 1.)));
+        let data = PlotData::values((0..3).map(|i| ValueDatum::new(format!("k{i}"), "Equal", 1.)));
         let scene = build(&data, PlotKind::Waffle);
         assert_eq!(
             scene
@@ -522,14 +521,7 @@ fn arc(out: &mut Vec<Cmd>, cx: f64, cy: f64, r: f64, start: f64, sweep: f64) {
         });
     }
 }
-pub(crate) fn ring(
-    cx: f64,
-    cy: f64,
-    inner: f64,
-    outer: f64,
-    start: f64,
-    sweep: f64,
-) -> Vec<Cmd> {
+pub(crate) fn ring(cx: f64, cy: f64, inner: f64, outer: f64, start: f64, sweep: f64) -> Vec<Cmd> {
     if sweep <= 0. || outer <= 0. {
         return Vec::new();
     }

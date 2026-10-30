@@ -270,10 +270,7 @@ impl Schedule {
         self.locale = value;
         self
     }
-    pub fn on_window_request(
-        mut self,
-        callback: impl FnMut(ScheduleRequest) + 'static,
-    ) -> Self {
+    pub fn on_window_request(mut self, callback: impl FnMut(ScheduleRequest) + 'static) -> Self {
         self.requested = Some(Box::new(callback));
         self
     }
@@ -443,8 +440,7 @@ impl Widget for Schedule {
                 .size(self.common.size)
                 .enabled(scope.bond(move || {
                     flags.with(|f| f.enabled)
-                        && accepted
-                            .with(|data| shift_window(data.window(), view, delta).is_ok())
+                        && accepted.with(|data| shift_window(data.window(), view, delta).is_ok())
                 }))
                 .on_press(move || {
                     s.report(s.request(delta));
@@ -741,9 +737,8 @@ impl Widget for AgendaEventWidget {
                 )
             })
         });
-        let enabled = scope.bond(move || {
-            flags.with(|f| f.enabled && !f.readonly) && row.with(|r| r.selectable)
-        });
+        let enabled = scope
+            .bond(move || flags.with(|f| f.enabled && !f.readonly) && row.with(|r| r.selectable));
         let theme = self.theme.clone();
         let unstyled = self.unstyled;
         let style = scope.bond(move || {

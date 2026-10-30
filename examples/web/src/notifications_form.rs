@@ -14,9 +14,7 @@ fn clock() -> NotificationClock {
     NotificationClock::new(
         move || Duration::from_secs_f64(performance.now() / 1000.),
         move |duration| {
-            crate::menu_form::local_delay(
-                duration.as_millis().min(i32::MAX as u128).max(1) as i32
-            )
+            crate::menu_form::local_delay(duration.as_millis().min(i32::MAX as u128).max(1) as i32)
         },
     )
 }
@@ -44,15 +42,18 @@ pub fn notifications_form(theme: Theme) -> impl Widget {
         ] {
             let control = control.clone();
             let weak = scope.downgrade();
-            controls.push(sapid::button().theme(theme.clone()).label(label).on_press(
-                move || {
-                    if let Err(error) = command(&control, operation, log, count, actions)
-                        && let Some(scope) = weak.upgrade()
-                    {
-                        scope.report_error(error)
-                    }
-                },
-            ));
+            controls.push(
+                sapid::button()
+                    .theme(theme.clone())
+                    .label(label)
+                    .on_press(move || {
+                        if let Err(error) = command(&control, operation, log, count, actions)
+                            && let Some(scope) = weak.upgrade()
+                        {
+                            scope.report_error(error)
+                        }
+                    }),
+            );
         }
         sapid::stack()
             .theme(theme.clone())

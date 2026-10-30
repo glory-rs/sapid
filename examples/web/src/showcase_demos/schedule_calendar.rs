@@ -26,8 +26,7 @@ mod fixture {
                     } else {
                         format!("Event {i}")
                     },
-                    ScheduleInterval::new(dt("2024-02-28T09:00"), dt("2024-02-29T10:00"))
-                        .unwrap(),
+                    ScheduleInterval::new(dt("2024-02-28T09:00"), dt("2024-02-29T10:00")).unwrap(),
                 )
                 .unwrap()
             }),

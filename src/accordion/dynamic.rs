@@ -257,8 +257,7 @@ pub(super) fn build(widget: &mut Accordion, scope: &Scope, input: Items) -> Resu
                     let mounted = collection.mounted()?;
                     if let Some(index) = mounted.iter().position(|item| item.node == from) {
                         let flags: Vec<_> = mounted.iter().map(|item| item.enabled).collect();
-                        if let Some(next) =
-                            composite::destination(index, command, &flags, looping)
+                        if let Some(next) = composite::destination(index, command, &flags, looping)
                         {
                             composite::focus_node(&scope, Some(mounted[next].node))?;
                         }

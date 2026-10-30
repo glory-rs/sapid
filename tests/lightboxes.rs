@@ -45,8 +45,7 @@ fn named(app: &App, name: &str) -> NodeId {
         .find(|id| {
             let t = app.tree();
             let d = t.node(*id).unwrap().descriptor.view();
-            d.name.as_deref() == Some(name)
-                || matches!(d.props,Props::Button(p)if p.label==name)
+            d.name.as_deref() == Some(name) || matches!(d.props,Props::Button(p)if p.label==name)
         })
         .unwrap_or_else(|| panic!("missing {name}"))
 }

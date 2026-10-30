@@ -214,11 +214,7 @@ impl TimeDraftStatus {
         matches!(self, Self::Invalid | Self::OutOfBounds(_) | Self::TooLong)
     }
 }
-pub fn classify_time_draft(
-    text: &str,
-    format: TimeFormat,
-    bounds: TimeBounds,
-) -> TimeDraftStatus {
+pub fn classify_time_draft(text: &str, format: TimeFormat, bounds: TimeBounds) -> TimeDraftStatus {
     if text.len() > MAX_TIME_DRAFT_BYTES {
         return TimeDraftStatus::TooLong;
     }

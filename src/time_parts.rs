@@ -112,9 +112,8 @@ mod tests {
         for cycle in [HourCycle::H12, HourCycle::H24] {
             let format = TimeFormat::new(cycle, TimePrecision::Second, crate::DateLocale::En);
             for n in 0..86400 {
-                let v =
-                    LocalTime::new((n / 3600) as u8, ((n % 3600) / 60) as u8, (n % 60) as u8)
-                        .unwrap();
+                let v = LocalTime::new((n / 3600) as u8, ((n % 3600) / 60) as u8, (n % 60) as u8)
+                    .unwrap();
                 assert_eq!(
                     TimeParts::from_time(Some(v), format)
                         .unwrap()

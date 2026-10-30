@@ -81,11 +81,10 @@ fn accept_edit(source: Cage<ResourceScheduleData>, edit: &ScheduleEdit) {
             if event.key() != &edit.event {
                 return event.clone();
             }
-            let mut next =
-                ScheduleEvent::new(event.key().clone(), event.title(), edit.proposed)
-                    .unwrap()
-                    .permissions(event.edit_permissions())
-                    .resource(edit.proposed_resource.clone().unwrap());
+            let mut next = ScheduleEvent::new(event.key().clone(), event.title(), edit.proposed)
+                .unwrap()
+                .permissions(event.edit_permissions())
+                .resource(edit.proposed_resource.clone().unwrap());
             if event.is_all_day() {
                 next = next.all_day().unwrap()
             }
@@ -384,9 +383,8 @@ mod browser {
             return Err(js("title budget"));
         }
         update(|s| {
-            s.data.revise(|old| {
-                *old = data_for(old.data().window(), old.resource_window(), &title)
-            })
+            s.data
+                .revise(|old| *old = data_for(old.data().window(), old.resource_window(), &title))
         })
     }
 }

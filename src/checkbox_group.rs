@@ -192,8 +192,7 @@ impl Widget for CheckboxGroup {
         let requirement_items = items.clone();
         let requirement_enabled = enabled.clone();
         let required_index = scope.bond(move || {
-            if !requirement_enabled.get() || !states.get().is_some_and(|states| states.required)
-            {
+            if !requirement_enabled.get() || !states.get().is_some_and(|states| states.required) {
                 return None;
             }
             selected.with(|selected| {
@@ -280,9 +279,7 @@ impl Widget for CheckboxGroup {
                 .theme(self.common.theme.clone())
                 .size(self.common.size)
                 .state(state)
-                .readonly(
-                    scope.bond(move || readonly.get().is_some_and(|states| states.readonly)),
-                )
+                .readonly(scope.bond(move || readonly.get().is_some_and(|states| states.readonly)))
                 .invalid(scope.bond(move || invalid.get().is_some_and(|states| states.invalid)))
                 .label(label)
                 .enabled(active)
@@ -342,9 +339,7 @@ impl Widget for CheckboxGroup {
                 .label(item.label.clone())
                 .checked(checked)
                 .required(scope.bond(move || required_index.get() == Some(index)))
-                .readonly(
-                    scope.bond(move || readonly.get().is_some_and(|states| states.readonly)),
-                )
+                .readonly(scope.bond(move || readonly.get().is_some_and(|states| states.readonly)))
                 .invalid(scope.bond(move || invalid.get().is_some_and(|states| states.invalid)))
                 .enabled(active)
                 .on_checked_change(move |checked| {

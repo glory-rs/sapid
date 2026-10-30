@@ -1,8 +1,7 @@
 use glory::render::{DismissReason, Event, LayerPlacement, NodeId, Semantics};
 use glory::ui::App;
 use sapid::{
-    AnchorAlign, AnchorPlacement, AnchorSide, ContentPolicy, DrawerSide, dialog, drawer,
-    popover,
+    AnchorAlign, AnchorPlacement, AnchorSide, ContentPolicy, DrawerSide, dialog, drawer, popover,
 };
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -89,8 +88,7 @@ fn controlled_rejection_and_external_state_changes_are_silent() {
     assert_eq!(*calls.borrow(), [false]);
 }
 #[test]
-fn popover_slots_keep_intrinsic_buttons_accessible_names_controlled_refusal_and_owner_cleanup()
-{
+fn popover_slots_keep_intrinsic_buttons_accessible_names_controlled_refusal_and_owner_cleanup() {
     use glory::render::Props;
     let app = App::memory();
     let state = app.scope().cage(true);

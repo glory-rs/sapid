@@ -299,9 +299,8 @@ fn overfull_resource_overlap_rejects_complete_layout_before_any_partial_geometry
         events,
     )
     .unwrap();
-    let a =
-        ResourceScheduleData::new(source, registrations(1), ScheduleResourceWindow::default())
-            .unwrap();
+    let a = ResourceScheduleData::new(source, registrations(1), ScheduleResourceWindow::default())
+        .unwrap();
     assert!(a.layout_timeline(ScheduleTimeWindow::default(), 1).is_err());
 }
 #[test]
@@ -324,8 +323,7 @@ fn civil_edit_arithmetic_preserves_nanoseconds_and_rejects_crossed_or_exhausted_
     assert!(span.shifted_minutes(i64::MAX).is_err());
     assert!(span.shifted_minutes(i64::MIN).is_err());
     let edge =
-        ScheduleInterval::new(dt("9999-12-31T23:00"), dt("9999-12-31T23:59:59.999999999"))
-            .unwrap();
+        ScheduleInterval::new(dt("9999-12-31T23:00"), dt("9999-12-31T23:59:59.999999999")).unwrap();
     assert!(edge.shifted_minutes(1).is_err());
     assert!(edge.resize_end_by_minutes(1).is_err());
     assert!(

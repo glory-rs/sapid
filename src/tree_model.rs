@@ -329,9 +329,10 @@ pub fn file_tree_nodes(
         if entry.path.is_empty()
             || entry.path.len() > 1024
             || entry.path.contains(['\\', '\0', '\r', '\n', ':'])
-            || entry.path.split('/').any(|part| {
-                part.is_empty() || matches!(part, "." | "..") || part.trim() != part
-            })
+            || entry
+                .path
+                .split('/')
+                .any(|part| part.is_empty() || matches!(part, "." | "..") || part.trim() != part)
             || !paths.insert(entry.path.clone())
         {
             return Err(TreeError::Path);

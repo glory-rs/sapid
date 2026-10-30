@@ -90,8 +90,7 @@ impl JsonTree {
             .enumerate()
             .filter_map(|(index, node)| {
                 (node.label.contains(query)
-                    || node.children.is_empty()
-                        && self.source[node.range.clone()].contains(query))
+                    || node.children.is_empty() && self.source[node.range.clone()].contains(query))
                 .then_some(index)
             })
             .collect())
@@ -238,10 +237,7 @@ impl Parser<'_> {
         Ok(index)
     }
 }
-pub fn parse_json_tree(
-    source: &str,
-    limits: JsonViewLimits,
-) -> Result<JsonTree, JsonViewError> {
+pub fn parse_json_tree(source: &str, limits: JsonViewLimits) -> Result<JsonTree, JsonViewError> {
     limits.validate()?;
     match validate_json(
         source,

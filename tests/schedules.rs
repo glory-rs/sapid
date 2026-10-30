@@ -193,10 +193,8 @@ fn same_tick_window_requests_are_ordered_without_implicitly_accepting_or_loading
     let source = app.scope().cage(data());
     let calls = Rc::new(RefCell::new(vec![]));
     let output = calls.clone();
-    app.mount(
-        schedule("requests", source).on_window_request(move |v| output.borrow_mut().push(v)),
-    )
-    .unwrap();
+    app.mount(schedule("requests", source).on_window_request(move |v| output.borrow_mut().push(v)))
+        .unwrap();
     let next = button(&app, "Next schedule window");
     app.scope()
         .batch(|| {
@@ -222,10 +220,8 @@ fn overflow_source_rejects_before_children_then_recovers_without_callbacks() {
     let app = App::memory();
     let source = app.scope().cage(data());
     let calls = app.scope().cage(0);
-    app.mount(
-        schedule("overflow", source).on_selection_change(move |_| calls.revise(|n| *n += 1)),
-    )
-    .unwrap();
+    app.mount(schedule("overflow", source).on_selection_change(move |_| calls.revise(|n| *n += 1)))
+        .unwrap();
     let old = button(&app, "Planning");
     let rule =
         ScheduleRecurrence::new(RecurrenceFrequency::Daily, 1, RecurrenceEnd::Never).unwrap();

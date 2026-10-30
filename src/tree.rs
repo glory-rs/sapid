@@ -7,12 +7,9 @@ use crate::{
     tree_model::*,
 };
 use glory::render::{
-    Direction, Event, EventKind, FocusMode, NodeId, Role, Semantics, TreeCommand,
-    TreeNavigation,
+    Direction, Event, EventKind, FocusMode, NodeId, Role, Semantics, TreeCommand, TreeNavigation,
 };
-use glory::style::{
-    Align, BorderStyle, Display, Edges, FlexDirection, Length, Overflow, Style,
-};
+use glory::style::{Align, BorderStyle, Display, Edges, FlexDirection, Length, Overflow, Style};
 use glory::ui::{Result, WeakScope, Widget};
 use glory::{Cage, Scope, Vary};
 use std::{
@@ -310,9 +307,7 @@ impl State {
                 next = rows[position + 1..]
                     .iter()
                     .take_while(|row| row.level > rows[position].level)
-                    .find(|row| {
-                        row.parent == Some(rows[position].index) && self.usable(&row.key)
-                    });
+                    .find(|row| row.parent == Some(rows[position].index) && self.usable(&row.key));
             }
             TreeCommand::Close => {
                 if self.expanded.control.source.with(|set| set.contains(&key))
@@ -358,9 +353,9 @@ impl State {
                     .find(|row| {
                         (!self.columns || row.parent == rows[position].parent)
                             && self.usable(&row.key)
-                            && self.node(&row.key).is_some_and(|node| {
-                                node.label.to_lowercase().starts_with(&needle)
-                            })
+                            && self
+                                .node(&row.key)
+                                .is_some_and(|node| node.label.to_lowercase().starts_with(&needle))
                     });
             }
             TreeCommand::Select | TreeCommand::Activate => unreachable!(),
@@ -486,17 +481,11 @@ impl Tree {
         self.columns = true;
         self
     }
-    pub fn on_expanded_change(
-        mut self,
-        callback: impl FnMut(BTreeSet<String>) + 'static,
-    ) -> Self {
+    pub fn on_expanded_change(mut self, callback: impl FnMut(BTreeSet<String>) + 'static) -> Self {
         self.expand_changed = Some(Box::new(callback));
         self
     }
-    pub fn on_selection_change(
-        mut self,
-        callback: impl FnMut(BTreeSet<String>) + 'static,
-    ) -> Self {
+    pub fn on_selection_change(mut self, callback: impl FnMut(BTreeSet<String>) + 'static) -> Self {
         self.selection_changed = Some(Box::new(callback));
         self
     }
@@ -701,9 +690,8 @@ impl Widget for Tree {
                     {
                         match scope.action(glory::render::Action::ScrollIntoView(node)) {
                             Ok(())
-                            | Err(glory::ui::Error::Render(
-                                glory::render::Error::Unsupported(_),
-                            )) => {}
+                            | Err(glory::ui::Error::Render(glory::render::Error::Unsupported(_))) =>
+                                {}
                             Err(error) => state.report(Err(error)),
                         }
                     }
@@ -752,9 +740,8 @@ impl Widget for Tree {
                 .bond(move || {
                     let count =
                         rows.with(|rows| rows.iter().map(|row| row.level).max().unwrap_or(1));
-                    let row_count = rows.with(|rows| {
-                        rows.iter().map(|row| row.position + 1).max().unwrap_or(1)
-                    });
+                    let row_count = rows
+                        .with(|rows| rows.iter().map(|row| row.position + 1).max().unwrap_or(1));
                     style
                         .get()
                         .display(Display::Grid)
@@ -1005,11 +992,7 @@ impl Widget for Tree {
                                 .radius(theme.radius)
                                 .border_width(Edges::all(1.))
                                 .border_style(BorderStyle::Solid)
-                                .border_color(if focused {
-                                    theme.accent
-                                } else {
-                                    theme.surface
-                                });
+                                .border_color(if focused { theme.accent } else { theme.surface });
                         }
                         style
                     });

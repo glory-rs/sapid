@@ -64,13 +64,14 @@ mod fixture {
                 command_action("open", "Open document").group("files"),
                 command_action("settings", "Settings").description("Application preferences"),
             ]);
-        let many = command("many-commands")
-            .label("Many commands")
-            .theme(theme.clone())
-            .actions((0..256).map(|index| {
-                command_action(format!("action-{index}"), format!("Action {index}"))
-            }))
-            .on_action(move |key| actions.revise(|old| *old = key));
+        let many =
+            command("many-commands")
+                .label("Many commands")
+                .theme(theme.clone())
+                .actions((0..256).map(|index| {
+                    command_action(format!("action-{index}"), format!("Action {index}"))
+                }))
+                .on_action(move |key| actions.revise(|old| *old = key));
         let asynchronous = command("remote-commands")
             .label("Async commands")
             .theme(theme)

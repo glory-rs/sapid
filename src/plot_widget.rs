@@ -345,8 +345,8 @@ impl Widget for Plot {
         root.show_in(scope)?;
         let area = scope.child_in(reference.get().ok_or(glory::ui::Error::Gone)?)?;
         build_drawing(&area, &state, frame, self.pointer_selection)?;
-        let stops = area
-            .bond(move || model.with(|m| (0..m.scene.scale_legend.len()).collect::<Vec<_>>()));
+        let stops =
+            area.bond(move || model.with(|m| (0..m.scene.scale_legend.len()).collect::<Vec<_>>()));
         glory::ui::view()
             .class("sapid-plot-scale-legend")
             .style(
@@ -362,9 +362,7 @@ impl Widget for Plot {
                     glory::ui::graphic()
                         .class("sapid-plot-scale-swatch")
                         .drawing(scope.bond(move || {
-                            model.with(|m| {
-                                crate::chart_aux::swatch(m.scene.scale_legend[i].color)
-                            })
+                            model.with(|m| crate::chart_aux::swatch(m.scene.scale_legend[i].color))
                         }))
                         .style(Style::new().width(Length::Px(12.)).height(Length::Px(12.)))
                         .show_in(scope)?;
@@ -528,9 +526,11 @@ fn build_drawing(
                 let key = key.clone();
                 glory::ui::graphic()
                     .class("sapid-plot-layer")
-                    .drawing(scope.bond(move || {
-                        model.with(|m| m.scene.paths[m.paths[&key]].drawing.clone())
-                    }))
+                    .drawing(
+                        scope.bond(move || {
+                            model.with(|m| m.scene.paths[m.paths[&key]].drawing.clone())
+                        }),
+                    )
                     .style(
                         Style::new()
                             .position(Position::Absolute)
@@ -543,8 +543,7 @@ fn build_drawing(
             })
         })
         .show_in(&area)?;
-    let labels =
-        area.bond(move || model.with(|m| (0..m.scene.labels.len()).collect::<Vec<_>>()));
+    let labels = area.bond(move || model.with(|m| (0..m.scene.labels.len()).collect::<Vec<_>>()));
     glory::ui::each(labels)
         .key(|i| *i)
         .children(move |entry| {
@@ -578,8 +577,7 @@ fn build_drawing(
             })
         })
         .show_in(&area)?;
-    let ranges =
-        area.bond(move || model.with(|m| (0..m.scene.ranges.len()).collect::<Vec<_>>()));
+    let ranges = area.bond(move || model.with(|m| (0..m.scene.ranges.len()).collect::<Vec<_>>()));
     glory::ui::each(ranges)
         .key(|i| *i)
         .children(move |entry| {
@@ -792,17 +790,15 @@ fn build_tables(
                         for (index, data) in tables.iter().enumerate() {
                             let mut header = crate::table_row("head");
                             for (i, label) in data.columns.iter().enumerate() {
-                                header = header.cell(
-                                    crate::table_header_cell(format!("c{i}")).text(*label),
-                                );
+                                header = header
+                                    .cell(crate::table_header_cell(format!("c{i}")).text(*label));
                             }
                             let mut body = crate::table_body();
                             for (i, values) in data.rows.iter().enumerate() {
                                 let mut row = crate::table_row(format!("r{i}"));
                                 for (j, value) in values.iter().enumerate() {
                                     row = row.cell(if j == 0 {
-                                        crate::table_row_header(format!("c{j}"))
-                                            .text(value.clone())
+                                        crate::table_row_header(format!("c{j}")).text(value.clone())
                                     } else {
                                         crate::table_cell(format!("c{j}")).text(value.clone())
                                     });

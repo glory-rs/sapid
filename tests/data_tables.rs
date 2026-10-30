@@ -26,9 +26,7 @@ fn named(app: &App, name: &str) -> NodeId {
     while let Some(id) = pending.pop() {
         let n = tree.node(id).unwrap();
         let d = n.descriptor.view();
-        if d.name.as_deref() == Some(name)
-            || matches!(d.props,Props::Button(p) if p.label==name)
-        {
+        if d.name.as_deref() == Some(name) || matches!(d.props,Props::Button(p) if p.label==name) {
             return id;
         }
         pending.extend(&n.children);
@@ -63,9 +61,7 @@ fn four_theme_ssr_exports_windowed_table_header_coordinates_and_bounded_rows() {
         sapid::Theme::green_dark(),
     ] {
         let records = (0..4096)
-            .map(|i| {
-                DataRecord::new(format!("r{i}"), [format!("Person {i}"), "Compiler".into()])
-            })
+            .map(|i| DataRecord::new(format!("r{i}"), [format!("Person {i}"), "Compiler".into()]))
             .collect::<Vec<_>>();
         let q = DataTableQuery {
             request: DataRequest {

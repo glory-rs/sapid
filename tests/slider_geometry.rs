@@ -75,8 +75,7 @@ fn unstyled_angles_keep_five_default_diameters() {
     }
 }
 #[test]
-fn explicit_auto_and_dynamic_dimensions_are_preserved_while_absent_dimensions_recover_defaults()
-{
+fn explicit_auto_and_dynamic_dimensions_are_preserved_while_absent_dimensions_recover_defaults() {
     let app = App::memory();
     let single = app.scope().cage(None);
     let pair = app.scope().cage(None);

@@ -1,7 +1,7 @@
 pub use glory::render::{AnchorAlign, AnchorPlacement, AnchorSide};
 use glory::render::{
-    DismissReason, Event, EventKind, FocusMode, Layer, LayerPlacement, NodeId, Role,
-    SemanticId, Semantics, TextKind,
+    DismissReason, Event, EventKind, FocusMode, Layer, LayerPlacement, NodeId, Role, SemanticId,
+    Semantics, TextKind,
 };
 use glory::style::{Edges, Length, Style};
 use glory::ui::{Result, Widget};
@@ -189,10 +189,7 @@ macro_rules! overlay {
                 self.inner.config.outside = value;
                 self
             }
-            pub fn content<W: Widget>(
-                mut self,
-                mut factory: impl FnMut() -> W + 'static,
-            ) -> Self {
+            pub fn content<W: Widget>(mut self, mut factory: impl FnMut() -> W + 'static) -> Self {
                 self.inner.content = Some(Box::new(move || Box::new(factory())));
                 self
             }
@@ -236,11 +233,7 @@ macro_rules! overlay {
                 self.inner.common.enabled = value.into();
                 self
             }
-            pub fn on(
-                mut self,
-                kind: EventKind,
-                callback: impl FnMut(Event) + 'static,
-            ) -> Self {
+            pub fn on(mut self, kind: EventKind, callback: impl FnMut(Event) + 'static) -> Self {
                 self.inner
                     .common
                     .handlers
@@ -398,8 +391,7 @@ impl Widget for Overlay {
                 }
                 Ok(())
             }
-            self.label =
-                composite::validated(scope, &self.label, |value| nonempty(value))?.into();
+            self.label = composite::validated(scope, &self.label, |value| nonempty(value))?.into();
             for text in [
                 &mut self.title,
                 &mut self.description,

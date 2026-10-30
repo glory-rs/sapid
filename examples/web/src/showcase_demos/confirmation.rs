@@ -12,22 +12,21 @@ mod fixture {
         ConfirmationData {
             title: "Approve deployment request".into(),
             description: "Only the application can authorize the displayed action.".into(),
-            details: "Command preview: <script>window.confirmationExecuted=true</script>"
-                .into(),
+            details: "Command preview: <script>window.confirmationExecuted=true</script>".into(),
             revision: 3,
             ..Default::default()
         }
     }
     pub fn checkpoint_data() -> CheckpointData {
         CheckpointData {
-        title: "Saved draft checkpoint".into(),
-        description:
-            "An explicit application snapshot. Restore is a request, not an automatic rollback."
-                .into(),
-        details: "Draft text <literal> & preserved context".into(),
-        revision: 8,
-        ..Default::default()
-    }
+            title: "Saved draft checkpoint".into(),
+            description:
+                "An explicit application snapshot. Restore is a request, not an automatic rollback."
+                    .into(),
+            details: "Draft text <literal> & preserved context".into(),
+            revision: 8,
+            ..Default::default()
+        }
     }
     pub fn confirmation_form(theme: sapid::Theme) -> impl Widget {
         widget(move |scope| {
@@ -163,9 +162,7 @@ mod fixture {
             text()
                 .class("confirmation-feedback")
                 .content(
-                    scope.bond(move || {
-                        format!("Requests:{}; Last:{}", requests.get(), last.get())
-                    }),
+                    scope.bond(move || format!("Requests:{}; Last:{}", requests.get(), last.get())),
                 )
                 .style(Style::new().white_space(glory::style::WhiteSpace::PreWrap))
                 .show_in(&area)?;

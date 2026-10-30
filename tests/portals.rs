@@ -113,8 +113,7 @@ fn target_retirement_moves_source_owned_content_before_dispose_and_recovers_the_
     assert_eq!(ctx.sources(), 0);
 }
 #[test]
-fn local_disable_and_dynamic_destination_preserve_the_mounted_factory_and_old_target_children()
-{
+fn local_disable_and_dynamic_destination_preserve_the_mounted_factory_and_old_target_children() {
     let app = App::memory();
     let ctx = portal_context(app.scope(), "move").unwrap();
     let enabled = app.scope().cage(true);
@@ -156,8 +155,7 @@ fn source_retirement_removes_moved_descendants_without_disposing_the_target() {
     app.mount(glory::ui::view().fill((
         portal_target(&ctx, "destination"),
         glory::ui::when(mounted, move || {
-            portal(&sources, "destination")
-                .content(move || glory::ui::input().node_ref(reference))
+            portal(&sources, "destination").content(move || glory::ui::input().node_ref(reference))
         }),
     )))
     .unwrap();
@@ -298,8 +296,7 @@ fn source_and_target_retire_together_without_running_a_loss_callback_under_a_dea
     assert_eq!(app.runtime_stats().queue_entries, 0);
 }
 #[test]
-fn four_theme_ssr_uses_final_semantic_parent_order_and_deterministic_suspended_missing_ranges()
-{
+fn four_theme_ssr_uses_final_semantic_parent_order_and_deterministic_suspended_missing_ranges() {
     for theme in [
         sapid::Theme::blue_light(),
         sapid::Theme::blue_dark(),
@@ -330,8 +327,7 @@ fn four_theme_ssr_uses_final_semantic_parent_order_and_deterministic_suspended_m
     }
 }
 #[test]
-fn failing_target_child_construction_still_parks_a_live_foreign_source_before_target_disposal()
-{
+fn failing_target_child_construction_still_parks_a_live_foreign_source_before_target_disposal() {
     let app = Rc::new(App::memory());
     let context = portal_context(app.scope(), "failed-target").unwrap();
     let source = app.scope().child().unwrap();
@@ -342,8 +338,7 @@ fn failing_target_child_construction_still_parks_a_live_foreign_source_before_ta
     let result = app.mount(
         portal_target(&context, "a").fill(glory::ui::widget(move |_| {
             let name =
-                glory::render::SemanticId::new("sapid-portal-13_failed-target-target-1_a")
-                    .unwrap();
+                glory::render::SemanticId::new("sapid-portal-13_failed-target-target-1_a").unwrap();
             let target = during_build.tree().named(&name).unwrap();
             let owner = independent.child_in(target)?;
             portal(&targets, "a")

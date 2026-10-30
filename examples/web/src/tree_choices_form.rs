@@ -68,9 +68,7 @@ pub fn tree_choices_form(theme: sapid::Theme, columns: bool) -> impl Widget {
                                     .theme(theme.clone())
                                     .label("Readonly path choice")
                                     .checked(readonly)
-                                    .on_checked_change(move |v| {
-                                        readonly.revise(|old| *old = v)
-                                    }),
+                                    .on_checked_change(move |v| readonly.revise(|old| *old = v)),
                             )),
                         when(mounted, move || {
                             macro_rules! main {
@@ -100,8 +98,7 @@ pub fn tree_choices_form(theme: sapid::Theme, columns: bool) -> impl Widget {
                             if columns {
                                 Box::new(main!(cascader("main-destination"))) as Box<dyn Widget>
                             } else {
-                                Box::new(main!(tree_select("main-destination")))
-                                    as Box<dyn Widget>
+                                Box::new(main!(tree_select("main-destination"))) as Box<dyn Widget>
                             }
                         }),
                         text()
@@ -161,9 +158,8 @@ pub fn tree_choices_form(theme: sapid::Theme, columns: bool) -> impl Widget {
                                         )
                                         .unwrap();
                                         value.revise(|old| {
-                                            *old =
-                                                TreeChoices::new([model.path("lib").unwrap()])
-                                                    .unwrap()
+                                            *old = TreeChoices::new([model.path("lib").unwrap()])
+                                                .unwrap()
                                         });
                                     }),
                                 sapid::button()

@@ -136,8 +136,7 @@ impl Controller {
     }
     fn initial(self: &Rc<Self>, node: NodeId) -> Result {
         let scope = self.scope()?;
-        if self.requested.replace(true) || self.resized.get() || !scope.capabilities()?.measure
-        {
+        if self.requested.replace(true) || self.resized.get() || !scope.capabilities()?.measure {
             return Ok(());
         }
         let weak = Rc::downgrade(self);

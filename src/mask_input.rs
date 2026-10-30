@@ -428,8 +428,7 @@ impl Widget for MaskInput {
             EventKind::Composition,
         ] {
             let s = state.clone();
-            let observers =
-                Observers::new(self.common.handlers.remove(&kind).unwrap_or_default());
+            let observers = Observers::new(self.common.handlers.remove(&kind).unwrap_or_default());
             let cleanup = observers.clone();
             scope.on_cleanup(move || cleanup.clear())?;
             input = input.on(kind, move |event| {
@@ -486,8 +485,7 @@ impl Widget for MaskInput {
                     if needs_selection && let Some(selection) = selection {
                         scope.set_input_selection(node, host_selection(selection))?;
                     }
-                    *s.draft.borrow_mut() =
-                        Draft::new(&s.pattern, &raw).map_err(|_| invalid())?;
+                    *s.draft.borrow_mut() = Draft::new(&s.pattern, &raw).map_err(|_| invalid())?;
                     previous = text;
                 }
                 Ok(())

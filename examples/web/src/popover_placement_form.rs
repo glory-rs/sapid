@@ -180,10 +180,7 @@ mod browser {
         })
     }
     #[wasm_bindgen]
-    pub fn popover_placement_state(
-        kind: String,
-        value: bool,
-    ) -> std::result::Result<(), JsValue> {
+    pub fn popover_placement_state(kind: String, value: bool) -> std::result::Result<(), JsValue> {
         APP.with(|slot| {
             let slot = slot.borrow();
             let (app, state) = slot.as_ref().ok_or_else(|| js("placement unmounted"))?;

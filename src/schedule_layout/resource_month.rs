@@ -85,8 +85,7 @@ impl crate::ResourceScheduleData {
             }
         }
         Ok(ResourceScheduleTimeline {
-            slots: columns.len()
-                * window.start().date().days_until(window.end().date()) as usize,
+            slots: columns.len() * window.start().date().days_until(window.end().date()) as usize,
             columns,
             placements,
         })

@@ -77,10 +77,7 @@ fn explicit_policy_overrides_remain_reactive_without_writing_the_controlled_sour
     let config = semantics.focus_scope.as_ref().unwrap();
     assert!(config.active);
     assert!(
-        !config.loop_tab
-            && !config.contain_focus
-            && !config.auto_focus
-            && !config.restore_focus
+        !config.loop_tab && !config.contain_focus && !config.auto_focus && !config.restore_focus
     );
     assert_eq!(
         config.initial_focus.as_ref().unwrap().as_str(),

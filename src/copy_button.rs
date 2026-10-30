@@ -90,10 +90,9 @@ impl CopyButton {
 }
 fn canonical(source: &str) -> Result<String> {
     if source.len() > MAX_CLIPBOARD_BYTES {
-        return Err(glory::render::Error::InvalidProps(
-            "clipboard text exceeds 65536 UTF-8 bytes",
-        )
-        .into());
+        return Err(
+            glory::render::Error::InvalidProps("clipboard text exceeds 65536 UTF-8 bytes").into(),
+        );
     }
     let text = glory::render::normalize_text(source, true);
     if text.len() > MAX_CLIPBOARD_BYTES {

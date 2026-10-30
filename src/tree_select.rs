@@ -565,9 +565,8 @@ impl Widget for TreeSelect {
             tree = tree.column_layout();
         }
         if self.multiple {
-            tree = tree.checked(
-                accepted.map(|a| a.model.checked(&a.values).expect("admitted choices")),
-            );
+            tree = tree
+                .checked(accepted.map(|a| a.model.checked(&a.values).expect("admitted choices")));
         }
         tree = tree.expanded(expanded.source.clone());
         let expansion = Callback::new(self.expansion.take());
@@ -597,9 +596,7 @@ impl Widget for TreeSelect {
                 .theme(self.common.theme.clone())
                 .label("Clear tree selection")
                 .enabled(
-                    scope.bond(move || {
-                        editable.get() && !accepted.with(|a| a.values.is_empty())
-                    }),
+                    scope.bond(move || editable.get() && !accepted.with(|a| a.values.is_empty())),
                 )
                 .on_press(move || s.report(s.clear()))
                 .show_in(&content)?;

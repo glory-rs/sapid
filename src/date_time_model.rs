@@ -129,10 +129,7 @@ pub struct DateTimeBounds {
     max: Option<LocalDateTime>,
 }
 impl DateTimeBounds {
-    pub fn new(
-        min: Option<LocalDateTime>,
-        max: Option<LocalDateTime>,
-    ) -> Result<Self, DateError> {
+    pub fn new(min: Option<LocalDateTime>, max: Option<LocalDateTime>) -> Result<Self, DateError> {
         if min.zip(max).is_some_and(|(min, max)| min > max) {
             Err(DateError::OutOfRange)
         } else {

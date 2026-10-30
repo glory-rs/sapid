@@ -41,9 +41,8 @@ mod fixture {
                             .height(Length::Px(80.0))
                             .fit(ObjectFit::Cover)
                             .on_load(move |revision| {
-                                fallback_status.revise(|value| {
-                                    *value = format!("Fallback loaded {revision}")
-                                })
+                                fallback_status
+                                    .revise(|value| *value = format!("Fallback loaded {revision}"))
                             }),
                     )),
                     text().class("image-status").content(status),
@@ -81,15 +80,17 @@ mod fixture {
                                 .theme(theme.clone())
                                 .label("Background action")
                                 .on_press(move || {
-                                    status.revise(|value| {
-                                        *value = "Background action pressed".into()
-                                    })
+                                    status
+                                        .revise(|value| *value = "Background action pressed".into())
                                 }),
                         )),
                     sapid::group().theme(theme.clone()).gap(8.0).fill((
-                        button().theme(theme.clone()).label("Break image").on_press(
-                            move || source.revise(|value| *value = media("image-invalid.png")),
-                        ),
+                        button()
+                            .theme(theme.clone())
+                            .label("Break image")
+                            .on_press(move || {
+                                source.revise(|value| *value = media("image-invalid.png"))
+                            }),
                         button()
                             .theme(theme.clone())
                             .label("Restore image")

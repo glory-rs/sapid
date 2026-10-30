@@ -8,8 +8,8 @@ pub fn demo(theme: sapid::Theme) -> impl Widget {
 mod fixture {
     use glory::ui::{Widget, text, widget};
     use sapid::{
-        KbdKey, KbdPlatform, Theme, blockquote, button, code, data_list, data_list_item,
-        highlight, item, kbd, mark, text_list, text_list_item,
+        KbdKey, KbdPlatform, Theme, blockquote, button, code, data_list, data_list_item, highlight,
+        item, kbd, mark, text_list, text_list_item,
     };
 
     pub fn document_form(theme: Theme) -> impl Widget {
@@ -25,9 +25,7 @@ mod fixture {
                     button()
                         .theme(theme.clone())
                         .label("Update code source")
-                        .on_press(move || {
-                            source.revise(|text| *text = "let sapid = 42;".into())
-                        }),
+                        .on_press(move || source.revise(|text| *text = "let sapid = 42;".into())),
                     kbd()
                         .theme(theme.clone())
                         .platform(KbdPlatform::Mac)

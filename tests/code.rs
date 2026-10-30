@@ -45,13 +45,17 @@ fn rust_lexer_is_lossless_utf8_nested_comments_raw_strings_and_lifetimes() {
     assert!(d.tokens().iter().any(|t| t.kind == CodeTokenKind::Comment
         && &source[t.range.clone()] == "/* outer /* inner */ 😀 */"));
     for literal in ["'😀'", "br##\"<script>\\\"\"##", "\"a\\\"b\""] {
-        assert!(d.tokens().iter().any(|t| t.kind == CodeTokenKind::String && &source[t.range.clone()] == literal), "{literal}");
+        assert!(
+            d.tokens()
+                .iter()
+                .any(|t| t.kind == CodeTokenKind::String && &source[t.range.clone()] == literal),
+            "{literal}"
+        );
     }
     assert!(
         !d.tokens()
             .iter()
-            .any(|t| t.kind == CodeTokenKind::String
-                && source[t.range.clone()].starts_with("'a"))
+            .any(|t| t.kind == CodeTokenKind::String && source[t.range.clone()].starts_with("'a"))
     );
     for text in ["/* incomplete", "\"unterminated\\", "r#\"raw 未完成", "'a"] {
         let d = tokenize_code(text, CodeLanguage::Rust).unwrap();

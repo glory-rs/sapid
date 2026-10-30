@@ -84,9 +84,7 @@ mod fixture {
                             }
                         }))
                     })
-                    .on_reset(move || {
-                        email.revise(|value| *value = "alex@studio.design".into())
-                    })
+                    .on_reset(move || email.revise(|value| *value = "alex@studio.design".into()))
                     .serialize("email", |value| ControlValue::Text(value.clone())),
             )
             .expect("email registration");

@@ -249,17 +249,13 @@ impl<T: DatePeriod> Widget for PeriodPickerInput<T> {
             value: source.get(),
             provider: provider.get(),
         });
-        let accepted =
-            composite::validated(scope, &snapshot.into(), move |s: &Snapshot<T>| {
-                s.value
-                    .validate(mode, PeriodBounds::from_dates(s.provider.date_bounds()))
-                    .map_err(|_| {
-                        glory::render::Error::InvalidProps(
-                            "invalid date picker input selection",
-                        )
-                        .into()
-                    })
-            })?;
+        let accepted = composite::validated(scope, &snapshot.into(), move |s: &Snapshot<T>| {
+            s.value
+                .validate(mode, PeriodBounds::from_dates(s.provider.date_bounds()))
+                .map_err(|_| {
+                    glory::render::Error::InvalidProps("invalid date picker input selection").into()
+                })
+        })?;
         let owner = scope.id();
         let weak = scope.downgrade();
         let changed = Callback::new(self.changed.take());

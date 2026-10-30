@@ -6,8 +6,7 @@ pub fn code_form(theme: sapid::Theme) -> impl Widget {
         let content = scope.cage(RUST_SOURCE.to_string());
         let language = scope.cage(sapid::CodeLanguage::Rust);
         let document = scope.cage(
-            "{\"branch\":{\"needle\":\"😀 <script>\",\"list\":[1,2]},\"version\":1}"
-                .to_string(),
+            "{\"branch\":{\"needle\":\"😀 <script>\",\"list\":[1,2]},\"version\":1}".to_string(),
         );
         let expanded = scope.cage(vec![String::new()]);
         let query = scope.cage(String::new());

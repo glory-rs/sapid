@@ -194,8 +194,7 @@ impl Controller {
         }
         match command {
             GridCommand::FirstInRow | GridCommand::LastInRow => {
-                let offset =
-                    i32::from(current.weekday().index_from(s.provider.first_weekday()));
+                let offset = i32::from(current.weekday().index_from(s.provider.first_weekday()));
                 let (delta, step) = if command == GridCommand::FirstInRow {
                     (-offset, 1)
                 } else {
@@ -281,9 +280,7 @@ impl Controller {
             return self.dirty.touch();
         }
         let current = match self.selection_cursor.get() {
-            Some((node, value)) if node == from && self.value.source.try_get()? == value => {
-                value
-            }
+            Some((node, value)) if node == from && self.value.source.try_get()? == value => value,
             _ => s.value,
         };
         let next = if self.allow_deselect && current == Some(date) {
@@ -343,10 +340,7 @@ pub fn calendar(key: impl Into<String>, provider: impl Into<Vary<DatesProvider>>
         month_changed: None,
     }
 }
-pub fn mini_calendar(
-    key: impl Into<String>,
-    provider: impl Into<Vary<DatesProvider>>,
-) -> Calendar {
+pub fn mini_calendar(key: impl Into<String>, provider: impl Into<Vary<DatesProvider>>) -> Calendar {
     let mut c = calendar(key, provider);
     c.common.size = crate::Size::ExtraSmall;
     c.mini = true;
@@ -354,10 +348,7 @@ pub fn mini_calendar(
 }
 impl Calendar {
     common_methods!();
-    pub(crate) fn selection_projection(
-        mut self,
-        value: impl Into<Vary<DateSelection>>,
-    ) -> Self {
+    pub(crate) fn selection_projection(mut self, value: impl Into<Vary<DateSelection>>) -> Self {
         self.projection = Some(value.into());
         self
     }
@@ -688,17 +679,14 @@ impl Widget for Calendar {
             .focus(self.common.focus)
             .name(self.common.name.take().unwrap_or_else(|| {
                 scope
-                    .bond(move || {
-                        accepted.with(|s| s.provider.locale_value().month_label(s.month))
-                    })
+                    .bond(move || accepted.with(|s| s.provider.locale_value().month_label(s.month)))
                     .into()
             }))
             .semantics(scope.bond(move || {
                 Some(Box::new(Semantics {
                     id: Some(id.clone()),
                     grid_navigation: Some(direction),
-                    grid_multiple: accepted
-                        .with(|s| s.selection.mode() != DatePickerMode::Single),
+                    grid_multiple: accepted.with(|s| s.selection.mode() != DatePickerMode::Single),
                     readonly: accepted.with(|s| s.readonly),
                     table: Some(TableMetadata::Table {
                         rows: Some(7),
@@ -771,10 +759,8 @@ impl Widget for Calendar {
                         })
                         .name(scope.bond(move || {
                             let s = accepted.get();
-                            let day =
-                                Weekday::ALL[(usize::from(s.provider.first_weekday().index())
-                                    + column)
-                                    % 7];
+                            let day = Weekday::ALL
+                                [(usize::from(s.provider.first_weekday().index()) + column) % 7];
                             s.provider.locale_value().weekday_long(day).to_owned()
                         }))
                         .semantics(Some(Box::new(Semantics {
@@ -814,8 +800,7 @@ impl Widget for Calendar {
                         .semantics(scope.bond(move || {
                             Some(Box::new(Semantics {
                                 selected: Some(accepted.with(|s| {
-                                    s.grid.cells()[index]
-                                        .is_some_and(|d| s.selection.contains(d))
+                                    s.grid.cells()[index].is_some_and(|d| s.selection.contains(d))
                                 })),
                                 table: Some(TableMetadata::Cell {
                                     row: row as u32,

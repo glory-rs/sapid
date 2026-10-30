@@ -80,9 +80,7 @@ impl JsonViewer {
 fn error(value: JsonViewError) -> glory::ui::Error {
     glory::render::Error::InvalidProps(match value {
         JsonViewError::Configuration => "invalid JSON viewer limits",
-        JsonViewError::Syntax(_) => {
-            "JSON viewer source is invalid or exceeds byte/depth budget"
-        }
+        JsonViewError::Syntax(_) => "JSON viewer source is invalid or exceeds byte/depth budget",
         JsonViewError::Empty => "JSON viewer requires a value",
         JsonViewError::Nodes => "JSON viewer exceeds 2048 current nodes",
         JsonViewError::Depth => "JSON viewer exceeds its nesting budget",
@@ -163,14 +161,13 @@ type Item = (Rc<JsonTree>, usize);
 fn branch(state: Rc<State>, item: Cage<Item>) -> Box<dyn Widget> {
     Box::new(glory::ui::widget(move |scope| {
         let path = item.with(|(tree, index)| tree.nodes()[*index].path.clone());
-        let slot =
-            state
-                .next
-                .get()
-                .checked_add(1)
-                .ok_or(glory::render::Error::InvalidProps(
-                    "JSON disclosure identities exhausted",
-                ))?;
+        let slot = state
+            .next
+            .get()
+            .checked_add(1)
+            .ok_or(glory::render::Error::InvalidProps(
+                "JSON disclosure identities exhausted",
+            ))?;
         state.next.set(slot);
         let row = scope.cage(None);
         let mut style = Style::new().display(Display::Block);

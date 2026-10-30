@@ -3,12 +3,12 @@ use std::rc::{Rc, Weak};
 
 use glory::render::{
     ChoiceCommand, ComboboxKind, Event, EventKind, FocusMode, FormControl, Layer, LayerFocus,
-    LayerPlacement, Navigation, OptionSemantics, Orientation, PopupKind, Props, Role,
-    SelectEntry, SelectGroup, SelectProps, SemanticId, Semantics,
+    LayerPlacement, Navigation, OptionSemantics, Orientation, PopupKind, Props, Role, SelectEntry,
+    SelectGroup, SelectProps, SemanticId, Semantics,
 };
 use glory::style::{
-    Align, BorderStyle, Color, Display, Edges, FlexDirection, FlexWrap, Length, Limit,
-    Overflow, Style,
+    Align, BorderStyle, Color, Display, Edges, FlexDirection, FlexWrap, Length, Limit, Overflow,
+    Style,
 };
 use glory::ui::{Result, Widget};
 use glory::{Cage, Scope, Vary};
@@ -142,10 +142,7 @@ impl Combobox {
         self.values.default = values;
         self
     }
-    pub(crate) fn on_values_change(
-        mut self,
-        callback: impl FnMut(Vec<String>) + 'static,
-    ) -> Self {
+    pub(crate) fn on_values_change(mut self, callback: impl FnMut(Vec<String>) + 'static) -> Self {
         self.values_changed = Some(Box::new(callback));
         self
     }
@@ -695,8 +692,7 @@ impl State {
 
 impl Widget for Combobox {
     fn build(&mut self, scope: &Scope) -> Result {
-        let placeholder =
-            crate::text_input::placeholder(scope, self.placeholder.take(), false)?;
+        let placeholder = crate::text_input::placeholder(scope, self.placeholder.take(), false)?;
         if self.count > 1024
             || self.max_values > MAX_MULTI_SELECT_VALUES
             || (self.clearable
@@ -814,8 +810,7 @@ impl Widget for Combobox {
         let editable_meta = metadata.clone();
         let editable: Vary<bool> = scope
             .bond(move || {
-                editable_enabled.get()
-                    && !editable_meta.get().is_some_and(|value| value.readonly)
+                editable_enabled.get() && !editable_meta.get().is_some_and(|value| value.readonly)
             })
             .into();
         let collection = Collection::new(scope, CollectionLimits::default())?;
@@ -892,14 +887,15 @@ impl Widget for Combobox {
             value.controls = Some(input_panel.clone());
             value.popup = Some(PopupKind::Listbox);
             value.expanded = Some(input_state.visible.get());
-            value.active_descendant =
-                if input_state.visible.get() {
-                    input_state.current().ok().flatten().and_then(|item| {
-                        composite::id("combobox", &key, "option", &item.key).ok()
-                    })
-                } else {
-                    None
-                };
+            value.active_descendant = if input_state.visible.get() {
+                input_state
+                    .current()
+                    .ok()
+                    .flatten()
+                    .and_then(|item| composite::id("combobox", &key, "option", &item.key).ok())
+            } else {
+                None
+            };
             Some(Box::new(value))
         });
         let base = self.common.theme.control(self.common.size);
@@ -917,8 +913,7 @@ impl Widget for Combobox {
         for kind in [EventKind::ValueChanged, EventKind::Commit] {
             let controller = state.clone();
             let weak = scope.downgrade();
-            let observers =
-                Observers::new(self.common.handlers.remove(&kind).unwrap_or_default());
+            let observers = Observers::new(self.common.handlers.remove(&kind).unwrap_or_default());
             input = input.on(kind, move |event| {
                 let Some(scope) = weak.upgrade() else { return };
                 let result = match &event {
@@ -1034,8 +1029,7 @@ impl Widget for Combobox {
                 })
                 .node_ref(values_ref)
                 .show_in(&content)?;
-            let values_scope =
-                scope.child_in(values_ref.get().ok_or(glory::ui::Error::Gone)?)?;
+            let values_scope = scope.child_in(values_ref.get().ok_or(glory::ui::Error::Gone)?)?;
             glory::ui::each(multiple.selected)
                 .key(|key| key.clone())
                 .children(move |entry| {
@@ -1483,8 +1477,8 @@ fn mount_option(
     let allowed = !option.disabled && !group_disabled;
     let admitted_state = state.clone();
     let admit_key = option.key.as_str().to_owned();
-    let enabled = scope
-        .bond(move || allowed && matching.get() && admitted_state.option_admitted(&admit_key));
+    let enabled =
+        scope.bond(move || allowed && matching.get() && admitted_state.option_admitted(&admit_key));
     let member = state.collection.register(
         scope,
         option.key.as_str(),
@@ -1739,8 +1733,7 @@ mod tests {
         assert_eq!(app.tree().resolve_active_descendant(editor).unwrap(), None);
     }
     #[test]
-    fn composition_freezes_filter_navigation_selection_and_controlled_reconciliation_until_end()
-    {
+    fn composition_freezes_filter_navigation_selection_and_controlled_reconciliation_until_end() {
         let app = App::memory();
         let search = app.scope().cage("Alpha".to_owned());
         app.mount(
@@ -1890,7 +1883,7 @@ mod tests {
     }
     #[test]
     fn filtering_before_binding_flush_rejects_queued_pointer_activation_and_stale_keyboard_commit()
-     {
+    {
         use glory::render::Input;
         let (app, queue) = queued();
         let proposals = Rc::new(std::cell::RefCell::new(Vec::new()));
@@ -2052,8 +2045,7 @@ mod tests {
         assert!(proposed.borrow().is_empty());
     }
     #[test]
-    fn refusing_a_chosen_key_does_not_emit_an_extra_clear_when_local_search_accepts_its_label()
-    {
+    fn refusing_a_chosen_key_does_not_emit_an_extra_clear_when_local_search_accepts_its_label() {
         let app = App::memory();
         let source = app.scope().cage(Some("a".to_owned()));
         let proposed = Rc::new(std::cell::RefCell::new(Vec::new()));

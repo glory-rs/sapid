@@ -71,8 +71,8 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
     let status = model.state();
     let field_status = field.state();
     let error = scope.bond(move || field_status.get().errors.join(" · "));
-    let step_status = scope
-        .bond(move || (!field_status.get().errors.is_empty()).then_some(StepStatus::Error));
+    let step_status =
+        scope.bond(move || (!field_status.get().errors.is_empty()).then_some(StepStatus::Error));
     let submit = model.clone();
     let request: Rc<dyn Fn(usize)> = Rc::new(move |next| {
         requests.revise(|value| *value += 1);
@@ -279,12 +279,7 @@ mod browser {
         Ok(())
     }
     #[wasm_bindgen]
-    pub fn stepper_state(
-        accept: bool,
-        enabled: bool,
-        skip: bool,
-        asynchronous: bool,
-    ) -> Result {
+    pub fn stepper_state(accept: bool, enabled: bool, skip: bool, asynchronous: bool) -> Result {
         STEPPER.with(|slot| {
             let slot = slot.borrow();
             let (app, state) = slot.as_ref().ok_or_else(|| js("unmounted stepper"))?;

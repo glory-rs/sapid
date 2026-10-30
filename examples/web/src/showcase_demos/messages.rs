@@ -9,14 +9,11 @@ mod fixture {
     use glory::render::SemanticId;
     use glory::style::{Display, FlexDirection, Style};
     use glory::ui::{Widget, view, widget};
-    use sapid::{
-        MessageAlignment, MessageData, MessageGroup, MessageQuote, MessageStatus, Theme,
-    };
+    use sapid::{MessageAlignment, MessageData, MessageGroup, MessageQuote, MessageStatus, Theme};
 
     pub fn messages_form(theme: Theme) -> impl Widget {
         widget(move |scope| {
-            let mut initial =
-                MessageData::new("Application", "A public answer 🙂\nSecond line");
+            let mut initial = MessageData::new("Application", "A public answer 🙂\nSecond line");
             initial.timestamp = Some("10:00 UTC".into());
             initial.status = MessageStatus::Sending;
             initial.quote = Some(MessageQuote {

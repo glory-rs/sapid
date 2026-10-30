@@ -158,7 +158,7 @@ fn menubar_open_roots_are_atomic_and_keyboard_hierarchy_switches_only_at_the_roo
 
 #[test]
 fn controlled_menubar_refusal_keeps_focus_and_open_root_together_and_invalid_sources_do_not_clone()
- {
+{
     let app = App::memory();
     let value = app.scope().cage(None::<String>);
     let proposals = Rc::new(RefCell::new(Vec::new()));

@@ -140,9 +140,7 @@ pub fn tasks_form(theme: sapid::Theme) -> impl Widget {
         sapid::text()
             .theme(theme.clone())
             .class("task-requests")
-            .content(
-                scope.bond(move || format!("Application task requests: {}", requests.get())),
-            )
+            .content(scope.bond(move || format!("Application task requests: {}", requests.get())))
             .show_in(&area)?;
         scope.retain(area)?;
         Ok(())

@@ -96,10 +96,7 @@ impl ScheduleContext {
         &self.zone
     }
     /// Application code runs outside any caller-owned reactive borrow.
-    pub fn resolve(
-        &self,
-        interval: ScheduleInterval,
-    ) -> Result<ScheduleResolution, ScheduleError> {
+    pub fn resolve(&self, interval: ScheduleInterval) -> Result<ScheduleResolution, ScheduleError> {
         let start = self
             .policy
             .resolve(interval.start)
@@ -109,9 +106,7 @@ impl ScheduleContext {
             .resolve(interval.end)
             .map_err(ScheduleError::Resolution)?;
         match (start, end) {
-            (DateTimeResolution::Civil, DateTimeResolution::Civil) => {
-                Ok(ScheduleResolution::Civil)
-            }
+            (DateTimeResolution::Civil, DateTimeResolution::Civil) => Ok(ScheduleResolution::Civil),
             (DateTimeResolution::Instant(start), DateTimeResolution::Instant(end))
                 if start.instant() < end.instant() =>
             {
@@ -136,9 +131,7 @@ pub struct ScheduleInterval {
 }
 impl ScheduleInterval {
     pub fn new(start: LocalDateTime, end: LocalDateTime) -> Result<Self, ScheduleError> {
-        if start >= end
-            || ticks(end) - ticks(start) > i128::from(MAX_SCHEDULE_WINDOW_DAYS) * DAY
-        {
+        if start >= end || ticks(end) - ticks(start) > i128::from(MAX_SCHEDULE_WINDOW_DAYS) * DAY {
             Err(ScheduleError::InvalidInterval)
         } else {
             Ok(Self { start, end })
@@ -253,8 +246,7 @@ impl ScheduleWindow {
         let delta = self.0.duration_nanoseconds() * i128::from(pages);
         let start =
             from_ticks(ticks(self.start()) + delta).ok_or(ScheduleError::InvalidInterval)?;
-        let end =
-            from_ticks(ticks(self.end()) + delta).ok_or(ScheduleError::InvalidInterval)?;
+        let end = from_ticks(ticks(self.end()) + delta).ok_or(ScheduleError::InvalidInterval)?;
         Self::new(start, end)
     }
 }
@@ -409,10 +401,7 @@ impl ScheduleData {
     pub fn event(&self, occurrence: ScheduleOccurrence) -> Option<&ScheduleEvent> {
         self.events.get(occurrence.event)
     }
-    pub fn validate_resources(
-        &self,
-        resources: &ScheduleResources,
-    ) -> Result<(), ScheduleError> {
+    pub fn validate_resources(&self, resources: &ScheduleResources) -> Result<(), ScheduleError> {
         for event in &self.events {
             if event
                 .resource_key()
@@ -475,8 +464,7 @@ impl ScheduleData {
             return Err(ScheduleError::EditNotAllowed);
         }
         if event.all_day
-            && (edit.proposed.start.time() != midnight()
-                || edit.proposed.end.time() != midnight())
+            && (edit.proposed.start.time() != midnight() || edit.proposed.end.time() != midnight())
         {
             return Err(ScheduleError::InvalidInterval);
         }
@@ -607,9 +595,7 @@ impl ScheduleResource {
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct ScheduleResources(Vec<ScheduleResource>);
 impl ScheduleResources {
-    pub fn new(
-        values: impl IntoIterator<Item = ScheduleResource>,
-    ) -> Result<Self, ScheduleError> {
+    pub fn new(values: impl IntoIterator<Item = ScheduleResource>) -> Result<Self, ScheduleError> {
         let values: Vec<_> = values
             .into_iter()
             .take(MAX_SCHEDULE_RESOURCES + 1)
@@ -631,11 +617,7 @@ impl ScheduleResources {
     pub fn get(&self, key: &ScheduleKey) -> Option<&ScheduleResource> {
         self.0.iter().find(|v| v.key() == key)
     }
-    pub fn window(
-        &self,
-        first: usize,
-        count: usize,
-    ) -> Result<&[ScheduleResource], ScheduleError> {
+    pub fn window(&self, first: usize, count: usize) -> Result<&[ScheduleResource], ScheduleError> {
         if count == 0 || count > 8 {
             return Err(ScheduleError::InvalidResource);
         }
@@ -791,8 +773,8 @@ fn from_ticks(v: i128) -> Option<LocalDateTime> {
 mod tests {
     use super::*;
     use crate::{
-        AmbiguityPolicy, LocalResolution, MissingScheduleDay, RecurrenceEnd,
-        RecurrenceFrequency, Weekday,
+        AmbiguityPolicy, LocalResolution, MissingScheduleDay, RecurrenceEnd, RecurrenceFrequency,
+        Weekday,
     };
     use std::{cell::Cell, rc::Rc};
     fn d(s: &str) -> CivilDate {
@@ -841,8 +823,7 @@ mod tests {
         )
         .unwrap()
         .recurring(
-            ScheduleRecurrence::new(RecurrenceFrequency::Daily, 1, RecurrenceEnd::Never)
-                .unwrap(),
+            ScheduleRecurrence::new(RecurrenceFrequency::Daily, 1, RecurrenceEnd::Never).unwrap(),
         )
         .unwrap();
         let data = ScheduleData::new(
@@ -905,8 +886,7 @@ mod tests {
             .is_err()
         );
         assert!(
-            ScheduleRecurrence::new(RecurrenceFrequency::Daily, 0, RecurrenceEnd::Never)
-                .is_err()
+            ScheduleRecurrence::new(RecurrenceFrequency::Daily, 0, RecurrenceEnd::Never).is_err()
         );
     }
     #[test]
@@ -970,8 +950,7 @@ mod tests {
             .unwrap();
             let mut index = 0;
             for n in (0..119_988u32).step_by(usize::from(step)) {
-                let month =
-                    crate::YearMonth::new((n / 12 + 1) as u16, (n % 12 + 1) as u8).unwrap();
+                let month = crate::YearMonth::new((n / 12 + 1) as u16, (n % 12 + 1) as u8).unwrap();
                 if month.days() == 31 {
                     assert_eq!(
                         rule.index_on(anchor, month.last()),
@@ -1180,8 +1159,7 @@ mod tests {
     fn editing_is_an_explicit_permission_checked_current_occurrence_proposal() {
         let room = ScheduleKey::new("room").unwrap();
         let resources =
-            ScheduleResources::new([ScheduleResource::new(room.clone(), "Room").unwrap()])
-                .unwrap();
+            ScheduleResources::new([ScheduleResource::new(room.clone(), "Room").unwrap()]).unwrap();
         let window = ScheduleWindow::days(d("2024-02-01"), 1).unwrap();
         let editable = event().permissions(SchedulePermissions {
             select: true,

@@ -206,11 +206,7 @@ pub struct SourceRecord {
     pub trust: SourceTrust,
 }
 impl SourceRecord {
-    pub fn new(
-        key: impl Into<String>,
-        title: impl Into<String>,
-        url: impl Into<String>,
-    ) -> Self {
+    pub fn new(key: impl Into<String>, title: impl Into<String>, url: impl Into<String>) -> Self {
         Self {
             key: key.into(),
             title: title.into(),
@@ -282,10 +278,8 @@ fn validate_sources(records: &[SourceRecord]) -> Result {
         if !keys.insert(&r.key) {
             return Err(invalid("source keys must be distinct"));
         }
-        bytes += r.key.len()
-            + r.title.len()
-            + r.url.len()
-            + r.preview.as_ref().map_or(0, String::len);
+        bytes +=
+            r.key.len() + r.title.len() + r.url.len() + r.preview.as_ref().map_or(0, String::len);
         if bytes > MAX_SOURCE_METADATA_BYTES {
             return Err(invalid("source metadata exceeds 256 KiB"));
         }
@@ -330,9 +324,8 @@ impl Widget for Sources {
     fn build(&mut self, scope: &Scope) -> Result {
         composite::id("sources", &self.key, "root", "root")?;
         let records = composite::validated(scope, &self.records, |v| validate_sources(v))?;
-        let keys = scope.bond(move || {
-            records.with(|v| v.iter().map(|r| r.key.clone()).collect::<Vec<_>>())
-        });
+        let keys = scope
+            .bond(move || records.with(|v| v.iter().map(|r| r.key.clone()).collect::<Vec<_>>()));
         let theme = self.common.theme.clone();
         let size = self.common.size;
         let unstyled = self.common.unstyled;
@@ -368,9 +361,7 @@ impl Widget for Sources {
                                 .class("sapid-source-link")
                                 .theme(theme.clone())
                                 .size(size)
-                                .semantic_id(composite::id(
-                                    "sources", &namespace, "entry", &key,
-                                )?)
+                                .semantic_id(composite::id("sources", &namespace, "entry", &key)?)
                                 .label(scope.bond(move || {
                                     records.with(|v| {
                                         v.iter()
@@ -504,9 +495,8 @@ impl Widget for InlineCitation {
             }))
             .label(label)
             .name(scope.bond(move || {
-                source.with(|s| {
-                    format!("Citation {}: {}; {}", label.get(), s.title, s.trust.label())
-                })
+                source
+                    .with(|s| format!("Citation {}: {}; {}", label.get(), s.title, s.trust.label()))
             }))
             .href(scope.bond(move || source.with(|s| s.url.clone())))
             .theme(self.common.theme.clone())

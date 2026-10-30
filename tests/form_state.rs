@@ -5,8 +5,7 @@ use std::task::Poll;
 use glory::core::executor::Executor;
 use glory::prelude::*;
 use sapid::{
-    ControlValue, FieldOptions, FormError, FormLimits, FormState, SubmissionLimits,
-    SubmitStatus,
+    ControlValue, FieldOptions, FormError, FormLimits, FormState, SubmissionLimits, SubmitStatus,
 };
 
 #[test]
@@ -113,8 +112,7 @@ fn source_aba_before_flush_cannot_accept_async_result() {
             app.scope(),
             "one",
             value,
-            FieldOptions::default()
-                .validate_async(|_| Box::pin(async { vec!["obsolete".into()] })),
+            FieldOptions::default().validate_async(|_| Box::pin(async { vec!["obsolete".into()] })),
         )
         .unwrap();
     app.flush().unwrap();

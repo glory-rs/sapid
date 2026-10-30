@@ -57,9 +57,7 @@ mod fixture {
                     .with(|handle| handle.as_ref().and_then(|handle| handle.status().ok()))
                     .map_or_else(
                         || "Retired".into(),
-                        |value| {
-                            format!("following {}; unread {}", value.following, value.unread)
-                        },
+                        |value| format!("following {}; unread {}", value.following, value.unread),
                     )
             });
             view()

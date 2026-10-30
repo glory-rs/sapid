@@ -144,8 +144,7 @@ pub fn accordion_form(theme: Theme) -> impl Widget {
                     .label("Restore members")
                     .on_press(move || {
                         keys.revise(|keys| {
-                            *keys =
-                                vec!["alpha".to_owned(), "beta".to_owned(), "gamma".to_owned()]
+                            *keys = vec!["alpha".to_owned(), "beta".to_owned(), "gamma".to_owned()]
                         })
                     }),
                 button()

@@ -72,8 +72,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .form_name("empty")
                 .placeholder("Nothing selected")
                 .option(select_option("empty-value", "Explicit empty value").value("")),
-            text()
-                .content(scope.bond(move || format!("Select proposals: {}", proposals.get()))),
+            text().content(scope.bond(move || format!("Select proposals: {}", proposals.get()))),
             button().label("After select"),
         ));
     (
