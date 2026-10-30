@@ -132,6 +132,37 @@ class ArchiveTests(unittest.TestCase):
                 self.inspect(b'Apache License',**arguments)
 
 
+class AcceptanceAssetTests(unittest.TestCase):
+    def test_old_release_and_previous_attempt_attachments_remain_unchanged(self):
+        parent = Path(os.environ.get('CARGO_TARGET_DIR', 'D:/BuildCache/sapid/fixes/release/target')).parent
+        parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix='acceptance-assets-', dir=parent) as directory:
+            root = Path(directory)
+            provenance = root / 'browser-provenance.json'
+            results = root / 'browser-results.json'
+            provenance.write_bytes(b'{"validation_attempt":1}\n')
+            results.write_bytes(b'{"complete":true}\n')
+            original = {path.name: path.read_bytes() for path in (provenance, results)}
+            first = publisher.acceptance_assets(provenance, '123', '1')
+            second = publisher.acceptance_assets(provenance, '123', '2')
+            self.assertEqual([path.name for path in first], [
+                'browser-results-run-123-attempt-1.json', 'browser-provenance-run-123-attempt-1.json'])
+            self.assertEqual([path.name for path in second], [
+                'browser-results-run-123-attempt-2.json', 'browser-provenance-run-123-attempt-2.json'])
+            for paths in (first, second):
+                self.assertEqual([path.read_bytes() for path in paths], [original[results.name], original[provenance.name]])
+            self.assertEqual(publisher.acceptance_assets(provenance, '123', '2'), second)
+            results.write_bytes(b'{"different":true}\n')
+            with self.assertRaisesRegex(SystemExit, 'different contents'):
+                publisher.acceptance_assets(provenance, '123', '2')
+            self.assertEqual(first[0].read_bytes(), original[results.name])
+            self.assertEqual(second[0].read_bytes(), original[results.name])
+            self.assertEqual(provenance.read_bytes(), original[provenance.name])
+            for run_id, attempt in [('123', '../2'), ('bad', '1'), ('1', '0')]:
+                with self.subTest(run_id=run_id, attempt=attempt), self.assertRaisesRegex(SystemExit, 'positive workflow'):
+                    publisher.acceptance_assets(provenance, run_id, attempt)
+
+
 class ReleaseProvenanceTests(unittest.TestCase):
     """Exercise real local Git/tag transitions; registry access is forbidden."""
 
@@ -260,6 +291,62 @@ class ReleaseProvenanceTests(unittest.TestCase):
         self.git(self.root, 'tag', '-f', '-a', 'v0.6.0', '-m', 'Annotated release')
         self.git(self.root, 'push', '--force', 'origin', 'refs/tags/v0.6.0')
         self.gate()
+
+    def test_workflow_attachment_helper_uses_the_gate_and_versioned_real_files_without_cargo(self):
+        original_run = publisher.run
+        uploads = []
+
+        def run(*args, **kwargs):
+            if args[:3] == ('gh', 'release', 'upload'):
+                uploads.append(args)
+                return
+            if args[0] == 'cargo':
+                self.fail('Attachment mode unexpectedly invoked Cargo')
+            return original_run(*args, **kwargs)
+
+        arguments = ['release.py', '--product-root', str(self.root), '--attach-acceptance', '--tag', 'v0.6.0',
+                     '--expected-commit', self.product_commit, '--acceptance-commit', self.acceptance_commit,
+                     '--harness-root', str(self.harness), '--provenance', str(self.provenance)]
+        with patch.object(publisher, 'ROOT', self.root), patch.dict(os.environ, self.environment), \
+             patch.object(publisher.sys, 'argv', arguments), patch.object(publisher, 'run', side_effect=run), \
+             patch.object(publisher.urllib.request, 'urlopen') as network:
+            publisher.main()
+            network.assert_not_called()
+        self.assertEqual(len(uploads), 1)
+        self.assertEqual(uploads[0][:6], ('gh', 'release', 'upload', 'v0.6.0', '--repo', 'example/owned'))
+        assets = [Path(value) for value in uploads[0][6:]]
+        self.assertEqual([path.name for path in assets], [
+            'browser-results-run-123-attempt-2.json', 'browser-provenance-run-123-attempt-2.json'])
+        self.assertEqual([path.read_bytes() for path in assets], [self.results.read_bytes(), self.provenance.read_bytes()])
+
+    def test_rate_limit_wait_rechecks_the_real_remote_tag_before_a_second_upload(self):
+        original_subprocess = subprocess.run
+        uploads = []
+
+        def command(arguments, *args, **kwargs):
+            if arguments[:2] == ['cargo', 'publish']:
+                uploads.append(arguments)
+                self.assertEqual(len(uploads), 1, 'Moved tag reached a second Cargo upload')
+                return SimpleNamespace(returncode=101, stdout='429 Too Many Requests: try again after Thu, 29 Oct 2026 07:50:05 GMT')
+            return original_subprocess(arguments, *args, **kwargs)
+
+        def move_remote_tag(_delay):
+            (self.root / 'new-source').write_text('Unchecked source during rate limit', encoding='utf-8')
+            self.commit(self.root)
+            self.git(self.root, 'tag', '-f', 'v0.6.0')
+            self.git(self.root, 'push', '--force', 'origin', 'refs/tags/v0.6.0')
+            self.git(self.root, 'reset', '--hard', self.product_commit)
+            self.git(self.root, 'tag', '-f', 'v0.6.0', self.product_commit)
+
+        response = MagicMock()
+        response.__enter__.return_value.headers = {'Date': 'Thu, 29 Oct 2026 07:50:00 GMT'}
+        with patch.object(publisher, 'ROOT', self.root), patch.object(publisher.subprocess, 'run', side_effect=command), \
+             patch.object(publisher.urllib.request, 'urlopen', return_value=response), \
+             patch.object(publisher.time, 'monotonic', side_effect=[0, 1, 2, 11]), \
+             patch.object(publisher.time, 'sleep', side_effect=move_remote_tag), contextlib.redirect_stdout(io.StringIO()):
+            with self.assertRaisesRegex(SystemExit, 'Release tag moved'):
+                publisher.publish(['cargo', 'publish'], before_upload=lambda: publisher.verify_remote_tag('v0.6.0', self.product_commit))
+        self.assertEqual(len(uploads), 1)
 
     def test_other_product_glory_harness_repository_run_or_attempt_is_rejected(self):
         for field in ('schema', 'repository', 'workflow_run_id',
