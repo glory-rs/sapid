@@ -98,12 +98,13 @@ jobs:
           node scripts/showcase-acceptance.cjs --directory "$env:BUILD_ROOT/showcase" --output "$env:BUILD_ROOT/acceptance"
           if ($LASTEXITCODE) { throw 'Showcase acceptance failed' }
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
         with:
           name: sapid-showcase-dist
           path: |
             D:/BuildCache/sapid/pages-ci/showcase
             D:/BuildCache/sapid/pages-ci/acceptance
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 30
       - name: Deploy to Cloudflare Pages
         if: github.event_name != 'pull_request'
