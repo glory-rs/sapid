@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Validate and publish this repository's explicit, dependency-ordered release."""
 import argparse
+import ast
 from email.utils import parsedate_to_datetime
 import hashlib
 import json
@@ -24,9 +25,11 @@ def run(*args, capture=False):
     return result.stdout.strip() if capture else None
 
 
-def publish(command):
+def publish(command, *, before_upload=None):
     """Retry only an explicit registry rate limit, at the server's stated time."""
     for attempt in range(12):
+        if before_upload is not None:
+            before_upload()
         result = subprocess.run(command, cwd=ROOT, text=True, encoding="utf-8", errors="replace",
                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         print(result.stdout, end="", flush=True)
@@ -74,12 +77,179 @@ def validate_archive(archive, expected_commit):
     return vcs
 
 
+def verify_remote_tag(tag, expected_commit):
+    """Check the current origin tag, peeling annotated tags before comparison."""
+    refs = run("git", "ls-remote", "--exit-code", "origin", f"refs/tags/{tag}",
+               f"refs/tags/{tag}^{{}}", capture=True)
+    revisions = dict(line.split(maxsplit=1)[::-1] for line in refs.splitlines())
+    commit = revisions.get(f"refs/tags/{tag}^{{}}", revisions.get(f"refs/tags/{tag}"))
+    if commit != expected_commit:
+        raise SystemExit("Release tag moved from the frozen, validated commit")
+
+
+def acceptance_assets(provenance, run_id, attempt):
+    """Stage attempt-specific evidence without overwriting any previous asset."""
+    if any(not re.fullmatch(r"[1-9][0-9]*", value or "") for value in (run_id, attempt)):
+        raise SystemExit("Acceptance assets require a positive workflow run ID and attempt")
+    provenance = Path(provenance)
+    output = provenance.parent / "release-assets"
+    output.mkdir(parents=True, exist_ok=True)
+    assets = []
+    for source in (provenance.with_name("browser-results.json"), provenance):
+        destination = output / f"{source.stem}-run-{run_id}-attempt-{attempt}.json"
+        payload = source.read_bytes()
+        if destination.exists():
+            if destination.read_bytes() != payload:
+                raise SystemExit("Existing attempt-specific acceptance asset has different contents")
+        else:
+            with destination.open("xb") as target:
+                target.write(payload)
+        assets.append(destination)
+    return assets
+
+
+def acceptance_report(results_path, harness_root, fixtures_root=None):
+    """Validate the complete suite and its source identities without executing JS."""
+    try:
+        report_bytes = Path(results_path).read_bytes()
+        report = json.loads(report_bytes)
+        runner = (Path(harness_root) / "scripts/browser.cjs").read_bytes()
+        declaration = re.search(r"\bconst suites\s*=\s*(\[[\s\S]*?\]);", runner.decode("utf-8"))
+        suites = ast.literal_eval(declaration[1]) if declaration else None
+        if (not isinstance(suites, list) or not suites or len(suites) != len(set(suites))
+                or any(not isinstance(name, str) or not re.fullmatch(r"[a-z0-9-]+\.js", name) for name in suites)):
+            raise ValueError("Missing finite browser suite declaration")
+        sources = {name: hashlib.sha256((Path(harness_root) / "examples/web" / name).read_bytes()).hexdigest()
+                   for name in suites}
+        if (not isinstance(report, dict) or report.get("complete") is not True
+                or report.get("errors") != [] or report.get("completedSuites") != suites
+                or report.get("sourceHashes") != sources):
+            raise ValueError("Browser acceptance is incomplete, failed or uses different suite sources")
+        artifacts = report.get("artifactHashes")
+        if (not isinstance(artifacts, dict) or not artifacts
+                or any(not isinstance(name, str) or not isinstance(digest, str)
+                       or not re.fullmatch(r"[a-f0-9]{64}", digest) for name, digest in artifacts.items())):
+            raise ValueError("Missing fixture artifact digests")
+        if fixtures_root is not None:
+            fixtures = Path(fixtures_root)
+            actual = {path.relative_to(fixtures).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+                      for path in fixtures.rglob("*") if path.is_file()}
+            if actual != artifacts:
+                raise ValueError("Browser acceptance fixtures differ from the built product")
+        return {"browser_results_sha256": hashlib.sha256(report_bytes).hexdigest(),
+                "browser_runner_sha256": hashlib.sha256(runner).hexdigest()}
+    except (OSError, ValueError, SyntaxError, TypeError) as failure:
+        raise SystemExit(f"Invalid browser acceptance report: {failure}") from failure
+
+
+def record_acceptance(options):
+    """Only a complete successful report can receive product provenance."""
+    if not options.provenance or not options.harness_root or not options.fixtures_root:
+        raise SystemExit("Recording acceptance requires provenance, harness and built fixture paths")
+    digests = acceptance_report(Path(options.provenance).with_name("browser-results.json"),
+                                options.harness_root, options.fixtures_root)
+    dependency = json.loads((ROOT / "deploy/dependencies.json").read_text(encoding="utf-8"))["glory"]
+    product = run("git", "rev-parse", "HEAD", capture=True)
+    glory = run("git", "-C", str(ROOT.parent / "glory"), "rev-parse", "HEAD", capture=True)
+    harness = run("git", "-C", str(options.harness_root), "rev-parse", "HEAD", capture=True)
+    if glory != dependency["revision"]:
+        raise SystemExit("Acceptance Glory checkout differs from the dependency pin")
+    if options.expected_commit and product != options.expected_commit:
+        raise SystemExit("Acceptance product checkout differs from the frozen commit")
+    if options.acceptance_commit and harness != options.acceptance_commit:
+        raise SystemExit("Acceptance harness checkout differs from the workflow commit")
+    evidence = {"schema": 1, "repository": os.environ["GITHUB_REPOSITORY"],
+                "workflow_run_id": os.environ["GITHUB_RUN_ID"],
+                "workflow_run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+                "product_commit": product, "glory_repository": dependency["repository"],
+                "glory_commit": glory, "acceptance_commit": harness,
+                "fixture_protocol": "HTTP/1.1", "browser_isolation": "suite", **digests}
+    Path(options.provenance).write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
+
+
+def validate_release_gate(options, plan, tag, head):
+    """Bind publication to successful checks of these immutable inputs in this run."""
+    if not options.provenance or not options.expected_commit or not options.acceptance_commit or not options.harness_root:
+        raise SystemExit("Publication requires frozen product/harness commits and acceptance provenance")
+    for commit in (options.expected_commit, options.acceptance_commit):
+        if not re.fullmatch(r"[a-f0-9]{40}", commit):
+            raise SystemExit("Release commits must be immutable 40-character SHAs")
+    repository = os.environ.get("GITHUB_REPOSITORY")
+    run_id = os.environ.get("GITHUB_RUN_ID")
+    attempt = os.environ.get("GITHUB_RUN_ATTEMPT")
+    if (os.environ.get("GITHUB_ACTIONS") != "true" or not run_id or not attempt
+            or repository != plan["repository"]):
+        raise SystemExit("Publication requires this repository's gated Actions release workflow")
+    if head != options.expected_commit:
+        raise SystemExit("Publisher HEAD differs from the frozen, validated commit")
+    if run("git", "rev-parse", f"refs/tags/{tag}^{{commit}}", capture=True) != head:
+        raise SystemExit("Publication must run at the exact release tag")
+    try:
+        provenance_bytes = Path(options.provenance).read_bytes()
+        if hashlib.sha256(provenance_bytes).hexdigest() != os.environ.get("ACCEPTANCE_PROVENANCE_SHA256"):
+            raise SystemExit("Acceptance provenance digest differs from the successful checks' output")
+        evidence = json.loads(provenance_bytes.decode("utf-8-sig"))
+        dependency = json.loads((ROOT / "deploy/dependencies.json").read_text(encoding="utf-8"))["glory"]
+        glory_repository, glory_revision = dependency["repository"], dependency["revision"]
+        if not isinstance(glory_repository, str) or not isinstance(glory_revision, str):
+            raise ValueError("Invalid Glory dependency pin")
+    except (OSError, ValueError, KeyError, TypeError) as failure:
+        raise SystemExit("Missing or invalid release acceptance provenance/dependency pin") from failure
+    expected = {
+        "schema": 1,
+        "repository": repository,
+        "workflow_run_id": run_id,
+        "product_commit": head,
+        "acceptance_commit": options.acceptance_commit,
+        "glory_repository": glory_repository,
+        "glory_commit": glory_revision,
+    }
+    if not isinstance(evidence, dict) or any(evidence.get(key) != value for key, value in expected.items()):
+        raise SystemExit("Acceptance provenance differs from this release's product, dependencies or workflow attempt")
+    try:
+        checked_attempt = int(evidence["workflow_run_attempt"])
+        if not 1 <= checked_attempt <= int(attempt):
+            raise ValueError("Invalid acceptance workflow attempt")
+    except (KeyError, ValueError, TypeError) as failure:
+        raise SystemExit("Acceptance provenance has an invalid workflow attempt") from failure
+    if os.environ.get("ACCEPTANCE_ARTIFACT") != f"sapid-browser-acceptance-{checked_attempt}":
+        raise SystemExit("Downloaded acceptance artifact differs from the successful checks' exact artifact")
+    if run("git", "-C", str(options.harness_root), "rev-parse", "HEAD", capture=True) != options.acceptance_commit:
+        raise SystemExit("Publisher harness checkout differs from the workflow commit")
+    digests = acceptance_report(Path(options.provenance).with_name("browser-results.json"), options.harness_root)
+    if any(evidence.get(key) != digest for key, digest in digests.items()):
+        raise SystemExit("Browser acceptance report or runner digest differs from the successful checks")
+    if not re.fullmatch(r"[a-f0-9]{40}", glory_revision):
+        raise SystemExit("Glory dependency must be pinned to an immutable commit")
+    if run("git", "-C", str(ROOT.parent / "glory"), "rev-parse", "HEAD", capture=True) != glory_revision:
+        raise SystemExit("Publisher Glory checkout differs from the validated dependency pin")
+    verify_remote_tag(tag, head)
+
+
 def main():
+    global ROOT
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--publish", action="store_true")
+    parser.add_argument("--attach-acceptance", action="store_true", help="attach validated browser evidence with run/attempt-specific asset names")
     parser.add_argument("--tag")
     parser.add_argument("--check-package", help="package and inspect one owned crate without uploading")
+    parser.add_argument("--product-root", type=Path, help="frozen product checkout when using workflow-versioned release tools")
+    parser.add_argument("--expected-commit", help="product SHA frozen before validation")
+    parser.add_argument("--acceptance-commit", help="immutable workflow/browser harness SHA")
+    parser.add_argument("--provenance", type=Path, help="acceptance evidence downloaded from this workflow run")
+    parser.add_argument("--harness-root", type=Path, help="checkout of the immutable workflow/browser harness source")
+    parser.add_argument("--fixtures-root", type=Path, help="actual built fixture directory when recording acceptance")
+    parser.add_argument("--record-acceptance", action="store_true", help="record provenance only for complete successful browser acceptance")
     options = parser.parse_args()
+    if options.attach_acceptance and (options.publish or options.check_package or options.record_acceptance):
+        parser.error("Attaching acceptance cannot publish, package or record acceptance")
+    if options.product_root:
+        ROOT = options.product_root.resolve()
+    if options.record_acceptance:
+        if options.publish or options.check_package:
+            parser.error("Recording acceptance cannot publish or package")
+        record_acceptance(options)
+        return
     plan = json.loads((ROOT / "release.json").read_text(encoding="utf-8"))
     manifest = tomllib.loads((ROOT / "Cargo.toml").read_text(encoding="utf-8"))
     workspace = manifest.get("workspace", {})
@@ -89,6 +259,17 @@ def main():
     tag = options.tag or event_tag or expected_tag
     if tag != expected_tag:
         raise SystemExit(f"Tag {tag!r} must match manifest version: {expected_tag}")
+    if options.publish or options.attach_acceptance:
+        if not (ROOT / "releases" / (version + ".md")).is_file():
+            raise SystemExit("A reviewed release-notes file is required")
+        if run("git", "status", "--porcelain", capture=True):
+            raise SystemExit("Publication requires a clean checkout")
+        head = run("git", "rev-parse", "HEAD", capture=True)
+        validate_release_gate(options, plan, tag, head)
+    if options.attach_acceptance:
+        assets = acceptance_assets(options.provenance, os.environ.get("GITHUB_RUN_ID"), os.environ.get("GITHUB_RUN_ATTEMPT"))
+        run("gh", "release", "upload", tag, "--repo", plan["repository"], *map(str, assets))
+        return
     metadata = json.loads(run("cargo", "metadata", "--no-deps", "--format-version", "1", capture=True))
     target = Path(metadata["target_directory"]).resolve()
     configured = os.environ.get("CARGO_TARGET_DIR")
@@ -149,11 +330,6 @@ def main():
     notes = ROOT / "releases" / (version + ".md")
     if not notes.is_file():
         raise SystemExit("A reviewed release-notes file is required")
-    if run("git", "status", "--porcelain", capture=True):
-        raise SystemExit("Publication requires a clean checkout")
-    head = run("git", "rev-parse", "HEAD", capture=True)
-    if run("git", "rev-parse", tag + "^{commit}", capture=True) != head:
-        raise SystemExit("Publication must run at the exact release tag")
     if not os.environ.get("CARGO_REGISTRY_TOKEN"):
         raise SystemExit("CARGO_REGISTRY_TOKEN is required")
     cross = set(plan.get("cross_target_packages", []))
@@ -196,7 +372,9 @@ def main():
             command = ["cargo", "publish", "--locked", "--manifest-path", package["manifest_path"], "-p", name]
             if name in cross:
                 command.append("--no-verify")
-            publish(command)
+            # Packaging can take time. Refuse a tag change immediately before
+            # each irreversible upload as well as at the initial gate.
+            publish(command, before_upload=lambda: verify_remote_tag(tag, head))
         # Let sparse-index propagation finish before building dependent crates.
         ready = False
         for attempt in range(30):
