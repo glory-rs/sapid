@@ -9,7 +9,7 @@ $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $BuildRoot = [IO.Path]::GetFullPath($BuildRoot)
-if ($BuildRoot -notmatch '^D:\\BuildCache\\[^\\]+') { throw 'BuildRoot must be inside D:/BuildCache' }
+if ($BuildRoot -notmatch '^D:\\BuildCache\\sapid(?:\\|$)') { throw 'BuildRoot must be inside D:/BuildCache/sapid' }
 $showcaseBuild = "$BuildRoot/showcase"
 $showcaseTarget = "$BuildRoot/target"
 $savedEnvironment = @{}
@@ -77,7 +77,7 @@ try {
     $assetHashes = @($buildFiles | Sort-Object FullName | ForEach-Object { @{ path=[IO.Path]::GetRelativePath($showcaseBuild,$_.FullName);sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash;bytes=$_.Length } })
     $assetHashes | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath "$showcaseBuild/asset-hashes.json"
     Write-Output "Showcase built separately at $showcaseBuild (old 8794 fixtures were not touched)"
-    if ($Serve -or $Browser) {
+    if ($Serve) {
         $listener = Get-NetTCPConnection -LocalAddress 127.0.0.1 -LocalPort 8795 -State Listen -ErrorAction SilentlyContinue
         if (-not $listener) {
             $server = Start-Process -FilePath 'python' -ArgumentList @('-m','http.server','8795','--bind','127.0.0.1','--directory',$showcaseBuild) -WindowStyle Hidden -PassThru -RedirectStandardOutput 'D:/BuildCache/sapid/showcase-server.log' -RedirectStandardError 'D:/BuildCache/sapid/showcase-server-errors.log'
@@ -96,23 +96,8 @@ try {
         Write-Output 'Showcase URL: http://127.0.0.1:8795/'
     }
     if ($Browser) {
-        $env:SAPID_SHOWCASE_BASE = 'http://127.0.0.1:8795'
-        $env:SAPID_PLAYWRIGHT = Join-Path (Split-Path -Parent $projectRoot) 'glory/tests/playwright/node_modules/playwright'
-        & node scripts/showcase-browser.cjs
-        if ($LASTEXITCODE -ne 0) { throw 'showcase browser acceptance failed' }
-        & node scripts/theme-studio-browser.cjs
-        if ($LASTEXITCODE -ne 0) { throw 'theme studio browser acceptance failed' }
-        & node scripts/palette-order-browser.cjs
-        if ($LASTEXITCODE -ne 0) { throw 'palette order browser acceptance failed' }
-        & "$PSScriptRoot/check-theme-export.ps1"
-        & node scripts/showcase-navigation-browser.cjs
-        if ($LASTEXITCODE -ne 0) { throw 'showcase navigation acceptance failed' }
-        & node scripts/showcase-routing-browser.cjs
-        if ($LASTEXITCODE -ne 0) { throw 'showcase routing acceptance failed' }
-        & node scripts/showcase-style-browser.cjs
-        if ($LASTEXITCODE -ne 0) { throw 'showcase style acceptance failed' }
-        & node scripts/mantine-api-browser.cjs
-        if ($LASTEXITCODE -ne 0) { throw 'Mantine API browser acceptance failed' }
+        & node scripts/showcase-acceptance.cjs --directory $showcaseBuild --output "$BuildRoot/showcase-acceptance"
+        if ($LASTEXITCODE -ne 0) { throw 'showcase acceptance matrix failed' }
     }
 } finally {
     Pop-Location
