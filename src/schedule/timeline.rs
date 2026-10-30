@@ -1,9 +1,14 @@
 use super::*;
-use crate::{ScheduleDayPlacement, ScheduleTimeWindow};
+use crate::{ScheduleDayPlacement, ScheduleOccurrence, ScheduleTimeWindow};
 use glory::render::{Action, Direction, EventKind, FocusMode, GridCommand, TableMetadata};
 use glory::style::{Overflow, Position};
 
-pub(super) fn validate(data: &ScheduleData, days: usize, time: ScheduleTimeWindow) -> Result {
+pub(super) fn validate(
+    data: &ScheduleData,
+    days: usize,
+    time: ScheduleTimeWindow,
+    occurrences: &[ScheduleOccurrence],
+) -> Result<Vec<Vec<ScheduleDayPlacement>>> {
     let window = data.window();
     if window.start().time() != crate::schedule_model::midnight()
         || window.end().time() != crate::schedule_model::midnight()
@@ -11,22 +16,22 @@ pub(super) fn validate(data: &ScheduleData, days: usize, time: ScheduleTimeWindo
     {
         return Err(invalid());
     }
+    let mut layouts = Vec::with_capacity(days);
     for day in 0..days {
         let date = window
             .start()
             .date()
             .checked_add_days(day as i32)
             .map_err(|_| invalid())?;
-        if data
-            .layout_day(date, time, None)
-            .map_err(|_| invalid())?
-            .iter()
-            .any(|p| p.lanes() > 16)
-        {
+        let layout = data
+            .layout_day_expanded(date, time, None, occurrences)
+            .map_err(|_| invalid())?;
+        if layout.iter().any(|p| p.lanes() > 16) {
             return Err(invalid());
         }
+        layouts.push(layout);
     }
-    Ok(())
+    Ok(layouts)
 }
 #[derive(Clone)]
 struct TimelineEvent {
@@ -39,23 +44,12 @@ struct Prepared {
     events: Vec<TimelineEvent>,
     column_width: f64,
 }
-fn prepare(
-    data: &ScheduleData,
-    days: usize,
-    time: ScheduleTimeWindow,
-    base_width: f64,
-) -> Prepared {
-    let occurrences = data.expand(MAX_SCHEDULE_OCCURRENCES).unwrap();
+fn prepare(data: &snapshot::Snapshot, base_width: f64) -> Prepared {
+    let occurrences = &data.occurrences;
     let mut events = vec![];
     let mut lanes = 1;
-    for day in 0..days {
-        let date = data
-            .window()
-            .start()
-            .date()
-            .checked_add_days(day as i32)
-            .unwrap();
-        for position in data.layout_day(date, time, None).unwrap() {
+    for (day, positions) in data.day_layouts.iter().enumerate() {
+        for position in positions.iter().copied() {
             let occurrence = occurrences[position.occurrence_index()];
             let event = data.event(occurrence).unwrap();
             lanes = lanes.max(position.lanes());
@@ -224,8 +218,7 @@ pub(super) fn build(scope: &Scope, root: Rc<Controller>, config: Config) -> Resu
         viewport_height,
     } = config;
     let accepted = root.accepted;
-    let prepared =
-        scope.bond(move || accepted.with(|data| prepare(data, days, time, column_width)));
+    let prepared = scope.bond(move || accepted.with(|data| prepare(data, column_width)));
     let state = Rc::new(TimelineState {
         owner: scope.id(),
         weak: scope.downgrade(),

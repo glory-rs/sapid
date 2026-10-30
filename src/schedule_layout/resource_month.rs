@@ -3,12 +3,27 @@ impl crate::ResourceScheduleData {
     /// Month bars project every intersected civil day to a complete cell. Exact
     /// intervals stay in occurrence records and edit/selection callbacks.
     pub fn layout_month(&self) -> Result<ResourceScheduleTimeline, ScheduleError> {
+        self.validate_month_window()?;
+        let occurrences = self.data().expand(MAX_SCHEDULE_OCCURRENCES)?;
+        self.layout_month_expanded(&occurrences)
+    }
+
+    fn validate_month_window(&self) -> Result<(), ScheduleError> {
         let data = self.data();
         let window = data.window();
         if crate::ScheduleWindow::month(window.start().date().year_month())? != window {
             return Err(ScheduleError::InvalidInterval);
         }
-        let occurrences = data.expand(MAX_SCHEDULE_OCCURRENCES)?;
+        Ok(())
+    }
+
+    pub(crate) fn layout_month_expanded(
+        &self,
+        occurrences: &[ScheduleOccurrence],
+    ) -> Result<ResourceScheduleTimeline, ScheduleError> {
+        self.validate_month_window()?;
+        let data = self.data();
+        let window = data.window();
         let first = ticks(window.start());
         let last = ticks(window.end());
         let extent = (last - first) as f64;

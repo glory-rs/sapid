@@ -17,20 +17,10 @@ struct Prepared {
     events: Vec<TimelineEvent>,
     column_width: f64,
 }
-fn prepare(
-    model: &ResourceScheduleData,
-    days: usize,
-    time: ScheduleTimeWindow,
-    base_width: f64,
-    month: bool,
-) -> Prepared {
-    let layout = if month {
-        model.layout_month().unwrap()
-    } else {
-        model.layout_timeline(time, days).unwrap()
-    };
+fn prepare(model: &snapshot::Snapshot, base_width: f64) -> Prepared {
+    let layout = &model.layout;
     let data = model.data();
-    let occurrences = data.expand(MAX_SCHEDULE_OCCURRENCES).unwrap();
+    let occurrences = &model.occurrences;
     let mut events = vec![];
     let mut lanes = 1;
     for item in layout.placements() {
@@ -242,8 +232,7 @@ pub(super) fn build(scope: &Scope, root: Rc<Controller>, config: Config) -> Resu
         .then(|| accepted.with(|m| m.data().window().start().date().year_month().days() as usize));
     let steps = period.unwrap_or(time.len());
     let days = accepted.with(|m| m.visible_resources().len()) * date_days;
-    let prepared = scope
-        .bond(move || accepted.with(|data| prepare(data, date_days, time, column_width, month)));
+    let prepared = scope.bond(move || accepted.with(|data| prepare(data, column_width)));
     let state = Rc::new(TimelineState {
         owner: scope.id(),
         weak: scope.downgrade(),
@@ -755,7 +744,7 @@ impl Widget for TimelineEventWidget {
     }
 }
 fn accepted_permission(
-    data: Cage<ResourceScheduleData>,
+    data: AcceptedResources,
     key: &ScheduleKey,
     kind: crate::ScheduleEditKind,
 ) -> bool {
