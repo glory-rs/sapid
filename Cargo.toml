@@ -31,3 +31,7 @@ unsafe_code = "forbid"
 
 [lints.clippy]
 all = "warn"
+
+[[example]]
+name = "schedule_layout_bench"
+required-features = ["dates"]
