@@ -10,6 +10,8 @@ pub(crate) struct PlotTable {
     pub rows: Vec<Vec<String>>,
 }
 pub(crate) fn tables(data: &PlotData, scene: &PlotScene) -> Vec<PlotTable> {
+    #[cfg(test)]
+    FORMAT_PASSES.with(|count| count.set(count.get() + 1));
     let details = scene
         .marks
         .iter()
@@ -246,3 +248,6 @@ pub(crate) fn tables(data: &PlotData, scene: &PlotScene) -> Vec<PlotTable> {
     }
     chunks
 }
+
+#[cfg(test)]
+thread_local! { pub(super) static FORMAT_PASSES: std::cell::Cell<usize> = const { std::cell::Cell::new(0) }; }

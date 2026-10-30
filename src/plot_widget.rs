@@ -223,6 +223,58 @@ fn bounded_options(value: &PlotOptions) -> Result<PlotOptions> {
     }
     Ok(value.clone())
 }
+
+#[cfg(test)]
+mod derivation_tests {
+    use super::*;
+
+    #[test]
+    fn mounted_plot_skips_table_formatting_when_the_table_is_disabled() {
+        let app = glory::prelude::App::memory();
+        let data = app
+            .scope()
+            .cage(PlotData::Values(vec![ValueDatum::new("a", "A", 10.)]));
+        let options = app.scope().cage(PlotOptions::default());
+        plot_table::FORMAT_PASSES.set(0);
+        app.mount(
+            pie_chart("no-table")
+                .data(data)
+                .options(options)
+                .data_table(false),
+        )
+        .unwrap();
+        for value in [20., 30.] {
+            data.revise(|data| {
+                let PlotData::Values(rows) = data else {
+                    unreachable!()
+                };
+                rows[0].value = Some(value);
+            });
+            app.flush().unwrap();
+        }
+        options.revise(|o| {
+            o.hidden.insert("a".into());
+        });
+        app.flush().unwrap();
+        options.revise(|o| {
+            o.hidden.insert("absent".into());
+        });
+        assert!(app.flush().is_err());
+        assert_eq!(plot_table::FORMAT_PASSES.get(), 0);
+        options.revise(|o| o.hidden.clear());
+        app.flush().unwrap();
+        app.clear().unwrap();
+        app.mount(pie_chart("table").data(data).options(options))
+            .unwrap();
+        let initial = plot_table::FORMAT_PASSES.get();
+        assert!(initial > 0);
+        options.revise(|o| {
+            o.hidden.insert("a".into());
+        });
+        app.flush().unwrap();
+        assert!(plot_table::FORMAT_PASSES.get() > initial);
+    }
+}
 impl Widget for Plot {
     fn build(&mut self, scope: &Scope) -> Result {
         if self.key.len() > MAX_PLOT_KEY_BYTES {
@@ -239,12 +291,17 @@ impl Widget for Plot {
             .palette
             .clone()
             .unwrap_or_else(|| ChartTheme::from_theme(&self.common.theme));
+        let show_table = self.show_table;
         let read = move || -> Result<Rc<Model>> {
             let options = options.try_with(bounded_options)??;
             data.try_with(|data| {
                 let scene =
                     PlotScene::build(data, kind, frame, &options, &palette).map_err(invalid)?;
-                let tables = plot_table::tables(data, &scene);
+                let tables = if show_table {
+                    plot_table::tables(data, &scene)
+                } else {
+                    Vec::new()
+                };
                 let marks = scene
                     .marks
                     .iter()
