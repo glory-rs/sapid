@@ -29,3 +29,8 @@ The full host gate remains:
 Keep build outputs, Cargo caches, temporary files and browser profiles under
 `D:/BuildCache/sapid`, as described in `AGENTS.md`. A passing format check does
 not replace behavior tests, browser acceptance or Native host validation.
+
+`-BuildRoot` isolates both `target` and `native-target` beneath that directory;
+it does not share a native build lock with another checkout's validation run.
+Both manifests are checked with Cargo metadata before compilation. Downloaded
+dependencies continue to use the existing D-drive Cargo home.
