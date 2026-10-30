@@ -144,8 +144,9 @@ async function runAcceptance(options) {
     summary.artifactHashes = fileHashes(directory);
     summary.sourceHashes[path.relative(root, __filename)] = hash(fs.readFileSync(__filename));
     for (const suite of suites) summary.sourceHashes[path.relative(root, suite.source)] = hash(fs.readFileSync(suite.source));
-    const acceptance = path.join(root, 'examples/web/showcase-acceptance.js');
-    if (fs.existsSync(acceptance)) summary.sourceHashes['examples/web/showcase-acceptance.js'] = hash(fs.readFileSync(acceptance));
+    for (const name of ['examples/web/showcase-acceptance.js', 'scripts/test_theme_studio_browser.cjs']) {
+      if (fs.existsSync(path.join(root, name))) summary.sourceHashes[name] = hash(fs.readFileSync(path.join(root, name)));
+    }
     server = await serve(directory); env.SAPID_SHOWCASE_BASE = server.base; summary.base = server.base;
     save();
     for (let index = 0; index < suites.length; index++) {
