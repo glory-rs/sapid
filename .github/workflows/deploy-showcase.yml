@@ -8,7 +8,7 @@ permissions:
   contents: read
 concurrency:
   group: sapid-pages-${{ github.event_name == 'pull_request' && github.ref || 'production' }}
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 env:
   BUILD_ROOT: D:/BuildCache/sapid/pages-ci
   CARGO_HOME: D:/BuildCache/sapid/pages-ci/cargo
