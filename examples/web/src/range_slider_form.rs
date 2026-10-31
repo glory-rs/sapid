@@ -111,7 +111,9 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .name("Range slider draft")
                 .class("range-slider-draft")
                 .value("Preserve this range draft"),
-            sapid::button().theme(theme.clone()).label("After range sliders"),
+            sapid::button()
+                .theme(theme.clone())
+                .label("After range sliders"),
         )),
         State {
             value,

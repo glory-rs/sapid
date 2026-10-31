@@ -136,7 +136,8 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .theme(theme.clone())
                 .name("Unrelated calendar schedule draft")
                 .default_value("Stable calendar schedule draft"),
-            sapid::button().theme(theme.clone())
+            sapid::button()
+                .theme(theme.clone())
                 .class("schedule-calendar-outside")
                 .label("Outside calendar schedule"),
         )),

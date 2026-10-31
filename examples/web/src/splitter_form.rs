@@ -101,7 +101,9 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .class("splitter-status")
                 .content(status),
             vertical,
-            sapid::button().theme(theme.clone()).label("After splitters"),
+            sapid::button()
+                .theme(theme.clone())
+                .label("After splitters"),
         )),
         State {
             value,

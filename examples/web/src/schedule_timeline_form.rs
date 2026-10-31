@@ -149,7 +149,8 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .theme(theme.clone())
                 .name("Unrelated timeline draft")
                 .default_value("Stable timeline draft"),
-            sapid::button().theme(theme.clone())
+            sapid::button()
+                .theme(theme.clone())
                 .class("schedule-timeline-outside")
                 .label("Outside timeline"),
         )),

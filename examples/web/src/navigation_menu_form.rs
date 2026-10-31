@@ -116,7 +116,8 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 glory::ui::text()
                     .content("Navigation menu · actual links and separate disclosures"),
                 menu,
-                sapid::button().theme(theme.clone())
+                sapid::button()
+                    .theme(theme.clone())
                     .label("Outside action")
                     .class("navigation-outside"),
                 glory::ui::text()

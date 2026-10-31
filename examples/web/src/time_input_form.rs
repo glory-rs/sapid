@@ -144,7 +144,8 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .name("Unrelated time draft")
                 .class("time-draft")
                 .default_value("Stable time draft"),
-            sapid::button().theme(theme.clone())
+            sapid::button()
+                .theme(theme.clone())
                 .label("Outside time input")
                 .class("time-outside"),
         )),

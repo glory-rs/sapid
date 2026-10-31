@@ -130,7 +130,8 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .name("Unrelated picker draft")
                 .class("picker-draft")
                 .default_value("Stable draft"),
-            sapid::button().theme(theme.clone())
+            sapid::button()
+                .theme(theme.clone())
                 .label("Outside date picker")
                 .class("picker-outside"),
         )),

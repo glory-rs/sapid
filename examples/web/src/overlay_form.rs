@@ -29,7 +29,10 @@ pub fn form_themed(
                 .padding(Edges::all(24.0)),
         )
         .fill((
-            sapid::button().theme(theme.clone()).class("outside").label("Outside action"),
+            sapid::button()
+                .theme(theme.clone())
+                .class("outside")
+                .label("Outside action"),
             dialog("demo-dialog")
                 .theme(theme.clone())
                 .label("Open dialog")
@@ -51,7 +54,10 @@ pub fn form_themed(
                                 .content({
                                     let theme = theme.clone();
                                     move || {
-                                        sapid::button().theme(theme.clone()).class("nested-action").label("Option")
+                                        sapid::button()
+                                            .theme(theme.clone())
+                                            .class("nested-action")
+                                            .label("Option")
                                     }
                                 }),
                             dialog("nested-dialog")
@@ -77,14 +83,16 @@ pub fn form_themed(
                 .content({
                     let theme = theme.clone();
                     move || {
-                    col().fill((
-                        sapid::button().theme(theme.clone())
-                            .label("Disabled destination")
-                            .enabled(false),
-                        sapid::button().theme(theme.clone())
-                            .class("drawer-action")
-                            .label("Destination"),
-                    ))
+                        col().fill((
+                            sapid::button()
+                                .theme(theme.clone())
+                                .label("Disabled destination")
+                                .enabled(false),
+                            sapid::button()
+                                .theme(theme.clone())
+                                .class("drawer-action")
+                                .label("Destination"),
+                        ))
                     }
                 }),
             view()
@@ -130,16 +138,19 @@ pub fn form_themed(
                 .content({
                     let theme = theme.clone();
                     move || {
-                    col().fill((
-                        sapid::button().theme(theme.clone()).enabled(false).label("Disabled first"),
-                        sapid::button().theme(theme.clone()).label("Other"),
-                        glory::ui::input()
-                            .class("preferred")
-                            .semantics(Some(Box::new(Semantics {
-                                id: Some(SemanticId::new("preferred-focus").unwrap()),
-                                ..Default::default()
-                            }))),
-                    ))
+                        col().fill((
+                            sapid::button()
+                                .theme(theme.clone())
+                                .enabled(false)
+                                .label("Disabled first"),
+                            sapid::button().theme(theme.clone()).label("Other"),
+                            glory::ui::input()
+                                .class("preferred")
+                                .semantics(Some(Box::new(Semantics {
+                                    id: Some(SemanticId::new("preferred-focus").unwrap()),
+                                    ..Default::default()
+                                }))),
+                        ))
                     }
                 }),
             text()

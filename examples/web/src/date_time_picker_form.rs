@@ -173,7 +173,8 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .name("Unrelated date time draft")
                 .class("date-time-unrelated")
                 .default_value("Stable date time draft"),
-            sapid::button().theme(theme.clone())
+            sapid::button()
+                .theme(theme.clone())
                 .class("date-time-outside")
                 .label("Outside date and time"),
         )),

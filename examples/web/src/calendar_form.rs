@@ -99,7 +99,8 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
         .fill(
             glory::ui::view().role(Role::Row).fill((
                 glory::ui::view().role(Role::GridCell).fill(
-                    sapid::button().theme(theme.clone())
+                    sapid::button()
+                        .theme(theme.clone())
                         .label("Protocol day")
                         .class("calendar-protocol-button"),
                 ),

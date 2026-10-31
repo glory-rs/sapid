@@ -155,7 +155,8 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .name("Unrelated period draft")
                 .class("period-draft")
                 .default_value("Stable period draft"),
-            sapid::button().theme(theme.clone())
+            sapid::button()
+                .theme(theme.clone())
                 .label("Outside periods")
                 .class("period-outside"),
         )),

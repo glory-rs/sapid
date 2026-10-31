@@ -67,7 +67,11 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                                 .width(Length::Px(160.0))
                                 .height(Length::Px(34.0))
                         })
-                        .fill(sapid::button().theme(container_theme.clone()).label("Sticky action")),
+                        .fill(
+                            sapid::button()
+                                .theme(container_theme.clone())
+                                .label("Sticky action"),
+                        ),
                     affix("absolute")
                         .theme(container_theme.clone())
                         .name("Container affix")
@@ -78,7 +82,11 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                                 .width(Length::Px(120.0))
                                 .height(Length::Px(34.0)),
                         )
-                        .fill(sapid::button().theme(container_theme.clone()).label("Container action")),
+                        .fill(
+                            sapid::button()
+                                .theme(container_theme.clone())
+                                .label("Container action"),
+                        ),
                     glory::ui::text()
                         .content("Explicit scroll content; sticky remains within this container."),
                 ))

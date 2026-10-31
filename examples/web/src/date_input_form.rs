@@ -140,7 +140,8 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .name("Unrelated date draft")
                 .class("date-draft-editor")
                 .default_value("Stable draft"),
-            sapid::button().theme(theme.clone())
+            sapid::button()
+                .theme(theme.clone())
                 .label("Outside editable date")
                 .class("date-input-outside"),
         )),
