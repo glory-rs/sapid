@@ -228,12 +228,34 @@ fn header(
                         .name("Primary navigation")
                         .class("site-topnav")
                         .fill((
-                            link("Widgets", route("P0-01", &theme), "site-topnav-link"),
+                            link(
+                                "Widgets",
+                                route("P0-01", &theme),
+                                if selected == "theme-studio" {
+                                    "site-topnav-link"
+                                } else {
+                                    "site-topnav-link is-active"
+                                },
+                            )
+                            .current(if selected == "theme-studio" {
+                                None
+                            } else {
+                                Some(Current::Location)
+                            }),
                             link(
                                 "Theme studio",
                                 route("theme-studio", &theme),
-                                "site-topnav-link",
-                            ),
+                                if selected == "theme-studio" {
+                                    "site-topnav-link is-active"
+                                } else {
+                                    "site-topnav-link"
+                                },
+                            )
+                            .current(if selected == "theme-studio" {
+                                Some(Current::Page)
+                            } else {
+                                None
+                            }),
                             link("Glory", "https://glory.taidge.org/", "site-topnav-link"),
                             link(
                                 "GitHub",
@@ -242,7 +264,7 @@ fn header(
                             ),
                         )),
                     view().class("site-header-tools").fill((
-                        text().class("site-version").content("v0.6.0"),
+                        text().class("site-version").content("v0.6.1"),
                         view().class("site-search").fill((
                             when(is_empty, || {
                                 text()
@@ -469,13 +491,22 @@ fn source(entry: &'static Entry, theme: Theme, full: bool) -> impl Widget {
     })
 }
 
-fn support(entry: &'static Entry, theme: &Theme) -> impl Widget {
+fn support_status(value: &'static str) -> &'static str {
+    match value {
+        "tested" => "Tested",
+        "model-only" => "Model only",
+        "rejected" => "Not supported",
+        other => other,
+    }
+}
+
+fn support(entry: &'static Entry, theme: &Theme, id: &str) -> impl Widget {
     view().fill((
-        section_title("support", "Host support"),
+        section_title(id, "Host support"),
         view().class("site-support").fill((
             text().class("site-doc-note").content("Choose the host that fits your application. Availability is recorded for each widget and its supported variants."),
-            view().class("site-support-row").fill((text().content("Web"), text().content(entry.web))),
-            view().class("site-support-row").fill((text().content("Native"), text().content(entry.native))),
+            view().class("site-support-row").fill((text().content("Web"), text().content(support_status(entry.web)))),
+            view().class("site-support-row").fill((text().content("Native"), text().content(support_status(entry.native)))),
             text().class("site-doc-note").content(entry.native_note),
             link("Browse all widgets →", route("P0-01", theme), "site-inline-link"),
         )),
@@ -527,11 +558,11 @@ fn documentation(entry: &'static Entry, theme: Theme, tab: Cage<u8>) -> impl Wid
                     view().class("site-doc-code").fill(
                         sapid::code_highlight().theme(demo_theme.clone()).language(sapid::CodeLanguage::Rust).source("use glory::prelude::*;\nuse sapid::*;\n\n// Widgets are ordinary Rust builders.\n// Your application chooses Web, SSR or a native host."),
                     ),
-                    support(entry, &demo_theme),
+                    support(entry, &demo_theme, "support"),
                 ))
             }),
             when(code, move || view().class("site-doc-content").fill((section_title("source", "Rust source"), source(entry, code_theme.clone(), true)))),
-            when(capabilities, move || view().class("site-doc-content").fill(support(entry, &caps_theme))),
+            when(capabilities, move || view().class("site-doc-content").fill(support(entry, &caps_theme, "capabilities-support"))),
             view().role(Role::ContentInfo).class("site-footer").fill((
                 text().content("Sapid · Built with Glory"),
                 link("Back to overview →", route("", &theme), "site-inline-link"),

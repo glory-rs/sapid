@@ -15,7 +15,7 @@ html,body{margin:0;min-width:0;min-height:100%;width:100%}#app{min-height:100dvh
 .sapid-site .site-logo{display:block;width:36px;height:36px;aspect-ratio:1;object-fit:contain;flex-shrink:0}
 .sapid-site .site-version{font-size:11px;color:var(--site-muted);border:1px solid var(--site-border);padding:2px 7px;border-radius:4px;letter-spacing:0;font-weight:500}
 .sapid-site .site-topnav{display:flex;align-items:center;gap:25px;margin-left:22px;font-size:13px;font-weight:600}
-.sapid-site .site-topnav a:hover,.sapid-site .site-toc-link:hover{color:var(--site-accent)}
+.sapid-site .site-topnav a:hover,.sapid-site .site-topnav a.is-active,.sapid-site .site-toc-link:hover{color:var(--site-accent)}
 .sapid-site .site-header-tools{display:flex;align-items:center;gap:12px;margin-left:auto;position:relative}
 .sapid-site .site-search{max-width:220px;min-width:0}
 .sapid-site .site-search input{width:220px!important;height:32px!important;border-radius:6px!important;font-size:12px!important}
@@ -124,14 +124,14 @@ html,body{margin:0;min-width:0;min-height:100%;width:100%}#app{min-height:100dvh
 .sapid-site .site-sidebar{position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;overscroll-behavior:contain;border-right:1px solid var(--site-border);padding:26px 20px 38px 0;scrollbar-width:thin;scrollbar-color:var(--site-border) transparent}
 .sapid-site .site-nav-group{margin-bottom:23px}
 .sapid-site .site-nav-title{font-size:11px;font-weight:750;letter-spacing:.4px;color:var(--site-fg);padding:3px 11px 7px}
-.sapid-site .site-nav-link{display:block;font-size:12px;line-height:1.55;color:var(--site-muted);padding:6px 11px;margin:1px 0;border-radius:4px;overflow-wrap:anywhere}
+.sapid-site .site-nav-link{display:block;font-size:13px;line-height:1.55;color:var(--site-muted);padding:6px 11px;margin:1px 0;border-radius:4px;overflow-wrap:anywhere}
 .sapid-site .site-nav-link:hover{background:var(--site-soft);color:var(--site-fg)}
 .sapid-site .site-nav-link.is-active{background:var(--site-accent-soft);color:var(--site-accent);font-weight:650}
 .sapid-site .site-doc-main{min-width:0;padding-top:31px;padding-bottom:70px}
-.sapid-site .site-breadcrumb{font-size:11px;color:var(--site-muted);margin-bottom:15px;display:flex;gap:8px;align-items:center}
+.sapid-site .site-breadcrumb{font-size:12px;color:var(--site-muted);margin-bottom:15px;display:flex;gap:8px;align-items:center}
 .sapid-site .site-title{font-size:42px;font-weight:800;line-height:1.2;letter-spacing:-1.1px;margin-bottom:11px}
 .sapid-site .site-lead{font-size:15px;color:var(--site-muted);line-height:1.8;margin-bottom:23px}
-.sapid-site .site-doc-meta{display:grid;gap:6px;padding:14px 0 22px;font-size:11px;color:var(--site-muted)}
+.sapid-site .site-doc-meta{display:grid;gap:6px;padding:14px 0 22px;font-size:12px;color:var(--site-muted)}
 .sapid-site .site-doc-meta>div{display:flex;gap:14px;align-items:baseline}
 .sapid-site .site-doc-meta a{color:var(--site-accent);overflow-wrap:anywhere}
 .sapid-site .site-doc-meta a:hover{text-decoration:underline}
@@ -152,8 +152,8 @@ html,body{margin:0;min-width:0;min-height:100%;width:100%}#app{min-height:100dvh
 .sapid-site .site-support{margin:20px 0;color:var(--site-muted);font-size:12px;line-height:1.85;overflow-wrap:anywhere}
 .sapid-site .site-support .site-doc-note{font-size:13px;margin-bottom:16px}
 .sapid-site .site-support-row+.site-doc-note{margin-top:16px}
-.sapid-site .site-toc{position:sticky;top:84px;align-self:start;border-left:1px solid var(--site-border);padding:4px 0 4px 17px;margin-top:42px;color:var(--site-muted);font-size:11px}
-.sapid-site .site-toc-link{display:block;line-height:1.6;padding:5px 0;font-size:11px}
+.sapid-site .site-toc{position:sticky;top:84px;align-self:start;border-left:1px solid var(--site-border);padding:4px 0 4px 17px;margin-top:42px;color:var(--site-muted);font-size:12px}
+.sapid-site .site-toc-link{display:block;line-height:1.6;padding:5px 0;font-size:12px}
 .sapid-site .site-toc .is-active{color:var(--site-accent)}
 .sapid-site .site-footer{border-top:1px solid var(--site-border);padding:28px 30px;display:flex;align-items:center;justify-content:space-between;gap:20px;font-size:11px;color:var(--site-muted);max-width:1380px;margin:auto}
 .sapid-site .site-footer a:hover{color:var(--site-accent)}

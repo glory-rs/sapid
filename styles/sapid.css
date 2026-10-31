@@ -15,10 +15,15 @@
 .sapid-text-field:where(:not(.sapid-unstyled))[data-gly-invalid]{color:var(--sp-danger)}
 .sapid-text-field:where(:not(.sapid-unstyled))[readonly]{cursor:default}
 .sapid-text-field:where(:not(.sapid-unstyled)):disabled,.sapid-button:where(:not(.sapid-unstyled)):disabled{background:var(--sp-disabled);color:var(--sp-disabled-text);cursor:not-allowed}
-.sapid-checkbox:where(:not(.sapid-unstyled)){display:inline-flex;gap:9px;align-items:center;cursor:pointer}.sapid-checkbox:where(:not(.sapid-unstyled)) input{width:17px;height:17px;margin:0;accent-color:var(--sp-accent);cursor:inherit}.sapid-checkbox:where(:not(.sapid-unstyled)):has(input:disabled){color:var(--sp-disabled-text);cursor:not-allowed}
+.sapid-checkbox:where(:not(.sapid-unstyled)){display:inline-flex;gap:9px;align-items:center;cursor:pointer}.sapid-checkbox:where(:not(.sapid-unstyled)) input{width:var(--sp-check-size,17px);height:var(--sp-check-size,17px);margin:0;accent-color:var(--sp-accent);cursor:inherit}.sapid-checkbox:where(:not(.sapid-unstyled)):has(input:disabled){color:var(--sp-disabled-text);cursor:not-allowed}
+.sapid-checkbox.sapid-size-extra-small{--sp-check-size:14px}.sapid-checkbox.sapid-size-small{--sp-check-size:15px}.sapid-checkbox.sapid-size-large{--sp-check-size:20px}.sapid-checkbox.sapid-size-extra-large{--sp-check-size:22px}
 .sapid-checkbox:where(:not(.sapid-unstyled)) input[aria-invalid=true]{outline:1px solid var(--sp-danger);outline-offset:2px}
 .sapid-checkbox:where(:not(.sapid-unstyled)) input[readonly]{cursor:default}
-.sapid-button:where(:not(.sapid-unstyled)){cursor:pointer;transition:filter .12s,background .12s}.sapid-button:where(:not(.sapid-unstyled)):hover:enabled{filter:brightness(.94)}
+.sapid-button:where(:not(.sapid-unstyled)){cursor:pointer;transition:background-color .12s,border-color .12s,color .12s,filter .12s}
+.sapid-button-primary:where(:not(.sapid-unstyled)):hover:enabled{background:var(--sp-hover)!important;border-color:var(--sp-hover)!important}
+.sapid-button-secondary:where(:not(.sapid-unstyled)):hover:enabled{background:var(--sp-disabled)!important}
+.sapid-button-outline:where(:not(.sapid-unstyled)):hover:enabled{background:var(--sp-accent-soft)!important}
+:is(.sapid-button-danger,.sapid-button-light,.sapid-button-subtle):where(:not(.sapid-unstyled)):hover:enabled{filter:brightness(.94)}
 .sapid-button:where(:not(.sapid-unstyled)):focus-visible,.sapid-checkbox:where(:not(.sapid-unstyled)) input:focus-visible{outline:2px solid var(--sp-ring);outline-offset:2px}
 .sapid-layer:where(:not(.sapid-unstyled)){border:1px solid var(--sp-border);box-shadow:0 10px 42px var(--sp-shadow)}
 /* Composite triggers inherit unstyled from their widget root. */
@@ -27,12 +32,17 @@
 
 /* The semantic switch remains a native checkbox input for keyboard activation. */
 .sapid-switch:where(:not(.sapid-unstyled)){display:inline-flex;align-items:center;gap:9px;cursor:pointer}
-.sapid-switch:where(:not(.sapid-unstyled)) input{appearance:none;width:34px;height:20px;margin:0;border:1px solid var(--sp-border);border-radius:12px;background-color:var(--sp-muted);background-image:radial-gradient(circle,var(--sp-control-thumb) 0 6px,transparent 6.5px);background-size:18px 18px;background-position:left center;background-repeat:no-repeat;cursor:inherit}
+.sapid-switch.sapid-size-extra-small{--sp-switch-width:26px;--sp-switch-height:14px;--sp-switch-thumb-radius:4px;--sp-switch-thumb-clear:4.5px;--sp-switch-thumb-box:12px}
+.sapid-switch.sapid-size-small{--sp-switch-width:30px;--sp-switch-height:16px;--sp-switch-thumb-radius:5px;--sp-switch-thumb-clear:5.5px;--sp-switch-thumb-box:14px}
+.sapid-switch.sapid-size-large{--sp-switch-width:42px;--sp-switch-height:24px;--sp-switch-thumb-radius:7px;--sp-switch-thumb-clear:7.5px;--sp-switch-thumb-box:22px}
+.sapid-switch.sapid-size-extra-large{--sp-switch-width:50px;--sp-switch-height:28px;--sp-switch-thumb-radius:8px;--sp-switch-thumb-clear:8.5px;--sp-switch-thumb-box:26px}
+.sapid-switch:where(:not(.sapid-unstyled)) input{appearance:none;width:var(--sp-switch-width,34px);height:var(--sp-switch-height,20px);margin:0;border:1px solid var(--sp-border);border-radius:999px;background-color:var(--sp-border);background-image:radial-gradient(circle,var(--sp-control-thumb) 0 var(--sp-switch-thumb-radius,6px),transparent var(--sp-switch-thumb-clear,6.5px));background-size:var(--sp-switch-thumb-box,18px) var(--sp-switch-thumb-box,18px);background-position:left center;background-repeat:no-repeat;cursor:inherit;transition:background-color .12s,background-position .12s}
 .sapid-switch:where(:not(.sapid-unstyled)) input:checked{background-color:var(--sp-accent);background-position:right center}
 .sapid-switch:where(:not(.sapid-unstyled)) input:focus-visible{outline:2px solid var(--sp-ring);outline-offset:2px}
 .sapid-switch:where(:not(.sapid-unstyled)):has(input:disabled){color:var(--sp-disabled-text);cursor:not-allowed;opacity:.65}
 .sapid-switch:where(:not(.sapid-unstyled)) input[readonly]{cursor:default}
 .sapid-switch:where(:not(.sapid-unstyled)) input[aria-invalid=true]{outline:1px solid var(--sp-danger);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.sapid-switch:where(:not(.sapid-unstyled)) input{transition:none}}
 .sapid-checkbox-group:where(:not(.sapid-unstyled)){margin:0;min-inline-size:0;border:0;padding:0}
 
 /* Compact value selection keeps native radios focusable and semantically live. */

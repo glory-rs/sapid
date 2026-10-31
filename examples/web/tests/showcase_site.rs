@@ -90,6 +90,30 @@ fn docs_navigation_is_live_semantic_links_and_mobile_menu_is_rust_state() {
 }
 
 #[test]
+fn documentation_tab_switches_directly_to_host_support() {
+    let app = App::memory();
+    app.mount(showcase::site(Theme::blue_light(), "P0-01".into()))
+        .unwrap();
+    let capabilities = nodes(&app)
+        .into_iter()
+        .find(|id| {
+            matches!(
+                app.tree().node(*id).unwrap().descriptor.view().props,
+                Props::Button(button) if button.label == "Capabilities"
+            )
+        })
+        .unwrap();
+    app.dispatch(capabilities, Event::Activate).unwrap();
+    app.flush().unwrap();
+    assert!(nodes(&app).into_iter().any(|id| {
+        matches!(
+            app.tree().node(id).unwrap().descriptor.view().props,
+            Props::Text(text) if text.content == "Host support"
+        )
+    }));
+}
+
+#[test]
 fn representative_ssr_documents_render_in_all_themes_without_frames() {
     for theme in [
         Theme::blue_light(),
@@ -104,8 +128,12 @@ fn representative_ssr_documents_render_in_all_themes_without_frames() {
             assert!(html.contains("sapid-site"));
             assert!(!html.contains("<iframe"));
             assert!(html.contains("Search widgets"));
+            assert!(html.contains("v0.6.1"));
+            assert!(!html.contains("v0.6.0"));
             if !id.is_empty() {
                 assert!(html.contains("site-code"));
+                assert!(html.contains(">Tested<") || html.contains(">Model only<"));
+                assert!(!html.contains(">tested<"));
             }
         }
     }
