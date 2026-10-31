@@ -940,7 +940,7 @@
       },
       "native": {
         "state": "tested",
-        "notes": "MixedCheckbox/CheckboxGroup 保留真实三态与有限全选/禁用策略；新版 Glory 原生已支持 indeterminate。四主题消费端验证 Mixed 转 Checked、真实引擎属性与 Owner 清理。 OS 输入和 AT 客户端另行验收。",
+        "notes": "MixedCheckbox and CheckboxGroup preserve native three-state behavior and bounded select-all/disabled policies. Glory native supports indeterminate; consumer checks cover all four themes, Mixed-to-Checked transitions, engine properties and Owner cleanup. OS input and assistive-technology clients require separate acceptance.",
         "evidence": [
           "inventory:P2-01"
         ]
@@ -1022,7 +1022,7 @@
       },
       "native": {
         "state": "tested",
-        "notes": "真实 RadioGroup、单 Tab、方向/Home/End、整组受控恢复与 Web/adoption/stream 已实现；新版 Glory 原生 Radio 已连接，四主题消费端验证实际 checked、选择、只读和物理身份。 OS 输入和 AT 客户端另行验收。",
+        "notes": "RadioGroup provides native radio controls, a single tab stop, arrow/Home/End navigation and controlled restoration across Web, adoption and streaming. Glory native radio is connected, with four-theme consumer checks for checked state, selection, readonly behavior and physical identity. OS input and assistive-technology clients require separate acceptance.",
         "evidence": [
           "inventory:P2-03"
         ]
@@ -1104,7 +1104,7 @@
       },
       "native": {
         "state": "tested",
-        "notes": "SegmentedControl 复用真实 RadioGroup 与单值控制器；四主题原生受控选择、只读及物理身份已验证，不引入 Tabs 面板语义。 OS 输入和 AT 客户端另行验收。",
+        "notes": "SegmentedControl reuses the native RadioGroup and single-value controller. Four-theme native checks cover controlled selection, readonly behavior and physical identity; it does not introduce Tabs panel semantics. OS input and assistive-technology clients require separate acceptance.",
         "evidence": [
           "inventory:P2-05"
         ]
@@ -1145,7 +1145,7 @@
       },
       "native": {
         "state": "tested",
-        "notes": "Chip 使用真实 Checkbox，ChipGroup 按单选 Radio/多选 Checkbox 分别实现；Web/SSR 与原生均有消费端证据，新增四主题单选受控选择、只读与物理身份。 OS 输入和 AT 客户端另行验收。",
+        "notes": "Chip uses a native Checkbox; ChipGroup uses Radio for single selection and Checkbox for multiple selection. Web, SSR and native consumer evidence includes four-theme controlled single selection, readonly behavior and physical identity. OS input and assistive-technology clients require separate acceptance.",
         "evidence": [
           "inventory:P2-06"
         ]
@@ -3932,7 +3932,7 @@
       },
       "native": {
         "state": "tested",
-        "notes": "Whole/Half Rating、真实 RadioGroup、数值成功值、受控/Field 与 display_only 已实现；新版 Glory 原生交互/只读 Radio 支持，四主题实际 checked、稳定身份、半星像素和 direct-apply 水位验证通过。 OS 输入和 AT 客户端另行验收。",
+        "notes": "Whole and half Rating use a native RadioGroup with numeric form values, controlled Field integration and display-only mode. Glory native supports interactive and readonly Radio; four-theme checks cover checked state, stable identity, half-star pixels and direct-apply watermarks. OS input and assistive-technology clients require separate acceptance.",
         "evidence": [
           "inventory:P7-05"
         ]
@@ -4344,7 +4344,7 @@
       },
       "native": {
         "state": "tested",
-        "notes": "TreeSelect 复用 Tree/Combobox 与完整路径值、多选/半选策略；新版 Glory 原生树弹层已连接，四主题消费端验证真实几何、选择、关闭恢复焦点与触发器身份。 OS 输入和 AT 客户端另行验收。",
+        "notes": "TreeSelect combines Tree and Combobox with full-path values and multiple/partial selection policies. The Glory native tree popup is connected; four-theme consumer checks cover geometry, selection, focus restoration on close and trigger identity. OS input and assistive-technology clients require separate acceptance.",
         "evidence": [
           "inventory:P8-04"
         ]
@@ -4385,7 +4385,7 @@
       },
       "native": {
         "state": "tested",
-        "notes": "Cascader 保留分列路径、展开/返回与懒加载；新版 Glory 原生树弹层已连接，四主题消费端验证真实几何、路径选择、焦点返回与触发器身份。 OS 输入和 AT 客户端另行验收。",
+        "notes": "Cascader preserves column-based paths, expand/back navigation and lazy loading. The Glory native tree popup is connected; four-theme consumer checks cover geometry, path selection, focus restoration and trigger identity. OS input and assistive-technology clients require separate acceptance.",
         "evidence": [
           "inventory:P8-05"
         ]
@@ -4673,7 +4673,7 @@
       },
       "native": {
         "state": "tested",
-        "notes": "TimeInput/TimeValue 保留小时/分/秒、12/24h、空值与本地化；新版 Glory 原生支持中文 UTF-16 精确选区，真实编辑器、只读/禁用、身份与像素已验证。 OS 输入和 AT 客户端另行验收。",
+        "notes": "TimeInput and TimeValue preserve hours, minutes, seconds, 12/24-hour formats, empty values and localization. Glory native supports precise Chinese UTF-16 selection; checks cover real editors, readonly/disabled states, identity and pixels. OS input and assistive-technology clients require separate acceptance.",
         "evidence": [
           "inventory:P9-07"
         ]
@@ -4919,7 +4919,7 @@
       },
       "native": {
         "state": "tested",
-        "notes": "索引轮播最多七个短 Owner、百万 count 不扫描源；受控页、RTL/Swipe、注入时钟与暂停协议已实现。新版 Glory 原生真实鼠标悬停可取消当前时钟，离开恢复；四主题几何/像素与清理验证保留。 OS 输入和 AT 客户端另行验收。",
+        "notes": "The indexed carousel mounts at most seven short-lived Owners and does not scan sources for million-item counts. Controlled pages, RTL/swiping, injected clocks and pause protocols are implemented. Native pointer hover cancels the current clock and leaving restores it; four-theme geometry, pixel and cleanup checks are retained. OS input and assistive-technology clients require separate acceptance.",
         "evidence": [
           "inventory:P10-04"
         ]
@@ -5819,7 +5819,7 @@
       },
       "native": {
         "state": "tested",
-        "notes": "有限显式模型/provider catalog、真实 Combobox/Search/Listbox、独立 accepted model/query 与受控拒绝已实现；新版 Glory 原生 editable Choice 已连接，四主题消费端验证业务值、拒绝/接受、编辑器焦点/身份与像素。 OS 输入和 AT 客户端另行验收。",
+        "notes": "The bounded explicit model/provider catalogue uses native Combobox, Search and Listbox controls, with independent accepted model/query state and controlled refusal. Glory native editable Choice is connected; four-theme consumer checks cover values, refusal/acceptance, editor focus, identity and pixels. OS input and assistive-technology clients require separate acceptance.",
         "evidence": [
           "inventory:P13-05"
         ]

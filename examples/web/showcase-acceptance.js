@@ -99,6 +99,11 @@ async (hostPage) => {
     assert(await p.locator('.site-demo').count() === 0, 'Rust Source tab replaces demo content');
     await p.getByRole('button',{name:'Documentation',exact:true}).click();
     await p.locator('.site-demo').waitFor();
+    await p.getByRole('button',{name:'Capabilities',exact:true}).click();
+    await p.getByRole('heading',{name:'Host support',exact:true}).waitFor();
+    assert(await p.locator('.site-support-row').first().textContent() === 'WebTested', 'Documentation switches directly to readable host capabilities');
+    await p.getByRole('button',{name:'Documentation',exact:true}).click();
+    await p.locator('.site-demo').waitFor();
     await shot(p, 'button-light');
     reports.push({suite:'showcase-button-and-source',status:'passed'});
 
