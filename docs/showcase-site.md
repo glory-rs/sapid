@@ -116,8 +116,9 @@ SVG 宽高均为 256；顶栏桌面显示 36 × 36，手机显示 32 × 32，保
 - [Button 深色主题](http://127.0.0.1:8795/showcase.html?widget=P0-01&scheme=dark)
 
 149 个指南对应路线图的 149 个工作项，并不表示 149 个互不重复的底层控件。
-14 个核心示例在 `src/showcase_demos/core_*.rs` 中直接编写，其余 103 个示例族由
-`showcase-catalog.py` 从实际夹具生成独立完整的模块；共 117 个实现模块供 149 个指南复用。
+14 个核心示例在 `src/showcase_demos/core_*.rs` 中直接编写；11 个聚焦示例族位于
+`src/focused_demos/`，为 36 个指南生成独立模块，避免把整份共享验收夹具当作组件首屏。
+其余 92 个示例族由 `showcase-catalog.py` 从实际夹具生成；共 142 个实现模块供 149 个指南使用。
 目录的 `build` 指向这些模块的 `demo(theme)`，`code` 通过 `include_str!` 读取同一个文件。
 因此 Source、Copy 与预览使用完全相同的已编译源码，包含状态、导入和所需辅助模块，
 没有依赖展示站私有 `crate::…` 的片段。生成器 `--check` 验证同步；Rust 测试逐一挂载

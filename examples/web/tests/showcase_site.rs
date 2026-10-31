@@ -166,6 +166,59 @@ fn every_displayed_source_builds_its_preview_and_fits_the_highlighter() {
         app.clear().unwrap();
         assert_eq!(app.stats().nodes, 0, "{} cleanup", entry.id);
         assert_eq!(app.runtime_stats().tasks, 0, "{} tasks", entry.id);
+        assert!(
+            !entry.code.contains("glory::ui::button()"),
+            "{} uses an unthemed native button",
+            entry.id
+        );
+    }
+}
+
+#[test]
+fn focused_guides_render_their_own_widget_content() {
+    let cases = [
+        ("P0-10", "Choose a fruit"),
+        ("P1-01", "Email address"),
+        ("P1-02", "Work email"),
+        ("P1-03", "Personal information"),
+        ("P1-04", "Autosizes from three to six lines"),
+        ("P1-05", "Account password"),
+        ("P1-06", "Addons and actions"),
+        ("P2-01", "Permissions"),
+        ("P2-02", "Notifications"),
+        ("P2-03", "Delivery"),
+        ("P2-05", "Billing interval"),
+        ("P2-06", "Languages"),
+        ("P2-07", "Text alignment"),
+        ("P3-02", "Centered content"),
+        ("P3-03", "Grid 1"),
+        ("P3-07", "Getting started"),
+        ("P3-08", "Sapid design principles"),
+        ("P3-09", "Marked text"),
+        ("P3-11", "Project settings"),
+        ("P3-12", "Account details"),
+        ("P3-16", "to open search"),
+        ("P3-18", "Project metadata"),
+        ("P3-19", "Release progress"),
+        ("P3-20", "12.5%"),
+        ("P5-01", "Delete this draft?"),
+        ("P5-03", "Save draft"),
+        ("P5-04", "About Ada"),
+        ("P5-05", "Changes saved"),
+        ("P5-10", "sapid-skeleton"),
+        ("P5-12", "Background sync"),
+        ("P6-01", "Semantic widgets"),
+        ("P6-02", "Example pages"),
+        ("P6-10", "Editing tools"),
+        ("P13-05", "application-provided model catalogue"),
+        ("P13-06", "Suggested actions"),
+    ];
+    for (id, expected) in cases {
+        let entry = sapid_web_example::showcase_catalog::find(id).unwrap();
+        let html = glory::ssr::snapshot((entry.build)(Theme::blue_light()))
+            .unwrap_or_else(|error| panic!("{id}: {error}"))
+            .html;
+        assert!(html.contains(expected), "{id} must render {expected:?}");
     }
 }
 

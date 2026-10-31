@@ -44,7 +44,7 @@ mod fixture {
                         ..Default::default()
                     })))
                     .style(Style::new().height(Length::Px(24.0))),
-                glory::ui::button().label("Stream action"),
+                sapid::button().label("Stream action"),
             ))
     }
     pub fn sheet_form(theme: Theme) -> impl Widget {

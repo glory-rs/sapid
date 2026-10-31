@@ -102,7 +102,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
             sapid::title(1).theme(theme.clone()).content("Range Slider"),
             horizontal,
             sapid::text()
-                .theme(theme)
+                .theme(theme.clone())
                 .class("range-slider-status")
                 .content(status),
             vertical,
@@ -111,7 +111,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .name("Range slider draft")
                 .class("range-slider-draft")
                 .value("Preserve this range draft"),
-            glory::ui::button().label("After range sliders"),
+            sapid::button().theme(theme.clone()).label("After range sliders"),
         )),
         State {
             value,

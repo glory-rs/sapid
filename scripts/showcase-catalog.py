@@ -23,6 +23,20 @@ EXTRA_PAGES = {"P0-08": "drawer", "P2-09": "actions", "P10-07": "json-viewer"}
 CORE = {f"P0-{i:02}": name for i, name in enumerate([
     "button", "text_field", "checkbox", "collapsible", "accordion", "tabs", "dialog", "drawer", "popover"
 ], 1)} | {"P0-14": "catalogue", "P2-08": "icon_actions", "P3-10": "pills", "P4-08": "multi_select", "P4-09": "tags"}
+FOCUSED_GROUPS = {
+    "fields": ["P1-01", "P1-02", "P1-03", "P1-04", "P1-05", "P1-06"],
+    "choices": ["P0-10", "P2-01", "P2-02", "P2-03", "P2-05", "P2-06"],
+    "responsive": ["P3-02", "P3-03"],
+    "document": ["P3-07", "P3-08", "P3-09", "P3-16", "P3-18"],
+    "display": ["P3-11", "P3-17", "P3-20"],
+    "alerts": ["P5-01", "P5-05", "P5-10", "P5-12"],
+    "hints": ["P5-03", "P5-04"],
+    "navigation": ["P6-01", "P6-02"],
+    "timeline": ["P3-12", "P3-19"],
+    "toolbar": ["P2-07", "P6-10"],
+    "model_suggestions": ["P13-05", "P13-06"],
+}
+FOCUSED = {identity: family for family, identities in FOCUSED_GROUPS.items() for identity in identities}
 SPECIAL = {
     "index": ("form", "form_themed", "scope, theme.clone()", True),
     "composites": ("composite_form", "form_themed", "scope, theme.clone()", True),
@@ -320,6 +334,14 @@ def bundle(page):
                      + body + '\n}\n' + '\n'.join(dependencies))
 
 
+def focused_bundle(identity, family):
+    body = (WEB / f"src/focused_demos/{family}.rs").read_text(encoding="utf-8")
+    return formatted('use glory::prelude::*;\n\npub fn demo(theme: sapid::Theme) -> impl Widget {\n    '
+                     + f'focused::demo_for("{identity}", theme)\n'
+                     + '}\n\n#[allow(dead_code, unused_imports)]\nmod focused {\n'
+                     + body + '\n}\n')
+
+
 pages = {}
 entries = []
 outputs = {}
@@ -331,6 +353,9 @@ for task in tasks:
     if identity in CORE:
         key = 'core_' + CORE[identity]
         code = (WEB / f"src/showcase_demos/{key}.rs").read_text(encoding="utf-8")
+    elif identity in FOCUSED:
+        key = 'focused_' + identity.lower().replace('-', '_')
+        code = focused_bundle(identity, FOCUSED[identity])
     else:
         key = page.replace('-', '_')
         pages[page] = key
@@ -410,4 +435,4 @@ if stale:
     raise SystemExit(f"stale generated showcase files ({len(stale)}):\n"
                      + "\n".join(f"  {path}" for path in stale)
                      + "\nRun python scripts/showcase-catalog.py to regenerate them.")
-print(f"showcase catalogue: {len(entries)} entries, {len(pages)} Rust families, {len(CORE)} clean demos; all source modules compiled")
+print(f"showcase catalogue: {len(entries)} entries, {len(pages)} fixture families, {len(CORE)} core demos, {len(FOCUSED)} focused demos; all source modules compiled")

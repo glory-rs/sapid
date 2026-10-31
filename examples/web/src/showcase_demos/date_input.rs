@@ -148,7 +148,8 @@ mod fixture {
                     .name("Unrelated date draft")
                     .class("date-draft-editor")
                     .default_value("Stable draft"),
-                glory::ui::button()
+                sapid::button()
+                    .theme(theme.clone())
                     .label("Outside editable date")
                     .class("date-input-outside"),
             )),

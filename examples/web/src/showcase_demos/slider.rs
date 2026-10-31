@@ -104,7 +104,7 @@ mod fixture {
                 sapid::title(1).theme(theme.clone()).content("Slider"),
                 horizontal,
                 sapid::text()
-                    .theme(theme)
+                    .theme(theme.clone())
                     .class("slider-status")
                     .content(status),
                 vertical,
@@ -113,7 +113,7 @@ mod fixture {
                     .name("Slider draft")
                     .class("slider-draft")
                     .value("Preserve this slider draft"),
-                glory::ui::button().label("After sliders"),
+                sapid::button().theme(theme.clone()).label("After sliders"),
             )),
             State {
                 value,

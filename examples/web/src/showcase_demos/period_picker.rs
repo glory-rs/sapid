@@ -163,7 +163,8 @@ mod fixture {
                     .name("Unrelated period draft")
                     .class("period-draft")
                     .default_value("Stable period draft"),
-                glory::ui::button()
+                sapid::button()
+                    .theme(theme.clone())
                     .label("Outside periods")
                     .class("period-outside"),
             )),

@@ -113,7 +113,7 @@ mod fixture {
                 sapid::title(1).theme(theme.clone()).content("AngleSlider"),
                 horizontal,
                 sapid::text()
-                    .theme(theme)
+                    .theme(theme.clone())
                     .class("angle-slider-status")
                     .content(status),
                 nondivisor,
@@ -122,7 +122,7 @@ mod fixture {
                     .name("Angle draft")
                     .class("angle-slider-draft")
                     .value("Preserve this angular draft"),
-                glory::ui::button().label("After angles"),
+                sapid::button().theme(theme.clone()).label("After angles"),
             )),
             State {
                 value,

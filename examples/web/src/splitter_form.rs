@@ -97,11 +97,11 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .content("Resizable Splitter"),
             horizontal,
             sapid::text()
-                .theme(theme)
+                .theme(theme.clone())
                 .class("splitter-status")
                 .content(status),
             vertical,
-            glory::ui::button().label("After splitters"),
+            sapid::button().theme(theme.clone()).label("After splitters"),
         )),
         State {
             value,

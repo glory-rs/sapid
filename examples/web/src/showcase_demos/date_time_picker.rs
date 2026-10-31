@@ -181,7 +181,8 @@ mod fixture {
                     .name("Unrelated date time draft")
                     .class("date-time-unrelated")
                     .default_value("Stable date time draft"),
-                glory::ui::button()
+                sapid::button()
+                    .theme(theme.clone())
                     .class("date-time-outside")
                     .label("Outside date and time"),
             )),

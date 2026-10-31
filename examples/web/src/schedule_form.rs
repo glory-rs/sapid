@@ -163,11 +163,11 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
             .locale(DateLocale::ZhCn)
             .readonly(true),
             text_field()
-                .theme(theme)
+                .theme(theme.clone())
                 .name("Unrelated schedule draft")
                 .class("schedule-draft")
                 .default_value("Stable schedule draft"),
-            glory::ui::button()
+            sapid::button().theme(theme.clone())
                 .class("schedule-outside")
                 .label("Outside schedule"),
         )),

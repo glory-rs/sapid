@@ -124,7 +124,8 @@ mod fixture {
                     glory::ui::text()
                         .content("Navigation menu · actual links and separate disclosures"),
                     menu,
-                    glory::ui::button()
+                    sapid::button()
+                        .theme(theme.clone())
                         .label("Outside action")
                         .class("navigation-outside"),
                     glory::ui::text()

@@ -29,7 +29,7 @@ pub fn form_themed(
                 .padding(Edges::all(24.0)),
         )
         .fill((
-            glory::ui::button().class("outside").label("Outside action"),
+            sapid::button().theme(theme.clone()).class("outside").label("Outside action"),
             dialog("demo-dialog")
                 .theme(theme.clone())
                 .label("Open dialog")
@@ -48,8 +48,11 @@ pub fn form_themed(
                                 .theme(theme.clone())
                                 .label("Nested popover")
                                 .title("More options")
-                                .content(|| {
-                                    glory::ui::button().class("nested-action").label("Option")
+                                .content({
+                                    let theme = theme.clone();
+                                    move || {
+                                        sapid::button().theme(theme.clone()).class("nested-action").label("Option")
+                                    }
                                 }),
                             dialog("nested-dialog")
                                 .theme(theme.clone())
@@ -71,15 +74,18 @@ pub fn form_themed(
                 .theme(theme.clone())
                 .label("Open drawer")
                 .title("Navigation")
-                .content(|| {
+                .content({
+                    let theme = theme.clone();
+                    move || {
                     col().fill((
-                        glory::ui::button()
+                        sapid::button().theme(theme.clone())
                             .label("Disabled destination")
                             .enabled(false),
-                        glory::ui::button()
+                        sapid::button().theme(theme.clone())
                             .class("drawer-action")
                             .label("Destination"),
                     ))
+                    }
                 }),
             view()
                 .class("clipped")
@@ -121,10 +127,12 @@ pub fn form_themed(
                 .label("Initial focus")
                 .title("Focus selection")
                 .initial_focus(SemanticId::new("preferred-focus").unwrap())
-                .content(|| {
+                .content({
+                    let theme = theme.clone();
+                    move || {
                     col().fill((
-                        glory::ui::button().enabled(false).label("Disabled first"),
-                        glory::ui::button().label("Other"),
+                        sapid::button().theme(theme.clone()).enabled(false).label("Disabled first"),
+                        sapid::button().theme(theme.clone()).label("Other"),
                         glory::ui::input()
                             .class("preferred")
                             .semantics(Some(Box::new(Semantics {
@@ -132,6 +140,7 @@ pub fn form_themed(
                                 ..Default::default()
                             }))),
                     ))
+                    }
                 }),
             text()
                 .class("layer-status")

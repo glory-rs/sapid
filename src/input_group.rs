@@ -1,4 +1,4 @@
-use glory::style::{Align, Display, FlexDirection, Length, Style};
+use glory::style::{Align, Display, FlexDirection, Length, Style, WhiteSpace};
 use glory::ui::{Children, IntoChildren, Result, Widget};
 use glory::{Scope, Vary};
 
@@ -125,7 +125,11 @@ impl Widget for InputAddon {
             glory::ui::text(),
             scope,
             "sapid-input-addon",
-            self.common.theme.description(self.common.size)
+            Style {
+                shrink: Some(0.0),
+                white_space: Some(WhiteSpace::NoWrap),
+                ..self.common.theme.description(self.common.size)
+            }
         )
         .content(self.content.clone())
         .show_in(scope)
@@ -159,7 +163,10 @@ impl Widget for InputSection {
             glory::ui::view(),
             scope,
             "sapid-input-section",
-            row()
+            Style {
+                shrink: Some(0.0),
+                ..row()
+            }
         );
         root.fill(children).show_in(scope)
     }

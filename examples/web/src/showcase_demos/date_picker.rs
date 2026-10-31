@@ -139,7 +139,8 @@ mod fixture {
                     .name("Unrelated picker draft")
                     .class("picker-draft")
                     .default_value("Stable draft"),
-                glory::ui::button()
+                sapid::button()
+                    .theme(theme.clone())
                     .label("Outside date picker")
                     .class("picker-outside"),
             )),

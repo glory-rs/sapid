@@ -19,7 +19,7 @@
 .sapid-checkbox.sapid-size-extra-small{--sp-check-size:14px}.sapid-checkbox.sapid-size-small{--sp-check-size:15px}.sapid-checkbox.sapid-size-large{--sp-check-size:20px}.sapid-checkbox.sapid-size-extra-large{--sp-check-size:22px}
 .sapid-checkbox:where(:not(.sapid-unstyled)) input[aria-invalid=true]{outline:1px solid var(--sp-danger);outline-offset:2px}
 .sapid-checkbox:where(:not(.sapid-unstyled)) input[readonly]{cursor:default}
-.sapid-button:where(:not(.sapid-unstyled)){cursor:pointer;transition:background-color .12s,border-color .12s,color .12s,filter .12s}
+.sapid-button:where(:not(.sapid-unstyled)){cursor:pointer;white-space:nowrap;transition:background-color .12s,border-color .12s,color .12s,filter .12s}
 .sapid-button-primary:where(:not(.sapid-unstyled)):hover:enabled{background:var(--sp-hover)!important;border-color:var(--sp-hover)!important}
 .sapid-button-secondary:where(:not(.sapid-unstyled)):hover:enabled{background:var(--sp-disabled)!important}
 .sapid-button-outline:where(:not(.sapid-unstyled)):hover:enabled{background:var(--sp-accent-soft)!important}

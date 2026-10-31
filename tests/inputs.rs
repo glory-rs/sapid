@@ -320,6 +320,25 @@ fn input_group_decorations_do_not_replace_control_label_or_intrinsic_controls() 
             .clone(),
         Props::Text(_)
     ));
+    let tree = app.tree();
+    let addon_style = &tree.node(addon).unwrap().descriptor.view().style;
+    assert_eq!(addon_style.shrink, Some(0.0));
+    assert_eq!(
+        addon_style.white_space,
+        Some(glory::style::WhiteSpace::NoWrap)
+    );
+    let section = find(&app, "sapid-input-section");
+    assert_eq!(
+        app.tree()
+            .node(section)
+            .unwrap()
+            .descriptor
+            .view()
+            .style
+            .shrink,
+        Some(0.0)
+    );
+    drop(tree);
     app.dispatch(find(&app, "sapid-button"), Event::Activate)
         .unwrap();
     assert_eq!(clicks.get(), 1);

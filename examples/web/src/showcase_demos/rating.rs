@@ -104,7 +104,7 @@ mod fixture {
                     .name("Rating draft")
                     .class("rating-draft")
                     .value("Preserve this rating draft"),
-                glory::ui::button().label("After ratings"),
+                sapid::button().theme(theme.clone()).label("After ratings"),
             )),
             State {
                 value,

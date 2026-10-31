@@ -133,10 +133,10 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .name("RTL month")
                 .direction(glory::render::Direction::Rtl),
             text_field()
-                .theme(theme)
+                .theme(theme.clone())
                 .name("Unrelated calendar schedule draft")
                 .default_value("Stable calendar schedule draft"),
-            glory::ui::button()
+            sapid::button().theme(theme.clone())
                 .class("schedule-calendar-outside")
                 .label("Outside calendar schedule"),
         )),

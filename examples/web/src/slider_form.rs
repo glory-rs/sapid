@@ -96,7 +96,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
             sapid::title(1).theme(theme.clone()).content("Slider"),
             horizontal,
             sapid::text()
-                .theme(theme)
+                .theme(theme.clone())
                 .class("slider-status")
                 .content(status),
             vertical,
@@ -105,7 +105,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .name("Slider draft")
                 .class("slider-draft")
                 .value("Preserve this slider draft"),
-            glory::ui::button().label("After sliders"),
+            sapid::button().theme(theme.clone()).label("After sliders"),
         )),
         State {
             value,

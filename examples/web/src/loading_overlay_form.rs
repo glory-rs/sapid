@@ -19,7 +19,7 @@ pub fn inert_stream_probe() -> impl Widget {
                     ..Default::default()
                 })))
                 .fill((
-                    glory::ui::button().label("Retained action"),
+                    sapid::button().label("Retained action"),
                     glory::ui::view()
                         .class("stream-inert-layer")
                         .role(Role::Dialog)
@@ -30,7 +30,7 @@ pub fn inert_stream_probe() -> impl Widget {
                             layer: Some(Layer::default()),
                             ..Default::default()
                         })))
-                        .fill(glory::ui::button().label("Layer action")),
+                        .fill(sapid::button().label("Layer action")),
                 )),
         )
 }

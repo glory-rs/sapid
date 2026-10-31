@@ -147,6 +147,16 @@ async (hostPage) => {
     await p.getByText('Thank you for confirming.',{exact:true}).waitFor();
     reports.push({suite:'showcase-controlled-checkbox',status:'passed'});
 
+    await go(p, 'showcase.html?widget=P1-04');
+    await p.getByRole('textbox',{name:'Biography',exact:true}).waitFor();
+    assert(await p.getByRole('button',{name:'Toggle error',exact:true}).count() === 0, 'Textarea starts with its own focused example');
+    await go(p, 'showcase.html?widget=P1-03');
+    await p.getByRole('button',{name:'Toggle fieldset disabled',exact:true}).click();
+    await p.locator('.sapid-fieldset[disabled]').waitFor();
+    assert(await p.getByRole('textbox',{name:'Your name',exact:true}).isDisabled(), 'Fieldset disables its grouped controls');
+    assert(await p.getByRole('textbox',{name:'Biography',exact:true}).count() === 0, 'Fieldset does not reuse the Textarea example');
+    reports.push({suite:'showcase-focused-fields',status:'passed'});
+
     for (const hue of ['blue','green']) for (const scheme of ['light','dark']) for (const name of ['home','button','textfield','dates','chat']) {
       await go(p, `ssr-${name}-${hue}-${scheme}.html`);
       assert(await p.locator(`.sapid-site.site-${scheme}`).count() === 1, `SSR ${name}: adopted theme`);

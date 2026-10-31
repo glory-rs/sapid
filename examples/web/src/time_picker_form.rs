@@ -151,7 +151,7 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .name("Unrelated segmented draft")
                 .class("time-picker-draft")
                 .default_value("Stable segmented draft"),
-            glory::ui::button()
+            sapid::button().theme(theme.clone())
                 .label("Outside segmented time")
                 .class("time-picker-outside"),
         )),

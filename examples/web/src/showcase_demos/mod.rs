@@ -8,10 +8,6 @@ mod affix;
 pub fn affix_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(affix::demo(theme))
 }
-mod alerts;
-pub fn alerts_widget(theme: sapid::Theme) -> Box<dyn Widget> {
-    Box::new(alerts::demo(theme))
-}
 mod angle_slider;
 pub fn angle_slider_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(angle_slider::demo(theme))
@@ -43,10 +39,6 @@ pub fn charts_widget(theme: sapid::Theme) -> Box<dyn Widget> {
 mod choice_extras;
 pub fn choice_extras_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(choice_extras::demo(theme))
-}
-mod choices;
-pub fn choices_widget(theme: sapid::Theme) -> Box<dyn Widget> {
-    Box::new(choices::demo(theme))
 }
 mod citations;
 pub fn citations_widget(theme: sapid::Theme) -> Box<dyn Widget> {
@@ -160,21 +152,9 @@ mod date_time_picker;
 pub fn date_time_picker_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(date_time_picker::demo(theme))
 }
-mod display;
-pub fn display_widget(theme: sapid::Theme) -> Box<dyn Widget> {
-    Box::new(display::demo(theme))
-}
-mod document;
-pub fn document_widget(theme: sapid::Theme) -> Box<dyn Widget> {
-    Box::new(document::demo(theme))
-}
 mod environment;
 pub fn environment_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(environment::demo(theme))
-}
-mod fields;
-pub fn fields_widget(theme: sapid::Theme) -> Box<dyn Widget> {
-    Box::new(fields::demo(theme))
 }
 mod files;
 pub fn files_widget(theme: sapid::Theme) -> Box<dyn Widget> {
@@ -192,6 +172,150 @@ mod focus_scope;
 pub fn focus_scope_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(focus_scope::demo(theme))
 }
+mod focused_p0_10;
+pub fn focused_p0_10_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p0_10::demo(theme))
+}
+mod focused_p13_05;
+pub fn focused_p13_05_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p13_05::demo(theme))
+}
+mod focused_p13_06;
+pub fn focused_p13_06_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p13_06::demo(theme))
+}
+mod focused_p1_01;
+pub fn focused_p1_01_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p1_01::demo(theme))
+}
+mod focused_p1_02;
+pub fn focused_p1_02_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p1_02::demo(theme))
+}
+mod focused_p1_03;
+pub fn focused_p1_03_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p1_03::demo(theme))
+}
+mod focused_p1_04;
+pub fn focused_p1_04_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p1_04::demo(theme))
+}
+mod focused_p1_05;
+pub fn focused_p1_05_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p1_05::demo(theme))
+}
+mod focused_p1_06;
+pub fn focused_p1_06_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p1_06::demo(theme))
+}
+mod focused_p2_01;
+pub fn focused_p2_01_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p2_01::demo(theme))
+}
+mod focused_p2_02;
+pub fn focused_p2_02_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p2_02::demo(theme))
+}
+mod focused_p2_03;
+pub fn focused_p2_03_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p2_03::demo(theme))
+}
+mod focused_p2_05;
+pub fn focused_p2_05_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p2_05::demo(theme))
+}
+mod focused_p2_06;
+pub fn focused_p2_06_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p2_06::demo(theme))
+}
+mod focused_p2_07;
+pub fn focused_p2_07_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p2_07::demo(theme))
+}
+mod focused_p3_02;
+pub fn focused_p3_02_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p3_02::demo(theme))
+}
+mod focused_p3_03;
+pub fn focused_p3_03_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p3_03::demo(theme))
+}
+mod focused_p3_07;
+pub fn focused_p3_07_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p3_07::demo(theme))
+}
+mod focused_p3_08;
+pub fn focused_p3_08_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p3_08::demo(theme))
+}
+mod focused_p3_09;
+pub fn focused_p3_09_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p3_09::demo(theme))
+}
+mod focused_p3_11;
+pub fn focused_p3_11_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p3_11::demo(theme))
+}
+mod focused_p3_12;
+pub fn focused_p3_12_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p3_12::demo(theme))
+}
+mod focused_p3_16;
+pub fn focused_p3_16_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p3_16::demo(theme))
+}
+mod focused_p3_17;
+pub fn focused_p3_17_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p3_17::demo(theme))
+}
+mod focused_p3_18;
+pub fn focused_p3_18_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p3_18::demo(theme))
+}
+mod focused_p3_19;
+pub fn focused_p3_19_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p3_19::demo(theme))
+}
+mod focused_p3_20;
+pub fn focused_p3_20_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p3_20::demo(theme))
+}
+mod focused_p5_01;
+pub fn focused_p5_01_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p5_01::demo(theme))
+}
+mod focused_p5_03;
+pub fn focused_p5_03_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p5_03::demo(theme))
+}
+mod focused_p5_04;
+pub fn focused_p5_04_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p5_04::demo(theme))
+}
+mod focused_p5_05;
+pub fn focused_p5_05_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p5_05::demo(theme))
+}
+mod focused_p5_10;
+pub fn focused_p5_10_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p5_10::demo(theme))
+}
+mod focused_p5_12;
+pub fn focused_p5_12_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p5_12::demo(theme))
+}
+mod focused_p6_01;
+pub fn focused_p6_01_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p6_01::demo(theme))
+}
+mod focused_p6_02;
+pub fn focused_p6_02_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p6_02::demo(theme))
+}
+mod focused_p6_10;
+pub fn focused_p6_10_widget(theme: sapid::Theme) -> Box<dyn Widget> {
+    Box::new(focused_p6_10::demo(theme))
+}
 mod forms;
 pub fn forms_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(forms::demo(theme))
@@ -207,10 +331,6 @@ pub fn grid_widget(theme: sapid::Theme) -> Box<dyn Widget> {
 mod hierarchy_charts;
 pub fn hierarchy_charts_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(hierarchy_charts::demo(theme))
-}
-mod hints;
-pub fn hints_widget(theme: sapid::Theme) -> Box<dyn Widget> {
-    Box::new(hints::demo(theme))
 }
 mod image;
 pub fn image_widget(theme: sapid::Theme) -> Box<dyn Widget> {
@@ -264,17 +384,9 @@ mod modals;
 pub fn modals_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(modals::demo(theme))
 }
-mod model_suggestions;
-pub fn model_suggestions_widget(theme: sapid::Theme) -> Box<dyn Widget> {
-    Box::new(model_suggestions::demo(theme))
-}
 mod native_select;
 pub fn native_select_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(native_select::demo(theme))
-}
-mod navigation;
-pub fn navigation_widget(theme: sapid::Theme) -> Box<dyn Widget> {
-    Box::new(navigation::demo(theme))
 }
 mod navigation_menu;
 pub fn navigation_menu_widget(theme: sapid::Theme) -> Box<dyn Widget> {
@@ -347,10 +459,6 @@ pub fn rating_widget(theme: sapid::Theme) -> Box<dyn Widget> {
 mod resource_schedule;
 pub fn resource_schedule_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(resource_schedule::demo(theme))
-}
-mod responsive;
-pub fn responsive_widget(theme: sapid::Theme) -> Box<dyn Widget> {
-    Box::new(responsive::demo(theme))
 }
 mod rich_editor;
 pub fn rich_editor_widget(theme: sapid::Theme) -> Box<dyn Widget> {
@@ -432,17 +540,9 @@ mod time_picker;
 pub fn time_picker_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(time_picker::demo(theme))
 }
-mod timeline;
-pub fn timeline_widget(theme: sapid::Theme) -> Box<dyn Widget> {
-    Box::new(timeline::demo(theme))
-}
 mod toggles;
 pub fn toggles_widget(theme: sapid::Theme) -> Box<dyn Widget> {
     Box::new(toggles::demo(theme))
-}
-mod toolbar;
-pub fn toolbar_widget(theme: sapid::Theme) -> Box<dyn Widget> {
-    Box::new(toolbar::demo(theme))
 }
 mod tour;
 pub fn tour_widget(theme: sapid::Theme) -> Box<dyn Widget> {

@@ -27,7 +27,7 @@ mod fixture {
                         ..Default::default()
                     })))
                     .fill((
-                        glory::ui::button().label("Retained action"),
+                        sapid::button().label("Retained action"),
                         glory::ui::view()
                             .class("stream-inert-layer")
                             .role(Role::Dialog)
@@ -38,7 +38,7 @@ mod fixture {
                                 layer: Some(Layer::default()),
                                 ..Default::default()
                             })))
-                            .fill(glory::ui::button().label("Layer action")),
+                            .fill(sapid::button().label("Layer action")),
                     )),
             )
     }

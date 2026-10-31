@@ -146,10 +146,10 @@ pub fn form(scope: &Scope, theme: Theme) -> (impl Widget + use<>, State) {
                 .direction(glory::render::Direction::Rtl)
                 .viewport_height(200.),
             text_field()
-                .theme(theme)
+                .theme(theme.clone())
                 .name("Unrelated timeline draft")
                 .default_value("Stable timeline draft"),
-            glory::ui::button()
+            sapid::button().theme(theme.clone())
                 .class("schedule-timeline-outside")
                 .label("Outside timeline"),
         )),

@@ -152,7 +152,8 @@ mod fixture {
                     .name("Unrelated time draft")
                     .class("time-draft")
                     .default_value("Stable time draft"),
-                glory::ui::button()
+                sapid::button()
+                    .theme(theme.clone())
                     .label("Outside time input")
                     .class("time-outside"),
             )),
